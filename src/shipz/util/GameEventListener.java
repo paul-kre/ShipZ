@@ -9,5 +9,6 @@ public interface GameEventListener {
     public void onShoot(ShootEvent e);
     public void onSurrender(EventObject e);
 
+    public void onClose(EventObject e);
     public void onDisconnect(EventObject e);
 }

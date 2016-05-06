@@ -51,7 +51,10 @@ public class Network extends GameEventSource implements Runnable {
 
     private final static char PING_ACTION = 1;
     private final static char SHOOT_ACTION = 2;
-    private final static char SURRENDER_ACTION = 3;
+    private final static char CLOSE_ACTION = 3;
+    private final static char SURRENDER_ACTION = 's';
+
+
 
     private final static int CONNECTION_TIMEOUT = 30000;
 
@@ -94,19 +97,22 @@ public class Network extends GameEventSource implements Runnable {
     public void run() {
         Timer timer = new Timer(100);
 
+        send(PING_ACTION + "");
+
         String s;
         boolean done = false;
         while(!done && _connected && timer.hasTime()) {
-            System.out.print(!done && _connected && timer.hasTime());
             try {
 
                 if((s = _in.readLine()) != null) { // Message received
+
                     timer.reset();
 
-                    if(s.charAt(1) != PING_ACTION) // Message is not a ping
-                        evaluateString(s);
-                    else
+                    if(s.charAt(0) == PING_ACTION) {
                         send(PING_ACTION + "");
+                    } else { // Message is not a ping
+                        evaluateString(s);
+                    }
 
                 }
 
@@ -127,7 +133,7 @@ public class Network extends GameEventSource implements Runnable {
     }
 
     private void evaluateString(String s) {
-        char action = s.charAt(1);
+        char action = s.charAt(0);
 
         switch (action) {
             case SHOOT_ACTION:
@@ -135,9 +141,11 @@ public class Network extends GameEventSource implements Runnable {
                 if((coords = convertCoords(s)) == null) break;
                 fireShootEvent(coords[0], coords[1]);
                 break;
+            case CLOSE_ACTION:
+                fireCloseEvent();
+                break;
             case SURRENDER_ACTION:
                 fireSurrenderEvent();
-                _connected = false;
                 break;
             default:
                 break;
@@ -145,13 +153,18 @@ public class Network extends GameEventSource implements Runnable {
     }
 
     private int[] convertCoords(String s) {
-        String[] split = s.split(":");
+        String[] split = s.split("//");
         if(split.length != 2) return null;
-        String[] split2 = split[1].split(";");
+        String[] split2 = split[1].split("&");
         if(split2.length != 2) return null;
         int[] coords = new int[2];
-        int x = Integer.parseInt( split2[0].split("=")[1] );
-        int y = Integer.parseInt( split2[1].split("=")[1] );
+        int x, y;
+        try {
+            x = Integer.parseInt( split2[0].split("=")[1] );
+            y = Integer.parseInt( split2[1].split("=")[1] );
+        } catch (NumberFormatException e) {
+            return null;
+        }
         if(x < 0 && y < 0) return null;
         return new int[] {x, y};
     }
@@ -176,7 +189,6 @@ public class Network extends GameEventSource implements Runnable {
             ServerSocket serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout( CONNECTION_TIMEOUT );
 
-            System.out.println("Server started.");
             System.out.println("Waiting for a client ...");
             _socket = serverSocket.accept();
             serverSocket.close();
@@ -184,9 +196,9 @@ public class Network extends GameEventSource implements Runnable {
 
             System.out.println("Client accepted: " + _socket.getInetAddress());
 
-            open();
-
             _connected = true;
+
+            open();
 
         } catch(SocketTimeoutException s) {
             _error = "Connection timeout.";
@@ -344,8 +356,17 @@ public class Network extends GameEventSource implements Runnable {
         _out.flush();
     }
 
+    public void surrender() {
+        send(SURRENDER_ACTION + "");
+    }
+
+    public void shootField(int x, int y) {
+        send(SHOOT_ACTION + "//x=" + x + "&y=" + y);
+    }
+
     public void disconnect() {
         _connected = false;
+        send(CLOSE_ACTION + "");
     }
 
     public boolean connected() {

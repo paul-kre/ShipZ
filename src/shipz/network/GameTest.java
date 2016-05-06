@@ -49,13 +49,20 @@ public class GameTest implements GameEventListener {
 
     @Override
     public void onShoot(ShootEvent e) {
-        System.out.println(e.getSource() + " shot at: X:" + e.x() + ", Y: " + e.y());
+        System.out.println(e.getSource() + " fired at: X: " + e.x() + ", Y: " + e.y());
     }
 
     @Override
     public void onSurrender(EventObject e) {
-        Object source = e.getSource();
+        Network source = (Network) e.getSource();
         System.out.println(source + " surrenders.");
+        source.disconnect();
+    }
+
+    @Override
+    public void onClose(EventObject e) {
+        Network source = (Network) e.getSource();
+        source.disconnect();
     }
 
     @Override

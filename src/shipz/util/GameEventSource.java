@@ -17,6 +17,11 @@ public class GameEventSource {
         _listener.onShoot(evt);
     }
 
+    protected void fireCloseEvent() {
+        EventObject evt = new EventObject(this);
+        _listener.onClose(evt);
+    }
+
     protected void fireSurrenderEvent() {
         EventObject evt = new EventObject(this);
         _listener.onSurrender(evt);
