@@ -1,4 +1,4 @@
-package shipz.network;
+package shipz.util;
 
 /**
  * Created by Paul on 03.05.2016.
@@ -14,5 +14,9 @@ public class Timer {
 
     public boolean hasTime() {
         return ( System.currentTimeMillis() - _startTime ) < _duration;
+    }
+
+    public void reset() {
+        _startTime = System.currentTimeMillis();
     }
 }

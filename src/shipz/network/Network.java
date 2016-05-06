@@ -1,5 +1,8 @@
 package shipz.network;
 
+import shipz.util.GameEventSource;
+import shipz.util.Timer;
+
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.IOException;
@@ -46,7 +49,11 @@ import java.net.SocketTimeoutException;
 
 public class Network extends GameEventSource implements Runnable {
 
-    private final static int CONNECTION_TIMEOUT = 5000;
+    private final static char PING_ACTION = 1;
+    private final static char SHOOT_ACTION = 2;
+    private final static char SURRENDER_ACTION = 3;
+
+    private final static int CONNECTION_TIMEOUT = 30000;
 
     private boolean _isHost;
 
@@ -56,6 +63,9 @@ public class Network extends GameEventSource implements Runnable {
 
     private String _error;
     private boolean _connected;
+
+    private String _ip;
+    private int _port;
 
 
     /**
@@ -75,34 +85,75 @@ public class Network extends GameEventSource implements Runnable {
         _socket = null;
         _in = null;
         _out = null;
+
+        _ip = null;
     }
 
 
 
     public void run() {
-        try {
+        Timer timer = new Timer(100);
 
-            String s;
-            boolean done = false;
-            while(!done && _connected) {
+        String s;
+        boolean done = false;
+        while(!done && _connected && timer.hasTime()) {
+            try {
 
-                if((s = _in.readLine()) != null)
+                if((s = _in.readLine()) != null) { // Message received
 
-                    if(s.equals(".close")) {
-                        send(".close");
-                        _connected = false;
-                    } else {
-                        //System.out.println("\nReceived: " + s);
-                        received(s);
-                    }
+                    timer.reset();
 
+                    if(s.charAt(1) != PING_ACTION) // Message is not a ping
+                        evaluateString(s);
+                    else
+                        send(PING_ACTION + "");
+
+                }
+
+            } catch (IOException e) {
+                _error = e.getMessage();
             }
 
-            close();
-
-        } catch (IOException e) {
-            _error = e.getMessage();
         }
+
+        if(_connected) { // Connection was interrupted
+            _connected = false;
+            fireDisconnectEvent();
+        } else {
+            close();
+        }
+
+
+    }
+
+    private void evaluateString(String s) {
+        char action = s.charAt(1);
+
+        switch (action) {
+            case SHOOT_ACTION:
+                int[] coords;
+                if((coords = convertCoords(s)) == null) break;
+                fireShootEvent(coords[0], coords[1]);
+                break;
+            case SURRENDER_ACTION:
+                fireSurrenderEvent();
+                _connected = false;
+                break;
+            default:
+                break;
+        }
+    }
+
+    private int[] convertCoords(String s) {
+        String[] split = s.split(":");
+        if(split.length != 2) return null;
+        String[] split2 = split[1].split(";");
+        if(split2.length != 2) return null;
+        int[] coords = new int[2];
+        int x = Integer.parseInt( split2[0].split("=")[1] );
+        int y = Integer.parseInt( split2[1].split("=")[1] );
+        if(x < 0 && y < 0) return null;
+        return new int[] {x, y};
     }
 
     /**
@@ -117,6 +168,8 @@ public class Network extends GameEventSource implements Runnable {
     public void connect(int port) {
         if(!_isHost)
             return;
+
+        _port = port;
 
         try {
             System.out.println("Binding to port " + port + " ...");
@@ -136,7 +189,7 @@ public class Network extends GameEventSource implements Runnable {
             _connected = true;
 
         } catch(SocketTimeoutException s) {
-            _error = "Connection timeout";
+            _error = "Connection timeout.";
         } catch(IOException e) {
             _error = e.getMessage();
         } catch(IllegalArgumentException i) {
@@ -160,23 +213,45 @@ public class Network extends GameEventSource implements Runnable {
         if (_isHost)
             return;
 
-        try {
-            System.out.println("Connecting to port " + port + " ...");
-            _socket = new Socket();
-            _socket.connect(new InetSocketAddress(ip, port), CONNECTION_TIMEOUT );
-            System.out.println("Client connected.");
+        _port = port;
+        _ip = ip;
 
-            open();
+        System.out.println("Connecting to port " + port + " ...");
+        //_socket = new Socket();
+        //InetSocketAddress inetAdress = new InetSocketAddress(ip, port);
 
-            _connected = true;
+        Timer timer = new Timer(CONNECTION_TIMEOUT);
+        while(!_connected && timer.hasTime()) {
+            try {
 
+                //_socket.connect(inetAdress, CONNECTION_TIMEOUT );
+                _socket = new Socket(ip, port);
+                System.out.println("Client connected.");
+                _connected = true;
+                open();
 
-        } catch(SocketTimeoutException s) {
-            _error = "Connection timeout";
-        } catch(IOException e) {
-            _error = e.getMessage();
-        } catch(IllegalArgumentException i) {
-            _error = i.getMessage();
+            } catch(SocketTimeoutException s) {
+                _error = "Connection timeout.";
+            } catch(IOException e) {
+                _error = e.getMessage();
+            } catch(IllegalArgumentException i) {
+                _error = i.getMessage();
+            }
+        }
+
+        if(!timer.hasTime())
+            _error = "Connection timeout.";
+    }
+
+    public void reconnect() {
+        if(_connected)
+            return;
+
+        if(_isHost) {
+            connect(_port);
+        }
+        if(!_isHost) {
+            connect(_ip, _port);
         }
     }
 
@@ -281,10 +356,7 @@ public class Network extends GameEventSource implements Runnable {
     }
 
     public String toString() {
-        if(_isHost)
-            return "Host";
-        else
-            return "Client";
+        return "Network";
     }
 
 }

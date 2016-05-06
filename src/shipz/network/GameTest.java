@@ -1,5 +1,10 @@
 package shipz.network;
 
+import shipz.util.GameEventListener;
+import shipz.util.ShootEvent;
+
+import java.util.EventObject;
+
 /**
  * Created by Paul on 05.05.2016.
  */
@@ -43,7 +48,29 @@ public class GameTest implements GameEventListener {
     }
 
     @Override
-    public void onReceived(MsgEvent e) {
-        System.out.println(e.getSource().toString() + " received: " + e.msg());
+    public void onShoot(ShootEvent e) {
+        System.out.println(e.getSource() + " shot at: X:" + e.x() + ", Y: " + e.y());
     }
+
+    @Override
+    public void onSurrender(EventObject e) {
+        Object source = e.getSource();
+        System.out.println(source + " surrenders.");
+    }
+
+    @Override
+    public void onDisconnect(EventObject e) {
+        Network source = (Network) e.getSource();
+        System.err.println("The opponent disconnected. \nReconnecting ...");
+        source.reconnect();
+        if(source.connected()) {
+            System.out.println("The opponent reconnected successfully!");
+            source.run();
+        } else {
+            System.err.println("Failed to reconnect: " + source.error());
+            source.close();
+        }
+    }
+
+
 }
