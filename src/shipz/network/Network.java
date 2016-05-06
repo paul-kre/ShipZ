@@ -97,10 +97,10 @@ public class Network extends GameEventSource implements Runnable {
         String s;
         boolean done = false;
         while(!done && _connected && timer.hasTime()) {
+            System.out.print(!done && _connected && timer.hasTime());
             try {
 
                 if((s = _in.readLine()) != null) { // Message received
-
                     timer.reset();
 
                     if(s.charAt(1) != PING_ACTION) // Message is not a ping
@@ -262,6 +262,9 @@ public class Network extends GameEventSource implements Runnable {
      */
 
     private void open() throws IOException {
+        if(!_connected)
+            return;
+
         InputStream inputStream;
 
         inputStream = _socket.getInputStream();
@@ -269,8 +272,6 @@ public class Network extends GameEventSource implements Runnable {
 
         OutputStream outputStream = _socket.getOutputStream();
         _out = new PrintWriter( outputStream );
-
-        _connected = true;
     }
 
 
