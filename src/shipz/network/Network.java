@@ -1,5 +1,6 @@
 package shipz.network;
 
+import shipz.Player;
 import shipz.util.GameEventSource;
 import shipz.util.Timer;
 
@@ -47,7 +48,7 @@ import java.net.SocketTimeoutException;
  *
  */
 
-public class Network extends GameEventSource implements Runnable {
+public class Network extends Player implements Runnable {
 
     private final static char PING_ACTION = 1;
     private final static char SHOOT_ACTION = 2;
@@ -56,7 +57,7 @@ public class Network extends GameEventSource implements Runnable {
 
 
 
-    private final static int CONNECTION_TIMEOUT = 30000;
+    private final static int CONNECTION_TIMEOUT = 60000;
 
     private boolean _isHost;
 
@@ -81,7 +82,9 @@ public class Network extends GameEventSource implements Runnable {
      *
      */
 
-    public Network(boolean isHost) {
+    public Network(String name, boolean isHost) {
+        super(name);
+
         _isHost = isHost;
         _connected = false;
 

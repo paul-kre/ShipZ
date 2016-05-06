@@ -1,50 +1,42 @@
 package shipz.network;
 
+import shipz.Player;
 import shipz.util.GameEventListener;
 import shipz.util.ShootEvent;
 
 import java.util.EventObject;
+import java.util.Scanner;
 
 /**
  * Created by Paul on 05.05.2016.
  */
 public class GameTest implements GameEventListener {
-    Network _player;
+    Player _player1;
+    Network _player2;
 
-    public void setupNetwork(char c) {
-        if(c == 's')
-            _player = setupServer();
-        else
-            _player = setupClient();
+    Scanner _in;
 
-        if(_player.connected()) {
-            // Server is running and connected to the client
+    boolean _gameOver;
 
-            _player.setEventListener(this);
 
-            (new Thread(_player)).start();
+    public GameTest() {
+        _in = new Scanner( System.in );
+        _gameOver = false;
+    }
 
-            //_player.disconnect();
-        } else {
-            // Something went wrong.
-            System.err.println(_player.error());
+    private void start() {
+        (new Thread(_player1)).start();
+        (new Thread(_player2)).start();
+
+        while(!_gameOver) {
+            turn(_player1);
+            turn(_player2);
         }
     }
 
-    public void send(String msg) {
-        _player.send(msg);
-    }
+    private void turn(Player p) {
+        String input = ask(p.name() + ", what is you move? ");
 
-    public Network setupServer() {
-        Network server = new Network(true);
-        server.connect(5555);
-        return server;
-    }
-
-    public Network setupClient() {
-        Network client = new Network(false);
-        client.connect("localhost", 5555);
-        return client;
     }
 
     @Override
@@ -77,6 +69,149 @@ public class GameTest implements GameEventListener {
             System.err.println("Failed to reconnect: " + source.error());
             source.close();
         }
+    }
+
+    public static void main(String[] args) {
+        GameTest game = new GameTest();
+        game.init();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Trash
+
+    public void init() {
+        System.out.println("--- SHIPZ GAME ---\n\n");
+        boolean valid;
+
+        String name = "";
+        char hostOrClient = ' ';
+
+        valid = false;
+        while(!valid) {
+            name = ask("What is your name? ( max. 15 characters )");
+            if(name.length() > 15)
+                System.err.println("\nThe name is too long ...\n");
+            else if(name.isEmpty())
+                System.err.println("\nYou need a name ...\n");
+            else
+                valid = true;
+
+        }
+
+        _player1 = new Keyboard(name);
+
+        valid = false;
+        while(!valid) {
+            hostOrClient = ask("Do you want to be host or client? ( h / c )").charAt(0);
+            if(hostOrClient == 'h' || hostOrClient == 'c')
+                valid = true;
+            else
+                System.err.println("\nIncorrect input ...\n");
+        }
+
+        if(hostOrClient == 'h') {
+            _player2 = new Network("Client", true);
+
+            while(!_player2.connected()) {
+                _player2.connect(getPort());
+                if(!_player2.connected()) {
+                    System.err.println(_player2.error());
+                    System.out.println("\n\nTry again ...\n");
+                }
+            }
+        } else {
+            _player2 = new Network("Host", false);
+
+            while(!_player2.connected()) {
+                _player2.connect(getIp(), getPort());
+                if(!_player2.connected()) {
+                    System.err.println(_player2.error());
+                    System.out.println("\n\nTry again ...\n");
+                }
+            }
+        }
+
+
+    }
+
+    private String getIp() {
+        String ip = "";
+        boolean valid = false;
+        while(!valid) {
+            ip = ask("Please enter your opponent's IP-address ( XXX.XXX.XXX.XXX or \"localhost\" )");
+            valid = validIp(ip) || ip.equals("localhost");
+            if(!valid)
+                System.err.println("\nIncorrect input ...\n");
+        }
+        return ip;
+    }
+
+    private int getPort() {
+        int port = -1;
+        boolean valid = false;
+        while(!valid) {
+            try {
+                port = Integer.parseInt( ask("Please enter a valid port") );
+            } catch (NumberFormatException e) {
+
+            }
+            valid = (port > 0 && port < 1000000);
+            if(!valid)
+                System.err.println("\nIncorrect input ...\n");
+        }
+        return port;
+    }
+
+    private boolean validIp(String s) {
+        String[] split = s.split(".");
+        if(split.length !=4) return false;
+        for (String str : split) {
+            if(str.length() != 3) return false;
+        }
+
+        return true;
+    }
+
+    private String ask(String question) {
+        System.out.print(question + " > ");
+        String s = _in.nextLine();
+        if(s.equals("quit"))
+            System.exit(0);
+        System.out.println();
+        return s;
     }
 
 
