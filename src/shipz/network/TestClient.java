@@ -8,6 +8,7 @@ public class TestClient {
         game.send("hi server");
         // hallo
         // hallo zum zweiten mal
+        // hallo nummer 3
     }
 
 }
