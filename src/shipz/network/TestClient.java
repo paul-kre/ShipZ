@@ -7,6 +7,7 @@ public class TestClient {
         game.setupNetwork('c');
         game.send("hi server");
         // hallo
+        // hallo zum zweiten mal
     }
 
 }
