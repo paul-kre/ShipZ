@@ -6,6 +6,7 @@ public class TestClient {
         Game game = new Game();
         game.setupNetwork('c');
         game.send("hi server");
+        // hallo
     }
 
 }
