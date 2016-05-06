@@ -1,3 +1,5 @@
+package shipz.network;
+
 /**
  * Created by Paul on 06.05.2016.
  */

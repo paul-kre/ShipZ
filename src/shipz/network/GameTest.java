@@ -1,8 +1,9 @@
+package shipz.network;
 
 /**
  * Created by Paul on 05.05.2016.
  */
-public class Game implements GameEventListener {
+public class GameTest implements GameEventListener {
     Network _player;
 
     public void setupNetwork(char c) {

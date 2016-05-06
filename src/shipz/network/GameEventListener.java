@@ -1,3 +1,5 @@
+package shipz.network;
+
 import java.util.EventObject;
 
 /**
