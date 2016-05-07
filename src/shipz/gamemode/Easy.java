@@ -105,13 +105,14 @@ public class Easy extends Computer {
 		
 		temp = p.shootField();
 		System.out.println(temp[0] + "|" + temp[1]);
-		/*
-		while( i < 10){
+		
+		while( i < 2){
 			
 			temp = p.shootField();
 			System.out.println(temp[0] + "|" + temp[1]);
+			i++;
 		}
-		*/
+		
 		
 		
 		
