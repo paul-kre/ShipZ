@@ -20,4 +20,10 @@ public class Keyboard extends Player implements Runnable {
     public void run() {
 
     }
+
+	@Override
+	public int[] shootField() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

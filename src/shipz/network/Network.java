@@ -384,4 +384,12 @@ public class Network extends Player implements Runnable {
         return "Network";
     }
 
+
+
+	@Override
+	public int[] shootField() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

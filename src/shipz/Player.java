@@ -15,4 +15,14 @@ public abstract class Player extends GameEventSource implements Runnable {
     public String name() {
         return _name;
     }
+    
+    
+    /**
+	 * Initiiert Beschuss auf eine Zelle
+	 * 
+	 * @return Abzuschieﬂende Zelle auf dem Spielfeld
+	 */
+	public abstract int[] shootField();
+    
+    
 }
