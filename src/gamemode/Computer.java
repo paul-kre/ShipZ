@@ -62,7 +62,6 @@ public abstract class Computer extends Player implements MirrorField {
 	protected Random random = new Random();
 	
 	
-	public Computer (){}
 	//Contructor 
 	/**
 	 * 

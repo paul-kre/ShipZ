@@ -24,5 +24,5 @@ public abstract class Player extends GameEventSource implements Runnable {
 	 */
 	public abstract int[] shootField();
     
-    
+    public Player(){}
 }
