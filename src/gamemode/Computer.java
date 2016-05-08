@@ -79,12 +79,22 @@ public abstract class Computer extends Player implements MirrorField {
 	//IM
 	
 	/**
+	 * Implementierung der shootField-Methode von Player für die KI 
+	 * mit Body
+	 * 
 	 * Methode der KI zum erstellen der Zufallskoordinaten für einen<br>
 	 * Beschuss des gegnerischen Spielfeldes<br>
 	 * 
 	 * @return Die Koordinaten die abgeschossen werden sollen.
 	 */
-	public abstract int[] shootField();
+	public abstract int[] shootField(TempKiGame game);
+	
+	
+	/**
+	 * Implementierung der shootField-Methode von
+	 * Player ohne Inhalt.
+	 */
+	public int[] shootField() { return new int[] {0,0}; }
 	
 	
 	/**
@@ -156,6 +166,8 @@ public abstract class Computer extends Player implements MirrorField {
 	protected void fillMirrorField(int yCoord, int xCoord) { 
 		
 		this.mirrorField[yCoord][xCoord] = true;
+		
+		
 	}
 	
 	/**
@@ -172,7 +184,6 @@ public abstract class Computer extends Player implements MirrorField {
 	protected boolean isCoordinateOccupied (int yCoord, int xCoord){
 		
 		return this.mirrorField[yCoord][xCoord];
-		
 	}
 	
 }//end class Computer

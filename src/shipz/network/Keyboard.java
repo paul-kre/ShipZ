@@ -4,6 +4,8 @@ import shipz.Player;
 
 import java.util.Scanner;
 
+import gamemode.TempKiGame;
+
 /**
  * Created by Paul on 06.05.2016.
  */
@@ -23,6 +25,12 @@ public class Keyboard extends Player implements Runnable {
 
 	@Override
 	public int[] shootField() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int[] shootField(TempKiGame game) {
 		// TODO Auto-generated method stub
 		return null;
 	}

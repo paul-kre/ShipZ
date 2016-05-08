@@ -47,7 +47,7 @@ public class Easy extends Computer {
 	 * @return Zufällige Koordinaten die beschossen werden. Es werden pro Spiel nie dieselben Koordinaten von 
 	 * der Ki zurückgegeben
 	 */
-	public int[] shootField() {
+	public int[] shootField(TempKiGame game) {
 		
 		//Zwischenspeichern der generierten X- und Y-Koordinaten
 		int yCoord = 0;
@@ -64,7 +64,7 @@ public class Easy extends Computer {
 			
 			yCoord = super.random.nextInt(super.fieldSize);
 			xCoord = super.random.nextInt(super.fieldSize);
-			System.out.println("Hallo");
+			
 			
 			if (isCoordinateOccupied (yCoord, xCoord)  == false){
 				
@@ -81,12 +81,12 @@ public class Easy extends Computer {
 		//Wurde durch den Beschuss ein Schiff versenkt, wird die direkte Umgebung in das Spiegelfeld gespeichert,
 		//da diese keine Schiffsteile enthalten
 		
-		/*
-		if ( checkTile (xCoord, yCoord, board) == 2 ){
+		
+		if ( game.checkTile (xCoord, yCoord) == 2 ){
 			
 			saveShipVicinity();
 		}
-		*/
+		
 		
 		return new int[]{yCoord, xCoord};
 	}
@@ -99,21 +99,7 @@ public class Easy extends Computer {
 	
 	
 	public static void main( String args[]){
-		Player p = new Easy(10);
-		int i = 0;
-		int[] temp = new int[2];
 		
-		p.shootField();
-		
-		temp = p.shootField();
-		System.out.println(temp[0] + "|" + temp[1]);
-		/*
-		while( i < 10){
-			
-			temp = p.shootField();
-			System.out.println(temp[0] + "|" + temp[1]);
-		}
-		*/
 		
 		
 		

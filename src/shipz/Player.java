@@ -1,5 +1,6 @@
 package shipz;
 
+import gamemode.TempKiGame;
 import shipz.util.GameEventSource;
 
 /**
@@ -8,6 +9,8 @@ import shipz.util.GameEventSource;
 public abstract class Player extends GameEventSource implements Runnable {
     private String _name;
 
+    public Player(){}
+    
     public Player(String name) {
         _name = name;
     }
@@ -19,10 +22,15 @@ public abstract class Player extends GameEventSource implements Runnable {
     
     /**
 	 * Initiiert Beschuss auf eine Zelle
-	 * 
+	 * shootField-Methode für die Klassen Netzwerk und GUI
 	 * @return Abzuschießende Zelle auf dem Spielfeld
 	 */
 	public abstract int[] shootField();
     
-    public Player(){}
+	/**
+	 * Initiiert Beschuss auf eine Zelle
+	 * shootField-Methode für die Klasse Computer und deren Subklassen
+	 * @return Abzuschießende Zelle auf dem Spielfeld
+	 */
+	public abstract int[] shootField(TempKiGame game);
 }

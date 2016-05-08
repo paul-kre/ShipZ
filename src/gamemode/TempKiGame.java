@@ -10,7 +10,7 @@ import shipz.Player;
  * @author Max
  * @version	0.1
  */
-public class Game implements MirrorField{
+public class TempKiGame implements MirrorField{
 
 	//IV
 	/** Spielfeld des 1. Spielers */
@@ -28,18 +28,21 @@ public class Game implements MirrorField{
 	/** Spielstandverwaltung */
 	//private FileStream filestream;
 	
+
+	
 	//Constructor
 	/**
 	 * erstellt ein neues Spiel mit leeren Feldern
 	 * @param widht		Feldbreite
 	 * @param height	Feldhöhe
 	 */
-	private Game(int width, int height) {
+	private TempKiGame(int width, int height) {
 		board1 = new char[width][height];
 		board2 = new char[width][height];
 		initiateBoard(board1);
 		initiateBoard(board2);
 	}
+	
 	
 	//Methoden
 	/**
@@ -79,11 +82,11 @@ public class Game implements MirrorField{
 	 * @return 1	Schiff getroffen
 	 * @return 2	Schiff versenkt
 	 */
-	private byte checkTile(int x, int y, char[][] board) {
+	public byte checkTile(int x, int y) {
 		byte r = 0;
-		if(board[y][x] == 'x') {
+		if(board1[y][x] == 'x') {
 			r = 1;
-			if (sink(x, y, board)) {
+			if (sink(x, y, board1)) {
 				r = 2;
 			}
 			//System.out.println("Es wurde ein Schiffelement zerstört");
@@ -335,15 +338,14 @@ public class Game implements MirrorField{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Game g = new Game(10, 10);
-		g.board2[0][0] = 'x';
-		//g.board2[1][0] = 'x';
-		//System.out.println(g.checkTile(0, 0, g.board2));
-		//g.displayBoards();
-		boolean[][] mf = new boolean[10][10];
-		g.initiateMirrorField(mf, 10);
-		g.fillMirrorField(mf, 0, 0);
-		g.displaySingleBoard(mf);
-		System.out.println(ThreadLocalRandom.current().nextInt(0, 10 + 1));
-	}
-}
+		TempKiGame game = new TempKiGame(10, 10);
+		
+		Player ki = new Easy(10);
+		
+		int[] coords = ki.shootField(game);
+		System.out.println(coords[0] + " | " + coords[1]);
+	}//end main TempKiGame
+	
+
+	
+}// //end TempKiGame

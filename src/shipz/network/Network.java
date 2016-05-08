@@ -15,6 +15,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import gamemode.TempKiGame;
+
 /**
  * The {@code Network} class establishes a connection to another execution of the game.
  * It represents either a server, that waits for the response of a client, or a client, that connects to a server.
@@ -388,6 +390,14 @@ public class Network extends Player implements Runnable {
 
 	@Override
 	public int[] shootField() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public int[] shootField(TempKiGame game) {
 		// TODO Auto-generated method stub
 		return null;
 	}
