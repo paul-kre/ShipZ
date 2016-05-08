@@ -186,4 +186,46 @@ public abstract class Computer extends Player implements MirrorField {
 		return this.mirrorField[yCoord][xCoord];
 	}
 	
+	/**
+	 * Überprüft ob eine Koordinate sich im Spielfeld
+	 * oder außerhalb befindet.
+	 * Zur Vorbeugung eines ArrayOutOfBounds
+	 * 
+	 * @param yCoord Y-Koordinate der Zelle
+	 * @param xCoord X-Koordinate der Zelle
+	 * @return Ob eine Koordinate sich im Spielfeld befindet oder nicht
+	 */
+	protected boolean isCoordinateInField(int yCoord, int xCoord){
+		
+		return false;
+	}
+	
+	/**
+	 * Umgebung eines Schiffes in das Spiegelfeld speichern
+	 * 
+	 * @param yCoord Y-Koordinate der Zelle
+	 * @param xCoord X-Koordinate der Zelle
+	 */
+	protected void saveShipVicinity(int yCoord, int xCoord, TempKiGame game){
+		
+		int currentY = yCoord;
+		int currentX = xCoord;
+		
+		//Zuerst wird Vertikal auf Schiffsteile überprüft
+		//Die nördliche und südliche Koordinate der zu überprüfenden Koordinate wird
+		//überpüft, ob sie überhaupt im Feld ist
+		if ( isCoordinateInField(currentY-1, currentX) && isCoordinateInField (currentY+1,currentX)){
+			
+			//Überprüfen ob nördliche und südliche Koord. schonmal getroffen wurden
+			if ( game.checkTile(currentX, currentY-1) == 1  && game.checkTile(currentX, currentY+1) == 1 ){
+				
+			}
+			
+			
+		} else {
+			
+			
+		}
+	}
+	
 }//end class Computer

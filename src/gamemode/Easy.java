@@ -77,14 +77,14 @@ public class Easy extends Computer {
 		//Koordinaten sind jetzt gültig und werden beschossen. Zuvor werden sie schon in das Spiegelfeld mitübernommen.
 		fillMirrorField(yCoord, xCoord);
 		
-		//Beschossene Koordinaten überprüfen, ob sie zum Sinken eines Schiffes geführt hat.
+		//Beschossene Koordinaten überprüfen, ob sie zum Sinken eines Schiffes geführt haben.
 		//Wurde durch den Beschuss ein Schiff versenkt, wird die direkte Umgebung in das Spiegelfeld gespeichert,
 		//da diese keine Schiffsteile enthalten
 		
 		
 		if ( game.checkTile (xCoord, yCoord) == 2 ){
 			
-			saveShipVicinity();
+			saveShipVicinity(yCoord, xCoord, game);
 		}
 		
 		
@@ -92,19 +92,6 @@ public class Easy extends Computer {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	public static void main( String args[]){
-		
-		
-		
-		
-		
-	}
 
 
 	@Override

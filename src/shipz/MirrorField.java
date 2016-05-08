@@ -23,9 +23,9 @@ public interface MirrorField {
 	//IM
 	
 	/**
-	* Umgebung eines Schiffes speichern##
+	* Umgebung eines Schiffes speichern
 	* 
-	* @param yCoord Y-Koordinate eines getroffenen SChiffsteils
+	* @param yCoord Y-Koordinate eines getroffenen Schiffsteils
 	* */
 	default void saveShipVicinity(){
 		
