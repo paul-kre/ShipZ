@@ -221,8 +221,6 @@ public class GameTest implements GameEventListener {
     private boolean validIp(String s) {
         String[] split = s.split("\\.");
         if(split.length !=4) return false;
-        for( String str: split)
-            if(str.length() != 3) return false;
 
         return true;
     }
