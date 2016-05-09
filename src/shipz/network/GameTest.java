@@ -25,13 +25,20 @@ public class GameTest implements GameEventListener {
     }
 
     private void start() {
-        (new Thread(_player1)).start();
-        (new Thread(_player2)).start();
+        Thread t1 = new Thread(_player1);
+        Thread t2 = new Thread(_player2);
+        t1.start();
+        t2.start();
+
+        _player1.setEventListener(this);
+        _player2.setEventListener(this);
 
         while(!_gameOver) {
             turn(_player1);
             turn(_player2);
         }
+
+
     }
 
     private void turn(Player p) {
@@ -41,14 +48,18 @@ public class GameTest implements GameEventListener {
 
     @Override
     public void onShoot(ShootEvent e) {
-        System.out.println(e.getSource() + " fired at: X: " + e.x() + ", Y: " + e.y());
+        Player source = (Player) e.getSource();
+        System.out.println(source.name() + " fired at: X: " + e.x() + ", Y: " + e.y());
+
     }
 
     @Override
     public void onSurrender(EventObject e) {
-        Network source = (Network) e.getSource();
+        Player source = (Player) e.getSource();
         System.out.println(source + " surrenders.");
-        source.disconnect();
+
+        if(source.toString().equals("Network"))
+            ((Network) source).disconnect();
     }
 
     @Override
@@ -163,6 +174,8 @@ public class GameTest implements GameEventListener {
                 }
             }
         }
+
+        start();
 
 
     }

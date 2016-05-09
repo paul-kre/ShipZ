@@ -102,11 +102,12 @@ public class Network extends Player implements Runnable {
     public void run() {
         Timer timer = new Timer(100);
 
+        System.out.println("Thread started ...");
+
         send(PING_ACTION + "");
 
         String s;
-        boolean done = false;
-        while(!done && _connected && timer.hasTime()) {
+        while(_connected && timer.hasTime()) {
             try {
 
                 if((s = _in.readLine()) != null) { // Message received
