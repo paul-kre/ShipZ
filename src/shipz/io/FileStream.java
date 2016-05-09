@@ -37,7 +37,7 @@ public class FileStream {
 	 * @param game Der Spielverlauf als String gespeichert.
 	 */
 	public void createGame(String playerName, String opponentName, int boardSize, String board, String game) {
-		saveload.createGame(playerName, opponentName, boardSize, board, game);
+//		saveload.createGame(playerName, opponentName, boardSize, board, game);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class FileStream {
 	 * Der gesamte Spielstand wird in der Instanz-Variable << savegame >> gespeichert.
 	 */
 	public void saveGameFile() {
-		saveload.saveGameFile();
+//		saveload.saveGameFile();
 	}
 	
 	/**
@@ -55,8 +55,8 @@ public class FileStream {
 	 * @param playerName Name des Spielers
 	 * @param board Das komplette Spielfeld als String
 	 */
-	public void createBoard(String playerName, String board) {
-		saveload.createBoard(playerName, board);
+	public void createBoard(String fileName, String board) {
+//		saveload.createBoard(playerName, board);
 	}
 	
 	/**
@@ -66,8 +66,8 @@ public class FileStream {
 	 * @param playerName Name des ersten Spielers zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
-	public String loadBoard(String playerName) {
-		return saveload.loadBoard(playerName);
+	public String getBoard(String fileName) {
+		return saveload.getBoard(fileName);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class FileStream {
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
 	public void undoDraw() {
-		undoredo.undoDraw();
+//		undoredo.undoDraw();
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class FileStream {
 	 * @return Der letzte Zug der Redoliste als String, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
 	public void redoDraw() {
-		undoredo.redoDraw();
+//		undoredo.redoDraw();
 	}
 	
 	/**

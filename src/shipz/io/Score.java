@@ -1,11 +1,6 @@
 package shipz.io;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
 
 /**
  * Diese Klasse ist für die Punktevergabe zuständig,
@@ -20,14 +15,12 @@ public class Score {
 	private SaveLoad saveload;
 	/** Highscore-File */
 	private File highscoreFile;
-	/** Writer, mit dem Dateien geschrieben werden können. */
-	private BufferedWriter writer;
-	/** Scanner, der Dateien ausliest. */
-	private Scanner scanner;
 	/** Zählt die Combos des ersten Spielers */
-	private int comboPlayer1;
+//	private int comboPlayer1;
+	// noch nicht implementiert
 	/** Zählt die Combos des zweiten Spielers */
-	private int comboPlayer2;
+//	private int comboPlayer2;
+	// noch nicht implementiert
 	
 	// Konstruktor
 	/**
@@ -60,15 +53,9 @@ public class Score {
 	 * @param score Die Punkte, die der Spieler bekommen soll.
 	 */
 	private void setScore(String playerName, int score) {
-		String s = saveload.readFile(highscoreFile);
+		String s = readHighscore();
 		s = s.replaceAll(playerName+":"+getScore(playerName)+":", playerName+":"+score+":");
-		try {
-			writer = new BufferedWriter(new FileWriter(highscoreFile.getAbsolutePath()));
-			writer.write(s);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		saveload.writeFile(highscoreFile, s);
 	}
 	
 	/**
@@ -78,16 +65,7 @@ public class Score {
 	 * @return Die Punktzahl des Spielers
 	 */
 	private int getScore(String playerName) {
-		String s = "";
-		try {
-			scanner = new Scanner(highscoreFile);
-		} catch (FileNotFoundException x) {
-			x.printStackTrace();
-		}
-		while(scanner.hasNextLine()) {
-			s += scanner.nextLine();
-		}
-		
+		String s = readHighscore().replaceAll("\n", "");
 		String[] a = s.split(":");
 		
 		int c = 0;
@@ -104,19 +82,7 @@ public class Score {
 	 * in die Instanz-Variable << highscore >> geschrieben.
 	 */
 	protected String readHighscore() {
-		String highscore = "";
-		
-		try {
-			scanner = new Scanner(highscoreFile);
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		while(scanner.hasNextLine()) {
-			highscore += scanner.nextLine() + "\n";
-		}
-		
-		return highscore;
+		return saveload.readFile(highscoreFile);
 	}
 	
 	/**
@@ -125,14 +91,6 @@ public class Score {
 	 * @param score Die Punkte des Spielers
 	 */
 	protected void addPlayerIntoHighscore(String playerName) {
-		if(!(highscoreFile.exists())) {
-			try {
-				highscoreFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
 		if(doesPlayerExist(playerName) == false) {
 			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+":0:");
 		} else {
@@ -160,14 +118,8 @@ public class Score {
 	/**
 	 * Leert die gesamte Highscore-Datei.
 	 */
-	protected void clearHighscoreFile() {
-		try {
-			writer = new BufferedWriter(new FileWriter(highscoreFile.getAbsolutePath()));
-			writer.write("");
-			writer.close();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+	protected void clearHighscore() {
+		saveload.clearFile(highscoreFile);
 	}
 	
 	/**

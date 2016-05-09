@@ -53,7 +53,8 @@ public class SaveLoad {
 	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
 	 * @param boardSize Feldgröße
 	 * @param board Das gesamte Feld als String gespeichert.
-	 * @param game Der Spielverlauf als String gespeichert.
+	 * @param drawHistoryPlayer1 Der Spielverlauf des ersten Spielers als String gespeichert.
+	 * @param drawHistoryPlayer2 Der Spielverlauf des zweiten Spielers als String gespeichert.
 	 */
 	protected void newGame(String fileName, String playerName, String opponentName, int boardSize, String board, String drawHistoryPlayer1, String drawHistoryPlayer2) {
 		String savegame = 
@@ -100,13 +101,7 @@ public class SaveLoad {
 	 * Leert die gesamte Datei, die die Spielstände speichert.
 	 */
 	protected void clearFile() {
-		try {
-			writer = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
-			writer.write("");
-			writer.close();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+		writeFile("");
 	}
 	
 	/**
@@ -114,13 +109,7 @@ public class SaveLoad {
 	 * @param file die zu leerende Datei
 	 */
 	protected void clearFile(File file) {
-		try {
-			writer = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
-			writer.write("");
-			writer.close();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+		writeFile(file, "");
 	}
 	
 	/**
@@ -226,7 +215,6 @@ public class SaveLoad {
 				r = a[i];
 			}
 		}
-//		r = r.replaceAll("\n", "");
 		return r;
 	}
 	
@@ -249,8 +237,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * 
-	 * @param fileName
+	 * Ändert den Namen des Gegners eines Spielstands.
+	 * @param fileName der Spielstand
 	 * @param opponentName
 	 */
 	protected void setOpponentName(String fileName, String opponentName) {
@@ -258,8 +246,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * 
-	 * @param fileName
+	 * Ändert die Feldgröße eines Spielstands.
+	 * @param fileName der Spielstand
 	 * @param boardSize
 	 */
 	protected void setBoardsize(String fileName, int boardSize) {
@@ -267,26 +255,26 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * 
-	 * @param fileName
-	 * @param drawHistoryPlayer1
+	 * Ändert den Spielverlauf des ersten Spielers in einem Spielstand.
+	 * @param fileName der Spielstand
+	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
 	 */
 	protected void setDrawHistoryPlayer1(String fileName, String drawHistoryPlayer1) {
 		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("drawHistoryPlayer1:" + getDrawHistoryPlayer1(fileName) + ":", "drawHistoryPlayer1:" + drawHistoryPlayer1 + ":")));
 	}
 	
 	/**
-	 * 
-	 * @param fileName
-	 * @param drawHistoryPlayer2
+	 * Ändert den Spielverlauf des zweiten Spielers in einem Spielstand.
+	 * @param fileName der Spielstand
+	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
 	 */
 	protected void setDrawHistoryPlayer2(String fileName, String drawHistoryPlayer2) {
 		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("drawHistoryPlayer2:" + getDrawHistoryPlayer2(fileName) + ":", "drawHistoryPlayer2:" + drawHistoryPlayer2 + ":")));
 	}
 	
 	/**
-	 * 
-	 * @param fileName
+	 * Aktualisiert die Uhrzeit eines Spielstands.
+	 * @param fileName der Spielstand
 	 */
 	protected void updateTime(String fileName) {
 		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("time:" + getTime(fileName) + ":", "time:" + timestamp() + ":")));

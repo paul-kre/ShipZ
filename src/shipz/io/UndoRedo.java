@@ -75,7 +75,7 @@ public class UndoRedo {
 			lastDraw = "";
 			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
 		}
-		score.updateScoreOnEvent(playerIndex);
+//		score.updateScoreOnEvent(playerIndex);
 		return lastDraw;
 	}
 	
