@@ -161,8 +161,10 @@ public class GameTest implements GameEventListener {
         if(hostOrClient == 'h') {
             _player2 = new Network("Client", true);
 
+            int port = getPort();
+
             while(!_player2.connected()) {
-                _player2.connect(getPort());
+                _player2.connect(port);
                 if(!_player2.connected()) {
                     System.err.println(_player2.error());
                     System.out.println("\n\nTry again ...\n");
@@ -171,8 +173,11 @@ public class GameTest implements GameEventListener {
         } else {
             _player2 = new Network("Host", false);
 
+            String ip = getIp();
+            int port = getPort();
+
             while(!_player2.connected()) {
-                _player2.connect(getIp(), getPort());
+                _player2.connect(ip, port);
                 if(!_player2.connected()) {
                     System.err.println(_player2.error());
                     System.out.println("\n\nTry again ...\n");
@@ -214,11 +219,10 @@ public class GameTest implements GameEventListener {
     }
 
     private boolean validIp(String s) {
-        String[] split = s.split(".");
+        String[] split = s.split("\\.");
         if(split.length !=4) return false;
-        for (String str : split) {
+        for( String str: split)
             if(str.length() != 3) return false;
-        }
 
         return true;
     }
