@@ -2,6 +2,7 @@ package shipz.network;
 
 import shipz.Player;
 import shipz.util.GameEventListener;
+import shipz.util.MessageEvent;
 import shipz.util.ShootEvent;
 
 import java.util.EventObject;
@@ -33,39 +34,34 @@ public class GameTest implements GameEventListener {
         _player1.setEventListener(this);
         _player2.setEventListener(this);
 
-        while(!_gameOver) {
-            turn(_player1);
-            turn(_player2);
-        }
-
-
-    }
-
-    private void turn(Player p) {
-        String input = ask(p.name() + ", what is you move? ");
-
     }
 
     @Override
     public void onShoot(ShootEvent e) {
         Player source = (Player) e.getSource();
         System.out.println(source.name() + " fired at: X: " + e.x() + ", Y: " + e.y());
-
+        e.setHit('x');
     }
 
     @Override
     public void onSurrender(EventObject e) {
         Player source = (Player) e.getSource();
-        System.out.println(source + " surrenders.");
+        System.out.println(source.name() + " surrenders.");
 
-        if(source.toString().equals("Network"))
-            ((Network) source).disconnect();
+        ((Network) _player2).disconnect();
+        ((Keyboard) _player1).end();
+
+        _gameOver = true;
     }
 
     @Override
     public void onClose(EventObject e) {
         Network source = (Network) e.getSource();
         source.disconnect();
+
+        ((Network) _player2).disconnect();
+        _gameOver = true;
+
     }
 
     @Override
@@ -80,6 +76,15 @@ public class GameTest implements GameEventListener {
             System.err.println("Failed to reconnect: " + source.error());
             source.close();
         }
+    }
+
+    @Override
+    public void onMessage(MessageEvent e) {
+        Player p = (Player) e.getSource();
+        System.out.println("\n" + p.name() + " sagt: " + e.msg());
+
+        if(p != _player2)
+            _player2.send(e.msg());
     }
 
     public static void main(String[] args) {

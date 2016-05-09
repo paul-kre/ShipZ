@@ -8,13 +8,13 @@ import java.util.EventObject;
 public class ShootEvent extends EventObject {
     private int _x;
     private int _y;
-    private byte _hit;
+    private char _hit;
 
     public ShootEvent(Object source, int x, int y) {
         super(source);
         _x = x;
         _y = y;
-        _hit = -1;
+        _hit = ' ';
     }
 
     public int x() {
@@ -25,15 +25,23 @@ public class ShootEvent extends EventObject {
         return _y;
     }
 
+    public char getHit() {
+        return _hit;
+    }
+
+    public void setHit(char c) {
+        _hit = c;
+    }
+
     public boolean isMissed() {
-        return _hit == 0;
+        return _hit == 'w';
     }
 
     public boolean isHit() {
-        return _hit == 1;
+        return _hit == 'x';
     }
 
     public boolean isSunk() {
-        return _hit == 2;
+        return _hit == 'z';
     }
 }

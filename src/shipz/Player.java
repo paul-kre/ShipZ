@@ -33,4 +33,6 @@ public abstract class Player extends GameEventSource implements Runnable {
 	 * @return Abzuschieﬂende Zelle auf dem Spielfeld
 	 */
 	public abstract int[] shootField(TempKiGame game);
+
+	//public abstract void end();
 }

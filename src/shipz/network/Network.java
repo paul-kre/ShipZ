@@ -2,6 +2,7 @@ package shipz.network;
 
 import shipz.Player;
 import shipz.util.GameEventSource;
+import shipz.util.ShootEvent;
 import shipz.util.Timer;
 
 import java.io.BufferedReader;
@@ -102,15 +103,13 @@ public class Network extends Player implements Runnable {
     public void run() {
         Timer timer = new Timer(100);
 
-        System.out.println("Thread started ...");
-
         send(PING_ACTION + "");
 
         String s;
         while(_connected && timer.hasTime()) {
             try {
-
-                if((s = _in.readLine()) != null) { // Message received
+                s = _in.readLine();
+                if(s != null && !s.isEmpty()) { // Message received
 
                     timer.reset();
 
@@ -141,6 +140,8 @@ public class Network extends Player implements Runnable {
     private void evaluateString(String s) {
         char action = s.charAt(0);
 
+        fireMessageEvent(s);
+
         switch (action) {
             case SHOOT_ACTION:
                 int[] coords;
@@ -163,7 +164,6 @@ public class Network extends Player implements Runnable {
         if(split.length != 2) return null;
         String[] split2 = split[1].split("&");
         if(split2.length != 2) return null;
-        int[] coords = new int[2];
         int x, y;
         try {
             x = Integer.parseInt( split2[0].split("=")[1] );
@@ -402,5 +402,14 @@ public class Network extends Player implements Runnable {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+    public void shotHappened(ShootEvent e) {
+        Player p = (Player) e.getSource();
+
+        if(p == this) {
+            send(e.getHit() + "");
+        }
+    }
 
 }

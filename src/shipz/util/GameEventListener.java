@@ -11,4 +11,6 @@ public interface GameEventListener {
 
     public void onClose(EventObject e);
     public void onDisconnect(EventObject e);
+
+    public void onMessage(MessageEvent e);
 }

@@ -5,7 +5,7 @@ import java.util.EventObject;
 /**
  * Created by Paul on 06.05.2016.
  */
-public class GameEventSource {
+public abstract class GameEventSource {
     private GameEventListener _listener;
 
     public void setEventListener(GameEventListener listener) {
@@ -31,4 +31,12 @@ public class GameEventSource {
         EventObject evt = new EventObject(this);
         _listener.onDisconnect(evt);
     }
+
+    protected void fireMessageEvent(String msg) {
+        MessageEvent evt = new MessageEvent(this, msg);
+        _listener.onMessage(evt);
+    }
+
+
+    //public abstract void shotHappened();
 }
