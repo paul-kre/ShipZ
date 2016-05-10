@@ -100,6 +100,14 @@ public class UndoRedo {
 		return lastRedoneDraw; 
 	}
 	
+	protected String getGamePlayer1() {
+		return gamePlayer1.toString();
+	}
+	
+	protected String getGamePlayer2() {
+		return gamePlayer2.toString();
+	}
+	
 	/**
 	 * Leert alle Listen.
 	 */

@@ -58,14 +58,14 @@ public class SaveLoad {
 	 */
 	protected void newGame(String fileName, String playerName, String opponentName, int boardSize, String board, String drawHistoryPlayer1, String drawHistoryPlayer2) {
 		String savegame = 
-				"fileName:" + fileName + ":\n" // Eindeutiger Name des Spielstands
-				+ "player:" + playerName + ":\n"
-				+ "time:" + timestamp() + ":\n"
-				+ "opponent:" + opponentName + ":\n"
-				+ "boardsize:" + boardSize + ":\n"
-				+ "board:" + board + ":\n"
-				+ "drawHistoryPlayer1:" + drawHistoryPlayer1 + ":\n"
-				+ "drawHistoryPlayer2:" + drawHistoryPlayer2 + ":\n"
+				"gameName:" + fileName + ":" // Eindeutiger Name des Spielstands
+				+ "player:" + playerName + ":"
+				+ "time:" + timestamp() + ":"
+				+ "opponent:" + opponentName + ":"
+				+ "boardsize:" + boardSize + ":"
+				+ "board:" + board + ":"
+				+ "drawHistoryPlayer1:" + drawHistoryPlayer1 + ":"
+				+ "drawHistoryPlayer2:" + drawHistoryPlayer2 + ":"
 				+ separator + "\n"; // Trennzeichen, damit erkannt wird, wann ein Spielstand zu Ende ist
 		
 		if(doesFileExist(fileName) == false) {
@@ -115,10 +115,14 @@ public class SaveLoad {
 	/**
 	 * Gibt die Namen aller Spielstände als String zurück.
 	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
+	 * Da die Weitergabe von Arrays nicht erlaubt ist,
+	 * muss die Game-Klasse selbst aus dem String ein Array machen.
+	 * Dies geht ganz einfach mit 
+	 * getAllGameNames().split(",")
 	 * @return Die Namen aller Spielstände als String
 	 */
-	protected String getAllFileNames() {
-		String[] a = readFile().replaceAll("\n", "").split("~~~~~");
+	protected String getAllGameNames() {
+		String[] a = readFile().replaceAll("\n", "").split(separator);
 		String s = "";
 		for(int i = 0; i < a.length; i++) {
 			s += a[i];
@@ -127,7 +131,7 @@ public class SaveLoad {
 		String result = "";
 		
 		for(int i = 0; i < b.length; i++) {
-			if(b[i].equalsIgnoreCase("fileName")) {
+			if(b[i].equalsIgnoreCase("gameName")) {
 				result += b[i+1] + ",";
 			}
 		}
@@ -201,10 +205,14 @@ public class SaveLoad {
 	
 	/**
 	 * Gibt den gesamten Inhalt eines bestimmten Speicherstands zurück.
+	 * 
+	 * Veraltete Methode, wird bald gelöscht.
 	 * @param fileName der gewünschte Speicherstand
 	 * @return Der gesamte Speicherstand als String
 	 */
-	protected String getGame(String fileName) {
+	
+	@Deprecated
+	protected String getFile(String fileName) {
 		String r = "";
 		
 		String[] a = readFile().split("~~~~~");
@@ -287,7 +295,7 @@ public class SaveLoad {
 	 */
 	protected boolean doesFileExist(String fileName) {
 		boolean exists = false;
-		String[] a = readFile().split("~~~~~");
+		String[] a = readFile().split(separator);
 		String[] b;
 		
 		for(int i = 0; i < a.length-1; i++) {
@@ -356,13 +364,7 @@ public class SaveLoad {
 	 * @param str der String, der in die Datei geschrieben werden soll.
 	 */
 	protected void writeFile(String str) {
-		try {
-			writer = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
-			writer.write(str);
-			writer.close();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+		writeFile(file, str);
 	}
 	
 	/**
@@ -373,13 +375,38 @@ public class SaveLoad {
 		String r = readFile();
 		String s = getGame(fileName);
 		r = r.replaceAll(s+separator, "");
+		writeFile(r);
+	}
+	
+	/**
+	 * Neue Methode, die effizienter aus der Datei liest.
+	 * Es wird ein gewünschter Spielstand zurückgegeben.
+	 * @param gameName der gewünschte Spielstand
+	 * @return der Spielstand als String
+	 */
+	protected String getGame(String gameName) {
+		String r = "";
+		
 		try {
-			writer = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
-			writer.write(r);
-			writer.close();
-		} catch(IOException e) {
+			scanner = new Scanner(file);
+		} catch(FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		boolean found = false;
+		
+		while(found == false) {
+			if(scanner.hasNextLine()) {
+				String s = scanner.nextLine();
+				
+				if(s.startsWith("gameName:" + gameName + ":")) {
+					r = s;
+					found = true;
+				}
+			}
+		}
+		
+		return r.replaceAll(separator, "");
 	}
 	
 	/**
@@ -456,11 +483,13 @@ public class SaveLoad {
 		}*/
 
 		System.out.println();
-		System.out.println(saveload.getAllFileNames());
+		System.out.println(saveload.getAllGameNames());
 		
 //		saveload.deleteGame("blabla");
 		
 		saveload.setBoard("blabla", "TEEEEEEEEEEEEEEEEEST");
+		
+		System.out.println(saveload.getGame("sjifsd"));
 		
 	}
 	

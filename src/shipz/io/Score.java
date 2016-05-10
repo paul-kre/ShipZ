@@ -16,11 +16,9 @@ public class Score {
 	/** Highscore-File */
 	private File highscoreFile;
 	/** Zählt die Combos des ersten Spielers */
-//	private int comboPlayer1;
-	// noch nicht implementiert
+	private int comboPlayer1;
 	/** Zählt die Combos des zweiten Spielers */
-//	private int comboPlayer2;
-	// noch nicht implementiert
+	private int comboPlayer2;
 	
 	// Konstruktor
 	/**
@@ -30,6 +28,8 @@ public class Score {
 		saveload = new SaveLoad();
 		highscoreFile = new File(saveload.userDirectory() + File.separator + "shipZ" + File.separator + "highscore.shipz");
 		saveload.makeDirectory(highscoreFile);
+		comboPlayer1 = 1;
+		comboPlayer2 = 1;
 	}
 	
 	// IM
@@ -45,6 +45,13 @@ public class Score {
 			case 's':	setScore(playerName, getScore(playerName)+300); break;
 			default:	System.err.println("Fehler beim Score-Update!");
 		}
+	}
+	
+	private void combo(String playerName) {
+		// irgendwie testen ob playerName zu Spieler 1 o. 2 gehört
+		
+		// do something
+		
 	}
 	
 	/**
@@ -88,7 +95,6 @@ public class Score {
 	/**
 	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
 	 * @param playerName Der Spieler, der eingefügt werden soll.
-	 * @param score Die Punkte des Spielers
 	 */
 	protected void addPlayerIntoHighscore(String playerName) {
 		if(doesPlayerExist(playerName) == false) {
