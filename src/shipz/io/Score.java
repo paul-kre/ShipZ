@@ -47,6 +47,11 @@ public class Score {
 		}
 	}
 	
+	/**
+	 * Methode, die die Combos verwaltet,
+	 * den Combo-Counter hochzählt.
+	 * @param playerName Spielername
+	 */
 	private void combo(String playerName) {
 		// irgendwie testen ob playerName zu Spieler 1 o. 2 gehört
 		
@@ -85,7 +90,7 @@ public class Score {
 	}
 	
 	/**
-	 * Mit der Methode aus der SaveLoad-Klasse wird der aktuelle Highscore als String
+	 * Mit der Methode aus der SaveLoad-Klasse wird der aktuelle Highscore als {@link String}
 	 * in die Instanz-Variable << highscore >> geschrieben.
 	 */
 	protected String readHighscore() {

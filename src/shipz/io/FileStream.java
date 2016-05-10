@@ -29,12 +29,12 @@ public class FileStream {
 	// IM
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Erstellt einen Spielstand und speichert alle wichtigen Informationen als String.
+	 * Erstellt einen Spielstand und speichert alle wichtigen Informationen als {@link String}.
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
 	 * @param boardSize Feldgröße
-	 * @param board Das gesamte Feld als String gespeichert.
-	 * @param game Der Spielverlauf als String gespeichert.
+	 * @param board Das gesamte Feld als {@link String} gespeichert.
+	 * @param game Der Spielverlauf als {@link String} gespeichert.
 	 */
 	public void createGame(String playerName, String opponentName, int boardSize, String board, String game) {
 //		saveload.createGame(playerName, opponentName, boardSize, board, game);
@@ -45,6 +45,7 @@ public class FileStream {
 	 * Methode, die den Spielstand in die Datei schreibt.
 	 * Der gesamte Spielstand wird in der Instanz-Variable << savegame >> gespeichert.
 	 */
+	@Deprecated
 	public void saveGameFile() {
 //		saveload.saveGameFile();
 	}
@@ -53,7 +54,7 @@ public class FileStream {
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Methode, die das Spielfeld in die IV abspeichert.
 	 * @param playerName Name des Spielers
-	 * @param board Das komplette Spielfeld als String
+	 * @param board Das komplette Spielfeld als {@link String}
 	 */
 	public void createBoard(String fileName, String board) {
 //		saveload.createBoard(playerName, board);
@@ -62,7 +63,7 @@ public class FileStream {
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Diese Methode lädt aus dem gespeicherten Spielstand des Spielers das gespeicherte Spielfeld heraus.
-	 * Dieses Spielfeld wird dann als String zurückgegeben.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param playerName Name des ersten Spielers zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -87,7 +88,7 @@ public class FileStream {
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
-	 * @return Der letzte Zug der Redoliste als String, der in die Spielverlaufs-Liste geschrieben wird.
+	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
 	public void redoDraw() {
 //		undoredo.redoDraw();
@@ -96,7 +97,7 @@ public class FileStream {
 	/**
 	 * Referenz auf die Methode in der UndoRedo-Klasse.
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
-	 * @param draw Der Zug, der getätigt wird als String
+	 * @param draw Der Zug, der getätigt wird als {@link String}
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 */
 	public void newDraw(String draw, int playerIndex) {

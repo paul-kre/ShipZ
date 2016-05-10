@@ -43,7 +43,7 @@ public class UndoRedo {
 	// IM
 	/**
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
-	 * @param draw Der Zug, der getätigt wird als String
+	 * @param draw Der Zug, der getätigt wird als {@link String}
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 */
 	protected void newDraw(String draw, int playerIndex) {
@@ -83,7 +83,7 @@ public class UndoRedo {
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
-	 * @return Der letzte Zug der Redoliste als String, der in die Spielverlaufs-Liste geschrieben wird.
+	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
 	protected String redoDraw(int playerIndex) {
 		String lastRedoneDraw;

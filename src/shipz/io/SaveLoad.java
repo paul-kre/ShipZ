@@ -26,9 +26,9 @@ public class SaveLoad {
 //	private String board;
 	/** Datei, in der die einzelnen Spielstände gespeichert werden. */
 	private File file;
-	/** writer */
+	/** Writer, der in eine Datei schreibt. */
 	private BufferedWriter writer;
-	/** scanner */
+	/** Scanner, der eine Datei liest. */
 	private Scanner scanner;
 	/** Trennzeichen zwischen den einzelnen Spielständen. */
 	private String separator = "~~~~~";
@@ -52,9 +52,9 @@ public class SaveLoad {
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
 	 * @param boardSize Feldgröße
-	 * @param board Das gesamte Feld als String gespeichert.
-	 * @param drawHistoryPlayer1 Der Spielverlauf des ersten Spielers als String gespeichert.
-	 * @param drawHistoryPlayer2 Der Spielverlauf des zweiten Spielers als String gespeichert.
+	 * @param board Das gesamte Feld als {@link String} gespeichert.
+	 * @param drawHistoryPlayer1 Der Spielverlauf des ersten Spielers als {@link String} gespeichert.
+	 * @param drawHistoryPlayer2 Der Spielverlauf des zweiten Spielers als {@link String} gespeichert.
 	 */
 	protected void newGame(String fileName, String playerName, String opponentName, int boardSize, String board, String drawHistoryPlayer1, String drawHistoryPlayer2) {
 		String savegame = 
@@ -113,13 +113,13 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt die Namen aller Spielstände als String zurück.
+	 * Gibt die Namen aller Spielstände als {@link String} zurück.
 	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
 	 * Dies geht ganz einfach mit 
 	 * getAllGameNames().split(",")
-	 * @return Die Namen aller Spielstände als String
+	 * @return Die Namen aller Spielstände als {@link String}
 	 */
 	protected String getAllGameNames() {
 		String[] a = readFile().replaceAll("\n", "").split(separator);
@@ -141,7 +141,7 @@ public class SaveLoad {
 	
 	/**
 	 * Diese Methode lädt aus dem gespeicherten Spielstand des Spielers das gespeicherte Spielfeld heraus.
-	 * Dieses Spielfeld wird dann als String zurückgegeben.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param fileName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -179,7 +179,7 @@ public class SaveLoad {
 	/**
 	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des ersten Spielers speichert.
 	 * @param fileName der gewünschte Speicherstand
-	 * @return Die Spielzüge als String
+	 * @return Die Spielzüge als {@link String}
 	 */
 	protected String getDrawHistoryPlayer1(String fileName) {
 		return getGame(fileName).replaceAll("\n", "").split(":")[13];
@@ -188,7 +188,7 @@ public class SaveLoad {
 	/**
 	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des zweiten Spielers speichert.
 	 * @param fileName der gewünschte Speicherstand
-	 * @return Die Spielzüge als String
+	 * @return Die Spielzüge als {@link String}
 	 */
 	protected String getDrawHistoryPlayer2(String fileName) {
 		return getGame(fileName).replaceAll("\n", "").split(":")[15];
@@ -197,7 +197,7 @@ public class SaveLoad {
 	/**
 	 * Gibt die gespeicherte Uhrzeit eines Speicherstands zurück.
 	 * @param fileName der gewünschte Speicherstand
-	 * @return die gespeicherte Uhrzeit als String
+	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
 	protected String getTime(String fileName) {
 		return getGame(fileName).replaceAll("\n", "").split(":")[5];
@@ -205,10 +205,9 @@ public class SaveLoad {
 	
 	/**
 	 * Gibt den gesamten Inhalt eines bestimmten Speicherstands zurück.
-	 * 
 	 * Veraltete Methode, wird bald gelöscht.
 	 * @param fileName der gewünschte Speicherstand
-	 * @return Der gesamte Speicherstand als String
+	 * @return Der gesamte Speicherstand als {@link String}
 	 */
 	
 	@Deprecated
@@ -229,7 +228,7 @@ public class SaveLoad {
 	/**
 	 * Diese Methode speichert das Spielfeld, das als Parameter übergeben wird in den Speicherstand fileName.
 	 * @param fileName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
-	 * @param board das Spielbrett als String
+	 * @param board das Spielbrett als {@link String}
 	 */
 	protected void setBoard(String fileName, String board) {
 		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("board:" + getBoard(fileName) + ":", "board:" + board + ":")));
@@ -309,9 +308,9 @@ public class SaveLoad {
 	
 	/**
 	 * Liest aus einer Datei den gesamten Inhalt aus
-	 * und gibt ihn als String zurück.
+	 * und gibt ihn als {@link String} zurück.
 	 * @param file Die gewünschte Datei.
-	 * @return Inhalt der Datei als String.
+	 * @return Inhalt der Datei als {@link String}.
 	 */
 	protected String readFile(File file) {
 		String s = "";
@@ -328,8 +327,8 @@ public class SaveLoad {
 	
 	/**
 	 * Liest aus der Speicher-Datei den gesamten Inhalt aus
-	 * und gibt ihn als String zurück.
-	 * @return Inhalt der Speicherdatei als String.
+	 * und gibt ihn als {@link String} zurück.
+	 * @return Inhalt der Speicherdatei als {@link String}.
 	 */
 	protected String readFile() {
 		String s = "";
@@ -371,9 +370,9 @@ public class SaveLoad {
 	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param fileName Name des Spielstands
 	 */
-	protected void deleteGame(String fileName) {
+	protected void deleteGame(String gameName) {
 		String r = readFile();
-		String s = getGame(fileName);
+		String s = getGame(gameName);
 		r = r.replaceAll(s+separator, "");
 		writeFile(r);
 	}
@@ -382,9 +381,21 @@ public class SaveLoad {
 	 * Neue Methode, die effizienter aus der Datei liest.
 	 * Es wird ein gewünschter Spielstand zurückgegeben.
 	 * @param gameName der gewünschte Spielstand
-	 * @return der Spielstand als String
+	 * @return der Spielstand als {@link String}
 	 */
 	protected String getGame(String gameName) {
+		return searchLineInFile("gameName:" + gameName + ":");
+	}
+	
+	/**
+	 * Es wird in der Spielstand-Datei mit Hilfe eines Prefix nach einer 
+	 * bestimmten Zeile bzw. einem bestimmten Spielstand gesucht.
+	 * Dabei wird nicht die ganze Datei gelesen, sondern nur bis zur Zeile, die gesucht wird.
+	 * Die gefundene Zeile wird als {@link String} zurückgegeben.
+	 * @param prefix Prefix der gesuchten Zeile
+	 * @return die gefundene Zeile
+	 */
+	protected String searchLineInFile(String prefix) {
 		String r = "";
 		
 		try {
@@ -394,12 +405,43 @@ public class SaveLoad {
 		}
 		
 		boolean found = false;
-		
 		while(found == false) {
 			if(scanner.hasNextLine()) {
 				String s = scanner.nextLine();
 				
-				if(s.startsWith("gameName:" + gameName + ":")) {
+				if(s.startsWith(prefix)) {
+					r = s;
+					found = true;
+				}
+			}
+		}
+		
+		return r.replaceAll(separator, "");
+	}
+	
+	/**
+	 * Es wird in einer Datei mit Hilfe eines Prefix nach einer bestimmten Zeile gesucht.
+	 * Dabei wird nicht die ganze Datei gelesen, sondern nur bis zur Zeile, die gesucht wird.
+	 * Die gefundene Zeile wird als {@link String} zurückgegeben.
+	 * @param file Die Datei, in der gesucht werden soll.
+	 * @param prefix Prefix der gesuchten Zeile
+	 * @return die gefundene Zeile
+	 */
+	protected String searchLineInFile(File file, String prefix) {
+		String r = "";
+		
+		try {
+			scanner = new Scanner(file);
+		} catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		boolean found = false;
+		while(found == false) {
+			if(scanner.hasNextLine()) {
+				String s = scanner.nextLine();
+				
+				if(s.startsWith(prefix)) {
 					r = s;
 					found = true;
 				}
