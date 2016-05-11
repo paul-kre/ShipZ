@@ -17,6 +17,11 @@ public class FileStream {
 	/** Referenz auf die Speichern-Laden-Klasse */
 	private SaveLoad saveload;
 	
+	// kleiner Test
+	// um zu schauen
+	// ob git auch auf meinem Laptop funktioniert
+	
+	
 	/**
 	 * Konstruktor der Klasse.
 	 */
