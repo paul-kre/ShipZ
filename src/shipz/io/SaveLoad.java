@@ -346,7 +346,7 @@ public class SaveLoad {
 	/**
 	 * Überschreibt eine Datei komplett mit einem String.
 	 * @param file die zu überschreibende Datei.
-	 * @param str der String, der in die Datei geschrieben werden soll.
+	 * @param str der {@link String}, der in die Datei geschrieben werden soll.
 	 */
 	protected void writeFile(File file, String str) {
 		try {
@@ -405,14 +405,12 @@ public class SaveLoad {
 		}
 		
 		boolean found = false;
-		while(found == false) {
-			if(scanner.hasNextLine()) {
-				String s = scanner.nextLine();
-				
-				if(s.startsWith(prefix)) {
-					r = s;
-					found = true;
-				}
+		while(found == false && scanner.hasNextLine()) {
+			String s = scanner.nextLine();
+			
+			if(s.startsWith(prefix)) {
+				r = s;
+				found = true;
 			}
 		}
 		
@@ -437,14 +435,12 @@ public class SaveLoad {
 		}
 		
 		boolean found = false;
-		while(found == false) {
-			if(scanner.hasNextLine()) {
-				String s = scanner.nextLine();
-				
-				if(s.startsWith(prefix)) {
-					r = s;
-					found = true;
-				}
+		while(found == false && scanner.hasNextLine()) {
+			String s = scanner.nextLine();
+			
+			if(s.startsWith(prefix)) {
+				r = s;
+				found = true;
 			}
 		}
 		

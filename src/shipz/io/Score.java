@@ -1,6 +1,8 @@
 package shipz.io;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 /**
  * Diese Klasse ist für die Punktevergabe zuständig,
@@ -15,6 +17,8 @@ public class Score {
 	private SaveLoad saveload;
 	/** Highscore-File */
 	private File highscoreFile;
+	/** Scanner, der aus einer Datei liest. */
+	private Scanner scanner;
 	/** Zählt die Combos des ersten Spielers */
 	private int comboPlayer1;
 	/** Zählt die Combos des zweiten Spielers */
@@ -115,11 +119,17 @@ public class Score {
 	 * @return Steht der Spieler bereits in der Score-Datei?
 	 */
 	protected boolean doesPlayerExist(String playerName) {
+		try {
+			scanner = new Scanner(highscoreFile);
+		} catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		boolean exists = false;
-		String s = saveload.readFile(highscoreFile).replaceAll("\n", "");
-		String[] a = s.split(":");
-		for(int i = 0; i < a.length; i++) {
-			if(a[i].equalsIgnoreCase(playerName)) {
+		while(exists == false && scanner.hasNextLine()) {
+			String str = scanner.nextLine();
+			
+			if(str.startsWith(playerName+":")) {
 				exists = true;
 			}
 		}
@@ -150,13 +160,14 @@ public class Score {
 		//System.out.println(s.doesPlayerExist("fsdfvfdv"));
 		//System.out.println(s.doesPlayerExist("hallo"));
 		System.out.println(s.doesPlayerExist("Test"));
+		System.out.println(s.doesPlayerExist("tretrhtbhgf"));
 //		s.addPlayerIntoHighscore("TestName");
 //		s.setScore("TestName", 3434543);
 		
 //		s.addPlayerIntoHighscore("Hallo");
 		s.updateScoreOnEvent("Hallo", 's');
 		System.out.println(s.getScore("Test"));
-		s.addPlayerIntoHighscore("TestSpieler365457");
+//		s.addPlayerIntoHighscore("TestSpieler365457");
 	}
 
 }
