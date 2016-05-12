@@ -21,6 +21,8 @@ public class FileStream {
 	// um zu schauen
 	// ob git auch auf meinem Laptop funktioniert
 	
+	// test nr. 2
+	
 	
 	/**
 	 * Konstruktor der Klasse.
