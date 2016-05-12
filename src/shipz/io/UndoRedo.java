@@ -122,8 +122,6 @@ public class UndoRedo {
 		
 	}
 	
-	// ---
-	
 	/**
 	 * main method
 	 * @param args arguments
