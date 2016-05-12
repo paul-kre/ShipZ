@@ -26,9 +26,6 @@ public class FileStream {
 		saveload = new SaveLoad();
 	}
 	
-	// wtf warum klappt "commit and push" jetzt nicht mehr?
-	// test
-	
 	// IM
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.

@@ -32,9 +32,6 @@ public class SaveLoad {
 	private Scanner scanner;
 	/** Trennzeichen zwischen den einzelnen Spielständen. */
 	private String separator = "~~~~~";
-
-	// wtf warum klappt "commit and push" jetzt nicht mehr?
-	// test
 	
 	//Konstruktor
 	/**
