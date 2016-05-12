@@ -33,6 +33,9 @@ public class SaveLoad {
 	/** Trennzeichen zwischen den einzelnen Spielständen. */
 	private String separator = "~~~~~";
 	
+	// git ist doof
+	//irgendwie
+	
 	//Konstruktor
 	/**
 	 * Konstruktor der Klasse, der das File-Objekt initialisiert 
