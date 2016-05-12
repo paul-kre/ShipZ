@@ -48,7 +48,7 @@ public class SaveLoad {
 	 * Methode, die alle benötigten Informationen über ein Spiel in einen String speichert,
 	 * der dafür da ist, einen Spielstand zu speichern.
 	 * Dieser String wird dann in die Speicher-Datei geschrieben.
-	 * @param fileName Dateiname für den Spielstand
+	 * @param gameName Dateiname für den Spielstand
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
 	 * @param boardSize Feldgröße
@@ -56,9 +56,9 @@ public class SaveLoad {
 	 * @param drawHistoryPlayer1 Der Spielverlauf des ersten Spielers als {@link String} gespeichert.
 	 * @param drawHistoryPlayer2 Der Spielverlauf des zweiten Spielers als {@link String} gespeichert.
 	 */
-	protected void newGame(String fileName, String playerName, String opponentName, int boardSize, String board, String drawHistoryPlayer1, String drawHistoryPlayer2) {
+	protected void newGame(String gameName, String playerName, String opponentName, int boardSize, String board, String drawHistoryPlayer1, String drawHistoryPlayer2) {
 		String savegame = 
-				"gameName:" + fileName + ":" // Eindeutiger Name des Spielstands
+				"gameName:" + gameName + ":" // Eindeutiger Name des Spielstands
 				+ "player:" + playerName + ":"
 				+ "time:" + timestamp() + ":"
 				+ "opponent:" + opponentName + ":"
@@ -68,10 +68,9 @@ public class SaveLoad {
 				+ "drawHistoryPlayer2:" + drawHistoryPlayer2 + ":"
 				+ separator + "\n"; // Trennzeichen, damit erkannt wird, wann ein Spielstand zu Ende ist
 		
-		if(doesFileExist(fileName) == false) {
+		if(doesFileExist(gameName) == false) {
 			String s = readFile();
 			writeFile(s+savegame);
-//			appendToFile(file, savegame);
 		} else {
 			System.err.println("Fehler beim Erstellen eines neuen Spielstands! Dieser Spielstand existiert bereits.");
 		}
@@ -113,6 +112,27 @@ public class SaveLoad {
 	}
 	
 	/**
+	 * Neue Methode, die effizienter aus der Datei liest.
+	 * Es wird ein gewünschter Spielstand zurückgegeben.
+	 * @param gameName der gewünschte Spielstand
+	 * @return der Spielstand als {@link String}
+	 */
+	protected String getGame(String gameName) {
+		return searchLineInFile("gameName:" + gameName + ":");
+	}
+	
+	/**
+	 * Löscht einen bestimmten Spielstand aus der Datei.
+	 * @param gameName Name des Spielstands
+	 */
+	protected void deleteGame(String gameName) {
+		String r = readFile();
+		String s = getGame(gameName);
+		r = r.replaceAll(s+separator, "");
+		writeFile(r);
+	}
+	
+	/**
 	 * Gibt die Namen aller Spielstände als {@link String} zurück.
 	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
@@ -142,83 +162,83 @@ public class SaveLoad {
 	/**
 	 * Diese Methode lädt aus dem gespeicherten Spielstand des Spielers das gespeicherte Spielfeld heraus.
 	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
-	 * @param fileName Dateiname zur Identifizierung des gespeicherten Spielstands.
+	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
-	protected String getBoard(String fileName) {
-		return getGame(fileName).replaceAll("\n", "").split(":")[11];
+	protected String getBoard(String gameName) {
+		return getGame(gameName).replaceAll("\n", "").split(":")[11];
 	}
 	
 	/**
-	 * Gibt den Spielernamen eines Speicherstands zurück.
-	 * @param fileName der gewünschte Speicherstand
-	 * @return Spielername eines Speicherstands
+	 * Gibt den Spielernamen eines Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Spielername eines Spielstand
 	 */
-	protected String getPlayerName(String fileName) {
-		return getGame(fileName).replaceAll("\n", "").split(":")[3];
+	protected String getPlayerName(String gameName) {
+		return getGame(gameName).replaceAll("\n", "").split(":")[3];
 	}
 	
 	/**
-	 * Gibt den Namen des Gegners eines bestimmten Speicherstands zurück.
-	 * @param fileName der gewünschte Speicherstand
-	 * @return Namen des Gegners eines bestimmten Speicherstands
+	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Namen des Gegners eines bestimmten Spielstands
 	 */
-	protected String getOpponentName(String fileName) {
-		return getGame(fileName).replaceAll("\n", "").split(":")[7];
+	protected String getOpponentName(String gameName) {
+		return getGame(gameName).replaceAll("\n", "").split(":")[7];
 	}
 	
 	/**
-	 * Gibt die Feldgröße eines bestimmten Speicherstands zurück.
-	 * @param fileName der gewünschte Speicherstand
-	 * @return Feldgröße eines bestimmten Speicherstands
+	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Feldgröße eines bestimmten Spielstands
 	 */
-	protected int getBoardsize(String fileName) {
-		return Integer.parseInt(getGame(fileName).replaceAll("\n", "").split(":")[9]);
+	protected int getBoardsize(String gameName) {
+		return Integer.parseInt(getGame(gameName).replaceAll("\n", "").split(":")[9]);
 	}
 	
 	/**
 	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des ersten Spielers speichert.
-	 * @param fileName der gewünschte Speicherstand
+	 * @param gameName der gewünschte Spielstand
 	 * @return Die Spielzüge als {@link String}
 	 */
-	protected String getDrawHistoryPlayer1(String fileName) {
-		return getGame(fileName).replaceAll("\n", "").split(":")[13];
+	protected String getDrawHistoryPlayer1(String gameName) {
+		return getGame(gameName).replaceAll("\n", "").split(":")[13];
 	}
 	
 	/**
 	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des zweiten Spielers speichert.
-	 * @param fileName der gewünschte Speicherstand
+	 * @param gameName der gewünschte Spielstand
 	 * @return Die Spielzüge als {@link String}
 	 */
-	protected String getDrawHistoryPlayer2(String fileName) {
-		return getGame(fileName).replaceAll("\n", "").split(":")[15];
+	protected String getDrawHistoryPlayer2(String gameName) {
+		return getGame(gameName).replaceAll("\n", "").split(":")[15];
 	}
 	
 	/**
-	 * Gibt die gespeicherte Uhrzeit eines Speicherstands zurück.
-	 * @param fileName der gewünschte Speicherstand
+	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
-	protected String getTime(String fileName) {
-		return getGame(fileName).replaceAll("\n", "").split(":")[5];
+	protected String getTime(String gameName) {
+		return getGame(gameName).replaceAll("\n", "").split(":")[5];
 	}
 	
 	/**
-	 * Gibt den gesamten Inhalt eines bestimmten Speicherstands zurück.
+	 * Gibt den gesamten Inhalt eines bestimmten Spielstands zurück.
 	 * Veraltete Methode, wird bald gelöscht.
-	 * @param fileName der gewünschte Speicherstand
-	 * @return Der gesamte Speicherstand als {@link String}
+	 * @param gameName der gewünschte Spielstand
+	 * @return Der gesamte Spielstand als {@link String}
 	 */
 	
 	@Deprecated
-	protected String getFile(String fileName) {
+	protected String getFile(String gameName) {
 		String r = "";
 		
 		String[] a = readFile().split("~~~~~");
 		String[] b;
 		for(int i = 0; i < a.length-1; i++) {
 			b = a[i].split(":");
-			if(b[1].equalsIgnoreCase(fileName)) {
+			if(b[1].equalsIgnoreCase(gameName)) {
 				r = a[i];
 			}
 		}
@@ -226,80 +246,80 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode speichert das Spielfeld, das als Parameter übergeben wird in den Speicherstand fileName.
-	 * @param fileName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
+	 * Diese Methode speichert das Spielfeld, das als Parameter übergeben wird in den Spielstand gameName.
+	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}
 	 */
-	protected void setBoard(String fileName, String board) {
-		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("board:" + getBoard(fileName) + ":", "board:" + board + ":")));
+	protected void setBoard(String gameName, String board) {
+		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("board:" + getBoard(gameName) + ":", "board:" + board + ":")));
 	}
 	
 	/**
-	 * Ändert den Namen des ersten Spielers zu playerName im Spielstand fileName.
-	 * @param fileName der Spielstand, bei dem der Name des ersten Spielers geändert werden soll.
+	 * Ändert den Namen des ersten Spielers zu playerName im Spielstand gameName.
+	 * @param gameName der Spielstand, bei dem der Name des ersten Spielers geändert werden soll.
 	 * @param playerName der neue Name des ersten Spielers
 	 */
-	protected void setPlayerName(String fileName, String playerName) {
-		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("player:" + getPlayerName(fileName) + ":", "player:" + playerName + ":")));
+	protected void setPlayerName(String gameName, String playerName) {
+		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("player:" + getPlayerName(gameName) + ":", "player:" + playerName + ":")));
 	}
 	
 	/**
 	 * Ändert den Namen des Gegners eines Spielstands.
-	 * @param fileName der Spielstand
+	 * @param gameName der Spielstand
 	 * @param opponentName
 	 */
-	protected void setOpponentName(String fileName, String opponentName) {
-		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("opponent:" + getOpponentName(fileName) + ":", "opponent:" + opponentName + ":")));
+	protected void setOpponentName(String gameName, String opponentName) {
+		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("opponent:" + getOpponentName(gameName) + ":", "opponent:" + opponentName + ":")));
 	}
 	
 	/**
 	 * Ändert die Feldgröße eines Spielstands.
-	 * @param fileName der Spielstand
+	 * @param gameName der Spielstand
 	 * @param boardSize
 	 */
-	protected void setBoardsize(String fileName, int boardSize) {
-		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("boardsize:" + getBoardsize(fileName) + ":", "boardsize:" + boardSize + ":")));
+	protected void setBoardsize(String gameName, int boardSize) {
+		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("boardsize:" + getBoardsize(gameName) + ":", "boardsize:" + boardSize + ":")));
 	}
 	
 	/**
 	 * Ändert den Spielverlauf des ersten Spielers in einem Spielstand.
-	 * @param fileName der Spielstand
+	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
 	 */
-	protected void setDrawHistoryPlayer1(String fileName, String drawHistoryPlayer1) {
-		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("drawHistoryPlayer1:" + getDrawHistoryPlayer1(fileName) + ":", "drawHistoryPlayer1:" + drawHistoryPlayer1 + ":")));
+	protected void setDrawHistoryPlayer1(String gameName, String drawHistoryPlayer1) {
+		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("drawHistoryPlayer1:" + getDrawHistoryPlayer1(gameName) + ":", "drawHistoryPlayer1:" + drawHistoryPlayer1 + ":")));
 	}
 	
 	/**
 	 * Ändert den Spielverlauf des zweiten Spielers in einem Spielstand.
-	 * @param fileName der Spielstand
+	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
 	 */
-	protected void setDrawHistoryPlayer2(String fileName, String drawHistoryPlayer2) {
-		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("drawHistoryPlayer2:" + getDrawHistoryPlayer2(fileName) + ":", "drawHistoryPlayer2:" + drawHistoryPlayer2 + ":")));
+	protected void setDrawHistoryPlayer2(String gameName, String drawHistoryPlayer2) {
+		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("drawHistoryPlayer2:" + getDrawHistoryPlayer2(gameName) + ":", "drawHistoryPlayer2:" + drawHistoryPlayer2 + ":")));
 	}
 	
 	/**
 	 * Aktualisiert die Uhrzeit eines Spielstands.
-	 * @param fileName der Spielstand
+	 * @param gameName der Spielstand
 	 */
-	protected void updateTime(String fileName) {
-		writeFile(readFile().replaceAll(getGame(fileName), getGame(fileName).replaceAll("time:" + getTime(fileName) + ":", "time:" + timestamp() + ":")));
+	protected void updateTime(String gameName) {
+		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("time:" + getTime(gameName) + ":", "time:" + timestamp() + ":")));
 	}
 	
 	/**
-	 * Überprüft ob ein Speicherstand mit bestimmtem Namen vorhanden ist.
-	 * @param fileName der gewünschte Speicherstand
-	 * @return Ist der Speicherstand vorhanden?
+	 * Überprüft ob ein Spielstand mit bestimmtem Namen vorhanden ist.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Ist der Spielstand vorhanden?
 	 */
-	protected boolean doesFileExist(String fileName) {
+	protected boolean doesFileExist(String gameName) {
 		boolean exists = false;
 		String[] a = readFile().split(separator);
 		String[] b;
 		
 		for(int i = 0; i < a.length-1; i++) {
 			b = a[i].split(":");
-			if(b[1].equalsIgnoreCase(fileName)) {
+			if(b[1].equalsIgnoreCase(gameName)) {
 				exists = true;
 			}
 		}
@@ -364,27 +384,6 @@ public class SaveLoad {
 	 */
 	protected void writeFile(String str) {
 		writeFile(file, str);
-	}
-	
-	/**
-	 * Löscht einen bestimmten Spielstand aus der Datei.
-	 * @param fileName Name des Spielstands
-	 */
-	protected void deleteGame(String gameName) {
-		String r = readFile();
-		String s = getGame(gameName);
-		r = r.replaceAll(s+separator, "");
-		writeFile(r);
-	}
-	
-	/**
-	 * Neue Methode, die effizienter aus der Datei liest.
-	 * Es wird ein gewünschter Spielstand zurückgegeben.
-	 * @param gameName der gewünschte Spielstand
-	 * @return der Spielstand als {@link String}
-	 */
-	protected String getGame(String gameName) {
-		return searchLineInFile("gameName:" + gameName + ":");
 	}
 	
 	/**
@@ -516,8 +515,8 @@ public class SaveLoad {
 		
 //		saveload.newGame("blabla", "hallo", "gegnerTest", 8, "AAAAAAAA", "ABABABABAAB");
 		
-		/*for(int i = 0; i < saveload.getAllFileNames().length; i++) {
-			System.out.println(saveload.getAllFileNames()[i]);
+		/*for(int i = 0; i < saveload.getAllgameNames().length; i++) {
+			System.out.println(saveload.getAllgameNames()[i]);
 		}*/
 
 		System.out.println();
