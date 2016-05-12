@@ -33,6 +33,9 @@ public class SaveLoad {
 	/** Trennzeichen zwischen den einzelnen Spielständen. */
 	private String separator = "~~~~~";
 
+	// wtf warum klappt "commit and push" jetzt nicht mehr?
+	// test
+	
 	//Konstruktor
 	/**
 	 * Konstruktor der Klasse, der das File-Objekt initialisiert 
