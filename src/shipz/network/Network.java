@@ -1,7 +1,6 @@
 package shipz.network;
 
 import shipz.Player;
-import shipz.util.GameEventSource;
 import shipz.util.ShootEvent;
 import shipz.util.Timer;
 
@@ -11,12 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import gamemode.TempKiGame;
+import shipz.gamemode.TempKiGame;
 
 /**
  * The {@code Network} class establishes a connection to another execution of the game.
