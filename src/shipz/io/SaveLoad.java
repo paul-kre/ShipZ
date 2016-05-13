@@ -227,28 +227,6 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den gesamten Inhalt eines bestimmten Spielstands zurück.
-	 * Veraltete Methode, wird bald gelöscht.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Der gesamte Spielstand als {@link String}
-	 */
-	
-	@Deprecated
-	protected String getFile(String gameName) {
-		String r = "";
-		
-		String[] a = readFile().split("~~~~~");
-		String[] b;
-		for(int i = 0; i < a.length-1; i++) {
-			b = a[i].split(":");
-			if(b[1].equalsIgnoreCase(gameName)) {
-				r = a[i];
-			}
-		}
-		return r;
-	}
-	
-	/**
 	 * Diese Methode speichert das Spielfeld, das als Parameter übergeben wird in den Spielstand gameName.
 	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}

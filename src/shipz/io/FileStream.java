@@ -26,7 +26,10 @@ public class FileStream {
 		saveload = new SaveLoad();
 	}
 	
-	// git ist doof
+	/*
+	 * SAVE-LOAD
+	 * CLASS
+	 */
 	
 	// IM
 	/**
@@ -207,29 +210,10 @@ public class FileStream {
 		saveload.updateTime(gameName);
 	}
 	
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Methode, die den Spielstand in die Datei schreibt.
-	 * Der gesamte Spielstand wird in der Instanz-Variable << savegame >> gespeichert.
-	 * 
-	 * Veraltete Methode, wird bald gelöscht.
+	/*
+	 * UNDO-REDO
+	 * CLASS
 	 */
-	@Deprecated
-	public void saveGameFile() {
-//		saveload.saveGameFile();
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Methode, die das Spielfeld in die IV abspeichert.
-	 * @param playerName Name des Spielers
-	 * @param board Das komplette Spielfeld als {@link String}
-	 */
-	@Deprecated
-	public void createBoard(String fileName, String board) {
-//		saveload.createBoard(playerName, board);
-	}
 	
 	/**
 	 * Referenz auf die Methode in der UndoRedo-Klasse.
@@ -237,10 +221,12 @@ public class FileStream {
 	 * Er wird dafür aus der Liste, die den Spielverlauf speichert gelöscht und in eine
 	 * separate Liste geschrieben, die die rückgangig gemachten Züge speichert.
 	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
+	 * @param gameName Name des Spiels zur Zuordnung
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
-	public void undoDraw() {
-		
+	public void undoDraw(String gameName, int playerIndex) {
+		undoredo.undoDraw(gameName, playerIndex);
 	}
 	
 	/**
@@ -248,10 +234,12 @@ public class FileStream {
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
+	 * @param gameName Name des Spiels zur Zuordnung
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
-	public void redoDraw() {
-		
+	public void redoDraw(String gameName, int playerIndex) {
+		undoredo.redoDraw(gameName, playerIndex);
 	}
 	
 	/**
@@ -265,6 +253,21 @@ public class FileStream {
 	}
 	
 	/**
+	 * Referenz auf die Methode in der UndoRedo-Klasse.
+	 * Die beiden Instanz-Variablen, die die Züge der Spieler speichern,
+	 * speichern hiermit ihren Inhalt in der Datei
+	 * @param gameName Name des Spiels zur Zuordnung
+	 */
+	public void saveDrawsToFile(String gameName) {
+		undoredo.saveToFile(gameName);
+	}
+	
+	/*
+	 * SCORE
+	 * CLASS
+	 */
+	
+	/**
 	 * Referenz auf die Methode in der Score-Klasse.
 	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
 	 * @param playerName Name des Spielers
@@ -272,6 +275,25 @@ public class FileStream {
 	 */
 	public void updateScoreOnEvent(String playerName, char event) {
 		score.updateScoreOnEvent(playerName, event);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der Score-Klasse.
+	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
+	 * @param playerName Der Spieler, der eingefügt werden soll.
+	 */
+	public void addPlayerIntoHighscore(String playerName) {
+		score.addPlayerIntoHighscore(playerName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der Score-Klasse.
+	 * Liest alle Punktzahlen aus dem Highscore-File
+	 * und erstellt eine absteigend sortierte Highscore-Liste.
+	 * @return Die Highscore-Liste als String
+	 */
+	public String highscore() {
+		return score.highscore();
 	}
 	
 }

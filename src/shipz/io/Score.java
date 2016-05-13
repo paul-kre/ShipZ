@@ -144,6 +144,22 @@ public class Score {
 	}
 	
 	/**
+	 * Liest alle Punktzahlen aus dem Highscore-File
+	 * und erstellt eine absteigend sortierte Highscore-Liste.
+	 * @return Die Highscore-Liste als String
+	 */
+	protected String highscore() {
+		String[] h = saveload.readFile(highscoreFile).split(":");
+		String str = "";
+		
+		// höchste Punktzahl ermitteln
+		// absteigend sortieren
+		// evtl. rekursiv
+		
+		return str;
+	}
+	
+	/**
 	 * main method
 	 * @param args arguments
 	 */
