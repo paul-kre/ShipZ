@@ -1,17 +1,14 @@
-package gamemode;
+package shipz;
 
 import java.util.concurrent.ThreadLocalRandom;
-
-import shipz.MirrorField;
-import shipz.Player;
 
 /**
  * Spielverwaltung
  * @author Max
  * @version	0.1
  */
-public class TempKiGame implements MirrorField{
-
+public class Game implements MirrorField{
+   
 	//IV
 	/** Spielfeld des 1. Spielers */
 	private char[][] board1;
@@ -27,22 +24,19 @@ public class TempKiGame implements MirrorField{
 	//private GUI gui;
 	/** Spielstandverwaltung */
 	//private FileStream filestream;
-	
-
-	
+	  
 	//Constructor
 	/**
 	 * erstellt ein neues Spiel mit leeren Feldern
 	 * @param widht		Feldbreite
 	 * @param height	Feldhöhe
 	 */
-	private TempKiGame(int width, int height) {
+	private Game(int width, int height) {
 		board1 = new char[width][height];
 		board2 = new char[width][height];
 		initiateBoard(board1);
 		initiateBoard(board2);
 	}
-	
 	
 	//Methoden
 	/**
@@ -82,11 +76,11 @@ public class TempKiGame implements MirrorField{
 	 * @return 1	Schiff getroffen
 	 * @return 2	Schiff versenkt
 	 */
-	public byte checkTile(int x, int y) {
+	private byte checkTile(int x, int y, char[][] board) {
 		byte r = 0;
-		if(board1[y][x] == 'x') {
+		if(board[y][x] == 'x') {
 			r = 1;
-			if (sink(x, y, board1)) {
+			if (sink(x, y, board)) {
 				r = 2;
 			}
 			//System.out.println("Es wurde ein Schiffelement zerstört");
@@ -296,7 +290,7 @@ public class TempKiGame implements MirrorField{
 	 * @param board	Feld
 	 */
 	private void placeShips(char[][] board) {
-		while(placeSingleShip(ThreadLocalRandom.current().nextInt(0, board.length + 1), ThreadLocalRandom.current().nextInt(0, board[0].length + 1), 5, board)) {}
+		while(placeSingleShip(ThreadLocalRandom.current().nextInt(0, board.length + 1), ThreadLocalRandom.current().nextInt(0, board[0].length + 1), 5, board) == false) {}
 	}
 	
 	/**
@@ -317,6 +311,7 @@ public class TempKiGame implements MirrorField{
 		while(usedAll == false && shipPlaced == false) {				//wird wiederholt, bis alle Richtungen probiert wurden oder das Schiff gesetzt wird
 			int dir = ThreadLocalRandom.current().nextInt(0, 3 + 1);	//Richtung: 0=hoch, 1=recht, 2=runter, 3=links
 			if(dir == 0 && used0 == false) {
+				shipPlaced = checkShipUp(y, x, length, board);
 				used0 = true;
 			}
 			if(dir == 1 && used1 == false) {
@@ -334,18 +329,56 @@ public class TempKiGame implements MirrorField{
 	}
 	
 	/**
+	 * überprüft, ob ein einzelnes Schiff gesetzt werden kann (nach oben), und ruft eventuell placeShip auf
+	 * @param y			Koordinate
+	 * @param x			Koordinate
+	 * @param length	Schifflänge
+	 * @param board		Feld
+	 * @return			gibt an, ob das Schiff erfolgreich platziert wurde
+	 */
+	private boolean checkShipUp(int y, int x, int length, char[][] board) {
+		boolean placeable = false;
+		//Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
+		if(y >= 0 && y < board.length && x >= 0 && x < board[y].length && y-length+1 >= 0) {
+			placeable = true ;
+			//Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+			for(int i = 0; i < length; i++) {
+				if(board[y-i][x] != 'w') {
+					placeable = false;
+				}
+			}
+		}
+		if(placeable) {
+			placeShipUp(y, x, length, board);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * platziert ein einzelnes Schiff (nach oben)
+	 * @param y			Koordinate
+	 * @param x			Koordinate
+	 * @param length	Schifflänge
+	 * @param board		Feld
+	 */
+	private void placeShipUp(int y, int x, int length, char[][] board) {
+		for(int i = 0; i < length; i++) {
+			board[y-i][x] = 'x';
+		}
+	}
+	
+	/**
 	 * Main-Methode
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		TempKiGame game = new TempKiGame(10, 10);
-		
-		Player ki = new Easy(10);
-		
-		int[] coords = ki.shootField(game);
-		System.out.println(coords[0] + " | " + coords[1]);
-	}//end main TempKiGame
-	
-
-	
-}// //end TempKiGame
+		Game g = new Game(10, 10);
+		g.board2[0][0] = 'x';
+		g.board2[1][0] = 'x';
+		System.out.println(g.checkTile(0, 0, g.board2));
+		g.displayBoards();
+		System.out.println(g.checkShipUp(6, 0, 5, g.board2));
+		g.displayBoards();
+	}
+}

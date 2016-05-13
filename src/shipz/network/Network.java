@@ -1,8 +1,7 @@
 package shipz.network;
 
 import shipz.Player;
-import shipz.util.GameEventSource;
-import shipz.util.ShootEvent;
+import shipz.util.GameEvent;
 import shipz.util.Timer;
 
 import java.io.BufferedReader;
@@ -11,12 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import gamemode.TempKiGame;
+import shipz.gamemode.TempKiGame;
 
 /**
  * The {@code Network} class establishes a connection to another execution of the game.
@@ -129,7 +127,7 @@ public class Network extends Player implements Runnable {
 
         if(_connected) { // Connection was interrupted
             _connected = false;
-            fireDisconnectEvent();
+            //fireDisconnectEvent();
         } else {
             close();
         }
@@ -140,19 +138,19 @@ public class Network extends Player implements Runnable {
     private void evaluateString(String s) {
         char action = s.charAt(0);
 
-        fireMessageEvent(s);
+        //fireMessageEvent(s);
 
         switch (action) {
             case SHOOT_ACTION:
                 int[] coords;
                 if((coords = convertCoords(s)) == null) break;
-                fireShootEvent(coords[0], coords[1]);
+                //fireShootEvent(coords[0], coords[1]);
                 break;
             case CLOSE_ACTION:
-                fireCloseEvent();
+                //fireCloseEvent();
                 break;
             case SURRENDER_ACTION:
-                fireSurrenderEvent();
+                //fireSurrenderEvent();
                 break;
             default:
                 break;
@@ -387,29 +385,13 @@ public class Network extends Player implements Runnable {
         return "Network";
     }
 
-
-
-	@Override
-	public int[] shootField() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-	@Override
-	public int[] shootField(TempKiGame game) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-    public void shotHappened(ShootEvent e) {
-        Player p = (Player) e.getSource();
-
-        if(p == this) {
-            send(e.getHit() + "");
-        }
+    @Override
+    public int[] shootField() {
+        return new int[0];
     }
 
+    @Override
+    public int[] shootField(TempKiGame game) {
+        return new int[0];
+    }
 }

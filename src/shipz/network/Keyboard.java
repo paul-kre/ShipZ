@@ -4,7 +4,7 @@ import shipz.Player;
 
 import java.util.Scanner;
 
-import gamemode.TempKiGame;
+import shipz.gamemode.TempKiGame;
 
 /**
  * Created by Paul on 06.05.2016.
