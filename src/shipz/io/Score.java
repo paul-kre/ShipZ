@@ -40,7 +40,7 @@ public class Score {
 	/**
 	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
 	 * @param playerName Name des Spielers
-	 * @param event Events: u für undo, h für hit, s für sink (weitere folgen)
+	 * @param event Events: u für undo, h für hit, s für sink (weitere folgen gegebenenfalls)
 	 */
 	protected void updateScoreOnEvent(String playerName, char event) {
 		switch(event) {

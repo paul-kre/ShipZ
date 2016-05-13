@@ -32,6 +32,7 @@ public class UndoRedo {
 	/**
 	 * Initialisiert ein UndoRedo-Objekt.
 	 * Die Array-Listen werden initialisiert.
+	 * @param gameName 
 	 */
 	public UndoRedo() {
 		gamePlayer1 = new ArrayList<String>();
@@ -63,21 +64,24 @@ public class UndoRedo {
 	 * Er wird dafür aus der Liste, die den Spielverlauf speichert gelöscht und in eine
 	 * separate Liste geschrieben, die die rückgangig gemachten Züge speichert.
 	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
+	 * @param gameName Name des Spiels zur Zuordnung
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
-	protected String undoDraw(int playerIndex) {
+	protected String undoDraw(String gameName, int playerIndex) {
 		String lastDraw;
 		if(playerIndex == 1) {
 			lastDraw = gamePlayer1.get(gamePlayer1.size());
-			redoPlayer1.set(redoPlayer1.size(), lastDraw);
+			redoPlayer1.add(lastDraw);
+			score.updateScoreOnEvent(saveload.getPlayerName(gameName), 'u');
 		} else if(playerIndex == 2) {
 			lastDraw = gamePlayer2.get(gamePlayer2.size());
-			redoPlayer2.set(redoPlayer2.size(), lastDraw);
+			redoPlayer2.add(lastDraw);
+			score.updateScoreOnEvent(saveload.getOpponentName(gameName), 'u');
 		} else {
 			lastDraw = "";
 			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
 		}
-//		score.updateScoreOnEvent(playerIndex);
 		return lastDraw;
 	}
 	
@@ -85,9 +89,11 @@ public class UndoRedo {
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
+	 * @param gameName Name des Spiels zur Zuordnung
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
-	protected String redoDraw(int playerIndex) {
+	protected String redoDraw(String gameName, int playerIndex) {
 		String lastRedoneDraw;
 		if(playerIndex == 1) {
 			lastRedoneDraw = redoPlayer1.get(redoPlayer1.size());
@@ -143,12 +149,12 @@ public class UndoRedo {
 	 * @param args arguments
 	 */
 	public static void main(String[] args) {
-		ArrayList<String> ar = new ArrayList<String>();
+/*		ArrayList<String> ar = new ArrayList<String>();
 		ar.add(0, "a");
 		ar.add(1, "b");
 		ar.add(2, "c");
-//		System.out.println(u.listToString(ar));
-		System.out.println(ar.toString());
+		System.out.println(u.listToString(ar)); 
+		System.out.println(ar.toString()); */
 		
 		UndoRedo ur = new UndoRedo();
 		ur.newDraw("ErsterZug", 1);
