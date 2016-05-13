@@ -25,6 +25,8 @@ public class UndoRedo {
 	private Score score;
 	/** SaveLoad-Objekt */
 	private SaveLoad saveload;
+	/** Der String, der einzelne Züge in der Datei trennt. */
+	private String drawSeparator = ",";
 	
 	// Konstruktor
 	/**
@@ -100,12 +102,30 @@ public class UndoRedo {
 		return lastRedoneDraw; 
 	}
 	
+	/**
+	 * Gibt die ArrayList für die Züge des ersten Spielers als String zurück.
+	 * @return die ArrayList für die Züge des ersten Spielers als String
+	 */
 	protected String getGamePlayer1() {
 		return gamePlayer1.toString();
 	}
 	
+	/**
+	 * Gibt die ArrayList für die Züge des zweiten Spielers als String zurück.
+	 * @return die ArrayList für die Züge des zweiten Spielers als String
+	 */
 	protected String getGamePlayer2() {
 		return gamePlayer2.toString();
+	}
+	
+	/**
+	 * Die beiden Instanz-Variablen, die die Züge der Spieler speichern,
+	 * speichern hiermit ihren Inhalt in der Datei
+	 * @param gameName Name des Spiels zur Zuordnung
+	 */
+	protected void saveToFile(String gameName) {
+		saveload.setDrawHistoryPlayer1(gameName, gamePlayer1.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
+		saveload.setDrawHistoryPlayer2(gameName, gamePlayer2.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
 	}
 	
 	/**
@@ -116,10 +136,6 @@ public class UndoRedo {
 		gamePlayer2.clear();
 		redoPlayer1.clear();
 		redoPlayer2.clear();
-	}
-	
-	protected void saveToFile() {
-		
 	}
 	
 	/**
@@ -133,6 +149,13 @@ public class UndoRedo {
 		ar.add(2, "c");
 //		System.out.println(u.listToString(ar));
 		System.out.println(ar.toString());
+		
+		UndoRedo ur = new UndoRedo();
+		ur.newDraw("ErsterZug", 1);
+		ur.newDraw("ZweiterZug", 1);
+		ur.newDraw("1sterZug", 2);
+		ur.saveToFile("blabla");
+		
 	}
 	
 }
