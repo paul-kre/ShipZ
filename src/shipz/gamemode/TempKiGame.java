@@ -10,9 +10,9 @@ import shipz.Player;
  * @author Max
  * @version	0.1
  */
-public class TempKiGame implements MirrorField{
+public class TempKiGame{
 
-	//IV
+	//IV 
 	/** Spielfeld des 1. Spielers */
 	private char[][] board1;
 	/** Spielfeld des 2. Spielers */

@@ -14,7 +14,7 @@ public class Easy extends Computer {
 
 	
 	
-	
+	  
 	//Constructor
 	/**
 	 * Constructor zur Initialisierung des
