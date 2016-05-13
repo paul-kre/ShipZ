@@ -24,7 +24,7 @@ public class Game implements MirrorField{
 	//private GUI gui;
 	/** Spielstandverwaltung */
 	//private FileStream filestream;
-	
+	  
 	//Constructor
 	/**
 	 * erstellt ein neues Spiel mit leeren Feldern
