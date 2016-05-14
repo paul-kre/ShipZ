@@ -26,10 +26,10 @@ public class Keyboard extends Player implements Runnable {
             System.out.print("> ");
             String input = _keyboard.nextLine();
             if(input.equals("close")) {
-                fireSurrenderEvent();
+                //fireSurrenderEvent();
                 _end = true;
             } else if (!input.isEmpty()) {
-                fireMessageEvent(input);
+                //fireMessageEvent(input);
             }
         }
     }
@@ -39,13 +39,13 @@ public class Keyboard extends Player implements Runnable {
     }
 
 	@Override
-	public int[] shootField() {
+	public String shootField() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int[] shootField(TempKiGame game) {
+	public String shootField(TempKiGame game) {
 		// TODO Auto-generated method stub
 		return null;
 	}

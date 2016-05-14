@@ -358,7 +358,7 @@ public class TempKiGame{
 
 	/**
 	 * Main-Methode
-	 * @param args
+	 * @param args f
 	 */
 	public static void main(String[] args) {
 		TempKiGame game = new TempKiGame(10, 10);

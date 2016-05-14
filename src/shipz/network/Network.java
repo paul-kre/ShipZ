@@ -386,12 +386,12 @@ public class Network extends Player implements Runnable {
     }
 
     @Override
-    public int[] shootField() {
-        return new int[0];
+    public String shootField() {
+        return null;
     }
 
     @Override
-    public int[] shootField(TempKiGame game) {
-        return new int[0];
+    public String shootField(TempKiGame game) {
+        return null;
     }
 }

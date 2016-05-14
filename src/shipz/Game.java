@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Max
  * @version	0.1
  */
-public class Game implements MirrorField{
+public class Game {
    
 	//IV
 	/** Spielfeld des 1. Spielers */
@@ -28,7 +28,7 @@ public class Game implements MirrorField{
 	//Constructor
 	/**
 	 * erstellt ein neues Spiel mit leeren Feldern
-	 * @param widht		Feldbreite
+	 * @param width		Feldbreite
 	 * @param height	Feldhöhe
 	 */
 	private Game(int width, int height) {

@@ -23,7 +23,7 @@ public class Normal extends Computer {
 	 * Alle Informationen bezüglich der schon beschossenen Feldern,
 	 * der geprüften Richtungen und Treffern sind auf den Standardwert gesetzt.<br>
 	 *
-	 * @param newfieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
+	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
 	 */
 	public Normal (int newFieldSize) {
 

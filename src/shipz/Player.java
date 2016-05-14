@@ -25,14 +25,14 @@ public abstract class Player extends GameEventSource implements Runnable {
 	 * shootField-Methode f�r die Klassen Netzwerk und GUI
 	 * @return Abzuschie�ende Zelle auf dem Spielfeld
 	 */
-	public abstract int[] shootField();
+	public abstract String shootField();
     
 	/**
 	 * Initiiert Beschuss auf eine Zelle
 	 * shootField-Methode f�r die Klasse Computer und deren Subklassen
 	 * @return Abzuschie�ende Zelle auf dem Spielfeld
 	 */
-	public abstract int[] shootField(TempKiGame game);
+	public abstract String shootField(TempKiGame game);
 
 	//public abstract void end();
 }
