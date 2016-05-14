@@ -29,7 +29,8 @@ public class TempKiGame{
 	//private FileStream filestream;
 	
 
-	
+
+
 	//Constructor
 	/**
 	 * erstellt ein neues Spiel mit leeren Feldern
@@ -344,8 +345,11 @@ public class TempKiGame{
 		
 		int[] coords = ki.shootField(game);
 		System.out.println(coords[0] + " | " + coords[1]);
+
 	}//end main TempKiGame
 	
 
+
 	
 }// //end TempKiGame
+
