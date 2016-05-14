@@ -4,11 +4,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import shipz.Player;
 
-**
-		* Spielverwaltung
-		* @author Max
-		* @version	0.1
-		*/
+
+/**
+ * Spielverwaltung
+ * @author Max
+ * @version	0.1
+ */
+
 public class TempKiGame{
 
 	//IV
