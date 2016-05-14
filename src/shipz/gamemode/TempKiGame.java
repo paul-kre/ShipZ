@@ -34,7 +34,7 @@ public class TempKiGame{
 	//Constructor
 	/**
 	 * erstellt ein neues Spiel mit leeren Feldern
-	 * @param widht		Feldbreite
+	 * @param width		Feldbreite
 	 * @param height	Feldhöhe
 	 */
 	private TempKiGame(int width, int height) {
@@ -100,7 +100,6 @@ public class TempKiGame{
 	 * überprüft die übergebenen Koordinaten auf Schiffelemente und ruft eventuell sink() auf
 	 * @param x 	Koordinate
 	 * @param y 	Koordinate
-	 * @param board	Spielfeld
 	 * @return 0	Wasser getroffen
 	 * @return 1	Schiff getroffen
 	 * @return 2	Schiff versenkt
