@@ -69,8 +69,8 @@ public class Easy extends Computer {
 			yCoord = super.random.nextInt(super.fieldSize);
 			xCoord = super.random.nextInt(super.fieldSize);
 
-
-			if (isCoordinateOccupied (yCoord, xCoord)  == false){
+			//Prüfen ob Koordinate beschießbar und kein Schiffsteil ist
+			if ( !isCoordinateOccupied (yCoord, xCoord) && !isCoordinateShipPart(yCoord, xCoord) ){
 
 				loopAgain = false;
 				/*****************************************/
@@ -84,22 +84,25 @@ public class Easy extends Computer {
 		}while (loopAgain);
 
 
-		//Koordinaten sind jetzt gültig und werden beschossen. Zuvor werden sie schon in das Spiegelfeld mitübernommen.
-		if (game.checkTile (xCoord, yCoord) == 2);
-
-		//Beschossene Koordinaten überprüfen, ob sie zum Sinken eines Schiffes geführt haben.
-		//Wurde durch den Beschuss ein Schiff versenkt, wird die direkte Umgebung in das Spiegelfeld gespeichert,
-		//da diese keine Schiffsteile enthalten
-
-
+		/**
+		 * Erstellte Koordinaten werden gespeichert.
+		 * Haben die Koordinaten ein Schiff versenkt, wird die getroffene Koordinate
+		 * als Schiffsteil abgespeichert und die Umgebung des Schiffes wird abgespeichert
+		 * in das Spiegelfeld.
+		 * Wenn kein Schiff getroffen wurde, wird die Koordinate nur
+		 * als "beschossen" markiert und in das Spiegelfeld gespeichert
+		 */
 		if ( game.checkTile (xCoord, yCoord) == 2 ){
-
+			setCoordinateShipPart(yCoord, xCoord);
 			saveShipVicinity(yCoord, xCoord, game);
+		} else {
+
+			setCoordinateOccupied(yCoord, xCoord);
 		}
 
 		/****************************************/
 		efficiency++;
-		System.out.println("Durchläufe: " + efficiency);
+		System.out.println("Durchlaeufe: " + efficiency);
 		/*****************************************************/
 		return "" + yCoord + xCoord;
 	}

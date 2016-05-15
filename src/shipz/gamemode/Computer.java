@@ -181,7 +181,7 @@ public abstract class Computer extends Player {
 	 * @param xCoord X-Koordinate der Zelle
 	 *
 	 */
-	protected void setCoordinateHit(int yCoord, int xCoord) {
+	protected void setCoordinateShipPart(int yCoord, int xCoord) {
 
 		this.mirrorField[yCoord][xCoord] = 2;
 
@@ -213,7 +213,7 @@ public abstract class Computer extends Player {
 	 *
 	 * @return Ob eine Koordinate schon besetzt ist oder nicht
 	 */
-	protected boolean isCoordinateHit (int yCoord, int xCoord){
+	protected boolean isCoordinateShipPart (int yCoord, int xCoord){
 
 		return (this.mirrorField[yCoord][xCoord] == 2);
 	}
