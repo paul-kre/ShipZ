@@ -257,12 +257,19 @@ public abstract class Computer extends Player {
 
 
 				if (mirrorField[y][x] == 0){
+
 					System.out.print(" " + " ");
-				} else {
+
+				} else if (mirrorField[y][x] == 1){
 
 					System.out.print(" " + "O");
+
+				} else if( mirrorField[y][x] == 2){
+
+					System.out.print(" " + "X");
 				}
 			}
+
 			//Zeilenumbruch
 			System.out.println();
 		}

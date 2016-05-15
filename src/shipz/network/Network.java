@@ -14,7 +14,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import shipz.gamemode.TempKiGame;
 
 /**
  * The {@code Network} class establishes a connection to another execution of the game.
@@ -390,8 +389,4 @@ public class Network extends Player implements Runnable {
         return null;
     }
 
-    @Override
-    public String shootField(TempKiGame game) {
-        return null;
-    }
 }

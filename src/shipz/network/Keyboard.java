@@ -4,7 +4,6 @@ import shipz.Player;
 
 import java.util.Scanner;
 
-import shipz.gamemode.TempKiGame;
 
 /**
  * Created by Paul on 06.05.2016.
@@ -44,9 +43,4 @@ public class Keyboard extends Player implements Runnable {
 		return null;
 	}
 
-	@Override
-	public String shootField(TempKiGame game) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
