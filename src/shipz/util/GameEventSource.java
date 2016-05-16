@@ -10,7 +10,7 @@ public abstract class GameEventSource {
         _listener = listener;
     }
 
-    protected void fireShootEvent(int evtIndex) {
+    protected void fireGameEvent(int evtIndex) {
         GameEvent evt = new GameEvent(this, evtIndex);
         _listener.eventReceived(evt);
     }

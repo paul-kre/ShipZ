@@ -6,10 +6,10 @@ import java.util.EventObject;
  * Created by Paul on 06.05.2016.
  */
 public class GameEvent extends EventObject {
-    private int _evtIndex;
+    private int _evtId;
 
-    public GameEvent(Object source, int evtIndex) {
+    public GameEvent(Object source, int evtId) {
         super(source);
-        _evtIndex = evtIndex;
+        _evtId = evtId;
     }
 }
