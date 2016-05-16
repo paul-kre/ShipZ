@@ -49,7 +49,7 @@ public class Normal extends Computer {
 	 * @return Zufällige Koordinaten die beschossen werden. Es werden pro Spiel nie dieselben Koordinaten von
 	 * der Ki zurückgegeben
 	 */
-	public String shootField(TempKiGame game) {
+	public String shootField() {
 
 		return null;
 	}

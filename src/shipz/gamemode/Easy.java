@@ -1,6 +1,5 @@
 package shipz.gamemode;
 
-import shipz.Player;
 
 /**
  * Einfacher Schwierigkeitsgrad<br><br>
@@ -47,7 +46,7 @@ public class Easy extends Computer {
 	 * @return Zufällige Koordinaten die beschossen werden. Es werden pro Spiel nie dieselben Koordinaten von
 	 * der Ki zurückgegeben
 	 */
-	public String shootField(TempKiGame game) {
+	public String shootField() {
 		/****************************************/
 		efficiency = 0;
 		/*****************************************************/
@@ -84,29 +83,14 @@ public class Easy extends Computer {
 		}while (loopAgain);
 
 
-		/**
-		 * Erstellte Koordinaten werden gespeichert.
-		 * Haben die Koordinaten ein Schiff versenkt, wird die getroffene Koordinate
-		 * als Schiffsteil abgespeichert und die Umgebung des Schiffes wird abgespeichert
-		 * in das Spiegelfeld.
-		 * Wenn kein Schiff getroffen wurde, wird die Koordinate nur
-		 * als "beschossen" markiert und in das Spiegelfeld gespeichert
-		 */
-		if ( game.checkTile (xCoord, yCoord) == 2 ){
-			setCoordinateShipPart(yCoord, xCoord);
-			saveShipVicinity(yCoord, xCoord, game);
-		} else {
-
-			setCoordinateOccupied(yCoord, xCoord);
-		}
-
 		/****************************************/
 		efficiency++;
 		System.out.println("Durchlaeufe: " + efficiency);
 		/*****************************************************/
+
+
 		return "" + yCoord + xCoord;
 	}
-
 
 
 

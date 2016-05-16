@@ -63,7 +63,7 @@ public class Hard extends Computer {
 	 * @return Nach einem Muster erstellte Zufallskoordinaten. Es werden pro Spiel nie diesselben Koordinaten von
 	 * der Ki zurückgegeben
 	 */
-	public String shootField(TempKiGame game) {
+	public String shootField() {
 
 		return maxHitProbabilityCoordinates ();
 	}
