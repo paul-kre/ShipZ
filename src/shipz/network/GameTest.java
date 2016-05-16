@@ -41,12 +41,12 @@ public class GameTest implements GameEventListener {
     @Override
     public void eventReceived(GameEvent e) {
         PlayerTest source = (PlayerTest) e.getSource();
-        PlayerTest oponent;
+        PlayerTest opponent;
 
         if(source == _player1)
-            oponent = _player2;
+            opponent = _player2;
         else
-            oponent = _player1;
+            opponent = _player1;
 
         int id = e.getId();
 
@@ -59,19 +59,19 @@ public class GameTest implements GameEventListener {
                     source.shootInfo(shot);
                 }
 
-                oponent.shootField(shot);
+                opponent.shootField(shot);
 
                 break;
             case 2: // Shoot Info
                 Shot shootInfo = source.getShot();
-                oponent.shootInfo(shootInfo);
+                opponent.shootInfo(shootInfo);
 
                 break;
             case 3: // Close
                 System.out.println();
                 System.out.println("Game Over.");
                 source.end();
-                oponent.end();
+                opponent.end();
                 break;
             case 99: // Disconnect
                 System.out.println();
@@ -87,7 +87,7 @@ public class GameTest implements GameEventListener {
                 } else {
                     System.err.println("Reconnecting failed: " + nw.error());
                     source.end();
-                    oponent.end();
+                    opponent.end();
                 }
                 break;
             default:
