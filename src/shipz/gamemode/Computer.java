@@ -80,19 +80,6 @@ public abstract class Computer extends Player {
 	}
 
 
-	//IM
-
-	/**
-	 * Implementierung der shootField-Methode von Player für die KI
-	 * mit Body
-	 *
-	 * Methode der KI zum erstellen der Zufallskoordinaten für einen<br>
-	 * Beschuss des gegnerischen Spielfeldes<br>
-	 *
-	 * @return Die Koordinaten die abgeschossen werden sollen.
-	 */
-	public abstract String shootField(TempKiGame game);
-
 
 	/**
 	 * Implementierung der shootField-Methode von
@@ -159,7 +146,7 @@ public abstract class Computer extends Player {
 
 	/**
 	 * Koordinaten im Spiegelfeld auf den unbeschiessbaren
-	 * Zustand ( Wert 1) setzen für das MirrorField
+	 * Zustand ( Wert 1) setzen für das mirrorField
 	 *
 	 * @param yCoord Y-Koordinate der Zelle
 	 * @param xCoord X-Koordinate der Zelle
@@ -175,7 +162,7 @@ public abstract class Computer extends Player {
 	/**
 	 * Koordinate im Spielfeld auf den Zustand eines
 	 * getroffenen Schiffsteils (Wert 2)
-	 * setzen für das MirrorField
+	 * setzen für das mirrorField
 	 *
 	 * @param yCoord Y-Koordinate der Zelle
 	 * @param xCoord X-Koordinate der Zelle
@@ -274,6 +261,51 @@ public abstract class Computer extends Player {
 			System.out.println();
 		}
 	}
+
+
+
+    /**
+     * Überprüfen von Koordinaten ob diese von der KI
+     * beschossen und eventuell ein Schiff getroffen/zerstört wurden
+     *
+     * Methode sollte direkt nach dem Aufruf der shootField Methode
+     * der KI ausgeführt werden, damit eine Generierung von redundanten
+     * Koordinaten vermiedern werden kann.
+     *
+     * @param yCoord Y-Koordinate der Zelle
+     * @param xCoord X-Koordinate der Zelle
+     * @param hitState Status der beschossenen Koordinate.
+     *                 byte kann folgenden Status besitzen:
+     *                 0: Wasser wurde getroffen.
+     *                 1: Schiffsteil wurde getroffen.
+     *                 2: Schiffsteil wurde versenkt.
+     */
+    public void saveReturnedCoordinates(int yCoord, int xCoord, byte hitState ){
+
+        /**
+         * Erstellte Koordinaten werden gespeichert.
+         * Haben die Koordinaten ein Schiff versenkt, wird die getroffene Koordinate
+         * als Schiffsteil abgespeichert und die Umgebung des Schiffes wird abgespeichert
+         * in das Spiegelfeld.
+         *
+         * Wenn ein Schiff getroffen, aber nicht versenkt wurde, wird die
+         * Koordinate als Schiffsteil abgespeichert.
+         *
+         * Wenn kein Schiff getroffen wurde, wird die Koordinate nur
+         * als "beschossen" markiert und in das Spiegelfeld gespeichert.
+         */
+        if ( hitState == 2 ){
+            setCoordinateShipPart(yCoord, xCoord);
+            saveShipVicinity(yCoord, xCoord);
+        } else if (hitState == 1){
+
+            setCoordinateShipPart(yCoord, xCoord);
+        } else {
+
+            setCoordinateOccupied(yCoord, xCoord);
+        }
+    }
+
 
 
 
@@ -418,11 +450,10 @@ public abstract class Computer extends Player {
 	 *
 	 * @param yCoord Y-Koordinate der Zelle
 	 * @param xCoord X-Koordinate der Zelle
-	 * @param game Das Gameobjekt mit dem man prüft ob ein Koordinate zum Versenken geführt hat
 	 * @param yDirection Durchsuchung in Y-Richtung
 	 * @param xDirection Durchsuchung in X-Richtung
 	 */
-	private void saveOneShipVicinityDirection (int yCoord, int xCoord, TempKiGame game, int yDirection, int xDirection ){
+	private void saveOneShipVicinityDirection (int yCoord, int xCoord, int yDirection, int xDirection ){
 
 		/***************************/
 		int efficiency = 0;
@@ -435,7 +466,7 @@ public abstract class Computer extends Player {
 		int currentX = xCoord;
 
 		//Flag-Variable zum Durchlaufen der While-Schleifen. Prüfen immer ob die Richtung weitergeprüft werden soll.
-		boolean directionCheck;
+		boolean directionCheck = false;
 
 
 		//Richtung durchlaufen
@@ -445,17 +476,14 @@ public abstract class Computer extends Player {
 			currentY = currentY + yDirection;
 			currentX = currentX + yDirection;
 
-			directionCheck = false;
-
-
 			//Prüfen ob die nördliche Koordinate überhaupt im Spielfeld liegt
 			if (isCoordinateInField(currentY, currentX) ){
 
 				//Prüfen ob die nördliche Variable schonmal beschossen wurde
-				if ( !isCoordinateOccupied (currentY, currentX )){
+				if ( isCoordinateOccupied (currentY, currentX ) || isCoordinateShipPart(currentY, currentX)){
 
 					//Schlussendeliche Überprüfung ob die Koordinate ein Teil des Schiffes ist
-					if( game.checkTile(currentX, currentY) == 1){
+					if( isCoordinateShipPart (currentY, currentX)  ){
 
 						//Prüfen ob Nord- oder Südrichtung durchlaufen wird
 						if ( (yDirection == -1  && xDirection == 0) || (yDirection == 1  && xDirection == 0) ){
@@ -546,21 +574,58 @@ public abstract class Computer extends Player {
 	 *
 	 * @param yCoord Y-Koordinate der Zelle
 	 * @param xCoord X-Koordinate der Zelle
+
 	 */
-	protected void saveShipVicinity(int yCoord, int xCoord, TempKiGame game){
+	protected void saveShipVicinity(int yCoord, int xCoord){
 
 
 		//Nördliche Richtung untersuchen
-		saveOneShipVicinityDirection (yCoord, xCoord, game, -1 , 0);
+		saveOneShipVicinityDirection (yCoord, xCoord, -1 , 0);
 
 		//Südliche Richtung untersuchen
-		saveOneShipVicinityDirection (yCoord, xCoord, game, 1 , 0);
+		saveOneShipVicinityDirection (yCoord, xCoord, 1 , 0);
 
 		//Westliche Richtung untersuchen
-		saveOneShipVicinityDirection (yCoord, xCoord, game, 0 , -1);
+		saveOneShipVicinityDirection (yCoord, xCoord, 0 , -1);
 
 		//Östliche Richtung untersuchen
-		saveOneShipVicinityDirection (yCoord, xCoord, game, 0 , 1);
+		saveOneShipVicinityDirection (yCoord, xCoord, 0 , 1);
 	}
+
+
+
+    /**
+     * Extrahiert aus einem String
+     * die Y-Koordinate für weitere
+     * Berechnungen
+     *
+     * @param stringCoord Koordinate als Stringkette
+     *
+     * @return Y-Koordinate als integer Wert
+     */
+    public int extractYCoord (String stringCoord){
+
+        char temp = stringCoord.charAt(0);
+        return Character.getNumericValue(temp);
+
+    }
+
+    /**
+     * Extrahiert aus einem String
+     * die X-Koordinate für weitere
+     * Berechnungen
+     *
+     * @param stringCoord Koordinate als Stringkette
+     *
+     * @return X-Koordinate als integer Wert
+     */
+    public int extractXCoord (String stringCoord){
+
+        char temp = stringCoord.charAt(1);
+        return Character.getNumericValue(temp);
+
+    }
+
+
 
 }//end class Computer

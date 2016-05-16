@@ -380,7 +380,12 @@ public class TempKiGame{
 		for (int i= 0; i < 100; i++){
 
 			System.out.println(i+1 + ". Beschuss:");
-			String coords = ki.shootField(game);
+			String coords = ki.shootField();
+            int yCoord = ki.extractYCoord(coords);
+            int xCoord = ki.extractXCoord(coords);
+
+            ki.saveReturnedCoordinates(yCoord, xCoord, checkTile( xCoord, yCoord) );
+
 			System.out.println("Treffer auf :" + coords );
 			System.out.println("Anzeige des Spiegelfeldes der Ki:");
 			ki.displayMirrorField();
