@@ -8,7 +8,7 @@ import java.util.Scanner;
 /**
  * Created by Paul on 06.05.2016.
  */
-public class Keyboard extends PlayerTest implements Runnable {
+public class Keyboard extends PlayerTest {
 
     private Scanner _keyboard;
     private boolean _end;
@@ -28,13 +28,13 @@ public class Keyboard extends PlayerTest implements Runnable {
 
             if(!_end)
                 if(input.equals("close")) {
-                    fireGameEvent(3);
+                    fireGameEvent(CLOSE_EVENT);
                     _end = true;
                 } else if (validShot( input )) {
                     int x = convertX(input);
                     int y = convertY(input);
                     _shot = new Shot(x, y);
-                    fireGameEvent(1);
+                    fireGameEvent(SHOOT_EVENT);
                 }
         }
     }

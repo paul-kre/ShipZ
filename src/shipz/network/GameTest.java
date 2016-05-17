@@ -1,10 +1,9 @@
 package shipz.network;
 
-import shipz.Player;
+import shipz.util.EventIds;
 import shipz.util.GameEventListener;
 import shipz.util.GameEvent;
 
-import java.util.EventObject;
 import java.util.Scanner;
 
 /**
@@ -48,11 +47,13 @@ public class GameTest implements GameEventListener {
         else
             opponent = _player1;
 
-        int id = e.getId();
+        byte id = e.getId();
+
 
         switch (id) {
-            case 1: // Shoot
+            case SHOOT_EVENT: // Shoot
                 Shot shot = source.getShot();
+                System.out.println(id);
 
                 if(_isHost) {
                     shot.setHit('x');
@@ -62,18 +63,18 @@ public class GameTest implements GameEventListener {
                 opponent.shootField(shot);
 
                 break;
-            case 2: // Shoot Info
+            case SHOOT_RESULT: // Shoot Info
                 Shot shootInfo = source.getShot();
                 opponent.shootInfo(shootInfo);
 
                 break;
-            case 3: // Close
+            case CLOSE_EVENT: // Close
                 System.out.println();
                 System.out.println("Game Over.");
                 source.end();
                 opponent.end();
                 break;
-            case 99: // Disconnect
+            case DISCONNECT_EVENT: // Disconnect
                 System.out.println();
                 System.err.println("Connection lost. Trying to reconnect ...");
 

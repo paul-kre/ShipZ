@@ -50,13 +50,7 @@ import java.net.SocketTimeoutException;
 
 public class Network extends PlayerTest implements Runnable {
 
-    private final static char PING_ACTION = 1;
-    private final static char SHOOT_INFO = 2;
-    private final static char SHOOT_ACTION = 3;
-    private final static char CLOSE_ACTION = 4;
-    private final static char SURRENDER_ACTION = 's';
-
-
+    private final static char PING_ACTION = 0;
 
     private final static int CONNECTION_TIMEOUT = 60000;
 
@@ -103,7 +97,7 @@ public class Network extends PlayerTest implements Runnable {
         Timer timer = new Timer(100);
 
 
-        send(PING_ACTION + "");
+        send(PING_ACTION + "//");
 
         String s;
         while(_connected && timer.hasTime()) {
@@ -114,11 +108,7 @@ public class Network extends PlayerTest implements Runnable {
 
                     timer.reset();
 
-                    if(s.charAt(0) == PING_ACTION) {
-                        send(PING_ACTION + "");
-                    } else { // Message is not a ping
-                        evaluateString(s);
-                    }
+                    evaluateString(s);
 
                 }
 
@@ -130,7 +120,7 @@ public class Network extends PlayerTest implements Runnable {
 
         if(_connected) { // Connection was interrupted
             _connected = false;
-            fireGameEvent(99);
+            fireGameEvent(DISCONNECT_EVENT);
         } else {
             close();
         }
@@ -138,30 +128,39 @@ public class Network extends PlayerTest implements Runnable {
     }
 
     private void evaluateString(String s) {
-        char action = s.charAt(0);
+        byte action = getAction(s);
+
+        if(action == PING_ACTION) return;
 
         switch (action) {
-            case SHOOT_ACTION:
+            case SHOOT_EVENT:
                 if( !validShot(s) ) break;
                 _shot = convertShot(s);
 
-                fireGameEvent(1);
+                fireGameEvent(SHOOT_EVENT);
                 break;
-            case SHOOT_INFO:
+            case SHOOT_RESULT:
                 if( !validShot(s) ) break;
                 _shot = convertShot(s);
 
-                fireGameEvent(2);
+                fireGameEvent(SHOOT_RESULT);
                 break;
-            case CLOSE_ACTION:
-                fireGameEvent(3);
-                break;
-            case SURRENDER_ACTION:
-                fireGameEvent(4);
+            case CLOSE_EVENT:
+                fireGameEvent(CLOSE_EVENT);
                 break;
             default:
                 break;
         }
+    }
+
+    private byte getAction(String s) {
+        byte action;
+        try {
+            action = (byte) Integer.parseInt( s.split("//")[0] );
+        } catch(NumberFormatException e) {
+            action = -1;
+        }
+        return action;
     }
 
     public Shot getShot() {
@@ -169,12 +168,12 @@ public class Network extends PlayerTest implements Runnable {
     }
 
     public void shootField(Shot shot) {
-        send(SHOOT_ACTION + "//" + shot);
+        send( SHOOT_EVENT + "//" + shot);
     }
 
     public void shootInfo(Shot shot) {
         if(_isHost) {
-            send(SHOOT_INFO + "//" + shot);
+            send( SHOOT_RESULT + "//" + shot);
         }
     }
 
@@ -374,17 +373,9 @@ public class Network extends PlayerTest implements Runnable {
         _out.flush();
     }
 
-    public void surrender() {
-        send(SURRENDER_ACTION + "");
-    }
-
-    public void shootField(int x, int y) {
-        send(SHOOT_ACTION + "//x=" + x + "&y=" + y);
-    }
-
     public void disconnect() {
         _connected = false;
-        send(CLOSE_ACTION + "");
+        send( CLOSE_EVENT + "");
         close();
     }
 
