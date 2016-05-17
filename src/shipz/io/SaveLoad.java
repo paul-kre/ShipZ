@@ -33,16 +33,13 @@ public class SaveLoad {
 	/** Trennzeichen zwischen den einzelnen Spielständen. */
 	private String separator = "~~~~~";
 	
-	// git ist doof
-	//irgendwie
-	
 	//Konstruktor
 	/**
 	 * Konstruktor der Klasse, der das File-Objekt initialisiert 
 	 * und diesem einen Dateipfad zuordnet.
 	 */
 	public SaveLoad() {
-		file = new File(userDirectory() + File.separator + "shipZ" + File.separator + "saves.shipz");
+		file = new File(fileDirectory() + File.separator + "saves.shipz");
 		makeDirectory(file);
 	}
 	
@@ -86,7 +83,7 @@ public class SaveLoad {
 	protected void makeDirectory(File file) {
 		if(!(file.exists())) {
 			try{
-				new File(userDirectory() + File.separator + "shipZ").mkdir();
+				new File(fileDirectory()).mkdir();
 			} catch (SecurityException x) {
 				x.printStackTrace();
 			}
@@ -332,16 +329,7 @@ public class SaveLoad {
 	 * @return Inhalt der Speicherdatei als {@link String}.
 	 */
 	protected String readFile() {
-		String s = "";
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException x) {
-			x.printStackTrace();
-		}
-		while(scanner.hasNextLine()) {
-			s += scanner.nextLine() + "\n";
-		}
-		return s;
+		return readFile(file);
 	}
 	
 	/**
@@ -376,25 +364,7 @@ public class SaveLoad {
 	 * @return die gefundene Zeile
 	 */
 	protected String searchLineInFile(String prefix) {
-		String r = "";
-		
-		try {
-			scanner = new Scanner(file);
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		boolean found = false;
-		while(found == false && scanner.hasNextLine()) {
-			String s = scanner.nextLine();
-			
-			if(s.startsWith(prefix)) {
-				r = s;
-				found = true;
-			}
-		}
-		
-		return r.replaceAll(separator, "");
+		return searchLineInFile(file, prefix).replaceAll(separator, "");
 	}
 	
 	/**
@@ -428,12 +398,12 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den Dateipfad für "Meine Dokumente" des Benutzers zurück.
+	 * Gibt den Dateipfad zurück, in dem Dateien des Spiels gespeichert werden.
 	 * @return Pfad
 	 */
-	protected String userDirectory() {
+	protected String fileDirectory() {
 		JFileChooser jf = new JFileChooser();
-		return jf.getFileSystemView().getDefaultDirectory().toString();
+		return jf.getFileSystemView().getDefaultDirectory().toString() + File.separator + "shipZ";
 	}
 	
 	/**
