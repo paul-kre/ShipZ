@@ -33,16 +33,13 @@ public class SaveLoad {
 	/** Trennzeichen zwischen den einzelnen Spielständen. */
 	private String separator = "~~~~~";
 	
-	// git ist doof
-	//irgendwie
-	
 	//Konstruktor
 	/**
 	 * Konstruktor der Klasse, der das File-Objekt initialisiert 
 	 * und diesem einen Dateipfad zuordnet.
 	 */
 	public SaveLoad() {
-		file = new File(fileDirectory() + File.separator + "shipZ" + File.separator + "saves.shipz");
+		file = new File(fileDirectory() + File.separator + "saves.shipz");
 		makeDirectory(file);
 	}
 	

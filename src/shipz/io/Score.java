@@ -30,7 +30,7 @@ public class Score {
 	 */
 	public Score() {
 		saveload = new SaveLoad();
-		highscoreFile = new File(saveload.userDirectory() + File.separator + "shipZ" + File.separator + "highscore.shipz");
+		highscoreFile = new File(saveload.fileDirectory() + File.separator + "highscore.shipz");
 		saveload.makeDirectory(highscoreFile);
 		comboPlayer1 = 1;
 		comboPlayer2 = 1;
