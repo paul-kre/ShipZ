@@ -332,16 +332,7 @@ public class SaveLoad {
 	 * @return Inhalt der Speicherdatei als {@link String}.
 	 */
 	protected String readFile() {
-		String s = "";
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException x) {
-			x.printStackTrace();
-		}
-		while(scanner.hasNextLine()) {
-			s += scanner.nextLine() + "\n";
-		}
-		return s;
+		return readFile(file);
 	}
 	
 	/**
@@ -376,25 +367,7 @@ public class SaveLoad {
 	 * @return die gefundene Zeile
 	 */
 	protected String searchLineInFile(String prefix) {
-		String r = "";
-		
-		try {
-			scanner = new Scanner(file);
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		boolean found = false;
-		while(found == false && scanner.hasNextLine()) {
-			String s = scanner.nextLine();
-			
-			if(s.startsWith(prefix)) {
-				r = s;
-				found = true;
-			}
-		}
-		
-		return r.replaceAll(separator, "");
+		return searchLineInFile(file, prefix).replaceAll(separator, "");
 	}
 	
 	/**
