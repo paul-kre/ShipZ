@@ -42,7 +42,7 @@ public class SaveLoad {
 	 * und diesem einen Dateipfad zuordnet.
 	 */
 	public SaveLoad() {
-		file = new File(userDirectory() + File.separator + "shipZ" + File.separator + "saves.shipz");
+		file = new File(fileDirectory() + File.separator + "shipZ" + File.separator + "saves.shipz");
 		makeDirectory(file);
 	}
 	
@@ -86,7 +86,7 @@ public class SaveLoad {
 	protected void makeDirectory(File file) {
 		if(!(file.exists())) {
 			try{
-				new File(userDirectory() + File.separator + "shipZ").mkdir();
+				new File(fileDirectory()).mkdir();
 			} catch (SecurityException x) {
 				x.printStackTrace();
 			}
@@ -401,12 +401,12 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den Dateipfad für "Meine Dokumente" des Benutzers zurück.
+	 * Gibt den Dateipfad zurück, in dem Dateien des Spiels gespeichert werden.
 	 * @return Pfad
 	 */
-	protected String userDirectory() {
+	protected String fileDirectory() {
 		JFileChooser jf = new JFileChooser();
-		return jf.getFileSystemView().getDefaultDirectory().toString();
+		return jf.getFileSystemView().getDefaultDirectory().toString() + File.separator + "shipZ";
 	}
 	
 	/**
