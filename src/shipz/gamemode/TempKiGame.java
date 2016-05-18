@@ -77,6 +77,7 @@ public class TempKiGame{
 		board[1][2] = 'x';
 		board[1][3] = 'x';
 		board[1][4] = 'x';
+         */
 
 		board[5][5] = 'x';
 		board[5][6] = 'x';
@@ -84,6 +85,7 @@ public class TempKiGame{
 		board[5][8] = 'x';
 		board[5][9] = 'x';
 
+        /*
 		board[3][6] = 'x';
 		board[2][6] = 'x';
 		*/
@@ -376,14 +378,19 @@ public class TempKiGame{
 		TempKiGame game = new TempKiGame(10, 10);
 
 		Computer ki = new Easy(10);
+        System.out.println("Game Spielfeld mit Schiff(en):");
+        game.displaySingleBoard(board1);
+        System.out.println("\n");
 
-		for (int i= 0; i < 100; i++){
+
+		for (int i = 0; i < 120; i++){
 
 			System.out.println(i+1 + ". Beschuss:");
 			String coords = ki.shootField();
             int yCoord = ki.extractYCoord(coords);
             int xCoord = ki.extractXCoord(coords);
 
+            //System.out.println("checkTile: " + checkTile( xCoord, yCoord));
             ki.saveReturnedCoordinates(yCoord, xCoord, checkTile( xCoord, yCoord) );
 
 			System.out.println("Treffer auf :" + coords );
