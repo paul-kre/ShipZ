@@ -67,11 +67,13 @@ public class TempKiGame{
 
 		/** FÜR TESTZWECKE */
 
-		/*
+
 		board[4][2] = 'x';
 		board[5][2] = 'x';
 		board[6][2] = 'x';
 		board[7][2] = 'x';
+
+        /*
 
 		board[1][1] = 'x';
 		board[1][2] = 'x';
@@ -79,13 +81,14 @@ public class TempKiGame{
 		board[1][4] = 'x';
          */
 
+        /*
 		board[5][5] = 'x';
 		board[5][6] = 'x';
 		board[5][7] = 'x';
 		board[5][8] = 'x';
 		board[5][9] = 'x';
 
-        /*
+
 		board[3][6] = 'x';
 		board[2][6] = 'x';
 		*/
@@ -113,11 +116,11 @@ public class TempKiGame{
 			if (sink(x, y, board1)) {
 				r = 2;
 			}
-			//System.out.println("Es wurde ein Schiffelement zerstört");
+			System.out.println("checkTile  ---> " + r);
 			return r;
 		}
 		else {
-			//System.out.println("Es wurde kein Schiffelement zerstört");
+			System.out.println("checkTile  ---> " + r);
 			return r;
 		}
 	}
@@ -383,7 +386,7 @@ public class TempKiGame{
         System.out.println("\n");
 
 
-		for (int i = 0; i < 120; i++){
+		for (int i = 0; i < 100; i++){
 
 			System.out.println(i+1 + ". Beschuss:");
 			String coords = ki.shootField();
@@ -393,7 +396,7 @@ public class TempKiGame{
             //System.out.println("checkTile: " + checkTile( xCoord, yCoord));
             ki.saveReturnedCoordinates(yCoord, xCoord, checkTile( xCoord, yCoord) );
 
-			System.out.println("Treffer auf :" + coords );
+			System.out.println("Treffer auf :" + yCoord + "|" + xCoord );
 			System.out.println("Anzeige des Spiegelfeldes der Ki:");
 			ki.displayMirrorField();
 			System.out.println("\n");

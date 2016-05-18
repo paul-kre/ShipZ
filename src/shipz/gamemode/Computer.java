@@ -472,9 +472,12 @@ public abstract class Computer extends Player {
 		//Richtung durchlaufen
 		do{
 
+
+            directionCheck = false;
+
 			//Es wird pro Schleifendurchgang eine Koordinate in die Nordrichtung weitergegangen
 			currentY = currentY + yDirection;
-			currentX = currentX + yDirection;
+			currentX = currentX + xDirection;
 
 			//Prüfen ob die nördliche Koordinate überhaupt im Spielfeld liegt
 			if (isCoordinateInField(currentY, currentX) ){
