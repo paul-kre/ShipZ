@@ -16,6 +16,14 @@ public class Easy extends Computer {
 	/** Klassenvariable für Debug-Zwecke. Zählt die Anzahl der Durchläufe der KI und somit dessen Effizienz */
 	public static int efficiency = 0;
 
+    /** Debugging Klassenvariablen. Werden in der Shootfieldmethode zurückgegeben um ein exaktes Schiff auf dem
+     * Spielfeld zu zerstören
+     */
+    static int debugY = 5;
+    static int debugX = 4;
+
+
+
 	//Constructor
 	/**
 	 * Constructor zur Initialisierung des
@@ -89,7 +97,17 @@ public class Easy extends Computer {
 		/*****************************************************/
 
 
-		return "" + yCoord + xCoord;
+
+
+        if (debugX < 5){
+
+            debugX++;
+
+            return "" + debugY + debugX;
+        }
+
+
+        return "" + yCoord + xCoord;
 	}
 
 
