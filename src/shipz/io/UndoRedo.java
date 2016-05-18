@@ -1,6 +1,6 @@
 package shipz.io;
 
-import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Diese Klasse speichert alle Züge die getätigt werden und behandelt die Undo-Redo-Mechanik.
@@ -9,18 +9,18 @@ import java.util.ArrayList;
 public class UndoRedo {
 
 	// IV
-	/** Der Spielverlauf des ersten Spielers als ArrayList für Strings gespeichert. 
+	/** Der Spielverlauf des ersten Spielers als Stack für Strings gespeichert. 
 	 * Hier werden alle Züge nacheinander gespeichert. */
-	private ArrayList<String> gamePlayer1;
-	/** Der Spielverlauf des zweiten Spielers als ArrayList für Strings gespeichert. 
+	private Stack<String> gamePlayer1;
+	/** Der Spielverlauf des zweiten Spielers als Stack für Strings gespeichert. 
 	 * Hier werden alle Züge nacheinander gespeichert. */
-	private ArrayList<String> gamePlayer2;
+	private Stack<String> gamePlayer2;
 	/** Diese Liste speichert die rückgängig gemachten Züge des ersten Spielers.
-	 * Bei einem Redo wird der Zug wieder aus dieser Liste genommen und gelöscht. */
-	private ArrayList<String> redoPlayer1;
+	 * Bei einem Redo wird der Zug wieder vom Stack genommen und gelöscht. */
+	private Stack<String> redoPlayer1;
 	/** Diese Liste speichert die rückgängig gemachten Züge des zweiten Spielers.
-	 * Bei einem Redo wird der Zug wieder aus dieser Liste genommen und gelöscht. */
-	private ArrayList<String> redoPlayer2;
+	 * Bei einem Redo wird der Zug wieder vom Stack genommen und gelöscht. */
+	private Stack<String> redoPlayer2;
 	/** Score-Objekt */
 	private Score score;
 	/** SaveLoad-Objekt */
@@ -35,10 +35,10 @@ public class UndoRedo {
 	 * @param gameName 
 	 */
 	public UndoRedo() {
-		gamePlayer1 = new ArrayList<String>();
-		gamePlayer2 = new ArrayList<String>();
-		redoPlayer1 = new ArrayList<String>();
-		redoPlayer2 = new ArrayList<String>();
+		gamePlayer1 = new Stack<String>();
+		gamePlayer2 = new Stack<String>();
+		redoPlayer1 = new Stack<String>();
+		redoPlayer2 = new Stack<String>();
 		score = new Score();
 		saveload = new SaveLoad();
 	}

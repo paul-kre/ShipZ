@@ -48,14 +48,9 @@ import java.net.SocketTimeoutException;
  *
  */
 
-public class Network extends Player implements Runnable {
+public class Network extends PlayerTest implements Runnable {
 
-    private final static char PING_ACTION = 1;
-    private final static char SHOOT_ACTION = 2;
-    private final static char CLOSE_ACTION = 3;
-    private final static char SURRENDER_ACTION = 's';
-
-
+    private final static char PING_ACTION = 0;
 
     private final static int CONNECTION_TIMEOUT = 60000;
 
@@ -70,7 +65,6 @@ public class Network extends Player implements Runnable {
 
     private String _ip;
     private int _port;
-
 
     /**
      * Initializes a newly created {@code Network} object, so that it can esablish a new connection.
@@ -93,6 +87,8 @@ public class Network extends Player implements Runnable {
         _out = null;
 
         _ip = null;
+
+        _shot = null;
     }
 
 
@@ -100,21 +96,19 @@ public class Network extends Player implements Runnable {
     public void run() {
         Timer timer = new Timer(100);
 
-        send(PING_ACTION + "");
+
+        send(PING_ACTION + "//");
 
         String s;
         while(_connected && timer.hasTime()) {
+
             try {
                 s = _in.readLine();
                 if(s != null && !s.isEmpty()) { // Message received
 
                     timer.reset();
 
-                    if(s.charAt(0) == PING_ACTION) {
-                        send(PING_ACTION + "");
-                    } else { // Message is not a ping
-                        evaluateString(s);
-                    }
+                    evaluateString(s);
 
                 }
 
@@ -126,50 +120,103 @@ public class Network extends Player implements Runnable {
 
         if(_connected) { // Connection was interrupted
             _connected = false;
-            //fireDisconnectEvent();
+            fireGameEvent(DISCONNECT_EVENT);
         } else {
             close();
         }
 
-
     }
 
     private void evaluateString(String s) {
-        char action = s.charAt(0);
+        byte action = getAction(s);
 
-        //fireMessageEvent(s);
+        if(action == PING_ACTION) return;
 
         switch (action) {
-            case SHOOT_ACTION:
-                int[] coords;
-                if((coords = convertCoords(s)) == null) break;
-                //fireShootEvent(coords[0], coords[1]);
+            case SHOOT_EVENT:
+                if( !validShot(s) ) break;
+                _shot = convertShot(s);
+
+                fireGameEvent(SHOOT_EVENT);
                 break;
-            case CLOSE_ACTION:
-                //fireCloseEvent();
+            case SHOOT_RESULT:
+                if( !validShot(s) ) break;
+                _shot = convertShot(s);
+
+                fireGameEvent(SHOOT_RESULT);
                 break;
-            case SURRENDER_ACTION:
-                //fireSurrenderEvent();
+            case CLOSE_EVENT:
+                fireGameEvent(CLOSE_EVENT);
                 break;
             default:
                 break;
         }
     }
 
-    private int[] convertCoords(String s) {
+    private byte getAction(String s) {
+        byte action;
+        try {
+            action = (byte) Integer.parseInt( s.split("//")[0] );
+        } catch(NumberFormatException e) {
+            action = -1;
+        }
+        return action;
+    }
+
+    public Shot getShot() {
+        return _shot;
+    }
+
+    public void shootField(Shot shot) {
+        send( SHOOT_EVENT + "//" + shot);
+    }
+
+    public void shootInfo(Shot shot) {
+        if(_isHost) {
+            send( SHOOT_RESULT + "//" + shot);
+        }
+    }
+
+    private Shot convertShot(String s) {
+        String values = s.split("//")[1];
+        int x = convertX(values);
+        int y = convertY(values);
+        char hit = convertHit(values);
+        return new Shot(x, y, hit);
+
+    }
+
+    private boolean validShot(String s) {
         String[] split = s.split("//");
-        if(split.length != 2) return null;
-        String[] split2 = split[1].split("&");
-        if(split2.length != 2) return null;
+        if(split.length != 2) return false;
+        String[] split2 = split[1].split(":");
+        if(split2.length != 3) return false;
+        if(split2[2].length() != 1) return false;
         int x, y;
         try {
-            x = Integer.parseInt( split2[0].split("=")[1] );
-            y = Integer.parseInt( split2[1].split("=")[1] );
+            x = Integer.parseInt( split2[0] );
+            y = Integer.parseInt( split2[1] );
         } catch (NumberFormatException e) {
-            return null;
+            return false;
         }
-        if(x < 0 && y < 0) return null;
-        return new int[] {x, y};
+        if(x < 0 && y < 0) return false;
+
+        return true;
+    }
+
+    private int convertX(String s) {
+        String x = s.split(":")[0];
+        return Integer.parseInt( x );
+    }
+
+    private int convertY(String s) {
+        String y = s.split(":")[1];
+        return Integer.parseInt( y );
+    }
+
+    private char convertHit(String s) {
+        String hit = s.split(":")[2];
+        return hit.charAt(0);
     }
 
     /**
@@ -232,14 +279,11 @@ public class Network extends Player implements Runnable {
         _ip = ip;
 
         System.out.println("Connecting to port " + port + " ...");
-        //_socket = new Socket();
-        //InetSocketAddress inetAdress = new InetSocketAddress(ip, port);
 
         Timer timer = new Timer(CONNECTION_TIMEOUT);
         while(!_connected && timer.hasTime()) {
             try {
 
-                //_socket.connect(inetAdress, CONNECTION_TIMEOUT );
                 _socket = new Socket(ip, port);
                 System.out.println("Client connected.");
                 _connected = true;
@@ -313,39 +357,9 @@ public class Network extends Player implements Runnable {
             _in = null;
             _out = null;
 
-            System.out.println("Connection closed.");
-
         } catch (IOException e) { _error = e.getMessage(); }
 
     }
-
-
-
-    /**
-     * Listens for a message from the connected computer and returns it as a {@code String}.
-     *
-     * @return	A String that contains the connected computer's data.
-     */
-
-    public String listen() {
-        String s = null;
-        boolean done = false;
-        while(!done) {
-
-            try {
-                if((s = _in.readLine()) != null)
-                    done = true;
-
-            } catch (IOException e) {
-                _error = e.getMessage();
-                done = true;
-            }
-
-        }
-        return s;
-    }
-
-
 
     /**
      * Sends a message to the connected computer.
@@ -359,17 +373,10 @@ public class Network extends Player implements Runnable {
         _out.flush();
     }
 
-    public void surrender() {
-        send(SURRENDER_ACTION + "");
-    }
-
-    public void shootField(int x, int y) {
-        send(SHOOT_ACTION + "//x=" + x + "&y=" + y);
-    }
-
     public void disconnect() {
         _connected = false;
-        send(CLOSE_ACTION + "");
+        send( CLOSE_EVENT + "");
+        close();
     }
 
     public boolean connected() {
@@ -387,6 +394,10 @@ public class Network extends Player implements Runnable {
     @Override
     public String shootField() {
         return null;
+    }
+
+    public void end() {
+        disconnect();
     }
 
 }
