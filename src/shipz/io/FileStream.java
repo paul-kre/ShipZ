@@ -17,6 +17,16 @@ public class FileStream {
 	/** Referenz auf die Speichern-Laden-Klasse */
 	private SaveLoad saveload;
 	
+	// TODO LIST
+	// - Boardsize nicht als int, sondern String, da auch rechteckige Felder möglich sind
+	// - Spielfeld-Aufbau <Höhe>,<Breite>,<Spielfeld-String>
+	// - aktiver Spieler abspeichern (1 oder 2)
+	// - Draw-History nur selbst laden
+	// - ZWEI Spielfelder speichern
+	
+	// - Spiel wird über einzelne PARAMETER gespeichert
+	// - Spiel wird als STRING geladen
+	
 	/**
 	 * Konstruktor der Klasse.
 	 */
