@@ -396,6 +396,7 @@ public class Network extends PlayerTest implements Runnable {
         return null;
     }
 
+    //
     @Override
     public void shootResult(int yCoord, int xCoord, byte result) {
 

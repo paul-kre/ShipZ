@@ -35,6 +35,7 @@ public abstract class PlayerTest extends GameEventSource implements Runnable {
      * @param xCoord X-Koordinate
      * @param result Ergebnis der beschossenen Y- und X-Koordinaten. Klassen werten für sich das Ergebnis aus
      *               und führen entsprechende Aktionen aus.
+     *
      */
     public abstract void shootResult (int yCoord, int xCoord, byte result);
 
