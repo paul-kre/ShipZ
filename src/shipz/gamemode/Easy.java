@@ -47,9 +47,10 @@ public class Easy extends Computer {
 	 *
 	 * Implementierung der Methode aus der Abstrakten Superklasse Computer.<br>
 	 * Koordinaten werden jede Runde neu zufällig erstellt und übergeben. Bei dem einfachen
-	 * Schwierigkeitsgrad wird die zuletzt getroffene Koordinate nicht
-	 * berücksichtigt, einzig die Liste mit den schon beschossenen Feldern
-	 * und der Umgebung eines zerstörten Schiffes.<br>
+	 * Schwierigkeitsgrad wird die zuletzt getroffene Koordinate
+	 * berücksichtigt, sodass in der nächsten Runde der Umkreis der getroffenen Koordinate überprüft wird. <br>
+     * Ebenso wird die Liste mit den schon beschossenen Feldern
+	 * und der Umgebung eines zerstörten Schiffes beachtet.<br>
 	 *
 	 * @return Zufällige Koordinaten die beschossen werden. Es werden pro Spiel nie dieselben Koordinaten von
 	 * der Ki zurückgegeben
@@ -76,7 +77,8 @@ public class Easy extends Computer {
 			yCoord = super.random.nextInt(super.fieldSize);
 			xCoord = super.random.nextInt(super.fieldSize);
 
-			//Prüfen ob Koordinate beschießbar und kein Schiffsteil ist
+			//Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
+            //Zelle verweist. Ansonsten wird die Koordinate neu generiert bis sie es ist.
 			if ( !isCoordinateOccupied (yCoord, xCoord) && !isCoordinateShipPart(yCoord, xCoord) ){
 
 				loopAgain = false;
@@ -103,11 +105,11 @@ public class Easy extends Computer {
 
             debugX++;
 
-            return "" + debugY + debugX;
+            return "" + debugY + "," + debugX;
         }
 
 
-        return "" + yCoord + xCoord;
+        return "" + yCoord + "," + xCoord;
 	}
 
 

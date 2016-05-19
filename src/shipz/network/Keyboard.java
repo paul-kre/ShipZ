@@ -85,6 +85,11 @@ public class Keyboard extends PlayerTest {
 		return null;
 	}
 
+    @Override
+    public void shootResult(int yCoord, int xCoord, byte result) {
+
+    }
+
     public void end() {
         _end = true;
     }

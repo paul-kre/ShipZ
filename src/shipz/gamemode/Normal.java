@@ -25,7 +25,7 @@ public class Normal extends Computer {
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
 	 */
-	public Normal (int newFieldSize) {
+	public Normal (byte newFieldSize) {
 
 		super(newFieldSize);
 	}
@@ -37,7 +37,7 @@ public class Normal extends Computer {
 	 *
 	 * Implementierung der Methode aus der Abstrakten Superklasse Computer.<br>
 	 * Koordinaten werden jede Runde neu zufällig erstellt und übergeben. Bei dem normalen
-	 * Schwierigkeitsgrad wird die zuletzt getroffene Koordinate berücksichtigt
+	 * Schwierigkeitsgrad wird ebenfalls die zuletzt getroffene Koordinate berücksichtigt
 	 * und die direkte Umgebung wird nach weiteren möglichen Treffern untersucht.<br><br>
 	 *
 	 * Sobald ein Richtungsmuster erkennbar ist, wird in die jeweilige Richtung

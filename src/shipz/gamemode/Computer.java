@@ -18,15 +18,6 @@ public abstract class Computer extends Player {
 
 	//IV
 
-	/** Die zuletzt getroffenen X und Y-Koordinaten der KI werden zur<br>
-	 * Weiterverwendung in einem zwei-feld großem Array gespeichert*/
-	private int[] lastFieldHit;
-
-	/** Gibt aus ob bei der Prüfung der direkten Nachbarkoordinaten eines Treffers alle<br>
-	 * Nachbarn auf weitere mögliche Treffer geprüft wurden
-	 */
-	private boolean allNeigboursChecked = false;
-
 
 	/** Die Feldgröße des aktuellen Spiels. Standardmäßig ist es 10 x 10  */
 	protected int fieldSize = 10;
@@ -41,13 +32,24 @@ public abstract class Computer extends Player {
 	 * 1: Nicht mehr beschießbar (Wasser getroffen bzw. Umgebung eines Schiffes)<br>
 	 * 2: Schiffsteil getroffen<br>
 	 *  */
-	protected byte[][] mirrorField;
+	private byte[][] mirrorField;
+
+    /** Die zuletzt getroffenen X und Y-Koordinaten der KI werden zur<br>
+     * Weiterverwendung in einem zwei-feld großem Array gespeichert
+     * Werte werden beim instanziieren standardweise auf -1|-1 gesetzt.<br>
+     * Dieser Zustand bedeutet, dass es in dem Moment keine gültige,
+     * zuletzt getroffene Koordinate existiert. Dies hat zur Folge, dass eine neue
+     * Koordinate generiert wird. */
+    private byte[] lastFieldHit;
+
 
 	/**
-	 *  Array zum überprüfen aller Richtungen um eine getroffene Koordinate. <br><br>
+	 *  Array mit den Zuständen aller Richtungen um eine getroffene Koordinate. <br><br>
 	 *
-	 *  Reihenfolge der Indices: Norden, Osten, Süden, Westen.<br><br>
+	 *  Reihenfolge der Indices: Norden, Süden, Westen, Osten<br><br>
 	 *
+     *  Die aktulle Richtung (<b>currentDirection</b>), die die KI prüft, wird in den Index des Arrays eingefügt und
+     *  man erhält die jeweiligen Zustände der Richtungen
 	 *  Je nach Zustand werden die Werte in den entsprechenden Indices geändert.<br><br>
 	 *
 	 *  ZUSTÄNDE:<br>
@@ -55,27 +57,45 @@ public abstract class Computer extends Player {
 	 *  -1: Richtung wurde geprüft und beeinhaltet keine beschiessbaren Koordinaten (mehr)<br>
 	 *  1: Richtung wurde geprüft und beeinhaltet höchstwarscheinlich weitere beschiessbare Koordinaten<br><br>
 	 *
-	 *  Sobald alle Richtungen geprüft und auf -1 gesetzt wurden oder sobald eine Richtung von 1 auf -1 wechselt<br>
+	 *  Sobald alle Richtungen geprüft und auf -1 gesetzt wurden<br>
 	 * 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Alle Werte werden durch eine Methode auf 0 resettet für den nächsten Treffer
 	 *
 	 *
 	 */
-	private int[] allDirectionsChecked = new int[] {0, 0, 0, 0};
+	private byte[] directionStatus = new byte[] {0, 0, 0, 0};
 
-	/** Random-Object zur Generierung von zufälligen Integer Zahlen */
+
+    /** Die aktuelle Richtung in der die KI ein getroffenes Schiffsteil auf weitere
+     * Schiffsteile überpüft<br><br>
+     *
+     * Variable kann folgende werte enthalten:<br>
+     *     0: Norden wird überprüft<br>
+     *     1: Süden wird überprüft<br>
+     *     2: Westen wird überprüft<br>
+     *     3: Osten wird überprüft<br><br>
+     *
+     * Reihenfolge der Himmelsrichtungen stimmen mit denen des <b>directionStatus</b> Array überein,
+     * sodass diese in die Indices eingesetzt werden können und deren Status überprüft werden kann<br>
+     */
+    private byte currentDirection = 0;
+
+    /** Random-Object zur Generierung von zufälligen Integer Zahlen */
 	protected Random random = new Random();
 
 
 	//Contructor
 	/**
-	 *
+	 * Constructor der KI-Superklassen Computer.<br>
+     * Computer kann nicht instanziiert werden; der Constructor
+     * wird an die Subklassen vererbt.
+     *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
 	 */
 	public Computer(int newFieldSize){
 
 		fieldSize = newFieldSize;
 		initiateMirrorField(fieldSize);
-		lastFieldHit = new int[2];
+		lastFieldHit = new byte[] {-1, -1};
 
 	}
 
@@ -99,10 +119,10 @@ public abstract class Computer extends Player {
 	 *
 	 * @return Eine Nachbarkoordinate des zuletzt getroffenen Feldes. Wird durch die Methode searchAllDirections erstellt.
 	 */
-	protected int[] selectNeighbourCoordinates(){
+	protected String selectNeighbourCoordinates(){
 
 
-		return ( searchAllDirections( 0, 0) );
+		return null;
 	}
 
 
@@ -115,7 +135,7 @@ public abstract class Computer extends Player {
 	 *
 	 * @return Die nächstliegende Koordinate in einer Richtung
 	 */
-	protected int[ ] searchAllDirections ( int xAxis, int yAxis){
+	protected String searchAllDirections ( int xAxis, int yAxis){
 
 		return null;
 	}
@@ -130,7 +150,7 @@ public abstract class Computer extends Player {
 	 *
 	 * @param fieldSize Feldgröße des Spiegelfeldes. Sollte die gleiche Größe wie das benutzte Spieler- bzw KI-Feld sein.
 	 */
-	protected void initiateMirrorField (int fieldSize){
+	private void initiateMirrorField (int fieldSize){
 
 		this.mirrorField = new byte[fieldSize][fieldSize];
 
@@ -152,7 +172,7 @@ public abstract class Computer extends Player {
 	 * @param xCoord X-Koordinate der Zelle
 	 *
 	 */
-	protected void setCoordinateOccupied(int yCoord, int xCoord) {
+	private void setCoordinateOccupied(int yCoord, int xCoord) {
 
 		this.mirrorField[yCoord][xCoord] = 1;
 
@@ -168,7 +188,7 @@ public abstract class Computer extends Player {
 	 * @param xCoord X-Koordinate der Zelle
 	 *
 	 */
-	protected void setCoordinateShipPart(int yCoord, int xCoord) {
+	private void setCoordinateShipPart(int yCoord, int xCoord) {
 
 		this.mirrorField[yCoord][xCoord] = 2;
 
@@ -214,7 +234,7 @@ public abstract class Computer extends Player {
 	 * @param xCoord X-Koordinate der Zelle
 	 * @return Ob eine Koordinate sich im Spielfeld befindet oder nicht
 	 */
-	protected boolean isCoordinateInField(int yCoord, int xCoord){
+	private boolean isCoordinateInField(int yCoord, int xCoord){
 
 		return ( (yCoord >= 0 && yCoord < this.fieldSize) && (xCoord >= 0 && xCoord < this.fieldSize) );
 	}
@@ -235,6 +255,7 @@ public abstract class Computer extends Player {
 		//2. Zähler
 		int x;
 		//doppelte Schleife für Durchlauf durch alle Felder
+
 		for(y=0; y  < mirrorField.length; y++) {
 			//Ausgabe der seitlichen Feldbeschriftung
 			System.out.print(y);
@@ -280,7 +301,7 @@ public abstract class Computer extends Player {
      *                 1: Schiffsteil wurde getroffen.
      *                 2: Schiffsteil wurde versenkt.
      */
-    public void saveReturnedCoordinates(int yCoord, int xCoord, byte hitState ){
+    public void shootResult(int yCoord, int xCoord, byte hitState ){
 
         /**
          * Erstellte Koordinaten werden gespeichert.
@@ -295,6 +316,8 @@ public abstract class Computer extends Player {
          * als "beschossen" markiert und in das Spiegelfeld gespeichert.
          */
         if ( hitState == 2 ){
+
+            // TODO: 19.05.2016 Resette zuletzt getroffene Schiffskoordinaten und Richtungen
             setCoordinateShipPart(yCoord, xCoord);
             saveShipVicinity(yCoord, xCoord);
         } else if (hitState == 1){
@@ -579,7 +602,7 @@ public abstract class Computer extends Player {
 	 * @param xCoord X-Koordinate der Zelle
 
 	 */
-	protected void saveShipVicinity(int yCoord, int xCoord){
+	private void saveShipVicinity(int yCoord, int xCoord){
 
 
 		//Nördliche Richtung untersuchen
@@ -605,11 +628,13 @@ public abstract class Computer extends Player {
      * @param stringCoord Koordinate als Stringkette
      *
      * @return Y-Koordinate als integer Wert
+     *
+     * (c) Credits an Florian Osterberg
      */
     public int extractYCoord (String stringCoord){
 
-        char temp = stringCoord.charAt(0);
-        return Character.getNumericValue(temp);
+        return Integer.parseInt(stringCoord.split(",")[0]);
+
 
     }
 
@@ -621,11 +646,12 @@ public abstract class Computer extends Player {
      * @param stringCoord Koordinate als Stringkette
      *
      * @return X-Koordinate als integer Wert
+     *
+     * (c) Credits an Florian Osterberg
      */
     public int extractXCoord (String stringCoord){
 
-        char temp = stringCoord.charAt(1);
-        return Character.getNumericValue(temp);
+        return Integer.parseInt(stringCoord.split(",")[1]);
 
     }
 

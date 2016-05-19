@@ -113,6 +113,7 @@ public class TempKiGame{
 	 */
 	public byte checkTile(int x, int y) {
 		byte r = 0;
+
 		if(board1[y][x] == 'x') {
 			r = 1;
 			if (sink(x, y, board1)) {
@@ -380,11 +381,11 @@ public class TempKiGame{
 	 * startet ein neues oder geladenes Spiel mit den ausgewählten Optionen
 	 */
 	private void startGame(){
-		TempKiGame game = new TempKiGame(10, 10);
+
 
 		Computer ki = new Easy(10);
         System.out.println("Game Spielfeld mit Schiff(en):");
-        game.displaySingleBoard(board1);
+        this.displaySingleBoard(board1);
         System.out.println("\n");
 
 
@@ -395,8 +396,7 @@ public class TempKiGame{
             int yCoord = ki.extractYCoord(coords);
             int xCoord = ki.extractXCoord(coords);
 
-            //System.out.println("checkTile: " + checkTile( xCoord, yCoord));
-            ki.saveReturnedCoordinates(yCoord, xCoord, checkTile( xCoord, yCoord) );
+            ki.shootResult(yCoord, xCoord, checkTile( xCoord, yCoord) );
 
 			System.out.println("Treffer auf :" + yCoord + "|" + xCoord );
 			System.out.println("Anzeige des Spiegelfeldes der Ki:");
