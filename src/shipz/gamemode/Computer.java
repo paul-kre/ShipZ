@@ -34,35 +34,24 @@ public abstract class Computer extends Player {
 	 *  */
 	private byte[][] mirrorField;
 
-    /** Die zuletzt getroffenen X und Y-Koordinaten der KI werden zur<br>
-     * Weiterverwendung in einem zwei-feld großem Array gespeichert
+    /**
+     * Speichert zur Identifikation die Koordinaten des Schiffsteil, welches zuerst bei einem Schiff getroffenen wurde,
+     * um von dort aus alle Richtungen zu überrpüfen <br>
+     *
      * Werte werden beim instanziieren standardweise auf -1|-1 gesetzt.<br>
+     *
      * Dieser Zustand bedeutet, dass es in dem Moment keine gültige,
      * zuletzt getroffene Koordinate existiert. Dies hat zur Folge, dass eine neue
-     * Koordinate generiert wird. */
-    private byte[] lastFieldHit;
+     * Koordinate generiert wird.
+     * */
+    private int[] firstShipTileHit = new int[] {-1, -1};
 
-
-	/**
-	 *  Array mit den Zuständen aller Richtungen um eine getroffene Koordinate. <br><br>
-	 *
-	 *  Reihenfolge der Indices: Norden, Süden, Westen, Osten<br><br>
-	 *
-     *  Die aktulle Richtung (<b>currentDirection</b>), die die KI prüft, wird in den Index des Arrays eingefügt und
-     *  man erhält die jeweiligen Zustände der Richtungen
-	 *  Je nach Zustand werden die Werte in den entsprechenden Indices geändert.<br><br>
-	 *
-	 *  ZUSTÄNDE:<br>
-	 *  0: Richung wurde noch nicht geprüft.<br>
-	 *  -1: Richtung wurde geprüft und beeinhaltet keine beschiessbaren Koordinaten (mehr)<br>
-	 *  1: Richtung wurde geprüft und beeinhaltet höchstwarscheinlich weitere beschiessbare Koordinaten<br><br>
-	 *
-	 *  Sobald alle Richtungen geprüft und auf -1 gesetzt wurden<br>
-	 * 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-> Alle Werte werden durch eine Methode auf 0 resettet für den nächsten Treffer
-	 *
-	 *
-	 */
-	private byte[] directionStatus = new byte[] {0, 0, 0, 0};
+    /**
+     * Die aktuell getroffenen X und Y-Koordinaten eines Schiffes der KI werden zur
+     * Weiterverwendung gespeichert.<br>
+     *
+     */
+    private int[] currentShipTile = new int[]{0, 0};
 
 
     /** Die aktuelle Richtung in der die KI ein getroffenes Schiffsteil auf weitere
@@ -74,10 +63,10 @@ public abstract class Computer extends Player {
      *     2: Westen wird überprüft<br>
      *     3: Osten wird überprüft<br><br>
      *
-     * Reihenfolge der Himmelsrichtungen stimmen mit denen des <b>directionStatus</b> Array überein,
-     * sodass diese in die Indices eingesetzt werden können und deren Status überprüft werden kann<br>
      */
     private byte currentDirection = 0;
+
+
 
     /** Random-Object zur Generierung von zufälligen Integer Zahlen */
 	protected Random random = new Random();
@@ -95,7 +84,6 @@ public abstract class Computer extends Player {
 
 		fieldSize = newFieldSize;
 		initiateMirrorField(fieldSize);
-		lastFieldHit = new byte[] {-1, -1};
 
 	}
 
@@ -113,32 +101,136 @@ public abstract class Computer extends Player {
 	 */
 
 
+    /**
+     * Prüft ob aktuell ein Schiff getroffen, aber noch nicht versenkt wurde
+     *
+     * @return Ob ein Schiff getroffen wurde oder nicht
+     */
+    protected boolean isShipTileHit(){
+
+        return (this.firstShipTileHit[0] != -1  && this.firstShipTileHit[1] != -1);
+    }
 	/**
 	 * Die direkten Nachbaarkoordinaten einer getroffenen Koordinate werden
 	 * zur Überprüfung ausgewählt
 	 *
-	 * @return Eine Nachbarkoordinate des zuletzt getroffenen Feldes. Wird durch die Methode searchAllDirections erstellt.
 	 */
-	protected String selectNeighbourCoordinates(){
+	protected int[] selectNeighbourCoordinates(){
+
+        //Flag, welches versichert, dass aufjedenfall eine Richtung Koordinaten an shootField zurückgibt
+        boolean directionReturnsNoCoord;
+
+        //Falls schonmal ein Schiff getroffen wurde, wird die Umgebung um den Treffer auf weitere
+        //Schiffsteile untersucht
+
+            /** Es wird von dem Treffer in eine Richtung weitergesucht und die nächste Koordinate
+             in der Richtung wird zurückgegeben. Wenn zurückgegebene Koordinate nicht im Spielfeld
+             liegt, wird die nächste Richtung untersucht. */
+            do{
+
+                directionReturnsNoCoord = false;
 
 
-		return null;
+                //Nordliche Richtung überprüfen
+                if (this.currentDirection == 0){
+
+                    //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
+                   if( isCoordinateInField( (this.currentShipTile[0]) -1,  this.currentShipTile[1] ) ){
+
+                       return new int[]{ this.currentShipTile[0] -1,  this.currentShipTile[1] } ;
+
+                    } else {
+
+                       //Koordinate war nicht im Spielfeld, deshalb wird zur nächsten Richtung gewechselt
+                        setNextDirection();
+                       directionReturnsNoCoord  = true;
+
+                   }
+
+                    //Südliche Richtung überprüfen
+                } else if (this.currentDirection == 1){
+
+                    //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
+                    if( isCoordinateInField( (this.currentShipTile[0]) +1,  this.currentShipTile[1] ) ){
+
+                        return new int[]{ this.currentShipTile[0] +1,  this.currentShipTile[1] } ;
+
+                    }else {
+
+                        //Koordinate war nicht im Spielfeld, deshalb wird zur nächsten Richtung gewechselt
+                        setNextDirection();
+                        directionReturnsNoCoord  = true;
+
+                    }
+
+
+                //Westliche Richtung überprüfen
+                } else if (this.currentDirection == 2){
+
+                    //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
+                    if( isCoordinateInField( (this.currentShipTile[0]) ,  this.currentShipTile[1] -1 ) ){
+
+                        return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] -1 } ;
+
+                    }else {
+
+                        //Koordinate war nicht im Spielfeld, deshalb wird zur nächsten Richtung gewechselt
+                        setNextDirection();
+                        directionReturnsNoCoord  = true;
+
+                    }
+
+
+                    //Östliche Richtung überprüfen
+                }else if (this.currentDirection == 3){
+
+                    //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
+                    if( isCoordinateInField( (this.currentShipTile[0]),  this.currentShipTile[1] +1 ) ){
+
+                        return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] +1 } ;
+
+                    }else {
+
+                        //Koordinate war nicht im Spielfeld, deshalb wird zur nächsten Richtung gewechselt
+                        setNextDirection();
+                        directionReturnsNoCoord  = true;
+
+                    }
+
+
+                }
+
+
+            } while (directionReturnsNoCoord);
+
+        return null;
+
 	}
 
 
-	/**
-	 * Es wird von einer Koordinate aus in Nord-, Süd-, West- oder Ost-Richtung
-	 * gesucht
-	 *
-	 * @param xAxis Richtungskoordinate für die Bewegung innerhalb der X-Achse
-	 * @param yAxis Richtungskoordinate für die Bewegung innerhalb der Y-Achse
-	 *
-	 * @return Die nächstliegende Koordinate in einer Richtung
-	 */
-	protected String searchAllDirections ( int xAxis, int yAxis){
+    /**
+     * Nachdem ein getroffenes Schiff zerstört wurde, wird diese
+     * Methode aufgerufen um alle Einstellungen für das nächste
+     * zu Untersuchende Schiff zurückzusetzen.
+     *
+     */
+    private void resetCurrentShipCheck(){
 
-		return null;
-	}
+        this.firstShipTileHit = new int[] {-1, -1};
+        this.currentShipTile = new int[]{0, 0};
+        this.currentDirection = 0;
+
+    }
+
+    /**
+     * Wechselt die aktuell betrachtende Richtung
+     * um ein getroffenes Schiff
+     *
+     */
+    private void setNextDirection(){
+
+        this.currentDirection++;
+    }
 
 
 	/**
@@ -317,14 +409,38 @@ public abstract class Computer extends Player {
          */
         if ( hitState == 2 ){
 
-            // TODO: 19.05.2016 Resette zuletzt getroffene Schiffskoordinaten und Richtungen
             setCoordinateShipPart(yCoord, xCoord);
+
+            // Schiff wurde zerstört, deshalb wird das aktuelle Schiff "vergessen"
+            resetCurrentShipCheck();
+
             saveShipVicinity(yCoord, xCoord);
+
         } else if (hitState == 1){
+
+            /** Wenn zum ersten mal das Schiffsteil eines Schiffes getroffen wurde,
+             wird der erste Treffer zum Ankerpunkt für die Suche der anderen Schiffsteile
+             */
+            if (!isShipTileHit()){
+                this.firstShipTileHit[0] = yCoord;
+                this.firstShipTileHit[1] = xCoord;
+            }
+
+            //Die in der Richtung beschossene Koordinate hat etwas getroffen und wird als
+            //aktuell beschossenen Schiffsteil betrachtet
+            this.currentShipTile[0]= yCoord;
+            this.currentShipTile[1]= xCoord;
 
             setCoordinateShipPart(yCoord, xCoord);
         } else {
 
+            //Wenn ein Beschuss in einer Richtung keinen Treffer erzielte,
+            // Wird die nächste Richtung ab dem Ankerpunkt weitergesucht
+            if (isShipTileHit()){
+                this.currentShipTile[0]= this.firstShipTileHit[0];
+                this.currentShipTile[1]= this.firstShipTileHit[1];
+                setNextDirection();
+            }
             setCoordinateOccupied(yCoord, xCoord);
         }
     }
@@ -654,6 +770,8 @@ public abstract class Computer extends Player {
         return Integer.parseInt(stringCoord.split(",")[1]);
 
     }
+
+
 
 
 

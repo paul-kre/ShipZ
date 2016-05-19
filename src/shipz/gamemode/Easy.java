@@ -66,11 +66,21 @@ public class Easy extends Computer {
 		int xCoord = 0;
 
 
+        //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben
+        if (isShipTileHit()){
 
-		//Zufallskoordinaten solange erstellen und speichern bis sie gültig sind und beschießbar sind
+           int[] tempReturn =  selectNeighbourCoordinates();
+            return  "" + tempReturn[0] + "," + tempReturn[1];
+        }
 
-		//Flag welches den Durchlauf der Schleife bestimmt
-		boolean loopAgain = true;
+        //Falls noch kein Schiff getroffen wurde, werden zufällige erstellt und zurückgegeben.
+
+
+
+        //Zufallskoordinaten solange erstellen und speichern bis sie gültig sind und beschießbar sind
+
+        //Flag welches den Durchlauf der Schleifen bestimmt
+        boolean loopAgain = true;
 
 		do{
 
