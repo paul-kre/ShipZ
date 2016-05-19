@@ -110,14 +110,14 @@ public class Easy extends Computer {
 
 
 
-
+    /*
         if (debugX < 5){
 
             debugX++;
 
             return "" + debugY + "," + debugX;
         }
-
+    */
 
         return "" + yCoord + "," + xCoord;
 	}

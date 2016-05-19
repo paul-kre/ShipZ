@@ -68,19 +68,19 @@ public class TempKiGame{
 		/** FÜR TESTZWECKE */
 
 
-        /*
+
 		board[4][2] = 'x';
 		board[5][2] = 'x';
 		board[6][2] = 'x';
 		board[7][2] = 'x';
 
-        /*
+
 
 		board[1][1] = 'x';
 		board[1][2] = 'x';
 		board[1][3] = 'x';
 		board[1][4] = 'x';
-         */
+
 
 
 		board[5][5] = 'x';
@@ -89,11 +89,16 @@ public class TempKiGame{
 		board[5][8] = 'x';
 		board[5][9] = 'x';
 
-        /*
+        board[7][5] = 'x';
+        board[7][6] = 'x';
+        board[7][7] = 'x';
+        board[7][8] = 'x';
+        board[7][9] = 'x';
+
 
 		board[3][6] = 'x';
 		board[2][6] = 'x';
-		*/
+
 
 	}
 
