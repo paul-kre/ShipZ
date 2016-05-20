@@ -18,14 +18,15 @@ public class FileStream {
 	private SaveLoad saveload;
 	
 	// TODO LIST
-	// - Boardsize nicht als int, sondern String, da auch rechteckige Felder möglich sind
-	// - Spielfeld-Aufbau <Höhe>,<Breite>,<Spielfeld-String>
-	// - aktiver Spieler abspeichern (1 oder 2)
+	
 	// - Draw-History nur selbst laden
-	// - ZWEI Spielfelder speichern
 	
 	// - Spiel wird über einzelne PARAMETER gespeichert
 	// - Spiel wird als STRING geladen
+	
+	// UndoRedo Klasse muss an einigen Stellen erneuert werden
+	
+	// Instanz-Variablen in der SaveLoad-Klasse ?
 	
 	/**
 	 * Konstruktor der Klasse.
@@ -52,7 +53,7 @@ public class FileStream {
 	 * @param game Der Spielverlauf als {@link String} gespeichert.
 	 */
 	public void newGame(String gameName, String playerName, String opponentName, int boardSize, String board, String drawHistoryPlayer1, String drawHistoryPlayer2) {
-		saveload.newGame(gameName, playerName, opponentName, boardSize, board, drawHistoryPlayer1, drawHistoryPlayer2);
+//		saveload.newGame(gameName, playerName, opponentName, boardSize, board, drawHistoryPlayer1, drawHistoryPlayer2);
 	}
 	
 	/**
@@ -76,8 +77,8 @@ public class FileStream {
 	 * @param playerName Name des ersten Spielers zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
-	public String getBoard(String gameName) {
-		return saveload.getBoard(gameName);
+	public String getBoardPlayer1(String gameName) {
+		return saveload.getBoardPlayer1(gameName);
 	}
 	
 	/**
@@ -106,7 +107,7 @@ public class FileStream {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Feldgröße eines bestimmten Spielstands
 	 */
-	public int getBoardsize(String gameName) {
+	public String getBoardsize(String gameName) {
 		return saveload.getBoardsize(gameName);
 	}
 	
@@ -158,7 +159,7 @@ public class FileStream {
 	 * @param board das Spielbrett als {@link String}
 	 */
 	public void setBoard(String gameName, String board) {
-		saveload.setBoard(gameName, board);
+//		saveload.setBoard(gameName, board);
 	}
 	
 	/**
@@ -187,7 +188,7 @@ public class FileStream {
 	 * @param gameName der Spielstand
 	 * @param boardSize
 	 */
-	public void setBoardsize(String gameName, int boardSize) {
+	public void setBoardsize(String gameName, String boardSize) {
 		saveload.setBoardsize(gameName, boardSize);
 	}
 	
