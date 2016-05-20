@@ -18,5 +18,6 @@ public interface EventIds {
     static final byte GAME_SAVED = 111;
     static final byte GAME_LOADED = 112;
     // IDs von 110-120 reserviert
+    
 
 }
