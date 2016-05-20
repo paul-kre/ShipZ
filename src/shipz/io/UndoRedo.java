@@ -2,6 +2,8 @@ package shipz.io;
 
 import java.util.Stack;
 
+import shipz.util.EventIds;
+
 /**
  * Diese Klasse speichert alle Züge die getätigt werden und behandelt die Undo-Redo-Mechanik.
  * @author Florian Osterberg
@@ -157,13 +159,19 @@ public class UndoRedo {
 		System.out.println(ar.toString()); */
 		
 		UndoRedo ur = new UndoRedo();
-		ur.newDraw("ErsterZug", 1);
-		ur.newDraw("ZweiterZug", 1);
-		ur.newDraw("1sterZug", 2);
-		ur.saveToFile("blabla");
+//		ur.newDraw("ErsterZug", 1);
+//		ur.newDraw("ZweiterZug", 1);
+//		ur.newDraw("1sterZug", 2);
+//		ur.saveToFile("blabla");
 		
 		
 		Stack<String> test = new Stack<String>();
+		test.push("1");
+		test.push("2");
+		test.push("3");
+		System.out.println(test.toString());
+		System.out.println(test.pop());
+		System.out.println(test.toString());
 		
 	}
 	
