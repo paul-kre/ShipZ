@@ -51,9 +51,9 @@ public class UndoRedo {
 	 */
 	protected void newDraw(String draw, int playerIndex) {
 		if(playerIndex == 1) {
-			gamePlayer1.add(draw);
+			gamePlayer1.push(draw);
 		} else if(playerIndex == 2) {
-			gamePlayer2.add(draw);
+			gamePlayer2.push(draw);
 		} else {
 			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
 		}
@@ -71,15 +71,15 @@ public class UndoRedo {
 	protected String undoDraw(String gameName, int playerIndex) {
 		String lastDraw;
 		if(playerIndex == 1) {
-			lastDraw = gamePlayer1.get(gamePlayer1.size());
-			redoPlayer1.add(lastDraw);
+			lastDraw = gamePlayer1.pop();
+			redoPlayer1.push(lastDraw);
 			score.updateScoreOnEvent(saveload.getPlayerName(gameName), 'u');
 		} else if(playerIndex == 2) {
-			lastDraw = gamePlayer2.get(gamePlayer2.size());
-			redoPlayer2.add(lastDraw);
+			lastDraw = gamePlayer2.pop();
+			redoPlayer2.push(lastDraw);
 			score.updateScoreOnEvent(saveload.getOpponentName(gameName), 'u');
 		} else {
-			lastDraw = "";
+			lastDraw = null;
 			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
 		}
 		return lastDraw;
@@ -96,13 +96,13 @@ public class UndoRedo {
 	protected String redoDraw(String gameName, int playerIndex) {
 		String lastRedoneDraw;
 		if(playerIndex == 1) {
-			lastRedoneDraw = redoPlayer1.get(redoPlayer1.size());
-			gamePlayer1.set(gamePlayer1.size(), lastRedoneDraw);
+			lastRedoneDraw = redoPlayer1.pop();
+			gamePlayer1.push(lastRedoneDraw);
 		} else if(playerIndex == 2) {
-			lastRedoneDraw = redoPlayer2.get(redoPlayer2.size());
-			gamePlayer2.set(gamePlayer2.size(), lastRedoneDraw);
+			lastRedoneDraw = redoPlayer2.pop();
+			gamePlayer2.push(lastRedoneDraw);
 		} else {
-			lastRedoneDraw = "";
+			lastRedoneDraw = null;
 			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
 		}
 		return lastRedoneDraw; 
@@ -135,7 +135,7 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Leert alle Listen.
+	 * Leert alle Stacks.
 	 */
 	protected void clear() {
 		gamePlayer1.clear();
@@ -161,6 +161,9 @@ public class UndoRedo {
 		ur.newDraw("ZweiterZug", 1);
 		ur.newDraw("1sterZug", 2);
 		ur.saveToFile("blabla");
+		
+		
+		Stack<String> test = new Stack<String>();
 		
 	}
 	
