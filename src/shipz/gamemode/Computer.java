@@ -1,5 +1,6 @@
 package shipz.gamemode;
 
+import java.util.ArrayList;
 import java.util.Random;
 import shipz.Player;
 
@@ -72,6 +73,15 @@ public abstract class Computer extends Player {
 	protected Random random = new Random();
 
 
+    /** Liste in der die Reihen gespeichert werden, die in einem
+     * Spieldurchlauf von der KI komplett fertig beschossen wurden.<br>
+     * Sorgt für mehr Effizienz bei der Generierung der Koordinaten,
+     * da die maximale Durchlaufzahl auf die Anzahl der Reihen, die
+     * freie Koordinaren haben, mal der Größe von <b>fieldSize</b>
+     * beschränkt wird.
+     */
+    protected ArrayList<Integer> excludedRows =  new ArrayList<>();
+
 	//Contructor
 	/**
 	 * Constructor der KI-Superklassen Computer.<br>
@@ -117,6 +127,7 @@ public abstract class Computer extends Player {
 	 */
 	protected int[] selectNeighbourCoordinates(){
 
+        int efficiency = 0;
         //Flag, welches versichert, dass aufjedenfall eine Richtung Koordinaten an shootField zurückgibt
         boolean directionReturnsNoCoord;
 
@@ -128,6 +139,10 @@ public abstract class Computer extends Player {
              liegt, wird die nächste Richtung untersucht. */
             do{
 
+                /****************************************/
+                efficiency++;
+                /*****************************************************/
+
                 directionReturnsNoCoord = false;
 
 
@@ -135,7 +150,11 @@ public abstract class Computer extends Player {
                 if (this.currentDirection == 0){
 
                     //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
-                   if( isCoordinateInField( (this.currentShipTile[0]) -1,  this.currentShipTile[1] ) ){
+                   if( isCoordinateInField (this.currentShipTile[0] -1,  this.currentShipTile[1] ) && !isCoordinateOccupied (this.currentShipTile[0] -1, this.currentShipTile[1] ) ){
+
+                       /**************************************** */
+                       System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
+                       /*****************************************************/
 
                        return new int[]{ this.currentShipTile[0] -1,  this.currentShipTile[1] } ;
 
@@ -151,7 +170,11 @@ public abstract class Computer extends Player {
                 } else if (this.currentDirection == 1){
 
                     //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
-                    if( isCoordinateInField( (this.currentShipTile[0]) +1,  this.currentShipTile[1] ) ){
+                    if( isCoordinateInField( this.currentShipTile[0] +1,  this.currentShipTile[1] ) && !isCoordinateOccupied (this.currentShipTile[0] +1,  this.currentShipTile[1]) ){
+
+                        /**************************************** */
+                        System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
+                        /*****************************************************/
 
                         return new int[]{ this.currentShipTile[0] +1,  this.currentShipTile[1] } ;
 
@@ -168,7 +191,11 @@ public abstract class Computer extends Player {
                 } else if (this.currentDirection == 2){
 
                     //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
-                    if( isCoordinateInField( (this.currentShipTile[0]) ,  this.currentShipTile[1] -1 ) ){
+                    if( isCoordinateInField( this.currentShipTile[0] ,  this.currentShipTile[1] -1 ) && !isCoordinateOccupied (this.currentShipTile[0] ,  this.currentShipTile[1] -1)){
+
+                        /**************************************** */
+                        System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
+                        /*****************************************************/
 
                         return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] -1 } ;
 
@@ -185,7 +212,11 @@ public abstract class Computer extends Player {
                 }else if (this.currentDirection == 3){
 
                     //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
-                    if( isCoordinateInField( (this.currentShipTile[0]),  this.currentShipTile[1] +1 ) ){
+                    if( isCoordinateInField( this.currentShipTile[0],  this.currentShipTile[1] +1 ) && !isCoordinateOccupied (this.currentShipTile[0],  this.currentShipTile[1] +1)){
+
+                        /**************************************** */
+                        System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
+                        /*****************************************************/
 
                         return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] +1 } ;
 
@@ -202,6 +233,8 @@ public abstract class Computer extends Player {
 
 
             } while (directionReturnsNoCoord);
+
+
 
         return null;
 
@@ -702,9 +735,12 @@ public abstract class Computer extends Player {
 
 		} while ( directionCheck); //end do-while
 
+        /******************************/
+        efficiency++;
+        /********************************/
 
 		/***************************/
-		//System.out.println("+ Effizienz Richtung (" + yDirection + "|"+ xDirection +"+) :" + efficiency );
+		System.out.println("+ Effizienz Richtung (" + yDirection + "|"+ xDirection +"+) :" + efficiency );
 		/****************************/
 
 	}
@@ -772,6 +808,17 @@ public abstract class Computer extends Player {
     }
 
 
+    public int generateRandom(int start, int end) {
+        Random rand = new Random();
+        int range = end - start + 1;
+
+        int random = rand.nextInt(range) + 1;
+        while(this.excludedRows.contains(random)) {
+            random = rand.nextInt(range) + 1;
+        }
+
+        return random;
+    }
 
 
 

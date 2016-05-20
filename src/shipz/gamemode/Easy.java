@@ -66,8 +66,16 @@ public class Easy extends Computer {
 		int xCoord = 0;
 
 
+
+
+
         //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben
         if (isShipTileHit()){
+
+            /****************************************/
+            efficiency++;
+            System.out.println("Durchlaeufe: " + efficiency);
+            /*****************************************************/
 
            int[] tempReturn =  selectNeighbourCoordinates();
             return  "" + tempReturn[0] + "," + tempReturn[1];
