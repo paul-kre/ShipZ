@@ -26,6 +26,8 @@ public class SaveLoad {
 	private Scanner scanner;
 	/** Trennzeichen zwischen den einzelnen Spielständen. */
 	private String separator = "~~~~~";
+	/** UndoRedo-Objekt */
+	private UndoRedo undoredo;
 	
 	//Konstruktor
 	/**
@@ -304,7 +306,6 @@ public class SaveLoad {
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
 	 */
-	@Deprecated
 	protected void setDrawHistoryPlayer1(String gameName, String drawHistoryPlayer1) {
 		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("drawHistoryPlayer1:" + getDrawHistoryPlayer1(gameName) + ":", "drawHistoryPlayer1:" + drawHistoryPlayer1 + ":")));
 	}
@@ -314,7 +315,6 @@ public class SaveLoad {
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
 	 */
-	@Deprecated
 	protected void setDrawHistoryPlayer2(String gameName, String drawHistoryPlayer2) {
 		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("drawHistoryPlayer2:" + getDrawHistoryPlayer2(gameName) + ":", "drawHistoryPlayer2:" + drawHistoryPlayer2 + ":")));
 	}
