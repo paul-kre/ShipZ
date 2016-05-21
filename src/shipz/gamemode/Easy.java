@@ -13,57 +13,60 @@ package shipz.gamemode;
  */
 public class Easy extends Computer {
 
-	/** Klassenvariable für Debug-Zwecke. Zählt die Anzahl der Durchläufe der KI und somit dessen Effizienz */
-	public static int efficiency = 0;
+    /** Klassenvariable für Debug-Zwecke. Zählt die Anzahl der Durchläufe der KI und somit dessen Effizienz */
+    public static int efficiency = 0;
+
+    /** Klassenvariable die die höchste Durchlaufzahl speichert */
+    public static int maxLoop = 0;
 
     /** Debugging Klassenvariablen. Werden in der Shootfieldmethode zurückgegeben um ein exaktes Schiff auf dem
      * Spielfeld zu zerstören
      */
-    static int debugY = 5;
-    static int debugX = 4;
+    static int debugY = 4;
+    static int debugX = 2;
 
 
 
-	//Constructor
-	/**
-	 * Constructor zur Initialisierung des
-	 * einfachen Schwierigkeitsgrades. <br><br>
-	 *
-	 * Ein neues Easy-Objekt enthält eine leere Abschussliste.<br>
-	 * Alle Informationen bezüglich der schon beschossenen Feldern
-	 * und Treffern sind standardmäßig auf null.<br>
-	 *
-	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
-	 */
-	public Easy (int newFieldSize) {
+    //Constructor
+    /**
+     * Constructor zur Initialisierung des
+     * einfachen Schwierigkeitsgrades. <br><br>
+     *
+     * Ein neues Easy-Objekt enthält eine leere Abschussliste.<br>
+     * Alle Informationen bezüglich der schon beschossenen Feldern
+     * und Treffern sind standardmäßig auf null.<br>
+     *
+     * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
+     */
+    public Easy (int newFieldSize) {
 
-		super(newFieldSize);
-	}
+        super(newFieldSize);
+    }
 
 
-	/**
-	 * Erstellt zufällige Koordinaten auf die geschossen werden
-	 * sollen.<br><br>
-	 *
-	 * Implementierung der Methode aus der Abstrakten Superklasse Computer.<br>
-	 * Koordinaten werden jede Runde neu zufällig erstellt und übergeben. Bei dem einfachen
-	 * Schwierigkeitsgrad wird die zuletzt getroffene Koordinate
-	 * berücksichtigt, sodass in der nächsten Runde der Umkreis der getroffenen Koordinate überprüft wird. <br>
+    /**
+     * Erstellt zufällige Koordinaten auf die geschossen werden
+     * sollen.<br><br>
+     *
+     * Implementierung der Methode aus der Abstrakten Superklasse Computer.<br>
+     * Koordinaten werden jede Runde neu zufällig erstellt und übergeben. Bei dem einfachen
+     * Schwierigkeitsgrad wird die zuletzt getroffene Koordinate
+     * berücksichtigt, sodass in der nächsten Runde der Umkreis der getroffenen Koordinate überprüft wird. <br>
      * Ebenso wird die Liste mit den schon beschossenen Feldern
-	 * und der Umgebung eines zerstörten Schiffes beachtet.<br>
-	 *
-	 * @return Zufällige Koordinaten die beschossen werden. Es werden pro Spiel nie dieselben Koordinaten von
-	 * der Ki zurückgegeben
-	 */
-	public String shootField() {
-		/****************************************/
-		efficiency = 0;
-		/*****************************************************/
+     * und der Umgebung eines zerstörten Schiffes beachtet.<br>
+     *
+     * @return Zufällige Koordinaten die beschossen werden. Es werden pro Spiel nie dieselben Koordinaten von
+     * der Ki zurückgegeben
+     */
+    public String shootField() {
+        /****************************************/
+        efficiency = 0;
+        /*****************************************************/
 
 
-		//Zwischenspeichern der generierten X- und Y-Koordinaten
-		int yCoord = 0;
-		int xCoord = 0;
+        //Zwischenspeichern der generierten X- und Y-Koordinaten
+        int yCoord = 0;
+        int xCoord = 0;
 
 
 
@@ -77,7 +80,7 @@ public class Easy extends Computer {
             System.out.println("Durchlaeufe: " + efficiency);
             /*****************************************************/
 
-           int[] tempReturn =  selectNeighbourCoordinates();
+            int[] tempReturn =  selectNeighbourCoordinates();
             return  "" + tempReturn[0] + "," + tempReturn[1];
         }
 
@@ -87,55 +90,64 @@ public class Easy extends Computer {
 
         //Zufallskoordinaten solange erstellen und speichern bis sie gültig sind und beschießbar sind
 
-        //Flag welches den Durchlauf der Schleife bestimmt
+        //Flag welches den Durchlauf der Schleifen bestimmt
         boolean loopAgain = true;
 
-		do{
+        do{
 
-			yCoord = super.random.nextInt(super.fieldSize);
-			xCoord = super.random.nextInt(super.fieldSize);
+            yCoord = super.randomRowInt();
+            xCoord = super.randomColumnInt();
 
-			//Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
+            //Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
             //Zelle verweist. Ansonsten wird die Koordinate neu generiert bis sie es ist.
-			if ( !isCoordinateOccupied (yCoord, xCoord) && !isCoordinateShipPart(yCoord, xCoord) ){
+            if ( !isCoordinateOccupied (yCoord, xCoord) && !isCoordinateShipPart(yCoord, xCoord) ){
 
-				loopAgain = false;
-				/*****************************************/
-				efficiency--;
-				/*****************************************/
+                loopAgain = false;
+                /*****************************************/
+                efficiency--;
+                /*****************************************/
 
-			}
-			/*****************************************/
-			efficiency++;
-			/*****************************************/
-		}while (loopAgain);
-
-
-		/****************************************/
-		efficiency++;
-		System.out.println("Durchlaeufe: " + efficiency);
-		/*****************************************************/
+            }
+            /*****************************************/
+            efficiency++;
+            /*****************************************/
+        }while (loopAgain);
 
 
+        /****************************************/
+        efficiency++;
+        System.out.println("Durchlaeufe: " + efficiency);
 
-    /*
-        if (debugX < 5){
+        if ( efficiency > maxLoop){
 
-            debugX++;
+            maxLoop = efficiency;
+        }
 
+        System.out.println("Laengste Durchlaufzeit pro Koordinate: " + maxLoop);
+
+
+        /*****************************************************/
+
+
+
+
+        /*
+        if (debugY < 5){
+            debugY++;
             return "" + debugY + "," + debugX;
         }
-    */
+        */
+
 
         return "" + yCoord + "," + xCoord;
-	}
+    }
 
 
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }//end class Easy
