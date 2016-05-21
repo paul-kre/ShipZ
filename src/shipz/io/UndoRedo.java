@@ -2,8 +2,6 @@ package shipz.io;
 
 import java.util.Stack;
 
-import shipz.util.EventIds;
-
 /**
  * Diese Klasse speichert alle Züge die getätigt werden und behandelt die Undo-Redo-Mechanik.
  * @author Florian Osterberg

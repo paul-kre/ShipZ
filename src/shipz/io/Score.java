@@ -1,7 +1,11 @@
 package shipz.io;
 
+import java.awt.List;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -69,7 +73,7 @@ public class Score {
 	 * @param score Die Punkte, die der Spieler bekommen soll.
 	 */
 	private void setScore(String playerName, int score) {
-		String s = readHighscore();
+		String s = readHighscoreFile();
 		s = s.replaceAll(playerName+":"+getScore(playerName)+":", playerName+":"+score+":");
 		saveload.writeFile(highscoreFile, s);
 	}
@@ -81,7 +85,7 @@ public class Score {
 	 * @return Die Punktzahl des Spielers
 	 */
 	private int getScore(String playerName) {
-		String s = readHighscore().replaceAll("\n", "");
+		String s = readHighscoreFile().replaceAll("\n", "");
 		String[] a = s.split(":");
 		
 		int c = 0;
@@ -97,7 +101,7 @@ public class Score {
 	 * Mit der Methode aus der SaveLoad-Klasse wird der aktuelle Highscore als {@link String}
 	 * in die Instanz-Variable << highscore >> geschrieben.
 	 */
-	protected String readHighscore() {
+	protected String readHighscoreFile() {
 		return saveload.readFile(highscoreFile);
 	}
 	
@@ -149,14 +153,63 @@ public class Score {
 	 * @return Die Highscore-Liste als String
 	 */
 	protected String highscore() {
-		String[] h = saveload.readFile(highscoreFile).split(":");
+		String[] h = saveload.readFile(highscoreFile).replaceAll("\n", "").split(":");
 		String str = "";
+		ArrayList<Integer> score = new ArrayList<Integer>();
 		
-		// höchste Punktzahl ermitteln
-		// absteigend sortieren
-		// evtl. rekursiv
+		for(int i = 0; i < h.length/2; i++) {
+			score.add(Integer.parseInt(h[i*2+1])); // liste füllen
+		}
+		
+		Collections.sort(score, Collections.reverseOrder()); // absteigend sortieren
+		
+		for(int i = 0; i < score.size(); i++) {
+			str += findPlayer(score.get(i)) + ":" + score.get(i) + ",";
+		}
+		
+		// FORMAT des fertigen Highscore-Strings
+		// "nameErster:punkteErster,
+		//  nameZweiter:punkteZweiter,
+		//  nameDritter:punkteDritter,"
 		
 		return str;
+	}
+
+	/**
+	 * Nur eine
+	 * (sehr beschissene)
+	 * Übergangslösung.
+	 * Funktioniert aber.
+	 * @param score
+	 * @return
+	 */
+	private String findPlayer(int score) {
+		String str = "";
+		String[] file = readHighscoreFile().replaceAll("\n", "").split(":");
+		
+		for(int i = 0; i < file.length-1; i++) {
+			if(file[i+1].equalsIgnoreCase(""+score)) {
+				str = file[i];
+			}
+		}
+		
+		return str;
+	}
+	
+	/**
+	 * Dient nur zum Test der Darstellung einer fertigen Highscoreliste.
+	 */
+	private void highscoreTest() {
+		// so könnte man aus dem erstellten String dann eine Highscoreliste darstellen
+		String[] h = highscore().split(",");
+		String[] p = null;
+		
+		System.out.println("No.\tPlayer Name\t\t\tScore");
+		for(int i = 0; i < h.length; i++) {
+			p = h[i].split(":");
+			System.out.println(i+1+".\t" + p[0] + "\t\t\t" + p[1]);
+		}
+		
 	}
 	
 	/**
@@ -175,15 +228,28 @@ public class Score {
 //		s.updateScore("Test", 666);
 		//System.out.println(s.doesPlayerExist("fsdfvfdv"));
 		//System.out.println(s.doesPlayerExist("hallo"));
-		System.out.println(s.doesPlayerExist("Test"));
-		System.out.println(s.doesPlayerExist("tretrhtbhgf"));
+//		System.out.println(s.doesPlayerExist("Test"));
+//		System.out.println(s.doesPlayerExist("tretrhtbhgf"));
 //		s.addPlayerIntoHighscore("TestName");
 //		s.setScore("TestName", 3434543);
 		
 //		s.addPlayerIntoHighscore("Hallo");
-		s.updateScoreOnEvent("Hallo", 's');
-		System.out.println(s.getScore("Test"));
+//		s.updateScoreOnEvent("Hallo", 's');
+//		System.out.println(s.getScore("Test"));
 //		s.addPlayerIntoHighscore("TestSpieler365457");
+//		s.addPlayerIntoHighscore("randomguy");
+		
+//		s.addPlayerIntoHighscore("Josef");
+//		s.addPlayerIntoHighscore("Dieter");
+//		s.setScore("Josef", 345);
+//		s.setScore("Dieter", 1023);
+//		s.setScore("TestSpieler365457", 54455);
+//		s.setScore("randomguy", 83);
+		
+//		System.out.println(s.highscore());
+		
+		s.highscoreTest();
+		
 	}
 
 }
