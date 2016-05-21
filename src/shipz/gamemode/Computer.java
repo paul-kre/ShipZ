@@ -73,16 +73,20 @@ public abstract class Computer extends Player {
 	protected Random random = new Random();
 
 
-    /** Liste in der die Reihen gespeichert werden, die in einem
-     * Spieldurchlauf von der KI komplett fertig beschossen wurden.<br>
+    /** Liste in der Zahlen von n bis <b>fieldSize</b> gespeichert werden, die von der KI
+     * noch zufällig generiert werden können.<br>
+     * Sobald eine Reihe im Spielfeld voll ist, muss keine Koordinate mehr für diese erstellt werden und
+     * die Reihe wird aus dem ArrayListe gelöscht.<br>
      * Sorgt für mehr Effizienz bei der Generierung der Koordinaten,
      * da die maximale Durchlaufzahl auf die Anzahl der Reihen, die
      * freie Koordinaren haben, mal der Größe von <b>fieldSize</b>
      * beschränkt wird.
      */
-    protected ArrayList<Integer> excludedRows =  new ArrayList<>();
+    protected ArrayList<Integer> includedRows =  new ArrayList<>();
+
 
 	//Contructor
+
 	/**
 	 * Constructor der KI-Superklassen Computer.<br>
      * Computer kann nicht instanziiert werden; der Constructor
@@ -95,6 +99,12 @@ public abstract class Computer extends Player {
 		fieldSize = newFieldSize;
 		initiateMirrorField(fieldSize);
 
+
+        //ArrayList mit den gültigen Reihen die generiert initialisieren
+        for (int i= 0; i < fieldSize; i++){
+            includedRows.add(i);
+        }
+
 	}
 
 
@@ -106,9 +116,6 @@ public abstract class Computer extends Player {
 	public String shootField() { return null; }
 
 
-	/**
-	 * Zur Erstellung von Zufallskoordinaten: public int nextInt(int n)
-	 */
 
 
     /**
@@ -245,7 +252,6 @@ public abstract class Computer extends Player {
      * Nachdem ein getroffenes Schiff zerstört wurde, wird diese
      * Methode aufgerufen um alle Einstellungen für das nächste
      * zu Untersuchende Schiff zurückzusetzen.
-     *
      */
     private void resetCurrentShipCheck(){
 
@@ -808,17 +814,6 @@ public abstract class Computer extends Player {
     }
 
 
-    public int generateRandom(int start, int end) {
-        Random rand = new Random();
-        int range = end - start + 1;
-
-        int random = rand.nextInt(range) + 1;
-        while(this.excludedRows.contains(random)) {
-            random = rand.nextInt(range) + 1;
-        }
-
-        return random;
-    }
 
 
 

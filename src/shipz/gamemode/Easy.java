@@ -87,7 +87,7 @@ public class Easy extends Computer {
 
         //Zufallskoordinaten solange erstellen und speichern bis sie gültig sind und beschießbar sind
 
-        //Flag welches den Durchlauf der Schleifen bestimmt
+        //Flag welches den Durchlauf der Schleife bestimmt
         boolean loopAgain = true;
 
 		do{
