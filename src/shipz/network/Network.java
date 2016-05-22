@@ -87,8 +87,6 @@ public class Network extends PlayerTest implements Runnable {
         _out = null;
 
         _ip = null;
-
-        _shot = null;
     }
 
 
@@ -135,13 +133,15 @@ public class Network extends PlayerTest implements Runnable {
         switch (action) {
             case SHOOT_EVENT:
                 if( !validShot(s) ) break;
-                _shot = convertShot(s);
+
+                convertShot(s);
 
                 fireGameEvent(SHOOT_EVENT);
                 break;
             case SHOOT_RESULT:
                 if( !validShot(s) ) break;
-                _shot = convertShot(s);
+
+                convertShot(s);
 
                 fireGameEvent(SHOOT_RESULT);
                 break;
@@ -151,6 +151,13 @@ public class Network extends PlayerTest implements Runnable {
             default:
                 break;
         }
+    }
+
+    private void convertShot(String s) {
+        String values = s.split("//")[1];
+        setX( convertX(values) );
+        setY( convertY(values) );
+        setResult( convertResult(values) );
     }
 
     private byte getAction(String s) {
@@ -163,27 +170,14 @@ public class Network extends PlayerTest implements Runnable {
         return action;
     }
 
-    public Shot getShot() {
-        return _shot;
+    public void shootField(int x, int y, char res) {
+        send( SHOOT_EVENT + "//" + x + ":" + y + ":" + res);
     }
 
-    public void shootField(Shot shot) {
-        send( SHOOT_EVENT + "//" + shot);
-    }
-
-    public void shootInfo(Shot shot) {
+    public void shootResult(int x, int y, char res) {
         if(_isHost) {
-            send( SHOOT_RESULT + "//" + shot);
+            send( SHOOT_RESULT + "//" + x + ":" + y + ":" + res);
         }
-    }
-
-    private Shot convertShot(String s) {
-        String values = s.split("//")[1];
-        int x = convertX(values);
-        int y = convertY(values);
-        char hit = convertHit(values);
-        return new Shot(x, y, hit);
-
     }
 
     private boolean validShot(String s) {
@@ -214,7 +208,7 @@ public class Network extends PlayerTest implements Runnable {
         return Integer.parseInt( y );
     }
 
-    private char convertHit(String s) {
+    private char convertResult(String s) {
         String hit = s.split(":")[2];
         return hit.charAt(0);
     }
@@ -375,7 +369,6 @@ public class Network extends PlayerTest implements Runnable {
 
     public void disconnect() {
         _connected = false;
-        send( CLOSE_EVENT + "");
         close();
     }
 
@@ -403,6 +396,8 @@ public class Network extends PlayerTest implements Runnable {
     }
 
     public void end() {
+        if(_connected)
+            send( CLOSE_EVENT + "");
         disconnect();
     }
 

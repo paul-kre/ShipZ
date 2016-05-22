@@ -7,9 +7,9 @@ import shipz.util.GameEventSource;
  */
 public abstract class PlayerTest extends GameEventSource implements Runnable {
     private String _name;
-    protected Shot _shot;
-
-    public PlayerTest(){}
+    private int _x;
+    private int _y;
+    private char _result;
 
     public PlayerTest(String name) {
         _name = name;
@@ -18,6 +18,35 @@ public abstract class PlayerTest extends GameEventSource implements Runnable {
     public String name() {
         return _name;
     }
+
+
+
+
+    protected void setX(int x) {
+        _x = x;
+    }
+
+    protected void setY(int y) {
+        _y = y;
+    }
+
+    protected void setResult(char res) {
+        _result = res;
+    }
+
+    public int getX() {
+        return _x;
+    }
+
+    public int getY() {
+        return _y;
+    }
+
+    public char getResult() {
+        return _result;
+    }
+
+
 
 
     /**
@@ -39,9 +68,8 @@ public abstract class PlayerTest extends GameEventSource implements Runnable {
      */
     public abstract void shootResult (int yCoord, int xCoord, byte result);
 
-    public abstract Shot getShot();
-    public abstract void shootField(Shot shot);
-    public abstract void shootInfo(Shot shot);
+    public abstract void shootField(int x, int y, char result);
+    public abstract void shootResult(int x, int y, char result);
 
     public abstract void end();
 }

@@ -1,5 +1,8 @@
 package shipz;
 
+import shipz.util.GameEvent;
+import shipz.util.GameEventListener;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -7,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Max
  * @version	0.1
  */
-public class Game {
+public class Game implements GameEventListener {
    
 	//IV
 	/** Spielfeld des 1. Spielers */
@@ -380,5 +383,17 @@ public class Game {
 		g.displayBoards();
 		System.out.println(g.checkShipUp(6, 0, 5, g.board2));
 		g.displayBoards();
+	}
+
+	@Override
+	public void eventReceived(GameEvent e) {
+		byte id = e.getId();
+
+		switch (id) {
+			case SHOOT_EVENT:
+				break;
+			case CLOSE_EVENT:
+				break;
+		}
 	}
 }
