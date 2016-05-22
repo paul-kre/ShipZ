@@ -54,14 +54,14 @@ public class SaveLoad {
 	protected void newGame(String gameName, String playerName, String opponentName, String boardPlayer1, String boardPlayer2, String boardsize) {
 		String savegame = 
 				"gameName:" + gameName + ":" // Eindeutiger Name des Spielstands
-				+ "player:" + playerName + ":"
 				+ "time:" + timestamp() + ":"
+				+ "player:" + playerName + ":"
 				+ "opponent:" + opponentName + ":"
 				+ "boardPlayer1:" + boardPlayer1 + ":"
 				+ "boardPlayer2:" + boardPlayer2 + ":"
 				+ "boardsize:" + boardsize + ":"
-				+ "drawHistoryPlayer1:#"
-				+ "drawHistoryPlayer2:#:"
+				+ "drawHistoryPlayer1:null:"
+				+ "drawHistoryPlayer2:null:"
 				+ "activePlayer:1:"
 				+ separator + "\n"; // Trennzeichen, damit erkannt wird, wann ein Spielstand zu Ende ist
 		
@@ -197,7 +197,7 @@ public class SaveLoad {
 	 * @return Spielername eines Spielstand
 	 */
 	protected String getPlayerName(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[3];
+		return getGame(gameName).replaceAll("\n", "").split(":")[5];
 	}
 	
 	/**
@@ -253,7 +253,7 @@ public class SaveLoad {
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
 	protected String getTime(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[5];
+		return getGame(gameName).replaceAll("\n", "").split(":")[3];
 	}
 	
 	/**
@@ -326,6 +326,29 @@ public class SaveLoad {
 	 */
 	protected void setActivePlayer(String gameName, int activePlayer) {
 		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("activePlayer:" + getActivePlayer(gameName) + ":", "activePlayer:" + activePlayer + ":")));
+	}
+	
+	/**
+	 * Gibt anhand eines Namen eines Spielstands und einem Spielernamen zurück,
+	 * ob es sich bei dem Spieler um den ersten, oder um den zweiten
+	 * Spieler handelt.
+	 * Dies ist wichtig für die Verwaltung der Combos in der Score-Klasse.
+	 * @param gameName Name des Spielstands
+	 * @param playerName Name des Spielers
+	 * @return 1 = Spieler ist der erste Spieler, 2 = Spieler ist der zweite Spieler, 0 = error
+	 */
+	protected byte getPlayersNumber(String gameName, String playerName) {
+		byte result = 0;
+		
+		if(playerName.equals(getPlayerName(gameName))) {
+			result = 1;
+		} else if(playerName.equals(getOpponentName(gameName))) {
+			result = 2;
+		} else {
+			result = 0;
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -502,7 +525,7 @@ public class SaveLoad {
 //		System.out.println(b[1]);
 		
 		
-		System.out.println(saveload.getGame("sjifsd"));
+/*		System.out.println(saveload.getGame("sjifsd"));
 //		System.out.println(saveload.doesFileExist("sjifsd"));
 //		System.out.println(saveload.doesFileExist("sdfvfdg"));
 		System.out.println();
@@ -513,7 +536,7 @@ public class SaveLoad {
 		System.out.println(saveload.getBoardsize("sjifsd"));
 //		System.out.println(saveload.getBoard("sjifsd"));
 		System.out.println(saveload.getDrawHistoryPlayer1("sjifsd"));
-		System.out.println(saveload.getDrawHistoryPlayer2("sjifsd"));
+		System.out.println(saveload.getDrawHistoryPlayer2("sjifsd")); */
 		
 //		saveload.newGame("blabla", "hallo", "gegnerTest", 8, "AAAAAAAA", "ABABABABAAB");
 		
@@ -521,14 +544,16 @@ public class SaveLoad {
 			System.out.println(saveload.getAllgameNames()[i]);
 		}*/
 
-		System.out.println();
-		System.out.println(saveload.getAllGameNames());
+//		System.out.println();
+//		System.out.println(saveload.getAllGameNames());
 		
 //		saveload.deleteGame("blabla");
 		
 //		saveload.setBoard("blabla", "TEEEEEEEEEEEEEEEEEST");
 		
-		System.out.println(saveload.getGame("sjifsd"));
+//		System.out.println(saveload.getGame("sjifsd"));
+		
+		saveload.newGame("testspiel", "R2D2", "C3PO", "ACDDDFF", "ADVSDFSD", "15,16");
 		
 	}
 	

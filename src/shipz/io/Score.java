@@ -44,14 +44,27 @@ public class Score {
 	/**
 	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
 	 * @param playerName Name des Spielers
-	 * @param event Events: u für undo, h für hit, s für sink (weitere folgen gegebenenfalls)
+	 * @param event Events: u für undo, h für hit, s für sink <i>(weitere folgen eventuell. Das liegt nicht in meiner Hand)</i>
 	 */
-	protected void updateScoreOnEvent(String playerName, char event) {
+	protected void updateScoreOnEvent(String gameName, String playerName, char event) {
+		byte b = saveload.getPlayersNumber(gameName, playerName);
+		
 		switch(event) {
-			case 'u':	setScore(playerName, getScore(playerName)-30); break;
-			case 'h':	setScore(playerName, getScore(playerName)+50); break; 
-			case 's':	setScore(playerName, getScore(playerName)+300); break;
-			default:	System.err.println("Fehler beim Score-Update!");
+		case 'u':
+			setScore(playerName, getScore(playerName)-30);
+			break;
+		case 'h':
+			combo(gameName, playerName, event);
+				if(b == 1) setScore(playerName, getScore(playerName)+50*comboPlayer1);
+				else if(b == 2) setScore(playerName, getScore(playerName)+50*comboPlayer2);
+			break;
+		case 's':
+			combo(gameName, playerName, event);
+				if(b == 1) setScore(playerName, getScore(playerName)+300*comboPlayer1);
+				else if(b == 2) setScore(playerName, getScore(playerName)+300*comboPlayer2);
+			break;
+		default:
+			System.err.println("Fehler beim Score-Update!");
 		}
 	}
 	
@@ -60,10 +73,28 @@ public class Score {
 	 * den Combo-Counter hochzählt.
 	 * @param playerName Spielername
 	 */
-	private void combo(String playerName) {
-		// irgendwie testen ob playerName zu Spieler 1 o. 2 gehört
+	private void combo(String gameName, String playerName, char event) {
+		byte b = saveload.getPlayersNumber(gameName, playerName);
 		
-		// do something
+		if(b == 1) {
+			if(event == 'h') {
+				comboPlayer1 += 0.1;
+				comboPlayer2 = 1;
+			} else if (event == 's'){
+				comboPlayer1 += 0.5;
+				comboPlayer2 = 1;
+			}
+		} else if(b == 2) {
+			if(event == 'h') {
+				comboPlayer2 += 0.1;
+				comboPlayer1 = 1;
+			} else if (event == 's'){
+				comboPlayer2 += 0.5;
+				comboPlayer1 = 1;
+			}
+		} else {
+			System.err.println("Fehler bei Aktualisierung der Combos!");
+		}
 		
 	}
 	
@@ -198,7 +229,9 @@ public class Score {
 	
 	/**
 	 * Dient nur zum Test der Darstellung einer fertigen Highscoreliste.
+	 * Die Darstellung muss später von der Haupt- und GUI-Klasse implementiert werden.
 	 */
+	@Deprecated
 	private void highscoreTest() {
 		// so könnte man aus dem erstellten String dann eine Highscoreliste darstellen
 		String[] h = highscore().split(",");
@@ -248,7 +281,16 @@ public class Score {
 		
 //		System.out.println(s.highscore());
 		
-		s.highscoreTest();
+//		s.highscoreTest();
+		
+		s.addPlayerIntoHighscore("R2D2");
+		System.out.println(s.getScore("R2D2"));
+		s.updateScoreOnEvent("testspiel", "R2D2", 'h');
+		System.out.println(s.getScore("R2D2"));
+		s.updateScoreOnEvent("testspiel", "R2D2", 'h');
+		System.out.println(s.getScore("R2D2"));
+		s.updateScoreOnEvent("testspiel", "R2D2", 's');
+		System.out.println(s.getScore("R2D2"));
 		
 	}
 

@@ -73,11 +73,11 @@ public class UndoRedo {
 		if(playerIndex == 1) {
 			lastDraw = gamePlayer1.pop();
 			redoPlayer1.push(lastDraw);
-			score.updateScoreOnEvent(saveload.getPlayerName(gameName), 'u');
+			score.updateScoreOnEvent(gameName, saveload.getPlayerName(gameName), 'u');
 		} else if(playerIndex == 2) {
 			lastDraw = gamePlayer2.pop();
 			redoPlayer2.push(lastDraw);
-			score.updateScoreOnEvent(saveload.getOpponentName(gameName), 'u');
+			score.updateScoreOnEvent(gameName, saveload.getOpponentName(gameName), 'u');
 		} else {
 			lastDraw = null;
 			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
