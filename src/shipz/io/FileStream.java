@@ -304,7 +304,7 @@ public class FileStream {
 	public String highscore() {
 		return score.highscore();
 	}
-	
+	 
 	public static void main(String[] args) {
 		
 		FileStream fs = new FileStream();

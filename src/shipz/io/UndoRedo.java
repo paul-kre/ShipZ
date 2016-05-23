@@ -85,7 +85,7 @@ public class UndoRedo {
 		
 //		return lastDraw;
 	}
-	
+	 
 	/**
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.

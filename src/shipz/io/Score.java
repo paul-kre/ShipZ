@@ -282,7 +282,7 @@ public class Score {
 //		System.out.println(s.highscore());
 		
 //		s.highscoreTest();
-		
+		 
 //		s.addPlayerIntoHighscore("R2D2");
 /*		System.out.println(s.getScore("R2D2"));
 		s.updateScoreOnEvent("testspiel", "R2D2", 'h');
