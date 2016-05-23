@@ -291,7 +291,7 @@ public class Score {
 		System.out.println(s.getScore("R2D2"));
 		s.updateScoreOnEvent("testspiel", "R2D2", 's');
 		System.out.println(s.getScore("R2D2"));*/
-		 
+		
 /*		System.out.println(s.comboPlayer1);
 		System.out.println(s.comboPlayer2);
 		s.combo("testspiel", "R2D2", 'h');

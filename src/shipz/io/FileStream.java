@@ -19,7 +19,7 @@ public class FileStream {
 	
 	// TODO LIST
 
- 
+
 	// Instanz-Variablen in der SaveLoad-Klasse ?
 	
 	/**
