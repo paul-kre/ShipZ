@@ -68,21 +68,22 @@ public class UndoRedo {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
-	protected String undoDraw(String gameName, int playerIndex) {
-		String lastDraw;
+	protected /*String*/void undoDraw(String gameName, int playerIndex) {
+		String lastDraw1 = gamePlayer1.pop();
+		String lastDraw2 = gamePlayer2.pop();
+		
+		redoPlayer1.push(lastDraw1);
+		redoPlayer2.push(lastDraw2);
+		
 		if(playerIndex == 1) {
-			lastDraw = gamePlayer1.pop();
-			redoPlayer1.push(lastDraw);
 			score.updateScoreOnEvent(gameName, saveload.getPlayerName(gameName), 'u');
 		} else if(playerIndex == 2) {
-			lastDraw = gamePlayer2.pop();
-			redoPlayer2.push(lastDraw);
 			score.updateScoreOnEvent(gameName, saveload.getOpponentName(gameName), 'u');
 		} else {
-			lastDraw = null;
 			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
 		}
-		return lastDraw;
+		
+//		return lastDraw;
 	}
 	
 	/**
@@ -93,19 +94,14 @@ public class UndoRedo {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
-	protected String redoDraw(String gameName, int playerIndex) {
-		String lastRedoneDraw;
-		if(playerIndex == 1) {
-			lastRedoneDraw = redoPlayer1.pop();
-			gamePlayer1.push(lastRedoneDraw);
-		} else if(playerIndex == 2) {
-			lastRedoneDraw = redoPlayer2.pop();
-			gamePlayer2.push(lastRedoneDraw);
-		} else {
-			lastRedoneDraw = null;
-			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
-		}
-		return lastRedoneDraw; 
+	protected /*String*/void redoDraw() {
+		String lastRedoneDraw1 = redoPlayer1.pop();
+		String lastRedoneDraw2 = redoPlayer2.pop();
+		
+		gamePlayer1.push(lastRedoneDraw1);
+		gamePlayer2.push(lastRedoneDraw2);
+		
+//		return lastRedoneDraw; 
 	}
 	
 	/**
@@ -190,6 +186,24 @@ public class UndoRedo {
 		System.out.println(test.toString());
 		System.out.println(test.pop());
 		System.out.println(test.toString()); */
+		
+		ur.newDraw("FirstDraw", 1);
+		ur.newDraw("First Draw for player 2", 2);
+		ur.newDraw("next Draw", 1);
+		ur.newDraw("another Draw", 2);
+		ur.newDraw("another one", 1);
+		ur.newDraw("and another one", 2);
+		
+		System.out.println(ur.getDrawsPlayer1());
+		System.out.println(ur.getDrawsPlayer2()+"\n");
+		
+		ur.undoDraw("testspiel", 1);
+		System.out.println(ur.getDrawsPlayer1());
+		System.out.println(ur.getDrawsPlayer2()+"\n");
+		
+		ur.redoDraw();
+		System.out.println(ur.getDrawsPlayer1());
+		System.out.println(ur.getDrawsPlayer2());
 		
 	}
 	

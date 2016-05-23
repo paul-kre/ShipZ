@@ -65,9 +65,9 @@ public class SaveLoad {
 				+ "activePlayer:1:"
 				+ separator + "\n"; // Trennzeichen, damit erkannt wird, wann ein Spielstand zu Ende ist
 		
-		if(doesFileExist(gameName) == false) {
-			String s = readFile();
-			writeFile(s+savegame);
+		if(doesGameExist(gameName) == false) {
+			String str = readFile();
+			writeFile(str + savegame);
 		} else {
 			System.err.println("Fehler beim Erstellen eines neuen Spielstands! Dieser Spielstand existiert bereits.");
 		}
@@ -364,7 +364,7 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Ist der Spielstand vorhanden?
 	 */
-	protected boolean doesFileExist(String gameName) {
+	protected boolean doesGameExist(String gameName) {
 		boolean exists = false;
 		String[] a = readFile().split(separator);
 		String[] b;
@@ -553,7 +553,10 @@ public class SaveLoad {
 		
 //		System.out.println(saveload.getGame("sjifsd"));
 		
-		saveload.newGame("testspiel", "R2D2", "C3PO", "ACDDDFF", "ADVSDFSD", "15,16");
+//		saveload.newGame("testspiel", "R2D2", "C3PO", "ACDDDFF", "ADVSDFSD", "15,16");
+		
+//		saveload.newGame("neuesSpiel", "Detlev", "Ernst", "ABC", "CBA", "20,20");
+//		saveload.newGame("neuesSpiel", "gfhdfh", "dgfdfg", "sdfg", "dfgdfg", "55,88");
 		
 	}
 	

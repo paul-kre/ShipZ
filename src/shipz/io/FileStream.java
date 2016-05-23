@@ -18,14 +18,8 @@ public class FileStream {
 	private SaveLoad saveload;
 	
 	// TODO LIST
-	
-	// - Draw-History nur selbst laden
-	
-	// - Spiel wird über einzelne PARAMETER gespeichert
-	// - Spiel wird als STRING geladen
-	
-	// UndoRedo Klasse muss an einigen Stellen erneuert werden
-	
+
+
 	// Instanz-Variablen in der SaveLoad-Klasse ?
 	
 	/**
@@ -52,8 +46,14 @@ public class FileStream {
 	 * @param board Das gesamte Feld als {@link String} gespeichert.
 	 * @param game Der Spielverlauf als {@link String} gespeichert.
 	 */
-	public void newGame(String gameName, String playerName, String opponentName, int boardSize, String board, String drawHistoryPlayer1, String drawHistoryPlayer2) {
-//		saveload.newGame(gameName, playerName, opponentName, boardSize, board, drawHistoryPlayer1, drawHistoryPlayer2);
+	public void newGame(String gameName, String playerName, String opponentName, String boardPlayer1, String boardPlayer2, String boardsize) {
+		saveload.newGame(gameName, playerName, opponentName, boardPlayer1, boardPlayer2, boardsize);
+		if(!(score.doesPlayerExist(playerName))) {
+			score.addPlayerIntoHighscore(playerName);
+		}
+		if(!(score.doesPlayerExist(opponentName))) {
+			score.addPlayerIntoHighscore(opponentName);
+		}
 	}
 	
 	/**
@@ -245,12 +245,10 @@ public class FileStream {
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
-	 * @param gameName Name des Spiels zur Zuordnung
-	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
-	public void redoDraw(String gameName, int playerIndex) {
-		undoredo.redoDraw(gameName, playerIndex);
+	public void redoDraw() {
+		undoredo.redoDraw();
 	}
 	
 	/**
@@ -305,6 +303,17 @@ public class FileStream {
 	 */
 	public String highscore() {
 		return score.highscore();
+	}
+	
+	public static void main(String[] args) {
+		
+		FileStream fs = new FileStream();
+		
+		fs.newGame("einTestSpiel", "Anna", "Bernd", "WWWWWCCCCDSDFDSFWWWW", "WWWWWWWDSFDFWWWWWW", "10,10");
+		
+		fs.newDraw("firstdraw", 1);
+		fs.newDraw("anotherdraw", 2);
+		
 	}
 	
 }
