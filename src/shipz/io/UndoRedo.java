@@ -177,7 +177,7 @@ public class UndoRedo {
 //		ur.newDraw("ZweiterZug", 1);
 //		ur.newDraw("1sterZug", 2);
 //		ur.saveToFile("blabla");
-		
+		 
 		
 /*		Stack<String> test = new Stack<String>();
 		test.push("1");

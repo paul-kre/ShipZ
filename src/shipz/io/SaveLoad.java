@@ -38,7 +38,7 @@ public class SaveLoad {
 		file = new File(fileDirectory() + File.separator + "saves.shipz");
 		makeDirectory(file);
 	}
-	
+	 
 	// IM
 	/**
 	 * Methode, die alle benötigten Informationen über ein Spiel in einen String speichert,
