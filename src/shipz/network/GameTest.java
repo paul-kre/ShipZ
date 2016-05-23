@@ -49,23 +49,38 @@ public class GameTest implements GameEventListener {
 
         byte id = e.getId();
 
+        int x;
+        int y;
+        char res = ' ';
 
         switch (id) {
+
             case SHOOT_EVENT: // Shoot
-                Shot shot = source.getShot();
-                System.out.println(id);
+                x = source.getX();
+                y = source.getY();
 
                 if(_isHost) {
-                    shot.setHit('x');
-                    source.shootInfo(shot);
+                    res = 'x'; // Check tile
+                    source.shootResult(x, y, res);
                 }
 
-                opponent.shootField(shot);
+                opponent.shootField(x, y, res);
 
                 break;
             case SHOOT_RESULT: // Shoot Info
-                Shot shootInfo = source.getShot();
-                opponent.shootInfo(shootInfo);
+                x = source.getX();
+                y = source.getY();
+                res = source.getResult();
+
+                if(_isHost) { // is host
+                    res = 'x'; // Check tile
+                    source.shootResult(x, y, res);
+                }
+
+                if(!_isHost) { // is client
+                    res = source.getResult();
+                    opponent.shootResult(x, y, res);
+                }
 
                 break;
             case CLOSE_EVENT: // Close

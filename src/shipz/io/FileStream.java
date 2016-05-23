@@ -284,8 +284,8 @@ public class FileStream {
 	 * @param playerName Name des Spielers
 	 * @param event Events: u für undo, h für hit, s für sink (weitere folgen)
 	 */
-	public void updateScoreOnEvent(String playerName, char event) {
-		score.updateScoreOnEvent(playerName, event);
+	public void updateScoreOnEvent(String gameName, String playerName, char event) {
+		score.updateScoreOnEvent(gameName, playerName, event);
 	}
 	
 	/**

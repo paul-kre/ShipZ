@@ -17,7 +17,6 @@ public class Keyboard extends PlayerTest {
         super(name);
         _keyboard = new Scanner(System.in);
         _end = false;
-        _shot = null;
     }
 
     @Override
@@ -33,7 +32,8 @@ public class Keyboard extends PlayerTest {
                 } else if (validShot( input )) {
                     int x = convertX(input);
                     int y = convertY(input);
-                    _shot = new Shot(x, y);
+                    setX(x);
+                    setY(y);
                     fireGameEvent(SHOOT_EVENT);
                 }
         }
@@ -62,20 +62,16 @@ public class Keyboard extends PlayerTest {
         return Integer.parseInt( y );
     }
 
-    public Shot getShot() {
-        return _shot;
-    }
-
-    public void shootField(Shot shot) {
+    public void shootField(int x, int y, char result) {
         System.out.println();
-        System.out.println("Opponent shot at: [" + shot.getX() + ":" + shot.getY() + "]");
-        if(shot.getHit() == 'x')
+        System.out.println("Opponent shot at: [" + x + ":" + y + "]");
+        if(result == 'x')
             System.out.println("It was a hit!");
     }
 
-    public void shootInfo(Shot shot) {
-        System.out.println("You shot at: [" + shot.getX() + ":" + shot.getY() + "]");
-        if(shot.getHit() == 'x')
+    public void shootResult(int x, int y, char result) {
+        System.out.println("You shot at: [" + x + ":" + y + "]");
+        if(result == 'x')
             System.out.println("It was a hit!");
     }
 
