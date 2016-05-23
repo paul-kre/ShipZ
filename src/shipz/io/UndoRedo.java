@@ -109,19 +109,35 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Gibt die ArrayList für die Züge des ersten Spielers als String zurück.
+	 * Gibt den Stack für die Züge des ersten Spielers als String zurück.
 	 * @return die ArrayList für die Züge des ersten Spielers als String
 	 */
-	protected String getGamePlayer1() {
+	protected String getDrawsPlayer1() {
 		return gamePlayer1.toString();
 	}
 	
 	/**
-	 * Gibt die ArrayList für die Züge des zweiten Spielers als String zurück.
+	 * Gibt den Stack für die Züge des zweiten Spielers als String zurück.
 	 * @return die ArrayList für die Züge des zweiten Spielers als String
 	 */
-	protected String getGamePlayer2() {
+	protected String getDrawsPlayer2() {
 		return gamePlayer2.toString();
+	}
+	
+	/**
+	 * Gibt den Stack für die rückgängig gemachten Züge des ersten Spielers zurück.
+	 * @return der Stack für die rückgängig gemachten Züge des ersten Spielers
+	 */
+	protected String getRedoneDrawsPlayer1() {
+		return redoPlayer1.toString();
+	}
+	
+	/**
+	 * Gibt den Stack für die rückgängig gemachten Züge des zweiten Spielers zurück.
+	 * @return der Stack für die rückgängig gemachten Züge des zweiten Spielers
+	 */
+	protected String getRedoneDrawsPlayer2() {
+		return redoPlayer2.toString();
 	}
 	
 	/**
@@ -136,6 +152,10 @@ public class UndoRedo {
 	
 	/**
 	 * Leert alle Stacks.
+	 * Alle getätigten Züge werden gelöscht,
+	 * sie werden NICHT in der Datei gespeichert.
+	 * Um die Daten zu speichern sollte vorher die Methode
+	 * <i>.saveToFile()</i> aufgerufen werden.
 	 */
 	protected void clear() {
 		gamePlayer1.clear();
@@ -163,13 +183,13 @@ public class UndoRedo {
 //		ur.saveToFile("blabla");
 		
 		
-		Stack<String> test = new Stack<String>();
+/*		Stack<String> test = new Stack<String>();
 		test.push("1");
 		test.push("2");
 		test.push("3");
 		System.out.println(test.toString());
 		System.out.println(test.pop());
-		System.out.println(test.toString());
+		System.out.println(test.toString()); */
 		
 	}
 	

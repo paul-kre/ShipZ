@@ -503,7 +503,7 @@ public class SaveLoad {
 //		System.out.println(sl.savegame);
 		//sl.saveGameFile();
 		SaveLoad saveload = new SaveLoad();
-		saveload.clearFile();
+//		saveload.clearFile();
 //		saveload.newGame("test", "gegnerTest", 8, "fesfdsgfdb", "dsfsdfgbfgb");
 //		saveload.saveGameFile();
 		//saveload.clearFile();
