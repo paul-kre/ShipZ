@@ -19,7 +19,12 @@ public class FileStream {
 	
 	// TODO LIST
 
-
+	// UndoRedo Bug fixen
+		// Wenn Spieler 1 einen Zug getätigt hat und diesen rückgängig macht
+		// darf nicht der zuletzt getätigte Zug von Spieler 2 rückgängig gemacht werden
+	
+	// Events nur beim fehlerhaften Laden
+	
 	// Instanz-Variablen in der SaveLoad-Klasse ?
 	
 	/**
@@ -304,7 +309,7 @@ public class FileStream {
 	public String highscore() {
 		return score.highscore();
 	}
-	 
+	
 	public static void main(String[] args) {
 		
 		FileStream fs = new FileStream();
@@ -313,6 +318,10 @@ public class FileStream {
 		
 		fs.newDraw("firstdraw", 1);
 		fs.newDraw("anotherdraw", 2);
+		fs.newDraw("seconddraw", 1);
+		fs.newDraw("another one", 2);
+		
+		fs.saveDrawsToFile("einTestSpiel");
 		
 	}
 	

@@ -298,6 +298,8 @@ public class Score {
 		System.out.println(s.comboPlayer1);
 		System.out.println(s.comboPlayer2); */
 		
+		s.highscoreTest();
+		
 	}
 
 }
