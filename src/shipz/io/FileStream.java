@@ -27,6 +27,11 @@ public class FileStream {
 	
 	// Instanz-Variablen in der SaveLoad-Klasse ?
 	
+	// Bis nächsten Dienstag:
+		// XML für SaveLoad weiter implementieren
+		// Klassendiagramm aktualisieren
+		// Score + Highscore evtl. etwas verbessern
+	
 	/**
 	 * Konstruktor der Klasse.
 	 */
