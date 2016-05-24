@@ -1,10 +1,8 @@
 package shipz.io;
 
-import java.awt.List;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
 
@@ -27,6 +25,8 @@ public class Score {
 	private int comboPlayer1;
 	/** Zählt die Combos des zweiten Spielers */
 	private int comboPlayer2;
+	/** Trennzeichen zwischen Namen und Punkte */
+	private String scoreSeparator = "=";
 	
 	// Konstruktor
 	/**
@@ -105,7 +105,7 @@ public class Score {
 	 */
 	private void setScore(String playerName, int score) {
 		String s = readHighscoreFile();
-		s = s.replaceAll(playerName+":"+getScore(playerName)+":", playerName+":"+score+":");
+		s = s.replaceAll(playerName+scoreSeparator+getScore(playerName), playerName+scoreSeparator+score);
 		saveload.writeFile(highscoreFile, s);
 	}
 	
@@ -116,22 +116,15 @@ public class Score {
 	 * @return Die Punktzahl des Spielers
 	 */
 	private int getScore(String playerName) {
-		String s = readHighscoreFile().replaceAll("\n", "");
-		String[] a = s.split(":");
-		
-		int c = 0;
-		for(int i = 0; i < a.length; i++) {
-			if(a[i].equalsIgnoreCase(playerName)) {
-				c = Integer.parseInt(a[i+1]);
-			}
-		}
-		return c;
+		String line = saveload.searchLine(highscoreFile, playerName);
+		return Integer.parseInt(line.split(scoreSeparator)[1]);
 	}
 	
 	/**
 	 * Mit der Methode aus der SaveLoad-Klasse wird der aktuelle Highscore als {@link String}
 	 * in die Instanz-Variable << highscore >> geschrieben.
 	 */
+	@Deprecated
 	protected String readHighscoreFile() {
 		return saveload.readFile(highscoreFile);
 	}
@@ -142,7 +135,7 @@ public class Score {
 	 */
 	protected void addPlayerIntoHighscore(String playerName) {
 		if(doesPlayerExist(playerName) == false) {
-			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+":0:");
+			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+scoreSeparator+"0");
 		} else {
 			System.err.println("Fehler beim Einfügen in die Score-Datei! Dieser Spieler existiert bereits!");
 		}
@@ -164,7 +157,7 @@ public class Score {
 		while(exists == false && scanner.hasNextLine()) {
 			String str = scanner.nextLine();
 			
-			if(str.startsWith(playerName+":")) {
+			if(str.startsWith(playerName+scoreSeparator)) {
 				exists = true;
 			}
 		}
@@ -184,7 +177,7 @@ public class Score {
 	 * @return Die Highscore-Liste als String
 	 */
 	protected String highscore() {
-		String[] h = saveload.readFile(highscoreFile).replaceAll("\n", "").split(":");
+		String[] h = saveload.readFile(highscoreFile).replaceAll("\n", "").split(scoreSeparator);
 		String str = "";
 		ArrayList<Integer> score = new ArrayList<Integer>();
 		
@@ -195,7 +188,7 @@ public class Score {
 		Collections.sort(score, Collections.reverseOrder()); // absteigend sortieren
 		
 		for(int i = 0; i < score.size(); i++) {
-			str += findPlayer(score.get(i)) + ":" + score.get(i) + ",";
+			str += findPlayer(score.get(i)) + scoreSeparator + score.get(i) + ",";
 		}
 		
 		// FORMAT des fertigen Highscore-Strings
@@ -210,13 +203,14 @@ public class Score {
 	 * Nur eine
 	 * (sehr beschissene)
 	 * Übergangslösung.
-	 * Funktioniert aber.
+	 * Funktioniert nicht ganz, für den Fall, dass zwei (oder mehr) Spieler die selbe Punktzahl haben,
+	 * wird nur ein Spieler in den Highscore getragen, nicht alle.
 	 * @param score
 	 * @return
 	 */
 	private String findPlayer(int score) {
 		String str = "";
-		String[] file = readHighscoreFile().replaceAll("\n", "").split(":");
+		String[] file = readHighscoreFile().replaceAll("\n", "").split(scoreSeparator);
 		
 		for(int i = 0; i < file.length-1; i++) {
 			if(file[i+1].equalsIgnoreCase(""+score)) {
@@ -234,12 +228,13 @@ public class Score {
 	@Deprecated
 	private void highscoreTest() {
 		// so könnte man aus dem erstellten String dann eine Highscoreliste darstellen
+		
 		String[] h = highscore().split(",");
 		String[] p = null;
 		
 		System.out.println("No.\tPlayer Name\t\t\tScore");
 		for(int i = 0; i < h.length; i++) {
-			p = h[i].split(":");
+			p = h[i].split(scoreSeparator);
 			System.out.println(i+1+".\t" + p[0] + "\t\t\t" + p[1]);
 		}
 		
@@ -298,7 +293,12 @@ public class Score {
 		System.out.println(s.comboPlayer1);
 		System.out.println(s.comboPlayer2); */
 		
-		s.highscoreTest();
+//		s.highscoreTest();
+		
+		System.out.println(s.getScore("C3PO"));
+		s.setScore("C3PO", 123);
+		System.out.println(s.getScore("C3PO"));
+		System.out.println(s.getScore("Dieter"));
 		
 	}
 

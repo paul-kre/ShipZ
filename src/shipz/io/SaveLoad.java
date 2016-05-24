@@ -379,6 +379,40 @@ public class SaveLoad {
 	}
 	
 	/**
+	 * Sucht in einer Datei nach einer bestimmten Zeile.
+	 * Es wird mit nach einem Prefix gesucht.
+	 * Wenn die Zeile gefunden wurde, wird sie als String zurückgegeben.
+	 * @param file Die Datei, in der gesucht werden soll.
+	 * @param prefix Prefix der Zeile, nach der gesucht werden soll.
+	 * @return Die gefundene Zeile
+	 */
+	protected String searchLine(File file, String prefix) {
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		String line = scanner.nextLine();
+		while(!(line.startsWith(prefix))) {
+			line = scanner.nextLine(); // geht so lange weiter, bis er die Zeile gefunden hat
+		}
+		
+		return line;
+	}
+	
+	/**
+	 * Sucht in der Datei (die die Spielstände speichert) nach einer bestimmten Zeile.
+	 * Es wird mit nach einem Prefix gesucht.
+	 * Wenn die Zeile gefunden wurde, wird sie als String zurückgegeben.
+	 * @param prefix Prefix der Zeile, nach der gesucht werden soll.
+	 * @return Die gefundene Zeile
+	 */
+	protected String searchLine(String prefix) {
+		return searchLine(file, prefix);
+	}
+	
+	/**
 	 * Liest aus einer Datei den gesamten Inhalt aus
 	 * und gibt ihn als {@link String} zurück.
 	 * @param file Die gewünschte Datei.
@@ -388,8 +422,8 @@ public class SaveLoad {
 		String s = "";
 		try {
 			scanner = new Scanner(file);
-		} catch (FileNotFoundException x) {
-			x.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 		while(scanner.hasNextLine()) {
 			s += scanner.nextLine() + "\n";
