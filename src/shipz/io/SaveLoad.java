@@ -130,7 +130,7 @@ public class SaveLoad {
 	 * @return der Spielstand als {@link String}
 	 */
 	protected String getGame(String gameName) {
-		return searchLineInFile("gameName:" + gameName + ":");
+		return searchLine("gameName:" + gameName + ":");
 	}
 	
 	/**
@@ -461,48 +461,6 @@ public class SaveLoad {
 	 */
 	protected void writeFile(String str) {
 		writeFile(file, str);
-	}
-	
-	/**
-	 * Es wird in der Spielstand-Datei mit Hilfe eines Prefix nach einer 
-	 * bestimmten Zeile bzw. einem bestimmten Spielstand gesucht.
-	 * Dabei wird nicht die ganze Datei gelesen, sondern nur bis zur Zeile, die gesucht wird.
-	 * Die gefundene Zeile wird als {@link String} zurückgegeben.
-	 * @param prefix Prefix der gesuchten Zeile
-	 * @return die gefundene Zeile
-	 */
-	protected String searchLineInFile(String prefix) {
-		return searchLineInFile(file, prefix).replaceAll(separator, "");
-	}
-	
-	/**
-	 * Es wird in einer Datei mit Hilfe eines Prefix nach einer bestimmten Zeile gesucht.
-	 * Dabei wird nicht die ganze Datei gelesen, sondern nur bis zur Zeile, die gesucht wird.
-	 * Die gefundene Zeile wird als {@link String} zurückgegeben.
-	 * @param file Die Datei, in der gesucht werden soll.
-	 * @param prefix Prefix der gesuchten Zeile
-	 * @return die gefundene Zeile
-	 */
-	protected String searchLineInFile(File file, String prefix) {
-		String r = "";
-		
-		try {
-			scanner = new Scanner(file);
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		boolean found = false;
-		while(found == false && scanner.hasNextLine()) {
-			String s = scanner.nextLine();
-			
-			if(s.startsWith(prefix)) {
-				r = s;
-				found = true;
-			}
-		}
-		
-		return r.replaceAll(separator, "");
 	}
 	
 	/**
