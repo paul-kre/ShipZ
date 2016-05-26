@@ -72,7 +72,7 @@ public class TempKiGame{
         board[4][2] = 'x';
         board[5][2] = 'x';
         board[6][2] = 'x';
-       // board[7][2] = 'x';
+        board[7][2] = 'x';
 
 
 
@@ -223,7 +223,7 @@ public class TempKiGame{
                 return false;								//Schiff wurde nicht versenkt
             }
             else {											//zerstörtes Schiffelement auf angrenzendem Feld
-                return checkShipDestroyedUp(x, y+1, board);	//weitere Prüfung vom angrenzenden Feld
+                return checkShipDestroyedDown(x, y+1, board);	//weitere Prüfung vom angrenzenden Feld
             }
         }
         else {

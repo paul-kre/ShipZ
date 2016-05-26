@@ -21,7 +21,7 @@ public abstract class Computer extends Player {
 
 
     /** Die Feldgröße des aktuellen Spiels. Standardmäßig ist es 10 x 10  */
-    protected int fieldSize = 10;
+    private int fieldSize = 10;
 
     /**
      * Zweidimensionales Byte-Array, welches als Kopie des zu beschießenen Feldes dient<br>
@@ -70,7 +70,7 @@ public abstract class Computer extends Player {
 
 
     /** Random-Object zur Generierung von zufälligen Integer Zahlen */
-    protected Random random = new Random();
+    private Random random = new Random();
 
 
     /** Liste in der Zahlen von 0 bis <b>fieldSize</b> gespeichert werden, die von der KI
@@ -643,7 +643,7 @@ public abstract class Computer extends Player {
 
     /**
      * Überprüfen von Koordinaten ob diese von der KI
-     * beschossen und eventuell ein Schiff getroffen/zerstört wurden
+     * beschossen und eventuell ein Schiff getroffen/zerstört wurden<br><br>
      *
      * Methode sollte direkt nach dem Aufruf der shootField Methode
      * der KI ausgeführt werden, damit eine Generierung von redundanten
@@ -652,10 +652,10 @@ public abstract class Computer extends Player {
      * @param yCoord Y-Koordinate der Zelle
      * @param xCoord X-Koordinate der Zelle
      * @param hitState Status der beschossenen Koordinate.
-     *                 byte kann folgenden Status besitzen:
-     *                 0: Wasser wurde getroffen.
-     *                 1: Schiffsteil wurde getroffen.
-     *                 2: Schiffsteil wurde versenkt.
+     *                 byte kann folgenden Status besitzen:<br>
+     *                 0: Wasser wurde getroffen.<br>
+     *                 1: Schiffsteil wurde getroffen.<br>
+     *                 2: Schiffsteil wurde versenkt.<br>
      */
     public void shootResult(int yCoord, int xCoord, byte hitState ){
 
@@ -723,7 +723,7 @@ public abstract class Computer extends Player {
 
     /**
      * Die aktuell betrachtete Richtungskoordinate wird auf
-     * die zuerst getroffene Koordinate des SChiffes zurückgesetzt
+     * die zuerst getroffene Koordinate des Schiffes zurückgesetzt
      */
     private void resetCurrentHitToFirstHit(){
         this.currentShipTile[0]= this.firstShipTileHit[0];

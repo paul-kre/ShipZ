@@ -65,8 +65,8 @@ public class Easy extends Computer {
 
 
         //Zwischenspeichern der generierten X- und Y-Koordinaten
-        int yCoord = 0;
-        int xCoord = 0;
+        int yCoord;
+        int xCoord;
 
 
 

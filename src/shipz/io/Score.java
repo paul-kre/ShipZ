@@ -124,7 +124,6 @@ public class Score {
 	 * Mit der Methode aus der SaveLoad-Klasse wird der aktuelle Highscore als {@link String}
 	 * in die Instanz-Variable << highscore >> geschrieben.
 	 */
-	@Deprecated
 	protected String readHighscoreFile() {
 		return saveload.readFile(highscoreFile);
 	}

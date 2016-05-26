@@ -23,14 +23,13 @@ public class FileStream {
 		// Wenn Spieler 1 einen Zug getätigt hat und diesen rückgängig macht
 		// darf nicht der zuletzt getätigte Zug von Spieler 2 rückgängig gemacht werden
 	
-	// Events nur beim fehlerhaften Laden
+	// Events nur beim fehlerhaften Laden ?
 	
 	// Instanz-Variablen in der SaveLoad-Klasse ?
 	
 	// Bis nächsten Dienstag:
 		// XML für SaveLoad weiter implementieren
 		// Klassendiagramm aktualisieren
-		// Score + Highscore evtl. etwas verbessern
 	
 	/**
 	 * Konstruktor der Klasse.
