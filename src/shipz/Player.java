@@ -69,7 +69,7 @@ public abstract class Player extends GameEventSource implements Runnable {
 
 
 
-    public abstract void shootField(int x, int y, byte result);
+    public void shootField(int x, int y, byte result) {}
 
 	//public abstract void end();
 }
