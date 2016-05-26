@@ -82,7 +82,7 @@ public abstract class Computer extends Player {
      * freie Koordinaren haben, mal der Größe von <b>fieldSize</b>
      * beschränkt wird.
      */
-    protected ArrayList<Integer> includedRows =  new ArrayList<>();
+    private ArrayList<Integer> includedRows =  new ArrayList<>();
 
 
     /** Liste in der Zahlen von 0 bis <b>fieldSize</b> gespeichert werden, die von der KI
@@ -94,7 +94,8 @@ public abstract class Computer extends Player {
      * freie Koordinaren haben, mal der Größe von <b>fieldSize</b>
      * beschränkt wird.
      */
-    protected ArrayList<Integer> includedColumns =  new ArrayList<>();
+    private ArrayList<Integer> includedColumns =  new ArrayList<>();
+
 
 
     //Contructor
@@ -109,7 +110,7 @@ public abstract class Computer extends Player {
     public Computer(int newFieldSize){
 
         fieldSize = newFieldSize;
-        initiateMirrorField(fieldSize);
+        initiateMirrorField();
 
         //ArrayList mit den gültigen Reihen die generiert initialisieren
         initializeList(includedRows);
@@ -353,8 +354,17 @@ public abstract class Computer extends Player {
      * Implementierung der shootField-Methode von
      * Player ohne Inhalt.
      */
-    public String shootField() { return null; }
+    public void shootField(int x, int y, byte result) { }
 
+
+    /**
+     * Abstrakte Methode die in den Subklassen implementiert wird
+     *
+     * KI generiert mithilfe dessen Algorithmus die nächste
+     * Koordinate die beschossen werden soll und speichert diese
+     * in die Instanzvariablen der Superklasse Player.
+     */
+    public abstract void generateAICoordinates();
 
     /**
      * Zur Erstellung von Zufallskoordinaten: public int nextInt(int n)
@@ -378,7 +388,7 @@ public abstract class Computer extends Player {
     protected int[] selectNeighbourCoordinates(){
 
         int efficiency = 0;
-        //Flag, welches versichert, dass aufjedenfall eine Richtung Koordinaten an shootField zurückgibt
+        //Flag, welches versichert, dass aufjedenfall eine Richtung Koordinaten an generateAICoordinates zurückgibt
         boolean directionReturnsNoCoord;
 
         //Falls schonmal ein Schiff getroffen wurde, wird die Umgebung um den Treffer auf weitere
@@ -504,9 +514,8 @@ public abstract class Computer extends Player {
      * Alle Koordinaten werden auf 0 (noch nicht beschossen) gesetzt und sind
      * standardmäßig beschießbar.
      *
-     * @param fieldSize Feldgröße des Spiegelfeldes. Sollte die gleiche Größe wie das benutzte Spieler- bzw KI-Feld sein.
      */
-    private void initiateMirrorField (int fieldSize){
+    private void initiateMirrorField (){
 
         this.mirrorField = new byte[fieldSize][fieldSize];
 
@@ -645,8 +654,8 @@ public abstract class Computer extends Player {
      * Überprüfen von Koordinaten ob diese von der KI
      * beschossen und eventuell ein Schiff getroffen/zerstört wurden<br><br>
      *
-     * Methode sollte direkt nach dem Aufruf der shootField Methode
-     * der KI ausgeführt werden, damit eine Generierung von redundanten
+     * Methode sollte direkt nach dem Aufruf des FireGameEvents in der Main Methode
+     * ausgeführt werden, damit eine Generierung von redundanten
      * Koordinaten vermiedern werden kann.
      *
      * @param yCoord Y-Koordinate der Zelle

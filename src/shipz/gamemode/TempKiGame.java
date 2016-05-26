@@ -388,14 +388,16 @@ public class TempKiGame{
     private void startGame(){
 
 
+        /*
         Computer ki = new Easy(10);
         System.out.println("Game Spielfeld mit Schiff(en):");
         this.displaySingleBoard(board1);
         System.out.println("\n");
-
+        */
 
         for (int i = 0; i < 100; i++){
 
+            /*
             System.out.println(i+1 + ". Beschuss:");
 
             //Vom Player die shootField methode aufrufen und
@@ -415,6 +417,7 @@ public class TempKiGame{
             ki.displayMirrorField();
             ki.printRowAndColumnItems();
             System.out.println("\n");
+            */
         }
 
 

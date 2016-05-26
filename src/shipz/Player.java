@@ -47,13 +47,7 @@ public abstract class Player extends GameEventSource implements Runnable {
     }
 
 
-    
-    /**
-	 * Initiiert Beschuss auf eine Zelle
-	 * shootField-Methode für die Klassen Netzwerk und GUI
-	 * @return Abzuschießende Zelle auf dem Spielfeld
-	 */
-	public abstract String shootField();
+
 
     /**
      * Rückgabeinformationen der Verwaltung über den aktuellen Status,
