@@ -6,7 +6,7 @@ public abstract class Player extends GameEventSource implements Runnable {
     private String _name;
     private int _x;
     private int _y;
-    private char _result;
+    private byte _result;
 
     public Player(){}
     
@@ -42,7 +42,7 @@ public abstract class Player extends GameEventSource implements Runnable {
         return _y;
     }
 
-    public char getResult() {
+    public byte getResult() {
         return _result;
     }
 
