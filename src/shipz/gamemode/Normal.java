@@ -47,7 +47,7 @@ public class Normal extends Computer {
 	 * berücksichtigt bei der Erstellung der Zufallskoordinaten.<br><br>
 	 *
 	 */
-	public void generateAICoordinates() {
+	protected void generateAICoordinates() {
 
 	}
 
