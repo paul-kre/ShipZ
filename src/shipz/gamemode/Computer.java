@@ -916,6 +916,10 @@ public abstract class Computer extends Player {
 
 
 
+
+
+
+
     /**
      * Prüft ob aktuell ein Schiff getroffen, aber noch nicht versenkt wurde
      *

@@ -139,8 +139,7 @@ public class Easy extends Computer {
 
 
 
-    @Override
-    public void run() {
+     public void run() {
         // TODO Auto-generated method stub
 
     }

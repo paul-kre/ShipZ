@@ -75,7 +75,7 @@ public class Hard extends Computer {
 	 * des Spielfeldes
 	 *
 	 */
-	private String maxHitProbabilityCoordinates () {
+	private int [] maxHitProbabilityCoordinates () {
 
 		return null;
 	}
