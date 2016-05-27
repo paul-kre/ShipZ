@@ -30,7 +30,7 @@ public abstract class Player extends GameEventSource implements Runnable {
         _y = y;
     }
 
-    protected void setResult(char res) {
+    protected void setResult(byte res) {
         _result = res;
     }
 
