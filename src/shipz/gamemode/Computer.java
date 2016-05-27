@@ -98,6 +98,8 @@ public abstract class Computer extends Player {
 
 
 
+
+
     //Contructor
 
     /**
@@ -120,234 +122,10 @@ public abstract class Computer extends Player {
     }
 
 
-    /**
-     * Füllt eine Liste mit den Werten von 0 bis <b>fieldSize</b> für die Generierung der
-     * Zufallszahlen
-     *
-     * @param list Die Arrayliste die mit standardwerten von 0 bis <b>fieldSize</b> gefüllt werden soll
-     */
-    private void initializeList ( ArrayList<Integer> list){
 
-        for (int i= 0; i < fieldSize; i++){
-            list.add(i);
-        }
-    }
 
 
-    /**
-     * Gibt eine zufällige integerzahl für die Verwendung als Y-Koordinate aus der ArrayListe <b>includedRows</b> zurück.<br>
-     * Die zufälligen Zahlen können innerhalb 0 bis <b>fieldSize</b> liegen.<br>
-     * Ist die Reihe einer Y-Koordinate voll, wurde die Reihe ausgeschlossen und die entsprechende Zahl ist in der
-     * ArrayListe nicht mehr verfügbar für den Rest des Spiels.
-     *
-     * @return zufällige Zahl zwischen 0 und <b>fieldSize</b>, dessen Reihen noch nicht voll sind
-     */
-    protected int randomRowInt() {
-
-        if (includedRows.size() > 0){
-            return this.includedRows.get(random.nextInt(includedRows.size()));
-        }
-
-        return random.nextInt(fieldSize);
-    }
-
-    /**
-     * Gibt eine zufällige integerzahl für die Verwendung als X-Koordinate aus der ArrayListe <b>includedColumns</b> zurück.<br>
-     * Die zufälligen Zahlen können innerhalb 0 bis <b>fieldSize</b> liegen.<br>
-     * Ist die Reihe einer X-Koordinate voll, wurde die Reihe ausgeschlossen und die entsprechende Zahl ist in der
-     * ArrayListe nicht mehr verfügbar für den Rest des Spiels.
-     *
-     * @return zufällige Zahl zwischen 0 und <b>fieldSize</b>, dessen Spalten noch nicht voll sind
-     */
-    protected int randomColumnInt() {
-
-        if (includedColumns.size() > 0) {
-            return this.includedColumns.get(random.nextInt(includedColumns.size()));
-        }
-
-        return random.nextInt(fieldSize);
-    }
-
-
-    /**
-     * Prüft eine Reihe, nachdem etwas in dieser gespeichert wurde, und schließt
-     * die Generierung von Zufallskoordinaten für diese Reihe in den nächsten Zügen aus,
-     * falls die Reihe voll ist.
-     *
-     * @param row Die Reihe die geprüft und eventuell ausgeschlossen wird. Ist im normalfall eine übergebene Y-Koordinate.
-     */
-        protected void excludeFullRows( int row){
-
-            //Zu allererst wird geprüft ob die angegebene Reihe sich innerhalb des Spielfeldes befinden kann ( zwischen 0 und fieldSize)
-            if ( row >= 0 && row < this.fieldSize){
-
-                //Variablen die beim Schleifendurchlauf die Koordinaten der entsprechenden Spielfeldhälften prüfen
-                int fieldCenter = this.fieldSize / 2;
-                int leftSide = fieldCenter -1;
-                int rightSide = fieldCenter +1;
-
-                //Flag zum Abbrechen der Schleife falls ein leeres Feld gefunden wurde, da man in dem Fall weiss, dass die Reihe nicht voll ist
-                boolean emptySlotFound = false;
-
-                //Überprüfung ob überhaupt die Mitte des Feldes frei ist. Wenn sie es ist, kann die Reihe schonmal nicht ausgeschlossen werden
-                if ( !isCoordinateOccupied (row, fieldCenter) && !isCoordinateShipPart (row, fieldCenter ) ){
-
-
-                    // Die Mitte des Spielfeldes ist frei, deshalb kann die Reihe noch nicht gelöscht werden. Die Methode endet hier.
-
-                } else{
-
-
-                    do{
-
-                        //Linke Spielfeldhälfte überprüfen
-
-                        if (isCoordinateInField(row, leftSide )){
-
-                            if ( !isCoordinateOccupied (row, leftSide) && !isCoordinateShipPart (row, leftSide ) ){
-
-                                emptySlotFound = true;
-                            }
-                        }
-
-                        //Rechte Spielfeldhälfte überprüfen
-                        if (isCoordinateInField(row, rightSide )){
-
-                            if ( !isCoordinateOccupied (row, rightSide) && !isCoordinateShipPart (row, rightSide ) ){
-
-                                emptySlotFound = true;
-                            }
-                        }
-
-
-                        //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die linke und rechte
-                        //Spielfeldhälfte zu prüfen
-                        leftSide--;
-                        rightSide++;
-
-                    }while ( (leftSide >= 0  || rightSide < this.fieldSize) && !emptySlotFound); //end while
-
-
-                    //Nachdem die Schleife durchgelaufen ist und kein freien Platz gefunden hat weiss man, dass die Reihe voll ist.
-                    //Die Reihe wird in de Fall ausgeschlossen
-                    if (!emptySlotFound){
-
-                        deleteRowFromList(row);
-                    }
-
-                }
-
-
-            }
-
-        }
-
-
-
-
-    /**
-     * Prüft eine Spalte, nachdem etwas in dieser gespeichert wurde, und schließt
-     * die Generierung von Zufallskoordinaten für diese Spalte in den nächsten Zügen aus,
-     * falls die Spalte voll ist.
-     *
-     * @param column Die Reihe die geprüft und eventuell ausgeschlossen wird. Ist im normalfall eine übergebene Y-Koordinate.
-     */
-    protected void excludeFullColumns( int column){
-
-        //Zu allererst wird geprüft ob die angegebene Reihe sich innerhalb des Spielfeldes befinden kann ( zwischen 0 und fieldSize)
-        if ( column >= 0 && column < this.fieldSize){
-
-            //Variablen die beim Schleifendurchlauf die Koordinaten der entsprechenden Spielfeldhälften prüfen
-            int fieldCenter = this.fieldSize / 2;
-            int upperSide = fieldCenter -1;
-            int lowerSide = fieldCenter +1;
-
-            //Flag zum Abbrechen der Schleife falls ein leeres Feld gefunden wurde, da man in dem Fall weiss, dass die Reihe nicht voll ist
-            boolean emptySlotFound = false;
-
-            //Überprüfung ob überhaupt die Mitte des Feldes frei ist. Wenn sie es ist, kann die Reihe schonmal nicht ausgeschlossen werden
-
-            if ( !isCoordinateOccupied ( fieldCenter, column ) && !isCoordinateShipPart (fieldCenter, column ) ){
-
-
-                // Die Mitte des Spielfeldes ist frei, deshalb kann die Spalte noch nicht gelöscht werden. Die Methode endet hier.
-
-            } else{
-
-
-                do{
-
-                    //Linke Spielfeldhälfte überprüfen
-
-                    if (isCoordinateInField( upperSide, column)){
-
-                        if ( !isCoordinateOccupied (upperSide, column) && !isCoordinateShipPart (upperSide, column ) ){
-
-                            emptySlotFound = true;
-                        }
-                    }
-
-                    //Rechte Spielfeldhälfte überprüfen
-                    if (isCoordinateInField(lowerSide, column )){
-
-                        if ( !isCoordinateOccupied (lowerSide, column) && !isCoordinateShipPart (lowerSide, column ) ){
-
-                            emptySlotFound = true;
-                        }
-                    }
-
-
-                    //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die linke und rechte
-                    //Spielfeldhälfte zu prüfen
-                    upperSide--;
-                    lowerSide++;
-
-                }while ( (upperSide >= 0  || lowerSide < this.fieldSize) && !emptySlotFound); //end while
-
-
-                //Nachdem die Schleife durchgelaufen ist und kein freien Platz gefunden hat weiss man, dass die Reihe voll ist.
-                //Die Reihe wird in de Fall ausgeschlossen
-                if (!emptySlotFound){
-
-                    deleteColumnFromList(column);
-                }
-
-            }
-
-
-        }
-
-    }
-
-
-
-
-    /**
-     * Löscht eine bestimmte Reihe aus dem ArrayList<b>includedRows</b>, damit es nicht mehr bei der
-     * Generierung der Zufallszahlen auftritt.
-     *
-     * @param row Die Reihe dessen Listenvariable gelöscht wird
-     */
-    protected void deleteRowFromList(int row){
-
-        //Integer.valueOf() muss angegeben werden, weil die Liste ansonsten die Zahl an der Stelle X löschen würde, nicht aber
-        //die Zahl mit dem Wert X
-        this.includedRows.remove(Integer.valueOf(row));
-    }
-
-    /**
-     * Löscht eine bestimmte Spalte aus dem ArrayList<b>includedColumns</b>, damit es nicht mehr bei der
-     * Generierung der Zufallszahlen auftritt.
-     *
-     * @param column Die Spalte dessen Listenvariable gelöscht wird
-     */
-    protected void deleteColumnFromList(int column){
-
-        //Integer.valueOf() muss angegeben werden, weil die Liste ansonsten die Zahl an der Stelle X löschen würde, nicht aber
-        //die Zahl mit dem Wert X
-        this.includedColumns.remove(Integer.valueOf(column));
-    }
-
+    //IM
 
 
     /**
@@ -364,147 +142,95 @@ public abstract class Computer extends Player {
      * Koordinate die beschossen werden soll und speichert diese
      * in die Instanzvariablen der Superklasse Player.
      */
-    public abstract void generateAICoordinates();
+    protected abstract void generateAICoordinates();
 
-    /**
-     * Zur Erstellung von Zufallskoordinaten: public int nextInt(int n)
-     */
+
 
 
     /**
-     * Prüft ob aktuell ein Schiff getroffen, aber noch nicht versenkt wurde
+     * Überprüfen von Koordinaten ob diese von der KI
+     * beschossen und eventuell ein Schiff getroffen/zerstört wurden<br><br>
      *
-     * @return Ob ein Schiff getroffen wurde oder nicht
-     */
-    protected boolean isShipTileHit(){
-
-        return (this.firstShipTileHit[0] != -1  && this.firstShipTileHit[1] != -1);
-    }
-    /**
-     * Die direkten Nachbaarkoordinaten einer getroffenen Koordinate werden
-     * zur Überprüfung ausgewählt
+     * Methode sollte direkt nach dem Aufruf des FireGameEvents in der Main Methode
+     * ausgeführt werden, damit eine Generierung von redundanten
+     * Koordinaten vermiedern werden kann.
      *
+     * @param yCoord Y-Koordinate der Zelle
+     * @param xCoord X-Koordinate der Zelle
+     * @param hitState Status der beschossenen Koordinate.
+     *                 byte kann folgenden Status besitzen:<br>
+     *                 0: Wasser wurde getroffen.<br>
+     *                 1: Schiffsteil wurde getroffen.<br>
+     *                 2: Schiffsteil wurde versenkt.<br>
      */
-    protected int[] selectNeighbourCoordinates(){
+    public void shootResult(int yCoord, int xCoord, byte hitState ){
 
-        int efficiency = 0;
-        //Flag, welches versichert, dass aufjedenfall eine Richtung Koordinaten an generateAICoordinates zurückgibt
-        boolean directionReturnsNoCoord;
+        /**
+         * Erstellte Koordinaten werden gespeichert.
+         * Haben die Koordinaten ein Schiff versenkt, wird die getroffene Koordinate
+         * als Schiffsteil abgespeichert und die Umgebung des Schiffes wird abgespeichert
+         * in das Spiegelfeld.
+         *
+         * Wenn ein Schiff getroffen, aber nicht versenkt wurde, wird die
+         * Koordinate als Schiffsteil abgespeichert.
+         *
+         * Wenn kein Schiff getroffen wurde, wird die Koordinate nur
+         * als "beschossen" markiert und in das Spiegelfeld gespeichert.
+         */
+        if ( hitState == 2 ){
 
-        //Falls schonmal ein Schiff getroffen wurde, wird die Umgebung um den Treffer auf weitere
-        //Schiffsteile untersucht
+            setCoordinateShipPart(yCoord, xCoord);
 
-        /** Es wird von dem Treffer in eine Richtung weitergesucht und die nächste Koordinate
-         in der Richtung wird zurückgegeben. Wenn zurückgegebene Koordinate nicht im Spielfeld
-         liegt, wird die nächste Richtung untersucht. */
-        do{
+            // Schiff wurde zerstört, deshalb wird das aktuelle Schiff "vergessen"
+            resetCurrentShipCheck();
 
-            /****************************************/
-            efficiency++;
-            /*****************************************************/
+            saveShipVicinity(yCoord, xCoord);
 
-            directionReturnsNoCoord = false;
+        } else if (hitState == 1){
 
-
-            //Nordliche Richtung überprüfen
-            if (this.currentDirection == 0){
-
-                //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
-                if( isCoordinateInField (this.currentShipTile[0] -1,  this.currentShipTile[1] ) && !isCoordinateOccupied (this.currentShipTile[0] -1, this.currentShipTile[1] ) ){
-
-                    /**************************************** */
-                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
-                    /*****************************************************/
-
-                    return new int[]{ this.currentShipTile[0] -1,  this.currentShipTile[1] } ;
-
-                }
-
-                //Südliche Richtung überprüfen
-            } else if (this.currentDirection == 1){
-
-                //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
-                if( isCoordinateInField( this.currentShipTile[0] +1,  this.currentShipTile[1] ) && !isCoordinateOccupied (this.currentShipTile[0] +1,  this.currentShipTile[1]) ){
-
-                    /**************************************** */
-                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
-                    /*****************************************************/
-
-                    return new int[]{ this.currentShipTile[0] +1,  this.currentShipTile[1] } ;
-
-                }
-
-
-                //Westliche Richtung überprüfen
-            } else if (this.currentDirection == 2){
-
-                //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
-                if( isCoordinateInField( this.currentShipTile[0] ,  this.currentShipTile[1] -1 ) && !isCoordinateOccupied (this.currentShipTile[0] ,  this.currentShipTile[1] -1)){
-
-                    /**************************************** */
-                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
-                    /*****************************************************/
-
-                    return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] -1 } ;
-
-                }
-
-
-                //Östliche Richtung überprüfen
-            }else if (this.currentDirection == 3){
-
-                //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
-                if( isCoordinateInField( this.currentShipTile[0],  this.currentShipTile[1] +1 ) && !isCoordinateOccupied (this.currentShipTile[0],  this.currentShipTile[1] +1)){
-
-                    /**************************************** */
-                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
-                    /*****************************************************/
-
-                    return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] +1 } ;
-
-                }
-
-
+            /** Wenn zum ersten mal das Schiffsteil eines Schiffes getroffen wurde,
+             wird der erste Treffer zum Ankerpunkt für die Suche der anderen Schiffsteile
+             */
+            if (!isShipTileHit()){
+                this.firstShipTileHit[0] = yCoord;
+                this.firstShipTileHit[1] = xCoord;
             }
 
-            //Koordinate war nicht im Spielfeld bzw. Richtungskoordinate gibt kein leeres Feld zurück,
-            //deshalb wird zur nächsten Richtung gewechselt
-            setNextDirection();
-            resetCurrentHitToFirstHit();
-            directionReturnsNoCoord  = true;
+            //Die in der Richtung beschossene Koordinate hat etwas getroffen und wird als
+            //aktuell beschossenen Schiffsteil betrachtet
+            this.currentShipTile[0]= yCoord;
+            this.currentShipTile[1]= xCoord;
 
-        } while (directionReturnsNoCoord);
+            setCoordinateShipPart(yCoord, xCoord);
+
+            //Reihe und Spalte prüfen ob Sie voll ist. Falls ja, werden diese aus den
+            //weiteren Generierungen der Zufallszahlen ausgeschlossen
+            excludeFullRows(yCoord);
+            excludeFullColumns(xCoord);
 
 
+        } else {
 
-        return null;
+            //Wenn ein Beschuss in einer Richtung keinen Treffer erzielte,
+            // Wird die nächste Richtung ab dem Ankerpunkt weitergesucht
+            if (isShipTileHit()){
+                resetCurrentHitToFirstHit();
+                setNextDirection();
+            }
+            setCoordinateOccupied(yCoord, xCoord);
 
+            //Reihe und Spalte prüfen ob Sie voll ist. Falls ja, werden diese aus den
+            //weiteren Generierungen der Zufallszahlen ausgeschlossen
+            excludeFullRows(yCoord);
+            excludeFullColumns(xCoord);
+        }
     }
 
 
-    /**
-     * Nachdem ein getroffenes Schiff zerstört wurde, wird diese
-     * Methode aufgerufen um alle Einstellungen für das nächste
-     * zu Untersuchende Schiff zurückzusetzen.
-     *
-     */
-    private void resetCurrentShipCheck(){
 
-        this.firstShipTileHit = new int[] {-1, -1};
-        this.currentShipTile = new int[]{0, 0};
-        this.currentDirection = 0;
 
-    }
 
-    /**
-     * Wechselt die aktuell betrachtende Richtung
-     * um ein getroffenes Schiff
-     *
-     */
-    private void setNextDirection(){
 
-        this.currentDirection++;
-    }
 
 
     /**
@@ -590,6 +316,17 @@ public abstract class Computer extends Player {
         return (this.mirrorField[yCoord][xCoord] == 2);
     }
 
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Überprüft ob eine Koordinate sich im Spielfeld
      * oder außerhalb befindet.
@@ -607,136 +344,26 @@ public abstract class Computer extends Player {
 
 
     /**
-     * DEBUGGING METHODE FÜR MIRRORFIELD
-     *
-     * Zeigt das SpiegelFeld als ein Spielfeld.
-     * Nichtbeschossene Felder sind leer, beschossene Felder enthalten ein 'O'
-     */
-    public void displayMirrorField() {
-        //Ausgabe der oberen Feldbeschriftung
-        System.out.println("  A B C D E F G H I J");
-        //1. Zähler
-        int y;
-        //2. Zähler
-        int x;
-        //doppelte Schleife für Durchlauf durch alle Felder
-
-        for(y=0; y  < mirrorField.length; y++) {
-            //Ausgabe der seitlichen Feldbeschriftung
-            System.out.print(y);
-            for(x=0; x < mirrorField[y].length; x++) {
-
-                //Ausgabe der einzelnen Zellen
-
-
-                if (mirrorField[y][x] == 0){
-
-                    System.out.print(" " + " ");
-
-                } else if (mirrorField[y][x] == 1){
-
-                    System.out.print(" " + "o");
-
-                } else if( mirrorField[y][x] == 2){
-
-                    System.out.print(" " + "x");
-                }
-            }
-
-            //Zeilenumbruch
-            System.out.println();
-        }
-    }
-
-
-
-    /**
-     * Überprüfen von Koordinaten ob diese von der KI
-     * beschossen und eventuell ein Schiff getroffen/zerstört wurden<br><br>
-     *
-     * Methode sollte direkt nach dem Aufruf des FireGameEvents in der Main Methode
-     * ausgeführt werden, damit eine Generierung von redundanten
-     * Koordinaten vermiedern werden kann.
+     * Untersucht alle vier Richtungen um einen versenkten Treffer
+     * welcher ein Schiff zerstört hat und speichert die Umgebung ab
      *
      * @param yCoord Y-Koordinate der Zelle
      * @param xCoord X-Koordinate der Zelle
-     * @param hitState Status der beschossenen Koordinate.
-     *                 byte kann folgenden Status besitzen:<br>
-     *                 0: Wasser wurde getroffen.<br>
-     *                 1: Schiffsteil wurde getroffen.<br>
-     *                 2: Schiffsteil wurde versenkt.<br>
      */
-    public void shootResult(int yCoord, int xCoord, byte hitState ){
-
-        /**
-         * Erstellte Koordinaten werden gespeichert.
-         * Haben die Koordinaten ein Schiff versenkt, wird die getroffene Koordinate
-         * als Schiffsteil abgespeichert und die Umgebung des Schiffes wird abgespeichert
-         * in das Spiegelfeld.
-         *
-         * Wenn ein Schiff getroffen, aber nicht versenkt wurde, wird die
-         * Koordinate als Schiffsteil abgespeichert.
-         *
-         * Wenn kein Schiff getroffen wurde, wird die Koordinate nur
-         * als "beschossen" markiert und in das Spiegelfeld gespeichert.
-         */
-        if ( hitState == 2 ){
-
-            setCoordinateShipPart(yCoord, xCoord);
-
-            // Schiff wurde zerstört, deshalb wird das aktuelle Schiff "vergessen"
-            resetCurrentShipCheck();
-
-            saveShipVicinity(yCoord, xCoord);
-
-        } else if (hitState == 1){
-
-            /** Wenn zum ersten mal das Schiffsteil eines Schiffes getroffen wurde,
-             wird der erste Treffer zum Ankerpunkt für die Suche der anderen Schiffsteile
-             */
-            if (!isShipTileHit()){
-                this.firstShipTileHit[0] = yCoord;
-                this.firstShipTileHit[1] = xCoord;
-            }
-
-            //Die in der Richtung beschossene Koordinate hat etwas getroffen und wird als
-            //aktuell beschossenen Schiffsteil betrachtet
-            this.currentShipTile[0]= yCoord;
-            this.currentShipTile[1]= xCoord;
-
-            setCoordinateShipPart(yCoord, xCoord);
-
-            //Reihe und Spalte prüfen ob Sie voll ist. Falls ja, werden diese aus den
-            //weiteren Generierungen der Zufallszahlen ausgeschlossen
-            excludeFullRows(yCoord);
-            excludeFullColumns(xCoord);
+    private void saveShipVicinity(int yCoord, int xCoord){
 
 
-        } else {
+        //Nördliche Richtung untersuchen
+        saveOneShipVicinityDirection (yCoord, xCoord, -1 , 0);
 
-            //Wenn ein Beschuss in einer Richtung keinen Treffer erzielte,
-            // Wird die nächste Richtung ab dem Ankerpunkt weitergesucht
-            if (isShipTileHit()){
-                resetCurrentHitToFirstHit();
-                setNextDirection();
-            }
-            setCoordinateOccupied(yCoord, xCoord);
+        //Südliche Richtung untersuchen
+        saveOneShipVicinityDirection (yCoord, xCoord, 1 , 0);
 
-            //Reihe und Spalte prüfen ob Sie voll ist. Falls ja, werden diese aus den
-            //weiteren Generierungen der Zufallszahlen ausgeschlossen
-            excludeFullRows(yCoord);
-            excludeFullColumns(xCoord);
-        }
-    }
+        //Westliche Richtung untersuchen
+        saveOneShipVicinityDirection (yCoord, xCoord, 0 , -1);
 
-
-    /**
-     * Die aktuell betrachtete Richtungskoordinate wird auf
-     * die zuerst getroffene Koordinate des Schiffes zurückgesetzt
-     */
-    private void resetCurrentHitToFirstHit(){
-        this.currentShipTile[0]= this.firstShipTileHit[0];
-        this.currentShipTile[1]= this.firstShipTileHit[1];
+        //Östliche Richtung untersuchen
+        saveOneShipVicinityDirection (yCoord, xCoord, 0 , 1);
     }
 
 
@@ -918,6 +545,8 @@ public abstract class Computer extends Player {
         excludeFullRows(currentY-1);
     }
 
+
+
     /**
      * Durchläuft eine Richtung um eine getroffene
      * Koordinate die ein Schiff zum Versenken gebracht hat
@@ -1049,65 +678,459 @@ public abstract class Computer extends Player {
     }
 
 
+
+
+
+
+
+
+
     /**
-     * Untersucht alle vier Richtungen um einen versenkten Treffer
-     * welcher ein Schiff zerstört hat und speichert die Umgebung ab
+     * Füllt eine Liste mit den Werten von 0 bis <b>fieldSize</b> für die Generierung der
+     * Zufallszahlen
      *
-     * @param yCoord Y-Koordinate der Zelle
-     * @param xCoord X-Koordinate der Zelle
+     * @param list Die Arrayliste die mit standardwerten von 0 bis <b>fieldSize</b> gefüllt werden soll
      */
-    private void saveShipVicinity(int yCoord, int xCoord){
+    private void initializeList ( ArrayList<Integer> list){
+
+        for (int i= 0; i < fieldSize; i++){
+            list.add(i);
+        }
+    }
 
 
-        //Nördliche Richtung untersuchen
-        saveOneShipVicinityDirection (yCoord, xCoord, -1 , 0);
+    /**
+     * Gibt eine zufällige integerzahl für die Verwendung als Y-Koordinate aus der ArrayListe <b>includedRows</b> zurück.<br>
+     * Die zufälligen Zahlen können innerhalb 0 bis <b>fieldSize</b> liegen.<br>
+     * Ist die Reihe einer Y-Koordinate voll, wurde die Reihe ausgeschlossen und die entsprechende Zahl ist in der
+     * ArrayListe nicht mehr verfügbar für den Rest des Spiels.
+     *
+     * @return zufällige Zahl zwischen 0 und <b>fieldSize</b>, dessen Reihen noch nicht voll sind
+     */
+    protected int randomRowInt() {
 
-        //Südliche Richtung untersuchen
-        saveOneShipVicinityDirection (yCoord, xCoord, 1 , 0);
+        if (includedRows.size() > 0){
+            return this.includedRows.get(random.nextInt(includedRows.size()));
+        }
 
-        //Westliche Richtung untersuchen
-        saveOneShipVicinityDirection (yCoord, xCoord, 0 , -1);
+        return random.nextInt(fieldSize);
+    }
 
-        //Östliche Richtung untersuchen
-        saveOneShipVicinityDirection (yCoord, xCoord, 0 , 1);
+    /**
+     * Gibt eine zufällige integerzahl für die Verwendung als X-Koordinate aus der ArrayListe <b>includedColumns</b> zurück.<br>
+     * Die zufälligen Zahlen können innerhalb 0 bis <b>fieldSize</b> liegen.<br>
+     * Ist die Reihe einer X-Koordinate voll, wurde die Reihe ausgeschlossen und die entsprechende Zahl ist in der
+     * ArrayListe nicht mehr verfügbar für den Rest des Spiels.
+     *
+     * @return zufällige Zahl zwischen 0 und <b>fieldSize</b>, dessen Spalten noch nicht voll sind
+     */
+    protected int randomColumnInt() {
+
+        if (includedColumns.size() > 0) {
+            return this.includedColumns.get(random.nextInt(includedColumns.size()));
+        }
+
+        return random.nextInt(fieldSize);
+    }
+
+
+    /**
+     * Prüft eine Reihe, nachdem etwas in dieser gespeichert wurde, und schließt
+     * die Generierung von Zufallskoordinaten für diese Reihe in den nächsten Zügen aus,
+     * falls die Reihe voll ist.
+     *
+     * @param row Die Reihe die geprüft und eventuell ausgeschlossen wird. Ist im normalfall eine übergebene Y-Koordinate.
+     */
+        private void excludeFullRows( int row){
+
+            //Zu allererst wird geprüft ob die angegebene Reihe sich innerhalb des Spielfeldes befinden kann ( zwischen 0 und fieldSize)
+            if ( row >= 0 && row < this.fieldSize){
+
+                //Variablen die beim Schleifendurchlauf die Koordinaten der entsprechenden Spielfeldhälften prüfen
+                int fieldCenter = this.fieldSize / 2;
+                int leftSide = fieldCenter -1;
+                int rightSide = fieldCenter +1;
+
+                //Flag zum Abbrechen der Schleife falls ein leeres Feld gefunden wurde, da man in dem Fall weiss, dass die Reihe nicht voll ist
+                boolean emptySlotFound = false;
+
+                //Überprüfung ob überhaupt die Mitte des Feldes frei ist. Wenn sie es ist, kann die Reihe schonmal nicht ausgeschlossen werden
+                if ( !isCoordinateOccupied (row, fieldCenter) && !isCoordinateShipPart (row, fieldCenter ) ){
+
+
+                    // Die Mitte des Spielfeldes ist frei, deshalb kann die Reihe noch nicht gelöscht werden. Die Methode endet hier.
+
+                } else{
+
+
+                    do{
+
+                        //Linke Spielfeldhälfte überprüfen
+
+                        if (isCoordinateInField(row, leftSide )){
+
+                            if ( !isCoordinateOccupied (row, leftSide) && !isCoordinateShipPart (row, leftSide ) ){
+
+                                emptySlotFound = true;
+                            }
+                        }
+
+                        //Rechte Spielfeldhälfte überprüfen
+                        if (isCoordinateInField(row, rightSide )){
+
+                            if ( !isCoordinateOccupied (row, rightSide) && !isCoordinateShipPart (row, rightSide ) ){
+
+                                emptySlotFound = true;
+                            }
+                        }
+
+
+                        //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die linke und rechte
+                        //Spielfeldhälfte zu prüfen
+                        leftSide--;
+                        rightSide++;
+
+                    }while ( (leftSide >= 0  || rightSide < this.fieldSize) && !emptySlotFound); //end while
+
+
+                    //Nachdem die Schleife durchgelaufen ist und kein freien Platz gefunden hat weiss man, dass die Reihe voll ist.
+                    //Die Reihe wird in de Fall ausgeschlossen
+                    if (!emptySlotFound){
+
+                        deleteRowFromList(row);
+                    }
+
+                }
+
+
+            }
+
+        }
+
+
+
+
+    /**
+     * Prüft eine Spalte, nachdem etwas in dieser gespeichert wurde, und schließt
+     * die Generierung von Zufallskoordinaten für diese Spalte in den nächsten Zügen aus,
+     * falls die Spalte voll ist.
+     *
+     * @param column Die Reihe die geprüft und eventuell ausgeschlossen wird. Ist im normalfall eine übergebene Y-Koordinate.
+     */
+    private void excludeFullColumns( int column){
+
+        //Zu allererst wird geprüft ob die angegebene Reihe sich innerhalb des Spielfeldes befinden kann ( zwischen 0 und fieldSize)
+        if ( column >= 0 && column < this.fieldSize){
+
+            //Variablen die beim Schleifendurchlauf die Koordinaten der entsprechenden Spielfeldhälften prüfen
+            int fieldCenter = this.fieldSize / 2;
+            int upperSide = fieldCenter -1;
+            int lowerSide = fieldCenter +1;
+
+            //Flag zum Abbrechen der Schleife falls ein leeres Feld gefunden wurde, da man in dem Fall weiss, dass die Reihe nicht voll ist
+            boolean emptySlotFound = false;
+
+            //Überprüfung ob überhaupt die Mitte des Feldes frei ist. Wenn sie es ist, kann die Reihe schonmal nicht ausgeschlossen werden
+
+            if ( !isCoordinateOccupied ( fieldCenter, column ) && !isCoordinateShipPart (fieldCenter, column ) ){
+
+
+                // Die Mitte des Spielfeldes ist frei, deshalb kann die Spalte noch nicht gelöscht werden. Die Methode endet hier.
+
+            } else{
+
+
+                do{
+
+                    //Linke Spielfeldhälfte überprüfen
+
+                    if (isCoordinateInField( upperSide, column)){
+
+                        if ( !isCoordinateOccupied (upperSide, column) && !isCoordinateShipPart (upperSide, column ) ){
+
+                            emptySlotFound = true;
+                        }
+                    }
+
+                    //Rechte Spielfeldhälfte überprüfen
+                    if (isCoordinateInField(lowerSide, column )){
+
+                        if ( !isCoordinateOccupied (lowerSide, column) && !isCoordinateShipPart (lowerSide, column ) ){
+
+                            emptySlotFound = true;
+                        }
+                    }
+
+
+                    //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die linke und rechte
+                    //Spielfeldhälfte zu prüfen
+                    upperSide--;
+                    lowerSide++;
+
+                }while ( (upperSide >= 0  || lowerSide < this.fieldSize) && !emptySlotFound); //end while
+
+
+                //Nachdem die Schleife durchgelaufen ist und kein freien Platz gefunden hat weiss man, dass die Reihe voll ist.
+                //Die Reihe wird in de Fall ausgeschlossen
+                if (!emptySlotFound){
+
+                    deleteColumnFromList(column);
+                }
+
+            }
+
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Löscht eine bestimmte Reihe aus dem ArrayList<b>includedRows</b>, damit es nicht mehr bei der
+     * Generierung der Zufallszahlen auftritt.
+     *
+     * @param row Die Reihe dessen Listenvariable gelöscht wird
+     */
+    private void deleteRowFromList(int row){
+
+        //Integer.valueOf() muss angegeben werden, weil die Liste ansonsten die Zahl an der Stelle X löschen würde, nicht aber
+        //die Zahl mit dem Wert X
+        this.includedRows.remove(Integer.valueOf(row));
+    }
+
+    /**
+     * Löscht eine bestimmte Spalte aus dem ArrayList<b>includedColumns</b>, damit es nicht mehr bei der
+     * Generierung der Zufallszahlen auftritt.
+     *
+     * @param column Die Spalte dessen Listenvariable gelöscht wird
+     */
+    private void deleteColumnFromList(int column){
+
+        //Integer.valueOf() muss angegeben werden, weil die Liste ansonsten die Zahl an der Stelle X löschen würde, nicht aber
+        //die Zahl mit dem Wert X
+        this.includedColumns.remove(Integer.valueOf(column));
+    }
+
+
+
+
+
+
+
+
+    /**
+     * Prüft ob aktuell ein Schiff getroffen, aber noch nicht versenkt wurde
+     *
+     * @return Ob ein Schiff getroffen wurde oder nicht
+     */
+    protected boolean isShipTileHit(){
+
+        return (this.firstShipTileHit[0] != -1  && this.firstShipTileHit[1] != -1);
+    }
+
+
+
+
+    /**
+     * Die aktuell betrachtete Richtungskoordinate wird auf
+     * die zuerst getroffene Koordinate des Schiffes zurückgesetzt
+     */
+    private void resetCurrentHitToFirstHit(){
+        this.currentShipTile[0]= this.firstShipTileHit[0];
+        this.currentShipTile[1]= this.firstShipTileHit[1];
     }
 
 
 
     /**
-     * Extrahiert aus einem String
-     * die Y-Koordinate für weitere
-     * Berechnungen
+     * Die direkten Nachbaarkoordinaten einer getroffenen Koordinate werden
+     * zur Überprüfung ausgewählt
      *
-     * @param stringCoord Koordinate als Stringkette
-     *
-     * @return Y-Koordinate als integer Wert
-     *
-     * (c) Credits an Florian Osterberg
      */
-    public int extractYCoord (String stringCoord){
+    protected int[] selectNeighbourCoordinates(){
 
-        return Integer.parseInt(stringCoord.split(",")[0]);
+        int efficiency = 0;
+        //Flag, welches versichert, dass aufjedenfall eine Richtung Koordinaten an generateAICoordinates zurückgibt
+        boolean directionReturnsNoCoord;
 
+        //Falls schonmal ein Schiff getroffen wurde, wird die Umgebung um den Treffer auf weitere
+        //Schiffsteile untersucht
+
+        /** Es wird von dem Treffer in eine Richtung weitergesucht und die nächste Koordinate
+         in der Richtung wird zurückgegeben. Wenn zurückgegebene Koordinate nicht im Spielfeld
+         liegt, wird die nächste Richtung untersucht. */
+        do{
+
+            /****************************************/
+            efficiency++;
+            /*****************************************************/
+
+            directionReturnsNoCoord = false;
+
+
+            //Nordliche Richtung überprüfen
+            if (this.currentDirection == 0){
+
+                //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
+                if( isCoordinateInField (this.currentShipTile[0] -1,  this.currentShipTile[1] ) && !isCoordinateOccupied (this.currentShipTile[0] -1, this.currentShipTile[1] ) ){
+
+                    /**************************************** */
+                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
+                    /*****************************************************/
+
+                    return new int[]{ this.currentShipTile[0] -1,  this.currentShipTile[1] } ;
+
+                }
+
+                //Südliche Richtung überprüfen
+            } else if (this.currentDirection == 1){
+
+                //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
+                if( isCoordinateInField( this.currentShipTile[0] +1,  this.currentShipTile[1] ) && !isCoordinateOccupied (this.currentShipTile[0] +1,  this.currentShipTile[1]) ){
+
+                    /**************************************** */
+                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
+                    /*****************************************************/
+
+                    return new int[]{ this.currentShipTile[0] +1,  this.currentShipTile[1] } ;
+
+                }
+
+
+                //Westliche Richtung überprüfen
+            } else if (this.currentDirection == 2){
+
+                //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
+                if( isCoordinateInField( this.currentShipTile[0] ,  this.currentShipTile[1] -1 ) && !isCoordinateOccupied (this.currentShipTile[0] ,  this.currentShipTile[1] -1)){
+
+                    /**************************************** */
+                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
+                    /*****************************************************/
+
+                    return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] -1 } ;
+
+                }
+
+
+                //Östliche Richtung überprüfen
+            }else if (this.currentDirection == 3){
+
+                //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
+                if( isCoordinateInField( this.currentShipTile[0],  this.currentShipTile[1] +1 ) && !isCoordinateOccupied (this.currentShipTile[0],  this.currentShipTile[1] +1)){
+
+                    /**************************************** */
+                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
+                    /*****************************************************/
+
+                    return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] +1 } ;
+
+                }
+
+
+            }
+
+            //Koordinate war nicht im Spielfeld bzw. Richtungskoordinate gibt kein leeres Feld zurück,
+            //deshalb wird zur nächsten Richtung gewechselt
+            setNextDirection();
+            resetCurrentHitToFirstHit();
+            directionReturnsNoCoord  = true;
+
+        } while (directionReturnsNoCoord);
+
+
+
+        return null;
+
+    }
+
+
+    /**
+     * Nachdem ein getroffenes Schiff zerstört wurde, wird diese
+     * Methode aufgerufen um alle Einstellungen für das nächste
+     * zu Untersuchende Schiff zurückzusetzen.
+     *
+     */
+    private void resetCurrentShipCheck(){
+
+        this.firstShipTileHit = new int[] {-1, -1};
+        this.currentShipTile = new int[]{0, 0};
+        this.currentDirection = 0;
 
     }
 
     /**
-     * Extrahiert aus einem String
-     * die X-Koordinate für weitere
-     * Berechnungen
+     * Wechselt die aktuell betrachtende Richtung
+     * um ein getroffenes Schiff
      *
-     * @param stringCoord Koordinate als Stringkette
-     *
-     * @return X-Koordinate als integer Wert
-     *
-     * (c) Credits an Florian Osterberg
      */
-    public int extractXCoord (String stringCoord){
+    private void setNextDirection(){
 
-        return Integer.parseInt(stringCoord.split(",")[1]);
-
+        this.currentDirection++;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * DEBUGGING METHODE FÜR MIRRORFIELD
+     *
+     * Zeigt das SpiegelFeld als ein Spielfeld.
+     * Nichtbeschossene Felder sind leer, beschossene Felder enthalten ein 'O'
+     */
+    public void displayMirrorField() {
+        //Ausgabe der oberen Feldbeschriftung
+        System.out.println("  A B C D E F G H I J");
+        //1. Zähler
+        int y;
+        //2. Zähler
+        int x;
+        //doppelte Schleife für Durchlauf durch alle Felder
+
+        for(y=0; y  < mirrorField.length; y++) {
+            //Ausgabe der seitlichen Feldbeschriftung
+            System.out.print(y);
+            for(x=0; x < mirrorField[y].length; x++) {
+
+                //Ausgabe der einzelnen Zellen
+
+
+                if (mirrorField[y][x] == 0){
+
+                    System.out.print(" " + " ");
+
+                } else if (mirrorField[y][x] == 1){
+
+                    System.out.print(" " + "o");
+
+                } else if( mirrorField[y][x] == 2){
+
+                    System.out.print(" " + "x");
+                }
+            }
+
+            //Zeilenumbruch
+            System.out.println();
+        }
+    }
+
 
 
     public void printRowAndColumnItems(){
@@ -1130,13 +1153,6 @@ public abstract class Computer extends Player {
     }
 
 
-    public static  void main(String args[]){
-
-
-        Computer ki = new Easy(10);
-
-
-    }
 
 }//end class Computer
 

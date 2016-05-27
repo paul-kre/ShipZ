@@ -61,7 +61,7 @@ public class Hard extends Computer {
 	 * berücksichtigt bei der Erstellung der Zufallskoordinaten.<br>
 	 *
 	 */
-	public void generateAICoordinates() {
+	protected void generateAICoordinates() {
 
         maxHitProbabilityCoordinates ();
 	}
@@ -75,7 +75,7 @@ public class Hard extends Computer {
 	 * des Spielfeldes
 	 *
 	 */
-	private String maxHitProbabilityCoordinates () {
+	private int [] maxHitProbabilityCoordinates () {
 
 		return null;
 	}

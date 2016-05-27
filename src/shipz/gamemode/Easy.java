@@ -56,7 +56,7 @@ public class Easy extends Computer {
      * und der Umgebung eines zerstörten Schiffes beachtet.<br>
      *
      */
-    public void generateAICoordinates() {
+    protected void generateAICoordinates() {
         /****************************************/
         efficiency = 0;
         /*****************************************************/
@@ -127,14 +127,19 @@ public class Easy extends Computer {
 
         }
 
+        /**
+         * Y- und X-Koordinaten wurden gespeichert und
+         * die fertigen Koordinaten werden mit dem
+         * SHOOT_EVENT an die Main Klasse
+         * */
+        fireGameEvent(SHOOT_EVENT);
 
 
     }
 
 
 
-    @Override
-    public void run() {
+     public void run() {
         // TODO Auto-generated method stub
 
     }
