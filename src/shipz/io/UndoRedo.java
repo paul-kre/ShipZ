@@ -142,8 +142,8 @@ public class UndoRedo {
 	 * @param gameName Name des Spiels zur Zuordnung
 	 */
 	protected void saveToFile(String gameName) {
-		saveload.setDrawHistoryPlayer1(gameName, gamePlayer1.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
-		saveload.setDrawHistoryPlayer2(gameName, gamePlayer2.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
+		saveload.setDrawHistoryPlayerOne(gameName, gamePlayer1.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
+		saveload.setDrawHistoryPlayerTwo(gameName, gamePlayer2.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
 	}
 	
 	/**

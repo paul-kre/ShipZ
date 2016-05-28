@@ -86,8 +86,19 @@ public class FileStream {
 	 * @param playerName Name des ersten Spielers zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
-	public String getBoardPlayer1(String gameName) {
-		return saveload.getBoardPlayer1(gameName);
+	public String getBoardPlayerOne(String gameName) {
+		return saveload.getBoardPlayerOne(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand des Spielers das gespeicherte Spielfeld heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * @param playerName Name des ersten Spielers zur Identifizierung des gespeicherten Spielstands.
+	 * @return Das geladene Spielfeld
+	 */
+	public String getBoardPlayerTwo(String gameName) {
+		return saveload.getBoardPlayerTwo(gameName);
 	}
 	
 	/**
@@ -126,8 +137,8 @@ public class FileStream {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Die Spielzüge als {@link String}
 	 */
-	public String getDrawHistoryPlayer1(String gameName) {
-		return saveload.getDrawHistoryPlayer1(gameName);
+	public String getDrawHistoryPlayerOne(String gameName) {
+		return saveload.getDrawHistoryPlayerOne(gameName);
 	}
 	
 	/**
@@ -136,19 +147,8 @@ public class FileStream {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Die Spielzüge als {@link String}
 	 */
-	public String getDrawHistoryPlayer2(String gameName) {
-		return saveload.getDrawHistoryPlayer2(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Neue Methode, die effizienter aus der Datei liest.
-	 * Es wird ein gewünschter Spielstand zurückgegeben.
-	 * @param gameName der gewünschte Spielstand
-	 * @return der Spielstand als {@link String}
-	 */
-	public String getGame(String gameName) {
-		return saveload.getGame(gameName);
+	public String getDrawHistoryPlayerTwo(String gameName) {
+		return saveload.getDrawHistoryPlayerTwo(gameName);
 	}
 	
 	/**
@@ -207,8 +207,8 @@ public class FileStream {
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
 	 */
-	public void setDrawHistoryPlayer1(String gameName, String drawHistoryPlayer1) {
-		saveload.setDrawHistoryPlayer1(gameName, drawHistoryPlayer1);
+	public void setDrawHistoryPlayerOne(String gameName, String drawHistoryPlayer1) {
+		saveload.setDrawHistoryPlayerOne(gameName, drawHistoryPlayer1);
 	}
 	
 	/**
@@ -217,8 +217,8 @@ public class FileStream {
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
 	 */
-	public void setDrawHistoryPlayer2(String gameName, String drawHistoryPlayer2) {
-		saveload.setDrawHistoryPlayer2(gameName, drawHistoryPlayer2);
+	public void setDrawHistoryPlayerTwo(String gameName, String drawHistoryPlayer2) {
+		saveload.setDrawHistoryPlayerTwo(gameName, drawHistoryPlayer2);
 	}
 	
 	/**
