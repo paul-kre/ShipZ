@@ -2,10 +2,5 @@
 <classpath>
 	<classpathentry excluding="shipz/gamemode/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Leonard Osterberg/Dropbox/Project shipZ/JDOM/jdom-2.0.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leonard Osterberg/Dropbox/Project shipZ/JDOM/jdom-2.0.6-contrib.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leonard Osterberg/Dropbox/Project shipZ/JDOM/jdom-2.0.6-javadoc.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leonard Osterberg/Dropbox/Project shipZ/JDOM/jdom-2.0.6-junit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leonard Osterberg/Dropbox/Project shipZ/JDOM/jdom-2.0.6-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
