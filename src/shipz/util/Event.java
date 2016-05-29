@@ -31,4 +31,9 @@ public enum Event {
 		this.value = value;
 	}
 	
+	// IM
+	public int value() {
+		return this.value;
+	}
+	
 }
