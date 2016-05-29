@@ -546,6 +546,19 @@ public abstract class Computer extends Player {
     }
 
 
+    /**
+     * Prüft ob die übergebene X- und
+     * Y-Richtung in die nördliche oder
+     * südliche Richtung prüfen
+     *
+     * @param yDirection X-Richtung
+     * @param xDirection Y-Richtung
+     *
+     * @return Ob in nördliche/südliche Richtung geprüft wird
+     */
+    private boolean directionIsNorthOrSouth (int yDirection, int xDirection){
+        return (yDirection == -1  && xDirection == 0) || (yDirection == 1  && xDirection == 0);
+    }
 
     /**
      * Durchläuft eine Richtung um eine getroffene
@@ -570,7 +583,7 @@ public abstract class Computer extends Player {
         int currentX = xCoord;
 
         //Flag-Variable zum Durchlaufen der While-Schleifen. Prüfen immer ob die Richtung weitergeprüft werden soll.
-        boolean directionCheck = false;
+        boolean directionCheck;
 
 
         //Richtung durchlaufen
@@ -579,21 +592,18 @@ public abstract class Computer extends Player {
 
             directionCheck = false;
 
-            //Es wird pro Schleifendurchgang eine Koordinate in die Nordrichtung weitergegangen
+            //Es wird pro Schleifendurchgang immer eine Koordinate in die übergebene Richtung weitergegangen
             currentY = currentY + yDirection;
             currentX = currentX + xDirection;
 
-            //Prüfen ob die nördliche Koordinate überhaupt im Spielfeld liegt
+            //Prüfen ob die Koordinate überhaupt im Spielfeld liegt
             if (isCoordinateInField(currentY, currentX) ){
-
-                //Prüfen ob die nördliche Variable schonmal beschossen wurde
-                if ( isCoordinateOccupied (currentY, currentX ) || isCoordinateShipPart(currentY, currentX)){
 
                     //Schlussendeliche Überprüfung ob die Koordinate ein Teil des Schiffes ist
                     if( isCoordinateShipPart (currentY, currentX)  ){
 
                         //Prüfen ob Nord- oder Südrichtung durchlaufen wird
-                        if ( (yDirection == -1  && xDirection == 0) || (yDirection == 1  && xDirection == 0) ){
+                        if ( directionIsNorthOrSouth (yDirection, xDirection) ){
 
                             //Vertikalen Seiten abspeichern
                             saveShipVerticalSideEdge(currentY,currentX);
@@ -615,7 +625,7 @@ public abstract class Computer extends Player {
                     } else { //Koordinate ist kein Schiffsteil
 
                         //Prüfen ob Nord- oder Südrichtung durchlaufen wird
-                        if ( (yDirection == -1  && xDirection == 0) || (yDirection == 1  && xDirection == 0) ){
+                        if ( directionIsNorthOrSouth (yDirection, xDirection) ){
 
                             //Vertikale Seiten abspeichern
 									/* Rechter und Linker Nachbar mit current abspeichern, da
@@ -635,30 +645,6 @@ public abstract class Computer extends Player {
                         // Schleife zu Ende
 
                     }
-
-                } else {
-
-                    //Prüfen ob Nord- oder Südrichtung durchlaufen wird
-                    if ( (yDirection == -1  && xDirection == 0) || (yDirection == 1  && xDirection == 0) ){
-
-                        //Vertikale Seiten abspeichern
-								/* Rechter und Linker Nachbar mit current abspeichern, da
-								* an diesen Koordinaten keine weiteren Schiffsteile sind und nun die Umgebung
-								* in der Richtung fertig gespeichert wird */
-                        saveShipHorizontalTopEdge (currentY, currentX);
-
-                    } else { // Bei West- oder Ostrichtung
-
-                        //Horizontal Seiten abspeichern
-								/* Oberer und Unterer Nachbar mit current abspeichern, da
-								* an diesen Koordinaten keine weiteren Schiffsteile sind und nun die Umgebung
-								* in der Richtung fertig gespeichert wird */
-                        saveShipVerticalTopEdge (currentY, currentX);
-                    }
-
-                    // Schleife zu Ende
-
-                }
 
             } else {
                 //current ist nicht im Spielfeld -> Schleife zu Ende
@@ -862,7 +848,7 @@ public abstract class Computer extends Player {
                     }
 
 
-                    //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die linke und rechte
+                    //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die obere und untere
                     //Spielfeldhälfte zu prüfen
                     upperSide--;
                     lowerSide++;

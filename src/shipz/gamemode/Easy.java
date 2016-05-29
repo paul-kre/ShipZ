@@ -129,8 +129,8 @@ public class Easy extends Computer {
 
         /**
          * Y- und X-Koordinaten wurden gespeichert und
-         * die fertigen Koordinaten werden mit dem
-         * SHOOT_EVENT an die Main Klasse
+         * es wird jetzt der Main Klasse mitgeiteilt, dass fertige
+         * Koordinaten bereitstehen
          * */
         fireGameEvent(SHOOT_EVENT);
 
