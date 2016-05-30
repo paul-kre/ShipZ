@@ -60,12 +60,10 @@ public class Hard extends Computer {
 	 * Auch hier werden alle beschossenen Koordinaten und die Umgebung eines Schiffes
 	 * berücksichtigt bei der Erstellung der Zufallskoordinaten.<br>
 	 *
-	 * @return Nach einem Muster erstellte Zufallskoordinaten. Es werden pro Spiel nie diesselben Koordinaten von
-	 * der Ki zurückgegeben
 	 */
-	public String shootField() {
+	protected void generateAICoordinates() {
 
-		return maxHitProbabilityCoordinates ();
+        maxHitProbabilityCoordinates ();
 	}
 
 	/**
@@ -77,7 +75,7 @@ public class Hard extends Computer {
 	 * des Spielfeldes
 	 *
 	 */
-	private String maxHitProbabilityCoordinates () {
+	private int [] maxHitProbabilityCoordinates () {
 
 		return null;
 	}

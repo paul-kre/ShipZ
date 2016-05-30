@@ -2,14 +2,23 @@ package shipz.io;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 /**
  * Diese Klasse verwaltet die Speicherprozesse der anderen Klassen.
@@ -24,10 +33,16 @@ public class SaveLoad {
 	private BufferedWriter writer;
 	/** Scanner, der eine Datei liest. */
 	private Scanner scanner;
-	/** Trennzeichen zwischen den einzelnen Spielständen. */
-	private String separator = "~~~~~";
-	/** UndoRedo-Objekt */
-	private UndoRedo undoredo;
+	/** Writer, der in die XML-Datei schreibt. */
+	private XMLOutputter xmlOutput;
+	/** das XML-Dokument */
+	private Document document;
+	/** Wurzelelement des XML-Dokuments */
+	private Element root;
+	/** SAXBuilder, der das ausgelesene XML in das Document-Objekt schreibt. */
+	private SAXBuilder builder;
+	/** Filewriter-Objekt, mit dem in die XML-Datei geschrieben wird */
+	private FileWriter filewriter;
 	
 	//Konstruktor
 	/**
@@ -35,15 +50,18 @@ public class SaveLoad {
 	 * und diesem einen Dateipfad zuordnet.
 	 */
 	public SaveLoad() {
-		file = new File(fileDirectory() + File.separator + "saves.shipz");
+		file = new File(fileDirectory() + File.separator + "saves.xml");
 		makeDirectory(file);
+		document = new Document();
+		root = new Element("saves");
+		document.setContent(root);
+		builder = new SAXBuilder();
+		xmlOutput = new XMLOutputter();
 	}
 	
 	// IM
 	/**
-	 * Methode, die alle benötigten Informationen über ein Spiel in einen String speichert,
-	 * der dafür da ist, einen Spielstand zu speichern.
-	 * Dieser String wird dann in die Speicher-Datei geschrieben.
+	 * Methode, die mit allen benötigten Informationen ein neues Spiel im XML erstellt.
 	 * @param gameName Dateiname für den Spielstand
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
@@ -51,25 +69,32 @@ public class SaveLoad {
 	 * @param boardPlayer2 Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
 	 * @param boardsize Größe des Feldes. Format: "Höhe,Breite"
 	 */
-	protected void newGame(String gameName, String playerName, String opponentName, String boardPlayer1, String boardPlayer2, String boardsize) {
-		String savegame = 
-				"gameName:" + gameName + ":" // Eindeutiger Name des Spielstands
-				+ "time:" + timestamp() + ":"
-				+ "player:" + playerName + ":"
-				+ "opponent:" + opponentName + ":"
-				+ "boardPlayer1:" + boardPlayer1 + ":"
-				+ "boardPlayer2:" + boardPlayer2 + ":"
-				+ "boardsize:" + boardsize + ":"
-				+ "drawHistoryPlayer1:null:"
-				+ "drawHistoryPlayer2:null:"
-				+ "activePlayer:1:"
-				+ separator + "\n"; // Trennzeichen, damit erkannt wird, wann ein Spielstand zu Ende ist
+	protected void newGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize) {
+		boolean b = false;
 		
-		if(doesGameExist(gameName) == false) {
-			String str = readFile();
-			writeFile(str + savegame);
+		if(root.getChildren() != null) {
+			update();
+			b = doesGameExist(gameName);
+		}
+		
+		if(b == false) {
+			Element gameElement = new Element("game");
+			gameElement.addContent(new Element("gameName").setText(gameName));
+			gameElement.addContent(new Element("time").setText(timestamp()));
+			gameElement.addContent(new Element("playerName").setText(playerName));
+			gameElement.addContent(new Element("opponentName").setText(opponentName));
+			gameElement.addContent(new Element("boardPlayerOne").setText(boardPlayerOne));
+			gameElement.addContent(new Element("boardPlayerTwo").setText(boardPlayerTwo));
+			gameElement.addContent(new Element("boardsize").setText(boardsize));
+			gameElement.addContent(new Element("drawHistoryPlayerOne").setText("null"));
+			gameElement.addContent(new Element("drawHistoryPlayerTwo").setText("null"));
+			gameElement.addContent(new Element("activePlayer").setText("1"));
+			
+			root.addContent(gameElement);
+			document.setContent(root);
+			writeXML();
 		} else {
-			System.err.println("Fehler beim Erstellen eines neuen Spielstands! Dieser Spielstand existiert bereits.");
+			System.err.println("Fehler beim Erstellen des Spielstands! Dieser Spielstand existiert bereits!");
 		}
 	}
 	
@@ -80,11 +105,11 @@ public class SaveLoad {
 	 * @param opponentName Name des zweiten Spielers
 	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert. Format: "Feldhöhe,Feldbreite,Spielfeld"
 	 */
-	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayer1, String boardPlayer2, int activePlayer) {
+	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int activePlayer) {
 		setPlayerName(gameName, playerName);
 		setOpponentName(gameName, opponentName);
-		setBoardPlayer1(gameName, boardPlayer1);
-		setBoardPlayer2(gameName, boardPlayer2);
+		setBoardPlayerOne(gameName, boardPlayerOne);
+		setBoardPlayerTwo(gameName, boardPlayerTwo);
 		setActivePlayer(gameName, activePlayer);
 	}
 	
@@ -109,28 +134,77 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Leert die gesamte Datei, die die Spielstände speichert.
+	 * Diese Methode gibt den Inhalt eines Knotens eines Spielstands
+	 * als String zurück.
+	 * @param gameName Name des Spiels
+	 * @param node Knoten dessen Text zurückgegeben werden soll
+	 * @return Inhalt des Knotens als String
 	 */
-	protected void clearFile() {
-		writeFile("");
+	private String getNode(String gameName, String node) {
+		update();
+		String str = "";
+		
+		List<Element> list = root.getChildren();
+		for(Element e : list) {
+			if(e.getChild("gameName").getText().equals(gameName)) {
+				str = e.getChild(node).getText();
+			}
+		}
+		
+		return str;
 	}
 	
 	/**
-	 * Leert eine gesamte Datei.
-	 * @param file die zu leerende Datei
+	 * Mit dieser Methode lässt sich ein einzelner Knoten eines Spielstands bearbeiten.
+	 * @param gameName Name des Spielstands
+	 * @param node zu bearbeitender Knoten
+	 * @param text Text, der im Knoten eingefügt werden soll
 	 */
-	protected void clearFile(File file) {
-		writeFile(file, "");
+	private void setNode(String gameName, String node, String text) {
+		update();
+		List<Element> list = root.getChildren();
+		for(Element e : list) {
+			if(e.getChild("gameName").getText().equals(gameName)) {
+				e.getChild(node).setText(text);
+			}
+		}
+		document.setContent(root);
+		writeXML();
 	}
 	
 	/**
-	 * Neue Methode, die effizienter aus der Datei liest.
-	 * Es wird ein gewünschter Spielstand zurückgegeben.
-	 * @param gameName der gewünschte Spielstand
-	 * @return der Spielstand als {@link String}
+	 * Das XML-Dokument wird ausgelesen und die Instanz-Variablen,
+	 * die Wurzel-Element und das Dokument speichern,
+	 * werden somit aktualisiert.
 	 */
-	protected String getGame(String gameName) {
-		return searchLine("gameName:" + gameName + ":");
+	private void update() {
+		if(root.getChildren() != new Element("saves").getChildren()) {
+			try {
+				FileInputStream fileinput = new FileInputStream(file);
+				document = builder.build(fileinput);
+				root = document.detachRootElement();
+				fileinput.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (JDOMException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Das aktuell in den Instanz-Variablen abgespeicherte XML-Dokument
+	 * wird in die XML-Datei geschrieben.
+	 */
+	private void writeXML() {
+		try {
+			filewriter = new FileWriter(file);
+			xmlOutput.setFormat(Format.getPrettyFormat());
+			xmlOutput.output(document, filewriter);
+			filewriter.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -138,10 +212,21 @@ public class SaveLoad {
 	 * @param gameName Name des Spielstands
 	 */
 	protected void deleteGame(String gameName) {
-		String r = readFile();
-		String s = getGame(gameName);
-		r = r.replaceAll(s+separator, "");
-		writeFile(r);
+		update();
+		if(doesGameExist(gameName)) {
+			List<Element> list = root.getChildren();
+			Element temp = null;
+			for(Element e : list) {
+				if(e.getChild("gameName").getText().equals(gameName)) {
+					temp = e;
+				}
+			}
+			root.removeContent(temp);
+			document.setContent(root);
+			writeXML();
+		} else {
+			System.err.println("Fehler beim Löschen des Spielstands! Dieser Spielstand existiert nicht!");
+		}
 	}
 	
 	/**
@@ -154,21 +239,15 @@ public class SaveLoad {
 	 * @return Die Namen aller Spielstände als {@link String}
 	 */
 	protected String getAllGameNames() {
-		String[] a = readFile().replaceAll("\n", "").split(separator);
-		String s = "";
-		for(int i = 0; i < a.length; i++) {
-			s += a[i];
-		}
-		String[] b = s.split(":");
-		String result = "";
+		String str = "";
+		update();
 		
-		for(int i = 0; i < b.length; i++) {
-			if(b[i].equalsIgnoreCase("gameName")) {
-				result += b[i+1] + ",";
-			}
+		List<Element> list = root.getChildren();
+		for(Element e : list) {
+			str += e.getChild("gameName").getText() + ",";
 		}
 		
-		return result;
+		return str;
 	}
 	
 	/**
@@ -177,8 +256,8 @@ public class SaveLoad {
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
-	protected String getBoardPlayer1(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[9];
+	protected String getBoardPlayerOne(String gameName) {
+		return getNode(gameName, "boardPlayerOne");
 	}
 	
 	/**
@@ -187,8 +266,8 @@ public class SaveLoad {
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
-	protected String getBoardPlayer2(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[11];
+	protected String getBoardPlayerTwo(String gameName) {
+		return getNode(gameName, "boardPlayerTwo");
 	}
 	
 	/**
@@ -197,7 +276,7 @@ public class SaveLoad {
 	 * @return Spielername eines Spielstand
 	 */
 	protected String getPlayerName(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[5];
+		return getNode(gameName, "playerName");
 	}
 	
 	/**
@@ -206,7 +285,7 @@ public class SaveLoad {
 	 * @return Namen des Gegners eines bestimmten Spielstands
 	 */
 	protected String getOpponentName(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[7];
+		return getNode(gameName, "opponentName");
 	}
 	
 	/**
@@ -215,7 +294,7 @@ public class SaveLoad {
 	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
 	 */
 	protected String getBoardsize(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[13];
+		return getNode(gameName, "boardsize");
 	}
 	
 	/**
@@ -223,9 +302,8 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Die Spielzüge als {@link String}
 	 */
-	@Deprecated
-	protected String getDrawHistoryPlayer1(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[15];
+	protected String getDrawHistoryPlayerOne(String gameName) {
+		return getNode(gameName, "drawHistoryPlayerOne");
 	}
 	
 	/**
@@ -233,9 +311,8 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Die Spielzüge als {@link String}
 	 */
-	@Deprecated
-	protected String getDrawHistoryPlayer2(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[17];
+	protected String getDrawHistoryPlayerTwo(String gameName) {
+		return getNode(gameName, "drawHistoryPlayerTwo");
 	}
 	
 	/**
@@ -244,7 +321,7 @@ public class SaveLoad {
 	 * @return der aktive Spieler
 	 */
 	protected int getActivePlayer(String gameName) {
-		return Integer.parseInt(getGame(gameName).replaceAll("\n", "").split(":")[19]);
+		return Integer.parseInt(getNode(gameName, "activePlayer"));
 	}
 	
 	/**
@@ -253,16 +330,7 @@ public class SaveLoad {
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
 	protected String getTime(String gameName) {
-		return getGame(gameName).replaceAll("\n", "").split(":")[3];
-	}
-	
-	/**
-	 * Diese Methode speichert das Spielfeld des ersten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
-	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
-	 * @param board das Spielbrett als {@link String}
-	 */
-	protected void setBoardPlayer1(String gameName, String boardPlayer1) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("boardPlayer1:" + getBoardPlayer1(gameName) + ":", "boardPlayer1:" + boardPlayer1 + ":")));
+		return getNode(gameName, "time");
 	}
 	
 	/**
@@ -270,8 +338,17 @@ public class SaveLoad {
 	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}
 	 */
-	protected void setBoardPlayer2(String gameName, String boardPlayer2) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("boardPlayer2:" + getBoardPlayer2(gameName) + ":", "boardPlayer2:" + boardPlayer2 + ":")));
+	protected void setBoardPlayerOne(String gameName, String boardPlayerOne) {
+		setNode(gameName, "boardPlayerOne", boardPlayerOne);
+	}
+	
+	/**
+	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
+	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
+	 * @param board das Spielbrett als {@link String}
+	 */
+	protected void setBoardPlayerTwo(String gameName, String boardPlayerTwo) {
+		setNode(gameName, "boardPlayerTwo", boardPlayerTwo);
 	}
 	
 	/**
@@ -280,7 +357,7 @@ public class SaveLoad {
 	 * @param playerName der neue Name des ersten Spielers
 	 */
 	protected void setPlayerName(String gameName, String playerName) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("player:" + getPlayerName(gameName) + ":", "player:" + playerName + ":")));
+		setNode(gameName, "playerName", playerName);
 	}
 	
 	/**
@@ -289,7 +366,7 @@ public class SaveLoad {
 	 * @param opponentName
 	 */
 	protected void setOpponentName(String gameName, String opponentName) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("opponent:" + getOpponentName(gameName) + ":", "opponent:" + opponentName + ":")));
+		setNode(gameName, "opponentName", opponentName);
 	}
 	
 	/**
@@ -298,7 +375,7 @@ public class SaveLoad {
 	 * @param boardsize
 	 */
 	protected void setBoardsize(String gameName, String boardsize) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("boardsize:" + getBoardsize(gameName) + ":", "boardsize:" + boardsize + ":")));
+		setNode(gameName, "boardsize", boardsize);
 	}
 	
 	/**
@@ -306,8 +383,8 @@ public class SaveLoad {
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
 	 */
-	protected void setDrawHistoryPlayer1(String gameName, String drawHistoryPlayer1) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("drawHistoryPlayer1:" + getDrawHistoryPlayer1(gameName) + ":", "drawHistoryPlayer1:" + drawHistoryPlayer1 + ":")));
+	protected void setDrawHistoryPlayerOne(String gameName, String drawHistoryPlayerOne) {
+		setNode(gameName, "drawHistoryPlayerOne", drawHistoryPlayerOne);
 	}
 	
 	/**
@@ -315,8 +392,8 @@ public class SaveLoad {
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
 	 */
-	protected void setDrawHistoryPlayer2(String gameName, String drawHistoryPlayer2) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("drawHistoryPlayer2:" + getDrawHistoryPlayer2(gameName) + ":", "drawHistoryPlayer2:" + drawHistoryPlayer2 + ":")));
+	protected void setDrawHistoryPlayerTwo(String gameName, String drawHistoryPlayerTwo) {
+		setNode(gameName, "drawHistoryPlayerTwo", drawHistoryPlayerTwo);
 	}
 	
 	/**
@@ -325,7 +402,7 @@ public class SaveLoad {
 	 * @param activePlayer neuer aktueller Spieler
 	 */
 	protected void setActivePlayer(String gameName, int activePlayer) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("activePlayer:" + getActivePlayer(gameName) + ":", "activePlayer:" + activePlayer + ":")));
+		setNode(gameName, "activePlayer", ""+activePlayer);
 	}
 	
 	/**
@@ -356,7 +433,7 @@ public class SaveLoad {
 	 * @param gameName der Spielstand
 	 */
 	protected void updateTime(String gameName) {
-		writeFile(readFile().replaceAll(getGame(gameName), getGame(gameName).replaceAll("time:" + getTime(gameName) + ":", "time:" + timestamp() + ":")));
+		setNode(gameName, "time", timestamp());
 	}
 	
 	/**
@@ -364,18 +441,18 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Ist der Spielstand vorhanden?
 	 */
-	protected boolean doesGameExist(String gameName) {
-		boolean exists = false;
-		String[] a = readFile().split(separator);
-		String[] b;
+	private boolean doesGameExist(String gameName) {
+		update();
+		boolean doesGameExist = false;
+		List<Element> list = root.getChildren();
 		
-		for(int i = 0; i < a.length-1; i++) {
-			b = a[i].split(":");
-			if(b[1].equalsIgnoreCase(gameName)) {
-				exists = true;
+		for(Element e : list) {
+			if(e.getChild("gameName").getText().equals(gameName)) {
+				doesGameExist = true;
 			}
 		}
-		return exists;
+		
+		return doesGameExist;
 	}
 	
 	/**
@@ -402,17 +479,6 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Sucht in der Datei (die die Spielstände speichert) nach einer bestimmten Zeile.
-	 * Es wird mit nach einem Prefix gesucht.
-	 * Wenn die Zeile gefunden wurde, wird sie als String zurückgegeben.
-	 * @param prefix Prefix der Zeile, nach der gesucht werden soll.
-	 * @return Die gefundene Zeile
-	 */
-	protected String searchLine(String prefix) {
-		return searchLine(file, prefix);
-	}
-	
-	/**
 	 * Liest aus einer Datei den gesamten Inhalt aus
 	 * und gibt ihn als {@link String} zurück.
 	 * @param file Die gewünschte Datei.
@@ -432,15 +498,6 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Liest aus der Speicher-Datei den gesamten Inhalt aus
-	 * und gibt ihn als {@link String} zurück.
-	 * @return Inhalt der Speicherdatei als {@link String}.
-	 */
-	protected String readFile() {
-		return readFile(file);
-	}
-	
-	/**
 	 * Überschreibt eine Datei komplett mit einem String.
 	 * @param file die zu überschreibende Datei.
 	 * @param str der {@link String}, der in die Datei geschrieben werden soll.
@@ -453,14 +510,6 @@ public class SaveLoad {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * Überschreibt die Datei, die die Spielstände speichert komplett mit einem String.
-	 * @param str der String, der in die Datei geschrieben werden soll.
-	 */
-	protected void writeFile(String str) {
-		writeFile(file, str);
 	}
 	
 	/**
@@ -489,66 +538,8 @@ public class SaveLoad {
 	 * @param args arguments
 	 */
 	public static void main(String[] args) {
-		//SaveLoad sl = new SaveLoad();
-		//sl.clearFile();
-		//sl.newGame("xXxSupaHotFirexXx69420", "xxxno0b1447xxx", 42, "AAAADJJJSHDHHDCC", "SADSD ASVDSVDSFDS F SD FDS FDS  F");
-//		System.out.println(sl.savegame);
-		//sl.saveGameFile();
 		SaveLoad saveload = new SaveLoad();
-//		saveload.clearFile();
-//		saveload.newGame("test", "gegnerTest", 8, "fesfdsgfdb", "dsfsdfgbfgb");
-//		saveload.saveGameFile();
-		//saveload.clearFile();
-//		saveload.newGame("sjifsd", "xXxSupaHotFirexXx69420", "xxxno0b1447xxx", 42, "AAAADJJJSHDHHDCC", "SADSD ASVDSVDSFDS F SD FDS FDS  F", "GSNHDFDF");
-//		saveload.newGame("blabla", "hallo", "hgjghj", 16, "ASFSDASD", "SDASDDSVBSF", "FSUIJFS");
-//		System.out.println(saveload.userDirectory() + saveload.file.separator + "shipZ" + saveload.file.separator + "saves.dat");
-//		System.out.println(sl.file.getAbsolutePath());
-		
-//		String[] a = saveload.readFile().split("~~~~~");
-//		System.out.println(a.length);
-/*		for(int i = 0; i < a.length; i++) {
-			System.out.println(a[i]);
-		}*/
-//		System.out.println(a[0]);
-//		String[] b = a[0].split(":");
-		/*for(int i = 0; i < b.length; i++) {
-			System.out.println(b[i]);
-		}*/
-//		System.out.println(b[1]);
-		
-		
-/*		System.out.println(saveload.getGame("sjifsd"));
-//		System.out.println(saveload.doesFileExist("sjifsd"));
-//		System.out.println(saveload.doesFileExist("sdfvfdg"));
-		System.out.println();
-		
-		System.out.println(saveload.getPlayerName("sjifsd"));
-		System.out.println(saveload.getTime("sjifsd"));
-		System.out.println(saveload.getOpponentName("sjifsd"));
-		System.out.println(saveload.getBoardsize("sjifsd"));
-//		System.out.println(saveload.getBoard("sjifsd"));
-		System.out.println(saveload.getDrawHistoryPlayer1("sjifsd"));
-		System.out.println(saveload.getDrawHistoryPlayer2("sjifsd")); */
-		
-//		saveload.newGame("blabla", "hallo", "gegnerTest", 8, "AAAAAAAA", "ABABABABAAB");
-		
-		/*for(int i = 0; i < saveload.getAllgameNames().length; i++) {
-			System.out.println(saveload.getAllgameNames()[i]);
-		}*/
-
-//		System.out.println();
-//		System.out.println(saveload.getAllGameNames());
-		
-//		saveload.deleteGame("blabla");
-		 
-//		saveload.setBoard("blabla", "TEEEEEEEEEEEEEEEEEST");
-		
-//		System.out.println(saveload.getGame("sjifsd"));
-		
-//		saveload.newGame("testspiel", "R2D2", "C3PO", "ACDDDFF", "ADVSDFSD", "15,16");
-		
-//		saveload.newGame("neuesSpiel", "Detlev", "Ernst", "ABC", "CBA", "20,20");
-//		saveload.newGame("neuesSpiel", "gfhdfh", "dgfdfg", "sdfg", "dfgdfg", "55,88");
+//		saveload.newGame("tesssst", "nur", "noch", "ein", "kleiner", "test");
 		
 	}
 	

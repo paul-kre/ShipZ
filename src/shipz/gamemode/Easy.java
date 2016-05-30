@@ -19,7 +19,7 @@ public class Easy extends Computer {
     /** Klassenvariable die die höchste Durchlaufzahl speichert */
     public static int maxLoop = 0;
 
-    /** Debugging Klassenvariablen. Werden in der Shootfieldmethode zurückgegeben um ein exaktes Schiff auf dem
+    /** Debugging Klassenvariablen. Werden in der generateAICoordinates Methode zurückgegeben um ein exaktes Schiff auf dem
      * Spielfeld zu zerstören
      */
     static int debugY = 4;
@@ -55,20 +55,11 @@ public class Easy extends Computer {
      * Ebenso wird die Liste mit den schon beschossenen Feldern
      * und der Umgebung eines zerstörten Schiffes beachtet.<br>
      *
-     * @return Zufällige Koordinaten die beschossen werden. Es werden pro Spiel nie dieselben Koordinaten von
-     * der Ki zurückgegeben
      */
-    public String shootField() {
+    protected void generateAICoordinates() {
         /****************************************/
         efficiency = 0;
         /*****************************************************/
-
-
-        //Zwischenspeichern der generierten X- und Y-Koordinaten
-        int yCoord;
-        int xCoord;
-
-
 
 
 
@@ -77,58 +68,54 @@ public class Easy extends Computer {
 
             /****************************************/
             efficiency++;
-            System.out.println("Durchlaeufe: " + efficiency);
+            //System.out.println("Durchlaeufe: " + efficiency);
             /*****************************************************/
 
             int[] tempReturn =  selectNeighbourCoordinates();
-            return  "" + tempReturn[0] + "," + tempReturn[1];
-        }
+            super.setY(tempReturn[0]);
+            super.setX(tempReturn[1]);
 
-        //Falls noch kein Schiff getroffen wurde, werden zufällige erstellt und zurückgegeben.
+        } else { //Falls noch kein Schiff getroffen wurde, werden zufällige erstellt und zurückgegeben.
 
+            //Zufallskoordinaten solange erstellen und speichern bis sie gültig sind und beschießbar sind
 
+            //Flag welches den Durchlauf der Schleifen bestimmt
+            boolean loopAgain = true;
 
-        //Zufallskoordinaten solange erstellen und speichern bis sie gültig sind und beschießbar sind
+            do{
 
-        //Flag welches den Durchlauf der Schleifen bestimmt
-        boolean loopAgain = true;
+                super.setY(super.randomRowInt());
+                super.setX(super.randomColumnInt());
 
-        do{
+                //Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
+                //Zelle verweist. Ansonsten wird die Koordinate neu generiert bis sie es ist.
+                if ( !isCoordinateOccupied (super.getY(), super.getX()) && !isCoordinateShipPart(super.getY(), super.getX()) ){
 
-            yCoord = super.randomRowInt();
-            xCoord = super.randomColumnInt();
+                    loopAgain = false;
+                    /*****************************************/
+                    efficiency--;
+                    /*****************************************/
 
-            //Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
-            //Zelle verweist. Ansonsten wird die Koordinate neu generiert bis sie es ist.
-            if ( !isCoordinateOccupied (yCoord, xCoord) && !isCoordinateShipPart(yCoord, xCoord) ){
-
-                loopAgain = false;
+                }
                 /*****************************************/
-                efficiency--;
+                efficiency++;
                 /*****************************************/
-
-            }
-            /*****************************************/
-            efficiency++;
-            /*****************************************/
-        }while (loopAgain);
+            }while (loopAgain);
 
 
-        /****************************************/
-        efficiency++;
-        System.out.println("Durchlaeufe: " + efficiency);
+            /****************************************
+             efficiency++;
+             System.out.println("Durchlaeufe: " + efficiency);
 
-        if ( efficiency > maxLoop){
+             if ( efficiency > maxLoop){
 
-            maxLoop = efficiency;
-        }
+             maxLoop = efficiency;
+             }
 
-        System.out.println("Laengste Durchlaufzeit pro Koordinate: " + maxLoop);
-
-
-        /*****************************************************/
+             System.out.println("Laengste Durchlaufzeit pro Koordinate: " + maxLoop);
 
 
+             ****************************************************/
 
 
         /*
@@ -138,14 +125,21 @@ public class Easy extends Computer {
         }
         */
 
+        }
 
-        return "" + yCoord + "," + xCoord;
+        /**
+         * Y- und X-Koordinaten wurden gespeichert und
+         * es wird jetzt der Main Klasse mitgeiteilt, dass fertige
+         * Koordinaten bereitstehen
+         * */
+        fireGameEvent(SHOOT_EVENT);
+
+
     }
 
 
 
-    @Override
-    public void run() {
+     public void run() {
         // TODO Auto-generated method stub
 
     }

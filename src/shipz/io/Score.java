@@ -164,15 +164,10 @@ public class Score {
 	}
 	
 	/**
-	 * Leert die gesamte Highscore-Datei.
-	 */
-	protected void clearHighscore() {
-		saveload.clearFile(highscoreFile);
-	}
-	
-	/**
 	 * Liest alle Punktzahlen aus dem Highscore-File
 	 * und erstellt eine absteigend sortierte Highscore-Liste.
+	 * 
+	 * MUSS ÜBERARBEITET WERDEN.
 	 * @return Die Highscore-Liste als String
 	 */
 	protected String highscore() {
@@ -204,6 +199,8 @@ public class Score {
 	 * Übergangslösung.
 	 * Funktioniert nicht ganz, für den Fall, dass zwei (oder mehr) Spieler die selbe Punktzahl haben,
 	 * wird nur ein Spieler in den Highscore getragen, nicht alle.
+	 * 
+	 * MUSS ÜBERARBEITET WERDEN.
 	 * @param score
 	 * @return
 	 */
@@ -294,10 +291,11 @@ public class Score {
 		
 //		s.highscoreTest();
 		
-		System.out.println(s.getScore("C3PO"));
-		s.setScore("C3PO", 123);
-		System.out.println(s.getScore("C3PO"));
-		System.out.println(s.getScore("Dieter"));
+//		System.out.println(s.getScore("C3PO"));
+//		s.setScore("C3PO", 123);
+//		System.out.println(s.getScore("C3PO"));
+//		System.out.println(s.getScore("Dieter"));
+		System.out.println(s.findPlayer(0));
 		
 	}
 

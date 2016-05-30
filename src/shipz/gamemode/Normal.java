@@ -46,12 +46,9 @@ public class Normal extends Computer {
 	 * Auch hier werden alle beschossenen Koordinaten und die Umgebung eines Schiffes
 	 * berücksichtigt bei der Erstellung der Zufallskoordinaten.<br><br>
 	 *
-	 * @return Zufällige Koordinaten die beschossen werden. Es werden pro Spiel nie dieselben Koordinaten von
-	 * der Ki zurückgegeben
 	 */
-	public String shootField() {
+	protected void generateAICoordinates() {
 
-		return null;
 	}
 
 	@Override
