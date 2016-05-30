@@ -1,3 +1,5 @@
+
+
 package shipz.io;
 
 import java.io.BufferedWriter;
@@ -27,7 +29,7 @@ import org.jdom2.output.XMLOutputter;
 public class SaveLoad {
 
 	// IV
-	/** Datei, in der die einzelnen Spielstände gespeichert werden. */
+	/** Datei, in der die einzelnen Spielstï¿½nde gespeichert werden. */
 	private File file;
 	/** Writer, der in eine Datei schreibt. */
 	private BufferedWriter writer;
@@ -61,13 +63,13 @@ public class SaveLoad {
 	
 	// IM
 	/**
-	 * Methode, die mit allen benötigten Informationen ein neues Spiel im XML erstellt.
-	 * @param gameName Dateiname für den Spielstand
+	 * Methode, die mit allen benï¿½tigten Informationen ein neues Spiel im XML erstellt.
+	 * @param gameName Dateiname fï¿½r den Spielstand
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
-	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
-	 * @param boardPlayer2 Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
-	 * @param boardsize Größe des Feldes. Format: "Höhe,Breite"
+	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Auï¿½erdem wird die Feldgrï¿½ï¿½e gespeichert.
+	 * @param boardPlayer2 Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Auï¿½erdem wird die Feldgrï¿½ï¿½e gespeichert.
+	 * @param boardsize Grï¿½ï¿½e des Feldes. Format: "Hï¿½he,Breite"
 	 */
 	protected void newGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize) {
 		boolean b = false;
@@ -103,7 +105,7 @@ public class SaveLoad {
 	 * @param gameName Name des Spiels
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers
-	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert. Format: "Feldhöhe,Feldbreite,Spielfeld"
+	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Auï¿½erdem wird die Feldgrï¿½ï¿½e gespeichert. Format: "Feldhï¿½he,Feldbreite,Spielfeld"
 	 */
 	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int activePlayer) {
 		setPlayerName(gameName, playerName);
@@ -135,9 +137,9 @@ public class SaveLoad {
 	
 	/**
 	 * Diese Methode gibt den Inhalt eines Knotens eines Spielstands
-	 * als String zurück.
+	 * als String zurï¿½ck.
 	 * @param gameName Name des Spiels
-	 * @param node Knoten dessen Text zurückgegeben werden soll
+	 * @param node Knoten dessen Text zurï¿½ckgegeben werden soll
 	 * @return Inhalt des Knotens als String
 	 */
 	private String getNode(String gameName, String node) {
@@ -155,10 +157,10 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Mit dieser Methode lässt sich ein einzelner Knoten eines Spielstands bearbeiten.
+	 * Mit dieser Methode lï¿½sst sich ein einzelner Knoten eines Spielstands bearbeiten.
 	 * @param gameName Name des Spielstands
 	 * @param node zu bearbeitender Knoten
-	 * @param text Text, der im Knoten eingefügt werden soll
+	 * @param text Text, der im Knoten eingefï¿½gt werden soll
 	 */
 	private void setNode(String gameName, String node, String text) {
 		update();
@@ -208,7 +210,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Löscht einen bestimmten Spielstand aus der Datei.
+	 * Lï¿½scht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
 	protected void deleteGame(String gameName) {
@@ -225,18 +227,18 @@ public class SaveLoad {
 			document.setContent(root);
 			writeXML();
 		} else {
-			System.err.println("Fehler beim Löschen des Spielstands! Dieser Spielstand existiert nicht!");
+			System.err.println("Fehler beim Lï¿½schen des Spielstands! Dieser Spielstand existiert nicht!");
 		}
 	}
 	
 	/**
-	 * Gibt die Namen aller Spielstände als {@link String} zurück.
-	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
+	 * Gibt die Namen aller Spielstï¿½nde als {@link String} zurï¿½ck.
+	 * Dies wird fï¿½r die Auflistung aller Spielstï¿½nde wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
 	 * Dies geht ganz einfach mit 
 	 * getAllGameNames().split(",")
-	 * @return Die Namen aller Spielstände als {@link String}
+	 * @return Die Namen aller Spielstï¿½nde als {@link String}
 	 */
 	protected String getAllGameNames() {
 		String str = "";
@@ -251,8 +253,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
-	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * Diese Methode lï¿½dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurï¿½ckgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -261,8 +263,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
-	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * Diese Methode lï¿½dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurï¿½ckgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -271,8 +273,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den Spielernamen eines Spielstands zurück.
-	 * @param gameName der gewünschte Spielstand
+	 * Gibt den Spielernamen eines Spielstands zurï¿½ck.
+	 * @param gameName der gewï¿½nschte Spielstand
 	 * @return Spielername eines Spielstand
 	 */
 	protected String getPlayerName(String gameName) {
@@ -280,8 +282,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
-	 * @param gameName der gewünschte Spielstand
+	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurï¿½ck.
+	 * @param gameName der gewï¿½nschte Spielstand
 	 * @return Namen des Gegners eines bestimmten Spielstands
 	 */
 	protected String getOpponentName(String gameName) {
@@ -289,34 +291,34 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
+	 * Gibt die Feldgrï¿½ï¿½e eines bestimmten Spielstands zurï¿½ck.
+	 * @param gameName der gewï¿½nschte Spielstand
+	 * @return Feldgrï¿½ï¿½e eines bestimmten Spielstands als {@link String}
 	 */
 	protected String getBoardsize(String gameName) {
 		return getNode(gameName, "boardsize");
 	}
 	
 	/**
-	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des ersten Spielers speichert.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Die Spielzüge als {@link String}
+	 * Gibt den String aus einem Spielstand zurï¿½ck, der die Spielzï¿½ge des ersten Spielers speichert.
+	 * @param gameName der gewï¿½nschte Spielstand
+	 * @return Die Spielzï¿½ge als {@link String}
 	 */
 	protected String getDrawHistoryPlayerOne(String gameName) {
 		return getNode(gameName, "drawHistoryPlayerOne");
 	}
 	
 	/**
-	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des zweiten Spielers speichert.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Die Spielzüge als {@link String}
+	 * Gibt den String aus einem Spielstand zurï¿½ck, der die Spielzï¿½ge des zweiten Spielers speichert.
+	 * @param gameName der gewï¿½nschte Spielstand
+	 * @return Die Spielzï¿½ge als {@link String}
 	 */
 	protected String getDrawHistoryPlayerTwo(String gameName) {
 		return getNode(gameName, "drawHistoryPlayerTwo");
 	}
 	
 	/**
-	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurück.
+	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurï¿½ck.
 	 * @param gameName Name des Spielstands
 	 * @return der aktive Spieler
 	 */
@@ -325,8 +327,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
-	 * @param gameName der gewünschte Spielstand
+	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurï¿½ck.
+	 * @param gameName der gewï¿½nschte Spielstand
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
 	protected String getTime(String gameName) {
@@ -334,7 +336,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
+	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter ï¿½bergeben wird in den Spielstand gameName.
 	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}
 	 */
@@ -343,7 +345,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
+	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter ï¿½bergeben wird in den Spielstand gameName.
 	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}
 	 */
@@ -352,8 +354,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den Namen des ersten Spielers zu playerName im Spielstand gameName.
-	 * @param gameName der Spielstand, bei dem der Name des ersten Spielers geändert werden soll.
+	 * ï¿½ndert den Namen des ersten Spielers zu playerName im Spielstand gameName.
+	 * @param gameName der Spielstand, bei dem der Name des ersten Spielers geï¿½ndert werden soll.
 	 * @param playerName der neue Name des ersten Spielers
 	 */
 	protected void setPlayerName(String gameName, String playerName) {
@@ -361,7 +363,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den Namen des Gegners eines Spielstands.
+	 * ï¿½ndert den Namen des Gegners eines Spielstands.
 	 * @param gameName der Spielstand
 	 * @param opponentName
 	 */
@@ -370,7 +372,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert die Feldgröße eines Spielstands.
+	 * ï¿½ndert die Feldgrï¿½ï¿½e eines Spielstands.
 	 * @param gameName der Spielstand
 	 * @param boardsize
 	 */
@@ -379,7 +381,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den Spielverlauf des ersten Spielers in einem Spielstand.
+	 * ï¿½ndert den Spielverlauf des ersten Spielers in einem Spielstand.
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
 	 */
@@ -388,7 +390,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den Spielverlauf des zweiten Spielers in einem Spielstand.
+	 * ï¿½ndert den Spielverlauf des zweiten Spielers in einem Spielstand.
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
 	 */
@@ -397,7 +399,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den aktuellen Spieler in der Datei.
+	 * ï¿½ndert den aktuellen Spieler in der Datei.
 	 * @param gameName Name des Spielstands
 	 * @param activePlayer neuer aktueller Spieler
 	 */
@@ -406,10 +408,10 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt anhand eines Namen eines Spielstands und einem Spielernamen zurück,
+	 * Gibt anhand eines Namen eines Spielstands und einem Spielernamen zurï¿½ck,
 	 * ob es sich bei dem Spieler um den ersten, oder um den zweiten
 	 * Spieler handelt.
-	 * Dies ist wichtig für die Verwaltung der Combos in der Score-Klasse.
+	 * Dies ist wichtig fï¿½r die Verwaltung der Combos in der Score-Klasse.
 	 * @param gameName Name des Spielstands
 	 * @param playerName Name des Spielers
 	 * @return 1 = Spieler ist der erste Spieler, 2 = Spieler ist der zweite Spieler, 0 = error
@@ -437,8 +439,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Überprüft ob ein Spielstand mit bestimmtem Namen vorhanden ist.
-	 * @param gameName der gewünschte Spielstand
+	 * ï¿½berprï¿½ft ob ein Spielstand mit bestimmtem Namen vorhanden ist.
+	 * @param gameName der gewï¿½nschte Spielstand
 	 * @return Ist der Spielstand vorhanden?
 	 */
 	private boolean doesGameExist(String gameName) {
@@ -458,7 +460,7 @@ public class SaveLoad {
 	/**
 	 * Sucht in einer Datei nach einer bestimmten Zeile.
 	 * Es wird mit nach einem Prefix gesucht.
-	 * Wenn die Zeile gefunden wurde, wird sie als String zurückgegeben.
+	 * Wenn die Zeile gefunden wurde, wird sie als String zurï¿½ckgegeben.
 	 * @param file Die Datei, in der gesucht werden soll.
 	 * @param prefix Prefix der Zeile, nach der gesucht werden soll.
 	 * @return Die gefundene Zeile
@@ -480,8 +482,8 @@ public class SaveLoad {
 	
 	/**
 	 * Liest aus einer Datei den gesamten Inhalt aus
-	 * und gibt ihn als {@link String} zurück.
-	 * @param file Die gewünschte Datei.
+	 * und gibt ihn als {@link String} zurï¿½ck.
+	 * @param file Die gewï¿½nschte Datei.
 	 * @return Inhalt der Datei als {@link String}.
 	 */
 	protected String readFile(File file) {
@@ -498,8 +500,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Überschreibt eine Datei komplett mit einem String.
-	 * @param file die zu überschreibende Datei.
+	 * ï¿½berschreibt eine Datei komplett mit einem String.
+	 * @param file die zu ï¿½berschreibende Datei.
 	 * @param str der {@link String}, der in die Datei geschrieben werden soll.
 	 */
 	protected void writeFile(File file, String str) {
@@ -513,7 +515,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den Dateipfad zurück, in dem Dateien des Spiels gespeichert werden.
+	 * Gibt den Dateipfad zurï¿½ck, in dem Dateien des Spiels gespeichert werden.
 	 * @return Pfad
 	 */
 	protected String fileDirectory() {
@@ -523,8 +525,8 @@ public class SaveLoad {
 	
 	/**
 	 * Methode, die immer die aktuelle Zeit berechnet.
-	 * Wird für die korrekte Speicherung der Spielstände benötigt, damit man diese auseinanderhalten kann.
-	 * @return Gibt die aktuelle Zeit zurück.
+	 * Wird fï¿½r die korrekte Speicherung der Spielstï¿½nde benï¿½tigt, damit man diese auseinanderhalten kann.
+	 * @return Gibt die aktuelle Zeit zurï¿½ck.
 	 */
 	private String timestamp() {
 		Calendar c = Calendar.getInstance();
@@ -534,7 +536,7 @@ public class SaveLoad {
 	
 	/**
 	 * main method
-	 * für tests
+	 * fï¿½r tests
 	 * @param args arguments
 	 */
 	public static void main(String[] args) {
@@ -544,3 +546,7 @@ public class SaveLoad {
 	}
 	
 }
+
+
+
+

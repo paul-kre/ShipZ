@@ -132,7 +132,7 @@ public class Easy extends Computer {
          * es wird jetzt der Main Klasse mitgeiteilt, dass fertige
          * Koordinaten bereitstehen
          * */
-        fireGameEvent(SHOOT_EVENT);
+        //fireGameEvent(SHOOT_EVENT);
 
 
     }

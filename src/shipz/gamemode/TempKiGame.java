@@ -388,26 +388,26 @@ public class TempKiGame{
     private void startGame(){
 
 
-        /*
+
         Computer ki = new Easy(10);
         System.out.println("Game Spielfeld mit Schiff(en):");
         this.displaySingleBoard(board1);
         System.out.println("\n");
-        */
+
 
         for (int i = 0; i < 100; i++){
 
-            /*
+
             System.out.println(i+1 + ". Beschuss:");
 
             //Vom Player die shootField methode aufrufen und
             //den Rückgabewert String in ein neues String speichern
-            String coords = ki.shootField();
+             ki.generateAICoordinates();
 
             //Eigene methoden aufrufen um aus dem String einmal ein
             // Y- und X-Koordinate rauszuholen und in neue int variablen speichern
-            int yCoord = ki.extractYCoord(coords);
-            int xCoord = ki.extractXCoord(coords);
+            int yCoord = ki.getY();
+            int xCoord = ki.getX();
 
             //Verwaltung übergibt dem Player das Ergebnis mit shootResult mit.
             ki.shootResult(yCoord, xCoord, checkTile( xCoord, yCoord) );
@@ -417,7 +417,7 @@ public class TempKiGame{
             ki.displayMirrorField();
             ki.printRowAndColumnItems();
             System.out.println("\n");
-            */
+
         }
 
 
