@@ -1,0 +1,32 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 02.05.2016, 16:00:57
+    Author     : nnamf
+*/
+
+.root {
+    display: block;
+    -fx-background-color: white;
+
+}
+
+.button {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, repeat, darkred 0%, darkblue 100%);
+    -fx-font-weight: bold;
+}
+
+.text {
+    -fx-font-size: 1em;
+    
+}
+
+#ig {
+    -fx-background-color: black;
+}
+
