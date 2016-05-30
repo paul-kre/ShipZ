@@ -1,5 +1,11 @@
 package shipz;
 
+import javafx.stage.Stage;
+import shipz.gui.GUI2;
+import shipz.util.GameEvent;
+import shipz.util.GameEventListener;
+import javafx.stage.Stage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,25 +14,27 @@ import java.util.List;
  * @author Max
  * @version	0.1
  */
-public class Game {
+public class Game /*implements GameEventListener*/{
 
-    //IV545454
+    //IV
     /** Spielfeld des 1. Spielers */
-    private char[][] board1;
+    public char[][] board1;
     /** Spielfeld des 2. Spielers */
-    private char[][] board2;
+    public char[][] board2;
     /** Verweis auf den 1. Spieler */
     private Player player1;
     /** Verweis auf den 2. Spieler */
     private Player player2;
+    /** gibt an, ob Spieler 1 aktiv ist */
+    public boolean player1active;
     /** Netzwerkverbindung */
     //private Network network;
     /** grafische Nutzeroberfläche */
-    //private GUI gui;
+    public GUI2 gui;
     /** Spielstandverwaltung */
     //private FileStream filestream;
     /** Liste mit den zu verwendenden Schiffen */
-    private List<Integer> shipList;
+    public List<Integer> shipList;
 
     //Constructor
     /**
@@ -34,11 +42,10 @@ public class Game {
      * @param width		Feldbreite
      * @param height	Feldhöhe
      */
-    private Game(int width, int height) {
+    public Game(int width, int height) {
         board1 = new char[width][height];
         board2 = new char[width][height];
-        initiateBoard(board1);
-        initiateBoard(board2);
+        initiateBoards();
     }
 
     //Methoden
@@ -49,17 +56,21 @@ public class Game {
 
     /**
      * setzt alle Zellen eines Felds auf Wasser
-     * @param board	zu füllendes Feld
      */
-    private void initiateBoard(char[][] board) {
+    private void initiateBoards() {
         //1. Zähler
         int y;
         //2. Zähler
         int x;
         //doppelte Schleife für Durchlauf durch alle Felder
-        for(y=0; y<board.length; y++) {
-            for(x=0; x<board[y].length; x++) {
-                board[y][x] = 'w';
+        for(y=0; y<board1.length; y++) {
+            for(x=0; x<board1[y].length; x++) {
+                board1[y][x] = 'w';
+            }//Ende ySchleife
+        }//Ende xSchleife
+        for(y=0; y<board1.length; y++) {
+            for(x=0; x<board1[y].length; x++) {
+                board2[y][x] = 'w';
             }//Ende ySchleife
         }//Ende xSchleife
     }
@@ -74,24 +85,37 @@ public class Game {
      * überprüft die übergebenen Koordinaten auf Schiffelemente und ruft eventuell sink() auf
      * @param x 	Koordinate
      * @param y 	Koordinate
-     * @param board	Spielfeld
      * @return 0	Wasser getroffen
      * @return 1	Schiff getroffen
      * @return 2	Schiff versenkt
      */
-    private byte checkTile(int x, int y, char[][] board) {
+    private byte checkTile(int x, int y) {
         byte r = 0;
-        if(board[y][x] == 'x') {
-            r = 1;
-            if (sink(x, y, board)) {
-                r = 2;
+        if(player1active) {
+            if (board2[y][x] == 'x') {
+                r = 1;
+                if (sink(x, y)) {
+                    r = 2;
+                }
+                //System.out.println("Es wurde ein Schiffelement zerstört");
+                return r;
+            } else {
+                //System.out.println("Es wurde kein Schiffelement zerstört");
+                return r;
             }
-            //System.out.println("Es wurde ein Schiffelement zerstört");
-            return r;
         }
         else {
-            //System.out.println("Es wurde kein Schiffelement zerstört");
-            return r;
+            if (board1[y][x] == 'x') {
+                r = 1;
+                if (sink(x, y)) {
+                    r = 2;
+                }
+                //System.out.println("Es wurde ein Schiffelement zerstört");
+                return r;
+            } else {
+                //System.out.println("Es wurde kein Schiffelement zerstört");
+                return r;
+            }
         }
     }
 
@@ -99,45 +123,54 @@ public class Game {
      * setzt die angegebene Zelle auf ein zerstörtes Schiffelement
      * @param x		Koordinate
      * @param y 	Koordinate
-     * @param board	Spielfeld
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
      */
-    private boolean sink(int x, int y, char[][] board) {
-        board[y][x] = 'z';
-        if (checkShipDestroyed(x, y, board)) {
-            //System.out.println("Es wurde ein gesamtes Schiff zerstört");
+    private boolean sink(int x, int y) {
+        if(player1active) {
+            board2[y][x] = 'z';
+            return (checkShipDestroyed(x, y));
         }
-        return (checkShipDestroyed(x, y, board));
+        else {
+            board1[y][x] = 'z';
+            return (checkShipDestroyed(x, y));
+        }
     }
 
     /**
      * prüft den Gesamtzustand des Schiffs
      * @param x		Koordinate
      * @param y 	Koordinate
-     * @param board	Spielfeld
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
      */
-    private boolean checkShipDestroyed(int x, int y, char[][] board) {
-        return (checkShipDestroyedUp(x, y, board) && checkShipDestroyedRight(x, y, board) && checkShipDestroyedDown(x, y, board) && checkShipDestroyedLeft(x, y, board));
+    private boolean checkShipDestroyed(int x, int y) {
+        return (checkShipDestroyedUp(x, y) && checkShipDestroyedRight(x, y) && checkShipDestroyedDown(x, y) && checkShipDestroyedLeft(x, y));
     }
 
     /**
      * prüft den Gesamtzustand des Schiffs nach oben
      * @param x		Koordinate
      * @param y 	Koordinate
-     * @param board	Spielfeld
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
      */
-    private boolean checkShipDestroyedUp(int x, int y, char[][] board) {
+    private boolean checkShipDestroyedUp(int x, int y) {
         if(y-1 >= 0) {
-            if(board[y-1][x] == 'w') {						//Wasser auf angrenzendem Feld
-                return true;								//Schiff wurde vielleicht versenkt
+            if(player1active) {
+                if (board2[y - 1][x] == 'w') {                        //Wasser auf angrenzendem Feld
+                    return true;                                //Schiff wurde vielleicht versenkt
+                } else if (board2[y - 1][x] == 'x') {                    //Schiffelement auf angrenzendem Feld
+                    return false;                                //Schiff wurde nicht versenkt
+                } else {                                            //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedUp(x, y - 1);    //weitere Prüfung vom angrenzenden Feld
+                }
             }
-            else if(board[y-1][x] == 'x') {					//Schiffelement auf angrenzendem Feld
-                return false;								//Schiff wurde nicht versenkt
-            }
-            else {											//zerstörtes Schiffelement auf angrenzendem Feld
-                return checkShipDestroyedUp(x, y-1, board);	//weitere Prüfung vom angrenzenden Feld
+            else {
+                if (board1[y - 1][x] == 'w') {                        //Wasser auf angrenzendem Feld
+                    return true;                                //Schiff wurde vielleicht versenkt
+                } else if (board1[y - 1][x] == 'x') {                    //Schiffelement auf angrenzendem Feld
+                    return false;                                //Schiff wurde nicht versenkt
+                } else {                                            //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedUp(x, y - 1);    //weitere Prüfung vom angrenzenden Feld
+                }
             }
         }
         else {
@@ -149,23 +182,34 @@ public class Game {
      * prüft den Gesamtzustand des Schiffs nach rechts
      * @param x		Koordinate
      * @param y 	Koordinate
-     * @param board	Spielfeld
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
      */
-    private boolean checkShipDestroyedRight(int x, int y, char[][] board) {
-        if(x+1 < board[y].length) {
-            if(board[y][x+1] == 'w') {							//Wasser auf angrenzendem Feld
-                return true;									//Schiff wurde vielleicht versenkt
-            }
-            else if(board[y][x+1] == 'x') {						//Schiffelement auf angrenzendem Feld
-                return false;									//Schiff wurde nicht versenkt
-            }
-            else {												//zerstörtes Schiffelement auf angrenzendem Feld
-                return checkShipDestroyedRight(x+1, y, board);	//weitere Prüfung vom angrenzenden Feld
+    private boolean checkShipDestroyedRight(int x, int y) {
+        if(player1active) {
+            if (x + 1 < board2[y].length) {
+                if (board2[y][x + 1] == 'w') {                            //Wasser auf angrenzendem Feld
+                    return true;                                    //Schiff wurde vielleicht versenkt
+                } else if (board2[y][x + 1] == 'x') {                        //Schiffelement auf angrenzendem Feld
+                    return false;                                    //Schiff wurde nicht versenkt
+                } else {                                                //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedRight(x + 1, y);    //weitere Prüfung vom angrenzenden Feld
+                }
+            } else {
+                return true;
             }
         }
         else {
-            return true;
+            if (x + 1 < board1[y].length) {
+                if (board1[y][x + 1] == 'w') {                            //Wasser auf angrenzendem Feld
+                    return true;                                    //Schiff wurde vielleicht versenkt
+                } else if (board1[y][x + 1] == 'x') {                        //Schiffelement auf angrenzendem Feld
+                    return false;                                    //Schiff wurde nicht versenkt
+                } else {                                                //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedRight(x + 1, y);    //weitere Prüfung vom angrenzenden Feld
+                }
+            } else {
+                return true;
+            }
         }
     }
 
@@ -173,23 +217,34 @@ public class Game {
      * prüft den Gesamtzustand des Schiffs nach unten
      * @param x		Koordinate
      * @param y 	Koordinate
-     * @param board	Spielfeld
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
      */
-    private boolean checkShipDestroyedDown(int x, int y, char[][] board) {
-        if(y+1 < board.length) {
-            if(board[y+1][x] == 'w') {						//Wasser auf angrenzendem Feld
-                return true;								//Schiff wurde vielleicht versenkt
-            }
-            else if(board[y+1][x] == 'x') {					//Schiffelement auf angrenzendem Feld
-                return false;								//Schiff wurde nicht versenkt
-            }
-            else {											//zerstörtes Schiffelement auf angrenzendem Feld
-                return checkShipDestroyedDown(x, y+1, board);	//weitere Prüfung vom angrenzenden Feld
+    private boolean checkShipDestroyedDown(int x, int y) {
+        if(player1active) {
+            if (y + 1 < board2.length) {
+                if (board2[y + 1][x] == 'w') {                        //Wasser auf angrenzendem Feld
+                    return true;                                //Schiff wurde vielleicht versenkt
+                } else if (board2[y + 1][x] == 'x') {                    //Schiffelement auf angrenzendem Feld
+                    return false;                                //Schiff wurde nicht versenkt
+                } else {                                            //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedDown(x, y + 1);    //weitere Prüfung vom angrenzenden Feld
+                }
+            } else {
+                return true;
             }
         }
         else {
-            return true;
+            if (y + 1 < board1.length) {
+                if (board1[y + 1][x] == 'w') {                        //Wasser auf angrenzendem Feld
+                    return true;                                //Schiff wurde vielleicht versenkt
+                } else if (board1[y + 1][x] == 'x') {                    //Schiffelement auf angrenzendem Feld
+                    return false;                                //Schiff wurde nicht versenkt
+                } else {                                            //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedDown(x, y + 1);    //weitere Prüfung vom angrenzenden Feld
+                }
+            } else {
+                return true;
+            }
         }
     }
 
@@ -197,19 +252,27 @@ public class Game {
      * prüft den Gesamtzustand des Schiffs nach links
      * @param x		Koordinate
      * @param y 	Koordinate
-     * @param board	Spielfeld
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
      */
-    private boolean checkShipDestroyedLeft(int x, int y, char[][] board) {
+    private boolean checkShipDestroyedLeft(int x, int y) {
         if(x-1 >= 0) {
-            if(board[y][x-1] == 'w') {							//Wasser auf angrenzendem Feld
-                return true;									//Schiff wurde vielleicht versenkt
+            if(player1active) {
+                if (board2[y][x - 1] == 'w') {                            //Wasser auf angrenzendem Feld
+                    return true;                                    //Schiff wurde vielleicht versenkt
+                } else if (board2[y][x - 1] == 'x') {                        //Schiffelement auf angrenzendem Feld
+                    return false;                                    //Schiff wurde nicht versenkt
+                } else {                                                //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedLeft(x - 1, y);    //weitere Prüfung vom angrenzenden Feld
+                }
             }
-            else if(board[y][x-1] == 'x') {						//Schiffelement auf angrenzendem Feld
-                return false;									//Schiff wurde nicht versenkt
-            }
-            else {												//zerstörtes Schiffelement auf angrenzendem Feld
-                return checkShipDestroyedLeft(x-1, y, board);	//weitere Prüfung vom angrenzenden Feld
+            else {
+                if (board1[y][x - 1] == 'w') {                            //Wasser auf angrenzendem Feld
+                    return true;                                    //Schiff wurde vielleicht versenkt
+                } else if (board1[y][x - 1] == 'x') {                        //Schiffelement auf angrenzendem Feld
+                    return false;                                    //Schiff wurde nicht versenkt
+                } else {                                                //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedLeft(x - 1, y);    //weitere Prüfung vom angrenzenden Feld
+                }
             }
         }
         else {
@@ -219,10 +282,9 @@ public class Game {
 
     /**
      * zählt die Anzahl der Schiffe auf einem Feld
-     * @param board	zu zählendes Feld
      * @return		Anzahl der Schiffe
      */
-    private int shipCount(char[][] board) {return 0;}
+    private int shipCount() {return 0;}
 
     /**
      * gibt beide Felder hintereinander auf der Konsole aus (für Testzwecke)
@@ -262,13 +324,20 @@ public class Game {
 
     /**
      * platziert alle Schiffe eines Spielers auf seinem Feld
-     * @param board	Feld
+     * @param player	Feld
      */
-    private void placeShips(char[][] board) {
+    public void placeShips(int player) {
         for(Integer i : shipList) {
-            while(placeSingleShip(randomNumber(0, board.length), randomNumber(0, board[0].length), i, board) == false) {}
+            if(player == 1) {
+                while (placeSingleShip(randomNumber(0, board1.length), randomNumber(0, board1[0].length), i, player) == false) {
+                }
+            }
+            else {
+                while (placeSingleShip(randomNumber(0, board2.length), randomNumber(0, board2[0].length), i, player) == false) {
+                }
+            }
         }
-        swapChars('b', 'w', board);
+        swapChars('b', 'w', player);
     }
 
     /**
@@ -276,10 +345,9 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
-    private boolean placeSingleShip(int y, int x, int length, char[][] board) {
+    private boolean placeSingleShip(int y, int x, int length, int player) {
         boolean shipPlaced = false;
         boolean used0 = false;
         boolean used1 = false;
@@ -289,19 +357,19 @@ public class Game {
         while(usedAll == false && shipPlaced == false) {				//wird wiederholt, bis alle Richtungen probiert wurden oder das Schiff gesetzt wird
             int dir = randomNumber(0, 3);	//Richtung: 0=hoch, 1=recht, 2=runter, 3=links
             if(dir == 0 && used0 == false) {
-                shipPlaced = checkShipUp(y, x, length, board);
+                shipPlaced = checkShipUp(y, x, length, player);
                 used0 = true;
             }
             if(dir == 1 && used1 == false) {
-                shipPlaced = checkShipRight(y, x, length, board);
+                shipPlaced = checkShipRight(y, x, length, player);
                 used1 = true;
             }
             if(dir == 2 && used2 == false) {
-                shipPlaced = checkShipDown(y, x, length, board);
+                shipPlaced = checkShipDown(y, x, length, player);
                 used2 = true;
             }
             if(dir == 3 && used3 == false) {
-                shipPlaced = checkShipLeft(y, x, length, board);
+                shipPlaced = checkShipLeft(y, x, length, player);
                 used3 = true;
             }
             usedAll = used0 && used1 && used2 && used3;
@@ -314,23 +382,36 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
+     * @param player	Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
-    private boolean checkShipUp(int y, int x, int length, char[][] board) {
+    private boolean checkShipUp(int y, int x, int length, int player) {
         boolean placeable = false;
         //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
-        if(y >= 0 && y < board.length && x >= 0 && x < board[y].length && y-length+1 >= 0) {
-            placeable = true ;
-            //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
-            for(int i = 0; i < length; i++) {
-                if(board[y-i][x] != 'w') {
-                    placeable = false;
+        if(player == 1) {
+            if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length && y - length + 1 >= 0) {
+                placeable = true;
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+                for (int i = 0; i < length; i++) {
+                    if (board1[y - i][x] != 'w') {
+                        placeable = false;
+                    }
+                }
+            }
+        }
+        else {
+            if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length && y - length + 1 >= 0) {
+                placeable = true;
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+                for (int i = 0; i < length; i++) {
+                    if (board2[y - i][x] != 'w') {
+                        placeable = false;
+                    }
                 }
             }
         }
         if(placeable) {
-            placeShipUp(y, x, length, board);
+            placeShipUp(y, x, length, player);
             return true;
         }
         return false;
@@ -341,13 +422,18 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
+     * @param player	Feld
      */
-    private void placeShipUp(int y, int x, int length, char[][] board) {
+    private void placeShipUp(int y, int x, int length, int player) {
         for(int i = 0; i < length; i++) {
-            board[y-i][x] = 'x';
+            if(player == 1) {
+                board1[y - i][x] = 'x';
+            }
+            else {
+                board2[y - i][x] = 'x';
+            }
         }
-        blockTiles(board, 0, length, x, y);
+        blockTiles(player, 0, length, x, y);
     }
 
     /**
@@ -355,26 +441,45 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
+     * @param player	Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
-    private boolean checkShipRight(int y, int x, int length, char[][] board) {
+    private boolean checkShipRight(int y, int x, int length, int player) {
         boolean placeable = false;
-        //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
-        if(y >= 0 && y < board.length && x >= 0 && x < board[y].length && x+length-1 < board[y].length) {
-            placeable = true ;
-            //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
-            for(int i = 0; i < length; i++) {
-                if(board[y][x+i] != 'w') {
-                    placeable = false;
+        if(player == 1) {
+            //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
+            if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length && x + length - 1 < board1[y].length) {
+                placeable = true;
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+                for (int i = 0; i < length; i++) {
+                    if (board1[y][x + i] != 'w') {
+                        placeable = false;
+                    }
                 }
             }
+            if (placeable) {
+                placeShipRight(y, x, length, player);
+                return true;
+            }
+            return false;
         }
-        if(placeable) {
-            placeShipRight(y, x, length, board);
-            return true;
+        else {
+            //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
+            if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length && x + length - 1 < board2[y].length) {
+                placeable = true;
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+                for (int i = 0; i < length; i++) {
+                    if (board2[y][x + i] != 'w') {
+                        placeable = false;
+                    }
+                }
+            }
+            if (placeable) {
+                placeShipRight(y, x, length, player);
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
     /**
@@ -382,13 +487,18 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
+     * @param player	Feld
      */
-    private void placeShipRight(int y, int x, int length, char[][] board) {
+    private void placeShipRight(int y, int x, int length, int player) {
         for(int i = 0; i < length; i++) {
-            board[y][x+i] = 'x';
+            if (player == 1) {
+                board1[y][x + i] = 'x';
+            }
+            else {
+                board2[y][x + i] = 'x';
+            }
         }
-        blockTiles(board, 1, length, x, y);
+        blockTiles(player, 1, length, x, y);
     }
 
     /**
@@ -396,26 +506,45 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
+     * @param player	Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
-    private boolean checkShipDown(int y, int x, int length, char[][] board) {
+    private boolean checkShipDown(int y, int x, int length, int player) {
         boolean placeable = false;
-        //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
-        if(y >= 0 && y < board.length && x >= 0 && x < board[y].length && y+length-1 < board.length) {
-            placeable = true ;
-            //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
-            for(int i = 0; i < length; i++) {
-                if(board[y+i][x] != 'w') {
-                    placeable = false;
+        if(player == 1) {
+            //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
+            if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length && y + length - 1 < board1.length) {
+                placeable = true;
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+                for (int i = 0; i < length; i++) {
+                    if (board1[y + i][x] != 'w') {
+                        placeable = false;
+                    }
                 }
             }
+            if (placeable) {
+                placeShipDown(y, x, length, player);
+                return true;
+            }
+            return false;
         }
-        if(placeable) {
-            placeShipDown(y, x, length, board);
-            return true;
+        else{
+            //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
+            if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length && y + length - 1 < board2.length) {
+                placeable = true;
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+                for (int i = 0; i < length; i++) {
+                    if (board2[y + i][x] != 'w') {
+                        placeable = false;
+                    }
+                }
+            }
+            if (placeable) {
+                placeShipDown(y, x, length, player);
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
     /**
@@ -423,13 +552,18 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
+     * @param player	Feld
      */
-    private void placeShipDown(int y, int x, int length, char[][] board) {
+    private void placeShipDown(int y, int x, int length, int player) {
         for(int i = 0; i < length; i++) {
-            board[y+i][x] = 'x';
+            if(player == 1) {
+                board1[y + i][x] = 'x';
+            }
+            else {
+                board2[y + i][x] = 'x';
+            }
         }
-        blockTiles(board, 2, length, x, y);
+        blockTiles(player, 2, length, x, y);
     }
 
     /**
@@ -437,23 +571,36 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
+     * @param player	Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
-    private boolean checkShipLeft(int y, int x, int length, char[][] board) {
+    private boolean checkShipLeft(int y, int x, int length, int player) {
         boolean placeable = false;
         //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
-        if(y >= 0 && y < board.length && x >= 0 && x < board[y].length && x-length+1 >= 0) {
-            placeable = true ;
-            //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
-            for(int i = 0; i < length; i++) {
-                if(board[y][x-i] != 'w') {
-                    placeable = false;
+        if(player == 1) {
+            if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length && x - length + 1 >= 0) {
+                placeable = true;
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+                for (int i = 0; i < length; i++) {
+                    if (board1[y][x - i] != 'w') {
+                        placeable = false;
+                    }
+                }
+            }
+        }
+        else {
+            if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length && x - length + 1 >= 0) {
+                placeable = true;
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
+                for (int i = 0; i < length; i++) {
+                    if (board2[y][x - i] != 'w') {
+                        placeable = false;
+                    }
                 }
             }
         }
         if(placeable) {
-            placeShipLeft(y, x, length, board);
+            placeShipLeft(y, x, length, player);
             return true;
         }
         return false;
@@ -464,24 +611,29 @@ public class Game {
      * @param y			Koordinate
      * @param x			Koordinate
      * @param length	Schifflänge
-     * @param board		Feld
+     * @param player	Feld
      */
-    private void placeShipLeft(int y, int x, int length, char[][] board) {
+    private void placeShipLeft(int y, int x, int length, int player) {
         for(int i = 0; i < length; i++) {
-            board[y][x-i] = 'x';
+            if(player == 1) {
+                board1[y][x - i] = 'x';
+            }
+            else {
+                board2[y][x - i] = 'x';
+            }
         }
-        blockTiles(board, 3, length, x, y);
+        blockTiles(player, 3, length, x, y);
     }
 
     /**
      * blockiert Zellen auf dem Spielfeld, sodass Schiffe nicht aneinander gesetzt werden
-     * @param board		Feld
+     * @param player	Feld
      * @param dir		Richtung in die das zu blockierende Schiff gesetzt wurde
      * @param length	Schiffslänge
      * @param x			Koordinate, von der aus das Schiff gesetzt wurde
      * @param y			Koordinate, von der aus das Schiff gesetzt wurde
      */
-    private void blockTiles(char[][] board, int dir, int length, int x, int y) {
+    private void blockTiles(int player, int dir, int length, int x, int y) {
         //Positon der Schiffsenden
         int posAX;
         int posAY;
@@ -518,29 +670,51 @@ public class Game {
         //Schleife zur Aktualisierung des char[][]
         for(y=posAY-1; y<=posBY+1; y++) {
             for(x=posAX-1; x<=posBX+1; x++) {
-                //Prüfung, ob die berechnete Koordinate im Feld liegt
-                if(y >= 0 && y < board.length && x >= 0 && x < board[y].length) {
-                    //Prüfung, ob das zu blockierende Feld noch unbelegt ist
-                    if(board[y][x] == 'w') {
-                        board[y][x] = 'b';
-                    }
-                } //Ende der Prüfungen
+                if(player == 1) {
+                    //Prüfung, ob die berechnete Koordinate im Feld liegt
+                    if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length) {
+                        //Prüfung, ob das zu blockierende Feld noch unbelegt ist
+                        if (board1[y][x] == 'w') {
+                            board1[y][x] = 'b';
+                        }
+                    } //Ende der Prüfungen
+                }
+                else {
+                    //Prüfung, ob die berechnete Koordinate im Feld liegt
+                    if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length) {
+                        //Prüfung, ob das zu blockierende Feld noch unbelegt ist
+                        if (board2[y][x] == 'w') {
+                            board2[y][x] = 'b';
+                        }
+                    } //Ende der Prüfungen
+                }
             }
         } //Ende der Schleifen
     }
 
     /**
      * ersetzt alle chars auf einem Spielfeld
-     * @param a		ursprüngliche chars
-     * @param b		neue chars
-     * @param board	Feld
+     * @param a		    ursprüngliche chars
+     * @param b		    neue chars
+     * @param player    Feld
      */
-    private void swapChars(char a, char b, char[][] board) {
+    public void swapChars(char a, char b, int player) {
         int x, y;
-        for(y=0; y<board.length; y++) {
-            for(x=0; x<board[y].length; x++) {
-                if(board[y][x] == a) {
-                    board[y][x] = b;
+        if(player == 1) {
+            for (y = 0; y < board1.length; y++) {
+                for (x = 0; x < board1[y].length; x++) {
+                    if (board1[y][x] == a) {
+                        board1[y][x] = b;
+                    }
+                }
+            }
+        }
+        else {
+            for (y = 0; y < board2.length; y++) {
+                for (x = 0; x < board2[y].length; x++) {
+                    if (board2[y][x] == a) {
+                        board2[y][x] = b;
+                    }
                 }
             }
         }
@@ -561,13 +735,32 @@ public class Game {
      * @param s	numerischer Wert eines chars steht für die Länge eines Schiffs
      * @return	Integer-Liste mit einem Eintrag für jedes Schiff
      */
-    private List<Integer> createShipList(String s) {
+    public List<Integer> createShipList(String s) {
         List<Integer> r = new ArrayList<Integer>();
         for(int i=0; i<s.length(); i++) {
             r.add(Character.getNumericValue(s.charAt(i)));
         }
         return r;
     }
+
+    public void drawShipOnGUI() {
+        int x, y;
+        for(y=0; y<board1.length; y++) {
+            for (x = 0; x < board1[y].length; x++) {
+                if(board1[y][x] == 'x') {
+                    gui.drawShip(y, x, 1);
+                }
+            }
+        }
+        for(y=0; y<board2.length; y++) {
+            for (x = 0; x < board2[y].length; x++) {
+                if(board2[y][x] == 'x') {
+                    gui.drawShip(y, x, 2);
+                }
+            }
+        }
+    }
+
 
     /**
      * Main-Methode
@@ -577,10 +770,26 @@ public class Game {
         Game g = new Game(10, 10);
         g.shipList = g.createShipList("5443332");
         System.out.println(g.shipList);
-        g.placeShips(g.board2);
-        g.swapChars('w', '.', g.board2);
+        g.placeShips(2);
+        g.swapChars('w', '.', 2);
         g.displaySingleBoard(g.board2);
+        g.gui = new GUI2();
+        //g.gui.start(s);
     }
+
+    /*public void eventReceived(GameEvent e) {
+        Player source = e.getSource();
+        byte id = e.getId();
+
+        switch(id) {
+            case SHOOT_EVENT:
+                if(isHost) {
+                    source.shootResult();
+                }
+
+                break;
+        }
+    }*/
 }
 
 /*
