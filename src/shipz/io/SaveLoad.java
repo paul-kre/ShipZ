@@ -73,7 +73,7 @@ public class SaveLoad {
 		boolean b = false;
 		
 		if(root.getChildren() != null) {
-			update();
+			updateXML();
 			b = doesGameExist(gameName);
 		}
 		
@@ -141,7 +141,7 @@ public class SaveLoad {
 	 * @return Inhalt des Knotens als String
 	 */
 	private String getNode(String gameName, String node) {
-		update();
+		updateXML();
 		String str = "";
 		
 		List<Element> list = root.getChildren();
@@ -155,13 +155,13 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Mit dieser Methode lï¿½sst sich ein einzelner Knoten eines Spielstands bearbeiten.
+	 * Mit dieser Methode lässt sich ein einzelner Knoten eines Spielstands bearbeiten.
 	 * @param gameName Name des Spielstands
 	 * @param node zu bearbeitender Knoten
-	 * @param text Text, der im Knoten eingefï¿½gt werden soll
+	 * @param text Text, der im Knoten eingefügt werden soll
 	 */
 	private void setNode(String gameName, String node, String text) {
-		update();
+		updateXML();
 		List<Element> list = root.getChildren();
 		for(Element e : list) {
 			if(e.getChild("gameName").getText().equals(gameName)) {
@@ -177,7 +177,7 @@ public class SaveLoad {
 	 * die Wurzel-Element und das Dokument speichern,
 	 * werden somit aktualisiert.
 	 */
-	private void update() {
+	private void updateXML() {
 		if(root.getChildren() != new Element("saves").getChildren()) {
 			try {
 				FileInputStream fileinput = new FileInputStream(file);
@@ -208,11 +208,11 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Lï¿½scht einen bestimmten Spielstand aus der Datei.
+	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
 	protected void deleteGame(String gameName) {
-		update();
+		updateXML();
 		if(doesGameExist(gameName)) {
 			List<Element> list = root.getChildren();
 			Element temp = null;
@@ -225,7 +225,7 @@ public class SaveLoad {
 			document.setContent(root);
 			writeXML();
 		} else {
-			System.err.println("Fehler beim Lï¿½schen des Spielstands! Dieser Spielstand existiert nicht!");
+			System.err.println("Fehler beim Löschen des Spielstands! Dieser Spielstand existiert nicht!");
 		}
 	}
 	
@@ -240,7 +240,7 @@ public class SaveLoad {
 	 */
 	protected String getAllGameNames() {
 		String str = "";
-		update();
+		updateXML();
 		
 		List<Element> list = root.getChildren();
 		for(Element e : list) {
@@ -442,7 +442,7 @@ public class SaveLoad {
 	 * @return Ist der Spielstand vorhanden?
 	 */
 	private boolean doesGameExist(String gameName) {
-		update();
+		updateXML();
 		boolean doesGameExist = false;
 		List<Element> list = root.getChildren();
 		
