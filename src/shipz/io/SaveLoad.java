@@ -538,7 +538,8 @@ public class SaveLoad {
 	 */
 	public static void main(String[] args) {
 		SaveLoad saveload = new SaveLoad();
-//		saveload.newGame("tesssst", "nur", "noch", "ein", "kleiner", "test");
+//		saveload.newGame("nkjkjjk", "nur", "noch", "ein", "kleiner", "test");
+		saveload.setPlayerName("nkjkjjk", "TEST");
 		
 	}
 	

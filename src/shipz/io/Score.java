@@ -295,7 +295,9 @@ public class Score {
 //		s.setScore("C3PO", 123);
 //		System.out.println(s.getScore("C3PO"));
 //		System.out.println(s.getScore("Dieter"));
-		System.out.println(s.findPlayer(0));
+//		System.out.println(s.findPlayer(0));
+		
+		s.addPlayerIntoHighscore("testSpieler123");
 		
 	}
 
