@@ -23,14 +23,6 @@ public class FileStream {
 		// Wenn Spieler 1 einen Zug getätigt hat und diesen rückgängig macht
 		// darf nicht der zuletzt getätigte Zug von Spieler 2 rückgängig gemacht werden
 	
-	// Events nur beim fehlerhaften Laden ?
-	
-	// Instanz-Variablen in der SaveLoad-Klasse ?
-	
-	// Bis nächsten Dienstag:
-		// XML für SaveLoad weiter implementieren
-		// Klassendiagramm aktualisieren
-	
 	/**
 	 * Konstruktor der Klasse.
 	 */
@@ -67,12 +59,27 @@ public class FileStream {
 	
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Speichert die Informationen eines bestimmten Spiels.
+	 * Wird von der Game-Klasse genutzt, um ein Spiel zwischenzeitlich abzuspeichern.
+	 * @param gameName Name des Spielstands
+	 * @param playerName Name des ersten Spielers
+	 * @param opponentName Name des Gegners / zweiten Spielers
+	 * @param boardPlayerOne Spielbrett des ersten Spielers als {@link String}
+	 * @param boardPlayerTwo Spielbrett des zweiten Spielers als {@link String}
+	 * @param activePlayer aktiver Spieler
+	 */
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int activePlayer) {
+		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, activePlayer);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Gibt die Namen aller Spielstände als {@link String} zurück.
 	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
 	 * Dies geht ganz einfach mit 
-	 * getAllGameNames().split(",")
+	 * <i>getAllGameNames().split(",")</i>
 	 * @return Die Namen aller Spielstände als {@link String}
 	 */
 	public String getAllGameNames() {
@@ -160,15 +167,24 @@ public class FileStream {
 		saveload.deleteGame(gameName);
 	}
 	
-	
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Diese Methode speichert das Spielfeld, das als Parameter übergeben wird in den Spielstand gameName.
+	 * Diese Methode speichert das Spielfeld des ersten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
 	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}
 	 */
-	public void setBoard(String gameName, String board) {
-//		saveload.setBoard(gameName, board);
+	public void setBoardPlayerOne(String gameName, String boardPlayerOne) {
+		saveload.setBoardPlayerOne(gameName, boardPlayerOne);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
+	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
+	 * @param board das Spielbrett als {@link String}
+	 */
+	public void setBoardPlayerTwo(String gameName, String boardPlayerTwo) {
+		saveload.setBoardPlayerTwo(gameName, boardPlayerTwo);
 	}
 	
 	/**
@@ -293,15 +309,6 @@ public class FileStream {
 	 */
 	public void updateScoreOnEvent(String gameName, String playerName, char event) {
 		score.updateScoreOnEvent(gameName, playerName, event);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der Score-Klasse.
-	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
-	 * @param playerName Der Spieler, der eingefügt werden soll.
-	 */
-	public void addPlayerIntoHighscore(String playerName) {
-		score.addPlayerIntoHighscore(playerName);
 	}
 	
 	/**
