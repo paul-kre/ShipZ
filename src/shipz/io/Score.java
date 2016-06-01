@@ -3,8 +3,10 @@ package shipz.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 /**
  * Diese Klasse ist für die Punktevergabe zuständig,
@@ -22,9 +24,9 @@ public class Score {
 	/** Scanner, der aus einer Datei liest. */
 	private Scanner scanner;
 	/** Zählt die Combos des ersten Spielers */
-	private int comboPlayer1;
+	private double comboPlayer1;
 	/** Zählt die Combos des zweiten Spielers */
-	private int comboPlayer2;
+	private double comboPlayer2;
 	/** Trennzeichen zwischen Namen und Punkte */
 	private String scoreSeparator = "=";
 	
@@ -43,8 +45,9 @@ public class Score {
 	// IM
 	/**
 	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
+	 * @param gameName Name des Spielstands
 	 * @param playerName Name des Spielers
-	 * @param event Events: u für undo, h für hit, s für sink <i>(weitere folgen eventuell. Das liegt nicht in meiner Hand)</i>
+	 * @param event Events: <b>u</b> für undo, <b>h</b> für hit, <b>s</b> für sink <i>(weitere folgen eventuell. Das liegt nicht in meiner Hand)</i>
 	 */
 	protected void updateScoreOnEvent(String gameName, String playerName, char event) {
 		byte b = saveload.getPlayersNumber(gameName, playerName);
@@ -55,16 +58,16 @@ public class Score {
 			break;
 		case 'h':
 			combo(gameName, playerName, event);
-				if(b == 1) setScore(playerName, getScore(playerName)+50*comboPlayer1);
-				else if(b == 2) setScore(playerName, getScore(playerName)+50*comboPlayer2);
+				if(b == 1) setScore(playerName, new Double(getScore(playerName)+50*comboPlayer1).intValue());
+				else if(b == 2) setScore(playerName, new Double(getScore(playerName)+50*comboPlayer2).intValue());
 			break;
 		case 's':
 			combo(gameName, playerName, event);
-				if(b == 1) setScore(playerName, getScore(playerName)+300*comboPlayer1);
-				else if(b == 2) setScore(playerName, getScore(playerName)+300*comboPlayer2);
+				if(b == 1) setScore(playerName, new Double(getScore(playerName)+300*comboPlayer1).intValue());
+				else if(b == 2) setScore(playerName, new Double(getScore(playerName)+300*comboPlayer2).intValue());
 			break;
 		default:
-			System.err.println("Fehler beim Score-Update!");
+			System.err.println("Fehler beim Ändern der Punktzahlen!");
 		}
 	}
 	
@@ -74,9 +77,9 @@ public class Score {
 	 * @param playerName Spielername
 	 */
 	private void combo(String gameName, String playerName, char event) {
-		byte b = saveload.getPlayersNumber(gameName, playerName);
+		byte player = saveload.getPlayersNumber(gameName, playerName);
 		
-		if(b == 1) {
+		if(player == 1) {
 			if(event == 'h') {
 				comboPlayer1 += 0.1;
 				comboPlayer2 = 1;
@@ -84,7 +87,7 @@ public class Score {
 				comboPlayer1 += 0.5;
 				comboPlayer2 = 1;
 			}
-		} else if(b == 2) {
+		} else if(player == 2) {
 			if(event == 'h') {
 				comboPlayer2 += 0.1;
 				comboPlayer1 = 1;
@@ -122,7 +125,7 @@ public class Score {
 	
 	/**
 	 * Mit der Methode aus der SaveLoad-Klasse wird der aktuelle Highscore als {@link String}
-	 * in die Instanz-Variable << highscore >> geschrieben.
+	 * in die Instanz-Variable <i>highscore</i> geschrieben.
 	 */
 	protected String readHighscoreFile() {
 		return saveload.readFile(highscoreFile);
@@ -164,76 +167,73 @@ public class Score {
 	}
 	
 	/**
-	 * Liest alle Punktzahlen aus dem Highscore-File
-	 * und erstellt eine absteigend sortierte Highscore-Liste.
-	 * 
-	 * MUSS ÜBERARBEITET WERDEN.
-	 * @return Die Highscore-Liste als String
+	 * Erstellt aus der ArrayList, die die Namen und Punkte speichert,
+	 * eine TreeMap mit den richtigen Key-Value-Paaren, wie es in
+	 * der Score-Datei steht.
+	 * @return Daten der Score-Datei als TreeMap
 	 */
-	protected String highscore() {
-		String[] h = saveload.readFile(highscoreFile).replaceAll("\n", "").split(scoreSeparator);
-		String str = "";
-		ArrayList<Integer> score = new ArrayList<Integer>();
+	private TreeMap<String, Integer> scoreMap() {
+		TreeMap<String, Integer> map = new TreeMap<>();
 		
-		for(int i = 0; i < h.length/2; i++) {
-			score.add(Integer.parseInt(h[i*2+1])); // liste füllen
+		ArrayList<String> h = highscoreToArrayList();
+		for(int i = 0; i < h.size(); i++) {
+			map.put(h.get(i), Integer.parseInt(h.get(i+1)));
+			i++;
 		}
 		
-		Collections.sort(score, Collections.reverseOrder()); // absteigend sortieren
-		
-		for(int i = 0; i < score.size(); i++) {
-			str += findPlayer(score.get(i)) + scoreSeparator + score.get(i) + ",";
-		}
-		
-		// FORMAT des fertigen Highscore-Strings
-		// "nameErster:punkteErster,
-		//  nameZweiter:punkteZweiter,
-		//  nameDritter:punkteDritter,"
-		
-		return str;
-	}
-
-	/**
-	 * Nur eine
-	 * (sehr beschissene)
-	 * Übergangslösung.
-	 * Funktioniert nicht ganz, für den Fall, dass zwei (oder mehr) Spieler die selbe Punktzahl haben,
-	 * wird nur ein Spieler in den Highscore getragen, nicht alle.
-	 * 
-	 * MUSS ÜBERARBEITET WERDEN.
-	 * @param score
-	 * @return
-	 */
-	private String findPlayer(int score) {
-		String str = "";
-		String[] file = readHighscoreFile().replaceAll("\n", "").split(scoreSeparator);
-		
-		for(int i = 0; i < file.length-1; i++) {
-			if(file[i+1].equalsIgnoreCase(""+score)) {
-				str = file[i];
-			}
-		}
-		
-		return str;
+		return map;
 	}
 	
 	/**
-	 * Dient nur zum Test der Darstellung einer fertigen Highscoreliste.
-	 * Die Darstellung muss später von der Haupt- und GUI-Klasse implementiert werden.
+	 * Liest alle Punktzahlen aus dem Highscore-File
+	 * und erstellt eine absteigend sortierte Highscore-Liste.
+	 * Format: "spieler1=punkte1,spieler2=punkte2,spieler3=punkte3,..."
+	 * @return Die Highscore-Liste als String
 	 */
-	@Deprecated
-	private void highscoreTest() {
-		// so könnte man aus dem erstellten String dann eine Highscoreliste darstellen
+	protected String highscore() {
+		TreeMap<String, Integer> tm = scoreMap();
 		
-		String[] h = highscore().split(",");
-		String[] p = null;
+		Comparator<String> comp = new Comparator<String>() {
+			public int compare(String a, String b) {
+				int result = tm.get(b).compareTo(tm.get(a));
+				if(result == 0)
+					return 1;
+				else
+					return result;
+			}
+		};
 		
-		System.out.println("No.\tPlayer Name\t\t\tScore");
-		for(int i = 0; i < h.length; i++) {
-			p = h[i].split(scoreSeparator);
-			System.out.println(i+1+".\t" + p[0] + "\t\t\t" + p[1]);
+		Map<String, Integer> sortedMap = new TreeMap<>(comp);
+		sortedMap.putAll(tm);
+		
+		return sortedMap.toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
+	}
+
+	/**
+	 * Liest alles aus der Score-Datei aus
+	 * und fügt die Daten in eine ArrayList für Strings.
+	 * @return die Daten der Score-Datei in einer ArrayList für String
+	 */
+	private ArrayList<String> highscoreToArrayList() {
+		try {
+			scanner = new Scanner(highscoreFile);
+		} catch(FileNotFoundException e) {
+			e.printStackTrace();
 		}
 		
+		String line = "";
+		ArrayList<String> result = new ArrayList<>();
+		
+		while(scanner.hasNextLine()) {
+			
+			line = scanner.nextLine();
+			String[] s = line.split(scoreSeparator);
+			result.add(s[0]);
+			result.add(s[1]);
+			
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -297,7 +297,12 @@ public class Score {
 //		System.out.println(s.getScore("Dieter"));
 //		System.out.println(s.findPlayer(0));
 		
-		s.addPlayerIntoHighscore("testSpieler123");
+//		s.addPlayerIntoHighscore("testSpieler123");
+		
+/*		TreeMap<String, Integer> tm = s.scoreMap();
+		System.out.println(tm.toString());*/
+		
+		System.out.println(s.highscore());
 		
 	}
 

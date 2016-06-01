@@ -251,7 +251,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode lï¿½dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
 	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
@@ -261,7 +261,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode lï¿½dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
 	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
