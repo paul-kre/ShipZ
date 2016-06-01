@@ -298,18 +298,18 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den String aus einem Spielstand zurück, der die Spielzï¿½ge des ersten Spielers speichert.
+	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des ersten Spielers speichert.
 	 * @param gameName der gewünschte Spielstand
-	 * @return Die Spielzï¿½ge als {@link String}
+	 * @return Die Spielzüge als {@link String}
 	 */
 	protected String getDrawHistoryPlayerOne(String gameName) {
 		return getNode(gameName, "drawHistoryPlayerOne");
 	}
 	
 	/**
-	 * Gibt den String aus einem Spielstand zurück, der die Spielzï¿½ge des zweiten Spielers speichert.
+	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des zweiten Spielers speichert.
 	 * @param gameName der gewünschte Spielstand
-	 * @return Die Spielzï¿½ge als {@link String}
+	 * @return Die Spielzüge als {@link String}
 	 */
 	protected String getDrawHistoryPlayerTwo(String gameName) {
 		return getNode(gameName, "drawHistoryPlayerTwo");
@@ -334,7 +334,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter ï¿½bergeben wird in den Spielstand gameName.
+	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
 	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}
 	 */
@@ -343,7 +343,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter ï¿½bergeben wird in den Spielstand gameName.
+	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
 	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}
 	 */
