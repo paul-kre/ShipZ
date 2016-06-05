@@ -13,19 +13,6 @@ package shipz.gamemode;
  */
 public class Easy extends Computer {
 
-    /** Klassenvariable für Debug-Zwecke. Zählt die Anzahl der Durchläufe der KI und somit dessen Effizienz */
-    public static int efficiency = 0;
-
-    /** Klassenvariable die die höchste Durchlaufzahl speichert */
-    public static int maxLoop = 0;
-
-    /** Debugging Klassenvariablen. Werden in der generateAICoordinates Methode zurückgegeben um ein exaktes Schiff auf dem
-     * Spielfeld zu zerstören
-     */
-    static int debugY = 4;
-    static int debugX = 2;
-
-
 
     //Constructor
     /**
@@ -57,19 +44,10 @@ public class Easy extends Computer {
      *
      */
     protected void generateAICoordinates() {
-        /****************************************/
-        efficiency = 0;
-        /*****************************************************/
-
 
 
         //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben
         if (isShipTileHit()){
-
-            /****************************************/
-            efficiency++;
-            //System.out.println("Durchlaeufe: " + efficiency);
-            /*****************************************************/
 
             int[] tempReturn =  selectNeighbourCoordinates();
             super.setY(tempReturn[0]);
@@ -92,38 +70,12 @@ public class Easy extends Computer {
                 if ( !isCoordinateOccupied (super.getY(), super.getX()) && !isCoordinateShipPart(super.getY(), super.getX()) ){
 
                     loopAgain = false;
-                    /*****************************************/
-                    efficiency--;
-                    /*****************************************/
+
 
                 }
-                /*****************************************/
-                efficiency++;
-                /*****************************************/
+
             }while (loopAgain);
 
-
-            /****************************************
-             efficiency++;
-             System.out.println("Durchlaeufe: " + efficiency);
-
-             if ( efficiency > maxLoop){
-
-             maxLoop = efficiency;
-             }
-
-             System.out.println("Laengste Durchlaufzeit pro Koordinate: " + maxLoop);
-
-
-             ****************************************************/
-
-
-        /*
-        if (debugY < 5){
-            debugY++;
-            return "" + debugY + "," + debugX;
-        }
-        */
 
         }
 
@@ -132,7 +84,7 @@ public class Easy extends Computer {
          * es wird jetzt der Main Klasse mitgeiteilt, dass fertige
          * Koordinaten bereitstehen
          * */
-        //fireGameEvent(SHOOT_EVENT);
+        fireGameEvent(SHOOT_EVENT);
 
 
     }
