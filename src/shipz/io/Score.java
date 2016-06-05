@@ -206,7 +206,19 @@ public class Score {
 		Map<String, Integer> sortedMap = new TreeMap<>(comp);
 		sortedMap.putAll(tm);
 		
-		return sortedMap.toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
+		String str = sortedMap.toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
+		String[] a = str.split(",");
+		String result = "";
+		if(a.length < 10) {
+			for(int i = 0; i < a.length; i++) {
+				result += a[i] + ",";
+			}
+		} else {
+			for(int i = 0; i < 10; i++) {
+				result += a[i] + ",";
+			}
+		}
+		return result;
 	}
 
 	/**

@@ -68,7 +68,7 @@ public class UndoRedo {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
-	protected /*String*/void undoDraw(String gameName, int playerIndex) {
+	protected String undoDraw(String gameName, int playerIndex) {
 		String lastDraw1 = gamePlayer1.pop();
 		String lastDraw2 = gamePlayer2.pop();
 		
@@ -83,7 +83,7 @@ public class UndoRedo {
 			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
 		}
 		
-//		return lastDraw;
+		return lastDraw1 + ";" + lastDraw2;
 	}
 	
 	/**
@@ -94,14 +94,14 @@ public class UndoRedo {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
-	protected /*String*/void redoDraw() {
+	protected String redoDraw() {
 		String lastRedoneDraw1 = redoPlayer1.pop();
 		String lastRedoneDraw2 = redoPlayer2.pop();
 		
 		gamePlayer1.push(lastRedoneDraw1);
 		gamePlayer2.push(lastRedoneDraw2);
 		
-//		return lastRedoneDraw; 
+		return lastRedoneDraw1 + ";" + lastRedoneDraw2; 
 	}
 	
 	/**
