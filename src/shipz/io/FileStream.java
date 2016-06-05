@@ -70,6 +70,7 @@ public class FileStream {
 	 */
 	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int activePlayer) {
 		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, activePlayer);
+		undoredo.saveToFile(gameName);
 	}
 	
 	/**
