@@ -2,7 +2,11 @@ package shipz.util;
 
 /**
  * Created by paulkretschel on 17/05/16.
+ * 
+ * Kann gelöscht werden.
+ * --> Ersatz: 	shipz.util.Event
  */
+@Deprecated
 public interface EventIds {
 
     // General
