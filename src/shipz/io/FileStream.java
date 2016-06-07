@@ -23,6 +23,8 @@ public class FileStream {
 		// Wenn Spieler 1 einen Zug getätigt hat und diesen rückgängig macht
 		// darf nicht der zuletzt getätigte Zug von Spieler 2 rückgängig gemacht werden
 	
+	// Highscore MUSS dieselben Spielernamen mehrmals abspeichern
+	
 	/**
 	 * Konstruktor der Klasse.
 	 */
