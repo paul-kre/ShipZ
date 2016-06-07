@@ -119,7 +119,10 @@ public class Score {
 	 * @return Die Punktzahl des Spielers
 	 */
 	private int getScore(String playerName) {
-		String line = saveload.searchLine(highscoreFile, playerName);
+		if(doesPlayerExist(playerName))
+			return getScore(playerName+"#");
+		
+		String line = saveload.searchLine(highscoreFile, playerName.substring(0, playerName.length()-1));
 		return Integer.parseInt(line.split(scoreSeparator)[1]);
 	}
 	
@@ -323,7 +326,9 @@ public class Score {
 		System.out.println(tm.toString());*/
 		
 //		System.out.println(s.highscore());
-		s.addPlayerIntoHighscore("test");
+//		s.addPlayerIntoHighscore("test");
+		
+		System.out.println(s.getScore("Marc"));
 		
 		
 	}
