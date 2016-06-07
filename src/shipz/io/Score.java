@@ -139,7 +139,7 @@ public class Score {
 		if(doesPlayerExist(playerName) == false) {
 			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+scoreSeparator+"0");
 		} else {
-			System.err.println("Fehler beim Einfügen in die Score-Datei! Dieser Spieler existiert bereits!");
+			addPlayerIntoHighscore(playerName+"#");
 		}
 	}
 	
@@ -211,11 +211,21 @@ public class Score {
 		String result = "";
 		if(a.length < 10) {
 			for(int i = 0; i < a.length; i++) {
-				result += a[i] + ",";
+				if(a[i].contains((CharSequence)"#")) {
+					String[] temp = a[i].split("=");
+					result += a[i].split("#")[0] + "=" + temp[1] + ",";
+				} else {
+					result += a[i] + ",";
+				}
 			}
 		} else {
 			for(int i = 0; i < 10; i++) {
-				result += a[i] + ",";
+				if(a[i].contains((CharSequence)"#")) {
+					String[] temp = a[i].split("=");
+					result += a[i].split("#")[0] + "=" + temp[1] + ",";
+				} else {
+					result += a[i] + ",";
+				}
 			}
 		}
 		return result;
@@ -237,12 +247,10 @@ public class Score {
 		ArrayList<String> result = new ArrayList<>();
 		
 		while(scanner.hasNextLine()) {
-			
 			line = scanner.nextLine();
 			String[] s = line.split(scoreSeparator);
 			result.add(s[0]);
 			result.add(s[1]);
-			
 		}
 		
 		return result;
@@ -314,7 +322,9 @@ public class Score {
 /*		TreeMap<String, Integer> tm = s.scoreMap();
 		System.out.println(tm.toString());*/
 		
-		System.out.println(s.highscore());
+//		System.out.println(s.highscore());
+		s.addPlayerIntoHighscore("test");
+		
 		
 	}
 
