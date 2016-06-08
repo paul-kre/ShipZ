@@ -27,7 +27,8 @@ public class Score {
 	private double comboPlayer1;
 	/** Zählt die Combos des zweiten Spielers */
 	private double comboPlayer2;
-	/** Trennzeichen zwischen Namen und Punkte */
+	/** Trennzeichen zwischen Namen und Punkten.
+	 * Spielername=100 */
 	private String scoreSeparator = "=";
 	
 	// Konstruktor
@@ -74,14 +75,17 @@ public class Score {
 	/**
 	 * Methode, die die Combos verwaltet,
 	 * den Combo-Counter hochzählt.
+	 * @param gameName Name des Spielstands
 	 * @param playerName Spielername
+	 * @param event Aktion, die sich auf den Combowert beeinflusst. 
+	 * Zugelassene Werte: <b>h</b> für einen Treffer, <b>s</b> für ein versenktes Schiff.
 	 */
 	private void combo(String gameName, String playerName, char event) {
 		byte player = saveload.getPlayersNumber(gameName, playerName);
 		
 		if(player == 1) {
 			if(event == 'h') {
-				comboPlayer1 += 0.1;
+				comboPlayer1 = comboPlayer1*2;
 				comboPlayer2 = 1;
 			} else if (event == 's'){
 				comboPlayer1 += 0.5;
@@ -89,14 +93,14 @@ public class Score {
 			}
 		} else if(player == 2) {
 			if(event == 'h') {
-				comboPlayer2 += 0.1;
+				comboPlayer2 = comboPlayer2*2;
 				comboPlayer1 = 1;
-			} else if (event == 's'){
+			} else if (event == 's') {
 				comboPlayer2 += 0.5;
 				comboPlayer1 = 1;
 			}
 		} else {
-			System.err.println("Fehler bei Aktualisierung der Combos!");
+			System.err.println("Fehler bei Aktualisierung der Combos! Unzulässige Nummer des Spielers (1 oder 2 erlaubt)!");
 		}
 		
 	}
@@ -108,7 +112,8 @@ public class Score {
 	 */
 	private void setScore(String playerName, int score) {
 		String s = readHighscoreFile();
-		s = s.replaceAll(playerName+scoreSeparator+getScore(playerName), playerName+scoreSeparator+score);
+		String pName = getCurrentPlayerName(playerName);
+		s = s.replaceAll(pName+scoreSeparator+getScore(playerName), pName+scoreSeparator+score);
 		saveload.writeFile(highscoreFile, s);
 	}
 	
@@ -119,11 +124,24 @@ public class Score {
 	 * @return Die Punktzahl des Spielers
 	 */
 	private int getScore(String playerName) {
-		if(doesPlayerExist(playerName))
-			return getScore(playerName+"#");
-		
-		String line = saveload.searchLine(highscoreFile, playerName.substring(0, playerName.length()-1));
+		String line = saveload.searchLine(highscoreFile, getCurrentPlayerName(playerName));
 		return Integer.parseInt(line.split(scoreSeparator)[1]);
+	}
+	
+	/**
+	 * Gibt immer den aktuellsten Spielernamen zurück.
+	 * Falls also ein Spielername mehrmals in der Datei auftaucht,
+	 * wurden bereits die #-Zeichen angehangen,
+	 * also werden diese mit ausgegeben, damit keine Fehler
+	 * beim Ändern der Punkte auftreten.
+	 * @param playerName Spielername dessen Name gesucht werden soll
+	 * @return der gefundene aktuelle Spielername
+	 */
+	private String getCurrentPlayerName(String playerName) {
+		if(doesPlayerExist(playerName))
+			return getCurrentPlayerName(playerName+"#");
+		
+		return playerName.substring(0, playerName.length()-1);
 	}
 	
 	/**
@@ -260,6 +278,17 @@ public class Score {
 	}
 	
 	/**
+	 * Löscht alle Daten, die nicht im Highscore stehen,
+	 * und somit nicht mehr benötigt werden.
+	 * 
+	 * Noch nicht vollständig und korrekt implementiert,
+	 * daher noch nicht zur Benutzung geeignet.
+	 */
+	protected void cleanHighscoreFile() {
+		saveload.writeFile(highscoreFile, highscore().replaceAll(",", "\n"));
+	}
+	
+	/**
 	 * main method
 	 * @param args arguments
 	 */
@@ -328,7 +357,8 @@ public class Score {
 //		System.out.println(s.highscore());
 //		s.addPlayerIntoHighscore("test");
 		
-		System.out.println(s.getScore("Marc"));
+//		s.setScore("Marc", 345);
+		s.cleanHighscoreFile();
 		
 		
 	}
