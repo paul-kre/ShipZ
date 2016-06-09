@@ -69,7 +69,6 @@ public class TempKiGame{
 
 
 
-        board[4][2] = 'x';
         board[5][2] = 'x';
         board[6][2] = 'x';
         board[7][2] = 'x';
@@ -93,12 +92,18 @@ public class TempKiGame{
         board[7][6] = 'x';
         board[7][7] = 'x';
         board[7][8] = 'x';
-        board[7][9] = 'x';
 
 
         board[3][6] = 'x';
         board[2][6] = 'x';
 
+        board[9][0] = 'x';
+        board[9][1] = 'x';
+        board[9][2] = 'x';
+
+        board[0][9] = 'x';
+        board[1][9] = 'x';
+        board[2][9] = 'x';
 
     }
 
@@ -389,7 +394,7 @@ public class TempKiGame{
 
 
 
-        Computer ki = new Easy(10);
+        Computer ki = new Normal(10);
         System.out.println("Game Spielfeld mit Schiff(en):");
         this.displaySingleBoard(board1);
         System.out.println("\n");

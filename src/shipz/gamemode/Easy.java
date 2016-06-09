@@ -5,8 +5,9 @@ package shipz.gamemode;
  * Einfacher Schwierigkeitsgrad<br><br>
  *
  * Erstellte Koordinaten werden an die Verwaltung übergeben.<br>
- * KI speichert getroffene Felder, beschießt jede Runde eine
- * neue Koordinate und berücksichtigt keine Treffer.<br>
+ * KI speichert getroffene Felder, beschießt zufällige Felder, außer
+ * es trifft ein Schiffsteil. In dem Fall wird die Gegend des Schiffes
+ * untersucht und in die Richtung entlang beschossen.<br>
  *
  * @author Artur Hergert
  *
@@ -74,6 +75,7 @@ public class Easy extends Computer {
 
                 }
 
+
             }while (loopAgain);
 
 
@@ -81,10 +83,10 @@ public class Easy extends Computer {
 
         /**
          * Y- und X-Koordinaten wurden gespeichert und
-         * es wird jetzt der Main Klasse mitgeiteilt, dass fertige
+         * es wird jetzt der Main Klasse mitgeteilt, dass fertige
          * Koordinaten bereitstehen
          * */
-        fireGameEvent(SHOOT_EVENT);
+        //fireGameEvent(SHOOT_EVENT);
 
 
     }
