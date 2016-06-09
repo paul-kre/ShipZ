@@ -30,6 +30,10 @@ public class Score {
 	/** Trennzeichen zwischen Namen und Punkten.
 	 * Spielername=100 */
 	private String scoreSeparator = "=";
+	/** Punktestand des ersten Spielers */
+	private int scorePlayer1;
+	/** Punktestand des zweiten Spielers */
+	private int scorePlayer2;
 	
 	// Konstruktor
 	/**
@@ -288,6 +292,10 @@ public class Score {
 		saveload.writeFile(highscoreFile, highscore().replaceAll(",", "\n"));
 	}
 	
+	protected void saveScoreToFile(String gameName) {
+		
+	}
+	
 	/**
 	 * main method
 	 * @param args arguments
@@ -358,8 +366,9 @@ public class Score {
 //		s.addPlayerIntoHighscore("test");
 		
 //		s.setScore("Marc", 345);
-		s.cleanHighscoreFile();
+//		s.cleanHighscoreFile();
 		
+		System.out.println(s.getCurrentPlayerName("test"));
 		
 	}
 
