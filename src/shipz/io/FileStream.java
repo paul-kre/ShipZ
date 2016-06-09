@@ -23,11 +23,9 @@ public class FileStream {
 		// Wenn Spieler 1 einen Zug getätigt hat und diesen rückgängig macht
 		// darf nicht der zuletzt getätigte Zug von Spieler 2 rückgängig gemacht werden
 	
-	// Score nicht direkt in Datei speichern
-		// IV
-		// am ende wird es in die Datei geschrieben
-	
-	
+	// SaveLoad
+		// Daten eher in IVs speichern
+		// EINE Methode um am Ende die IVs in einen XML-Node zu speichern
 	
 	/**
 	 * Konstruktor der Klasse.
@@ -55,12 +53,6 @@ public class FileStream {
 	 */
 	public void newGame(String gameName, String playerName, String opponentName, String boardPlayer1, String boardPlayer2, String boardsize) {
 		saveload.newGame(gameName, playerName, opponentName, boardPlayer1, boardPlayer2, boardsize);
-		if(!(score.doesPlayerExist(playerName))) {
-			score.addPlayerIntoHighscore(playerName);
-		}
-		if(!(score.doesPlayerExist(opponentName))) {
-			score.addPlayerIntoHighscore(opponentName);
-		}
 	}
 	
 	/**
@@ -268,8 +260,8 @@ public class FileStream {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
-	public void undoDraw(String gameName, int playerIndex) {
-		undoredo.undoDraw(gameName, playerIndex);
+	public void undoDraw(int playerIndex) {
+		undoredo.undoDraw(playerIndex);
 	}
 	
 	/**
@@ -314,8 +306,8 @@ public class FileStream {
 	 * @param playerName Name des Spielers
 	 * @param event Events: u für undo, h für hit, s für sink (weitere folgen)
 	 */
-	public void updateScoreOnEvent(String gameName, String playerName, char event) {
-		score.updateScoreOnEvent(gameName, playerName, event);
+	public void setScore(int playerIndex, char event) {
+		score.setScore(playerIndex, event);
 	}
 	
 	/**

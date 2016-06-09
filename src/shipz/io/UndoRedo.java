@@ -68,20 +68,14 @@ public class UndoRedo {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
-	protected String undoDraw(String gameName, int playerIndex) {
+	protected String undoDraw(int playerIndex) {
 		String lastDraw1 = gamePlayer1.pop();
 		String lastDraw2 = gamePlayer2.pop();
 		
 		redoPlayer1.push(lastDraw1);
 		redoPlayer2.push(lastDraw2);
 		
-		if(playerIndex == 1) {
-			score.updateScoreOnEvent(gameName, saveload.getPlayerName(gameName), 'u');
-		} else if(playerIndex == 2) {
-			score.updateScoreOnEvent(gameName, saveload.getOpponentName(gameName), 'u');
-		} else {
-			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
-		}
+		score.setScore(playerIndex, 'u');
 		
 		return lastDraw1 + ";" + lastDraw2;
 	}
@@ -197,7 +191,7 @@ public class UndoRedo {
 		System.out.println(ur.getDrawsPlayer1());
 		System.out.println(ur.getDrawsPlayer2()+"\n");
 		
-		ur.undoDraw("testspiel", 1);
+		ur.undoDraw(1);
 		System.out.println(ur.getDrawsPlayer1());
 		System.out.println(ur.getDrawsPlayer2()+"\n");
 		

@@ -28,7 +28,7 @@ public class Score {
 	/** Zählt die Combos des zweiten Spielers */
 	private double comboPlayer2;
 	/** Trennzeichen zwischen Namen und Punkten.
-	 * Spielername=100 */
+	 * Format: <i>spielername=punkte</i> */
 	private String scoreSeparator = "=";
 	/** Punktestand des ersten Spielers */
 	private int scorePlayer1;
@@ -45,6 +45,8 @@ public class Score {
 		saveload.makeDirectory(highscoreFile);
 		comboPlayer1 = 1;
 		comboPlayer2 = 1;
+		scorePlayer1 = 0;
+		scorePlayer2 = 0;
 	}
 	
 	// IM
@@ -54,25 +56,27 @@ public class Score {
 	 * @param playerName Name des Spielers
 	 * @param event Events: <b>u</b> für undo, <b>h</b> für hit, <b>s</b> für sink <i>(weitere folgen eventuell. Das liegt nicht in meiner Hand)</i>
 	 */
-	protected void updateScoreOnEvent(String gameName, String playerName, char event) {
-		byte b = saveload.getPlayersNumber(gameName, playerName);
-		
+	protected void setScore(int playerIndex, char event) {
 		switch(event) {
 		case 'u':
-			setScore(playerName, getScore(playerName)-30);
+			if(playerIndex == 1) {
+				scorePlayer1 -= 30;
+			} else if(playerIndex == 2){
+				scorePlayer2 -= 30;
+			} else error("set");
 			break;
 		case 'h':
-			combo(gameName, playerName, event);
-				if(b == 1) setScore(playerName, new Double(getScore(playerName)+50*comboPlayer1).intValue());
-				else if(b == 2) setScore(playerName, new Double(getScore(playerName)+50*comboPlayer2).intValue());
+			combo(playerIndex, event);
+			if(playerIndex == 1) scorePlayer1 += 50*comboPlayer1;
+			else if(playerIndex == 2) scorePlayer2 += 50*comboPlayer2;
 			break;
 		case 's':
-			combo(gameName, playerName, event);
-				if(b == 1) setScore(playerName, new Double(getScore(playerName)+300*comboPlayer1).intValue());
-				else if(b == 2) setScore(playerName, new Double(getScore(playerName)+300*comboPlayer2).intValue());
+			combo(playerIndex, event);
+			if(playerIndex == 1) scorePlayer1 += 300*comboPlayer1;
+			else if(playerIndex == 2) scorePlayer2 += 300*comboPlayer2;
 			break;
 		default:
-			System.err.println("Fehler beim Ändern der Punktzahlen!");
+			error("set");
 		}
 	}
 	
@@ -84,10 +88,8 @@ public class Score {
 	 * @param event Aktion, die sich auf den Combowert beeinflusst. 
 	 * Zugelassene Werte: <b>h</b> für einen Treffer, <b>s</b> für ein versenktes Schiff.
 	 */
-	private void combo(String gameName, String playerName, char event) {
-		byte player = saveload.getPlayersNumber(gameName, playerName);
-		
-		if(player == 1) {
+	private void combo(int playerIndex, char event) {
+		if(playerIndex == 1) {
 			if(event == 'h') {
 				comboPlayer1 = comboPlayer1*2;
 				comboPlayer2 = 1;
@@ -95,7 +97,7 @@ public class Score {
 				comboPlayer1 += 0.5;
 				comboPlayer2 = 1;
 			}
-		} else if(player == 2) {
+		} else if(playerIndex == 2) {
 			if(event == 'h') {
 				comboPlayer2 = comboPlayer2*2;
 				comboPlayer1 = 1;
@@ -104,7 +106,7 @@ public class Score {
 				comboPlayer1 = 1;
 			}
 		} else {
-			System.err.println("Fehler bei Aktualisierung der Combos! Unzulässige Nummer des Spielers (1 oder 2 erlaubt)!");
+			error("combo");
 		}
 		
 	}
@@ -114,11 +116,15 @@ public class Score {
 	 * @param playerName Der Spieler dessen Punkte geändert werden sollen.
 	 * @param score Die Punkte, die der Spieler bekommen soll.
 	 */
-	private void setScore(String playerName, int score) {
-		String s = readHighscoreFile();
-		String pName = getCurrentPlayerName(playerName);
-		s = s.replaceAll(pName+scoreSeparator+getScore(playerName), pName+scoreSeparator+score);
-		saveload.writeFile(highscoreFile, s);
+	@Deprecated
+	private void setScore(int playerIndex, int score) {
+		if(playerIndex == 1) {
+			scorePlayer1 = score;
+		} else if(playerIndex == 2) {
+			scorePlayer2 = score;
+		} else {
+			error("set");
+		}
 	}
 	
 	/**
@@ -127,9 +133,16 @@ public class Score {
 	 * @param playerName gewünschter Spieler
 	 * @return Die Punktzahl des Spielers
 	 */
-	private int getScore(String playerName) {
-		String line = saveload.searchLine(highscoreFile, getCurrentPlayerName(playerName));
-		return Integer.parseInt(line.split(scoreSeparator)[1]);
+	@Deprecated
+	private int getScore(int playerIndex) {
+		if(playerIndex == 1) {
+			return scorePlayer1;
+		} else if(playerIndex == 2) {
+			return scorePlayer2;
+		} else {
+			error("get");
+			return 0;
+		}
 	}
 	
 	/**
@@ -141,6 +154,7 @@ public class Score {
 	 * @param playerName Spielername dessen Name gesucht werden soll
 	 * @return der gefundene aktuelle Spielername
 	 */
+	@Deprecated
 	private String getCurrentPlayerName(String playerName) {
 		if(doesPlayerExist(playerName))
 			return getCurrentPlayerName(playerName+"#");
@@ -152,6 +166,7 @@ public class Score {
 	 * Mit der Methode aus der SaveLoad-Klasse wird der aktuelle Highscore als {@link String}
 	 * in die Instanz-Variable <i>highscore</i> geschrieben.
 	 */
+	@Deprecated
 	protected String readHighscoreFile() {
 		return saveload.readFile(highscoreFile);
 	}
@@ -159,13 +174,23 @@ public class Score {
 	/**
 	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
 	 * @param playerName Der Spieler, der eingefügt werden soll.
+	 * @param score Punktzahl, die gesetzt werden soll.
 	 */
-	protected void addPlayerIntoHighscore(String playerName) {
+	private void addPlayerIntoHighscore(String playerName, int score) {
 		if(doesPlayerExist(playerName) == false) {
-			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+scoreSeparator+"0");
+			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+scoreSeparator+score);
 		} else {
-			addPlayerIntoHighscore(playerName+"#");
+			addPlayerIntoHighscore(playerName+"#", score);
 		}
+	}
+	
+	/**
+	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
+	 * @see shipz.io.Score#addPlayerIntoHighscore(String, score)
+	 * @param playerName Der Spieler, der eingefügt werden soll.
+	 */
+	private void addPlayerIntoHighscore(String playerName) {
+		addPlayerIntoHighscore(playerName, 0);
 	}
 	
 	/**
@@ -282,18 +307,88 @@ public class Score {
 	}
 	
 	/**
+	 * Ausgabe der Fehlermeldungen.
+	 * @param e der aufgetretene Fehler
+	 */
+	private void error(String e) {
+		if(e.equals("set")) {
+			System.err.println("Fehler beim Setzen der Punkte! Unzulässiger Playerindex (1 oder 2 erlaubt)!");
+		} else if(e.equals("combo")) {
+			System.err.println("Fehler bei Aktualisierung der Combos! Unzulässiger Playerindex (1 oder 2 erlaubt)!");
+		} else if(e.equals("get")) {
+			System.err.println("Fehler beim getten der Punkte! Unzulässiger Playerindex (1 oder 2 erlaubt)!");
+		} else {
+			System.err.println("Fehler! Unzulässiger Playerindex (1 oder 2 erlaubt)!");
+		}
+	}
+	
+	/**
 	 * Löscht alle Daten, die nicht im Highscore stehen,
 	 * und somit nicht mehr benötigt werden.
 	 * 
 	 * Noch nicht vollständig und korrekt implementiert,
 	 * daher noch nicht zur Benutzung geeignet.
 	 */
-	protected void cleanHighscoreFile() {
-		saveload.writeFile(highscoreFile, highscore().replaceAll(",", "\n"));
+	private void cleanHighscoreFile() {
+		TreeMap<String, Integer> tm = scoreMap();
+		
+		Comparator<String> comp = new Comparator<String>() {
+			public int compare(String a, String b) {
+				int result = tm.get(b).compareTo(tm.get(a));
+				if(result == 0)
+					return 1;
+				else
+					return result;
+			}
+		};
+		
+		Map<String, Integer> sortedMap = new TreeMap<>(comp);
+		sortedMap.putAll(tm);
+		
+		String str = sortedMap.toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
+		String[] a = str.split(",");
+		String result = "";
+		if(a.length < 10) {
+			for(int i = 0; i < a.length; i++) {
+				result += a[i] + ",";
+			}
+		} else {
+			for(int i = 0; i < 10; i++) {
+				result += a[i] + ",";
+			}
+		}
+		saveload.writeFile(highscoreFile, result.replaceAll(",", "\n"));
 	}
 	
-	protected void saveScoreToFile(String gameName) {
-		
+	/**
+	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt,
+	 * damit die Punkte in der Datei abgespeichert werden.
+	 * @param gameName 
+	 * @param playerName
+	 * @param opponentName
+	 */
+	protected void saveScoreToFile(String playerName, String opponentName) {
+		addPlayerIntoHighscore(playerName, scorePlayer1);
+		addPlayerIntoHighscore(opponentName, scorePlayer2);
+		cleanHighscoreFile();
+	}
+	
+	/**
+	 * Der Wert der Combo wird zurückgegeben,
+	 * damit die GUI darstellen kann, welche Combo der Spieler
+	 * aktuell erreicht hat.
+	 * @param playerIndex
+	 * @return
+	 */
+	protected double getComboValue(int playerIndex) {
+		if(playerIndex == 1) {
+			return comboPlayer1;
+		} else if(playerIndex == 2) {
+			return comboPlayer2;
+		} else {
+			error("");
+			return 0.0;
+		}
 	}
 	
 	/**
@@ -368,7 +463,14 @@ public class Score {
 //		s.setScore("Marc", 345);
 //		s.cleanHighscoreFile();
 		
-		System.out.println(s.getCurrentPlayerName("test"));
+		s.setScore(1, 'h');
+		s.setScore(1, 'h');
+		s.setScore(1, 'h');
+		s.setScore(1, 's');
+		s.setScore(2, 'h');
+		s.setScore(2, 'h');
+		s.setScore(2, 'h');
+		s.saveScoreToFile("ABC", "DEF");
 		
 	}
 
