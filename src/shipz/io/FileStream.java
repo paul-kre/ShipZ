@@ -23,13 +23,9 @@ public class FileStream {
 		// Wenn Spieler 1 einen Zug getätigt hat und diesen rückgängig macht
 		// darf nicht der zuletzt getätigte Zug von Spieler 2 rückgängig gemacht werden
 	
-	// Events nur beim fehlerhaften Laden ?
-	
-	// Instanz-Variablen in der SaveLoad-Klasse ?
-	
-	// Bis nächsten Dienstag:
-		// XML für SaveLoad weiter implementieren
-		// Klassendiagramm aktualisieren
+	// SaveLoad
+		// Daten eher in IVs speichern
+		// EINE Methode um am Ende die IVs in einen XML-Node zu speichern
 	
 	/**
 	 * Konstruktor der Klasse.
@@ -57,12 +53,22 @@ public class FileStream {
 	 */
 	public void newGame(String gameName, String playerName, String opponentName, String boardPlayer1, String boardPlayer2, String boardsize) {
 		saveload.newGame(gameName, playerName, opponentName, boardPlayer1, boardPlayer2, boardsize);
-		if(!(score.doesPlayerExist(playerName))) {
-			score.addPlayerIntoHighscore(playerName);
-		}
-		if(!(score.doesPlayerExist(opponentName))) {
-			score.addPlayerIntoHighscore(opponentName);
-		}
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Speichert die Informationen eines bestimmten Spiels.
+	 * Wird von der Game-Klasse genutzt, um ein Spiel zwischenzeitlich abzuspeichern.
+	 * @param gameName Name des Spielstands
+	 * @param playerName Name des ersten Spielers
+	 * @param opponentName Name des Gegners / zweiten Spielers
+	 * @param boardPlayerOne Spielbrett des ersten Spielers als {@link String}
+	 * @param boardPlayerTwo Spielbrett des zweiten Spielers als {@link String}
+	 * @param activePlayer aktiver Spieler
+	 */
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int activePlayer) {
+		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, activePlayer);
+		undoredo.saveToFile(gameName);
 	}
 	
 	/**
@@ -72,7 +78,7 @@ public class FileStream {
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
 	 * Dies geht ganz einfach mit 
-	 * getAllGameNames().split(",")
+	 * <i>getAllGameNames().split(",")</i>
 	 * @return Die Namen aller Spielstände als {@link String}
 	 */
 	public String getAllGameNames() {
@@ -160,15 +166,24 @@ public class FileStream {
 		saveload.deleteGame(gameName);
 	}
 	
-	
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Diese Methode speichert das Spielfeld, das als Parameter übergeben wird in den Spielstand gameName.
+	 * Diese Methode speichert das Spielfeld des ersten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
 	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
 	 * @param board das Spielbrett als {@link String}
 	 */
-	public void setBoard(String gameName, String board) {
-//		saveload.setBoard(gameName, board);
+	public void setBoardPlayerOne(String gameName, String boardPlayerOne) {
+		saveload.setBoardPlayerOne(gameName, boardPlayerOne);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
+	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
+	 * @param board das Spielbrett als {@link String}
+	 */
+	public void setBoardPlayerTwo(String gameName, String boardPlayerTwo) {
+		saveload.setBoardPlayerTwo(gameName, boardPlayerTwo);
 	}
 	
 	/**
@@ -245,8 +260,8 @@ public class FileStream {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
-	public void undoDraw(String gameName, int playerIndex) {
-		undoredo.undoDraw(gameName, playerIndex);
+	public void undoDraw(int playerIndex) {
+		undoredo.undoDraw(playerIndex);
 	}
 	
 	/**
@@ -291,17 +306,8 @@ public class FileStream {
 	 * @param playerName Name des Spielers
 	 * @param event Events: u für undo, h für hit, s für sink (weitere folgen)
 	 */
-	public void updateScoreOnEvent(String gameName, String playerName, char event) {
-		score.updateScoreOnEvent(gameName, playerName, event);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der Score-Klasse.
-	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
-	 * @param playerName Der Spieler, der eingefügt werden soll.
-	 */
-	public void addPlayerIntoHighscore(String playerName) {
-		score.addPlayerIntoHighscore(playerName);
+	public void setScore(int playerIndex, char event) {
+		score.setScore(playerIndex, event);
 	}
 	
 	/**

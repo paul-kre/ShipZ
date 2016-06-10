@@ -9,31 +9,18 @@ package shipz.util;
 public enum Event {
 
 	// General
-	SHOOT_EVENT(10),
-	CLOSE_EVENT(20),
+	SHOOT_EVENT,
+	CLOSE_EVENT,
 	
 	// Network
-	DISCONNECT_EVENT(30),
-	SHOOT_RESULT(31),
+	DISCONNECT_EVENT,
+	SHOOT_RESULT,
 	
 	// IO
-	SAVE_EVENT(110),
-	LOAD_EVENT(111),
-	UNDO_EVENT(112),
-	REDO_EVENT(113),
-	HIGHSCORE_EVENT(114);
-	
-	// IV
-	private int value;
-	
-	// Constructor
-	private Event(int value) {
-		this.value = value;
-	}
-	
-	// IM
-	public int value() {
-		return this.value;
-	}
+	SAVE_EVENT,
+	LOAD_EVENT,
+	UNDO_EVENT,
+	REDO_EVENT,
+	HIGHSCORE_EVENT;
 	
 }

@@ -9,7 +9,7 @@ public abstract class Player extends GameEventSource implements Runnable {
     private byte _result;
 
     public Player(){}
-    
+
     public Player(String name) {
         _name = name;
     }

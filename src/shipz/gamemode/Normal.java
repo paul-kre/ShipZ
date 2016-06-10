@@ -4,8 +4,9 @@ package shipz.gamemode;
  * Normaler Schwierigkeitsgrad<br><br>
  *
  * Erstellte Koordinaten werden an die Verwaltung übergeben. <br>
- * KI berücksichtigt zuletzt getroffene Felder und prüft
- * dementsprechend das herumliegende Gebiet.<br>
+ * KI berücksichtigt zalles was der einfache Schwierigkeitsgrad macht und
+ * benutzt zusätzlich ein 3-Feld-Muster um alle Felder die mindestens drei
+ * Felder groß sind mit so wenig Treffern wie möglich zu erwischen.<br>
  *
  * @author Artur Hergert
  *
@@ -25,7 +26,7 @@ public class Normal extends Computer {
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
 	 */
-	public Normal (byte newFieldSize) {
+	public Normal (int newFieldSize) {
 
 		super(newFieldSize);
 	}
@@ -36,19 +37,56 @@ public class Normal extends Computer {
 	 * sollen.<br><br>
 	 *
 	 * Implementierung der Methode aus der Abstrakten Superklasse Computer.<br>
-	 * Koordinaten werden jede Runde neu zufällig erstellt und übergeben. Bei dem normalen
-	 * Schwierigkeitsgrad wird ebenfalls die zuletzt getroffene Koordinate berücksichtigt
-	 * und die direkte Umgebung wird nach weiteren möglichen Treffern untersucht.<br><br>
-	 *
-	 * Sobald ein Richtungsmuster erkennbar ist, wird in die jeweilige Richtung
-	 * geschossen bis ein Schiff zerstört wird oder ins Wasser getroffen wurde.<br><br>
-	 *
-	 * Auch hier werden alle beschossenen Koordinaten und die Umgebung eines Schiffes
-	 * berücksichtigt bei der Erstellung der Zufallskoordinaten.<br><br>
+     * Koordinaten werden mithilfe des 3-Feld-Musters (<b>randomThreePointPatternInt</b>)
+     * erstellt und an die Verwaltung übergeben. <br><br>
+     *
+     * Sobald alle größeren Schiffe zerstört wurden, schwenkt das Muster auf das
+     * erweiterte Schachbrettmuster Algorithmus (<b>enhancedChessBoardPattern</b>)
+     * und es wird versucht mit so wenig Schüssen wie möglich die kleineren Schiffe
+     * zu entdecken
 	 *
 	 */
 	protected void generateAICoordinates() {
 
+        //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben
+        if (isShipTileHit()){
+
+            int[] tempReturn =  selectNeighbourCoordinates();
+            super.setY(tempReturn[0]);
+            super.setX(tempReturn[1]);
+
+        } else { //Falls noch kein Schiff getroffen wurde, werden zufällige erstellt und zurückgegeben.
+
+
+
+            //Flag welches den Durchlauf der Schleifen bestimmt
+            boolean loopAgain = true;
+
+            do{
+
+                super.setY(super.randomRowInt());
+                super.setX(super.randomThreePointPatternInt(super.getY()));
+
+                //Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
+                //Zelle verweist. Ansonsten wird die Koordinate neu generiert bis sie es ist.
+                if ( !isCoordinateOccupied (super.getY(), super.getX()) && !isCoordinateShipPart(super.getY(), super.getX()) ){
+
+                    loopAgain = false;
+
+
+                }
+
+            }while (loopAgain);
+
+
+        }
+
+        /**
+         * Y- und X-Koordinaten wurden gespeichert und
+         * es wird jetzt der Main Klasse mitgeteilt, dass fertige
+         * Koordinaten bereitstehen
+         * */
+       // fireGameEvent(SHOOT_EVENT);
 	}
 
 	@Override

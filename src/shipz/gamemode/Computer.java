@@ -572,10 +572,6 @@ public abstract class Computer extends Player {
      */
     private void saveOneShipVicinityDirection (int yCoord, int xCoord, int yDirection, int xDirection ){
 
-        /***************************/
-        int efficiency = 0;
-        /****************************/
-
 
         //Temporäre Koordinaten. Haben zu Beginn die Koordinaten des Treffers, welches ein
         //Schiff zum Versenken gebracht haben. Von da aus werden alle Richtungen geprüft
@@ -618,10 +614,6 @@ public abstract class Computer extends Player {
                         //Nördliche Richtung wurde noch nicht zu Ende durchsucht, deshalb läuft die Schleife weiter
                         directionCheck = true;
 
-                        /******************************/
-                        efficiency++;
-                        /********************************/
-
                     } else { //Koordinate ist kein Schiffsteil
 
                         //Prüfen ob Nord- oder Südrichtung durchlaufen wird
@@ -652,14 +644,6 @@ public abstract class Computer extends Player {
             }
 
         } while ( directionCheck); //end do-while
-
-        /******************************/
-        efficiency++;
-        /********************************/
-
-        /***************************/
-        System.out.println("+ Effizienz Richtung (" + yDirection + "|"+ xDirection +"+) :" + efficiency );
-        /****************************/
 
     }
 
@@ -949,9 +933,6 @@ public abstract class Computer extends Player {
          liegt, wird die nächste Richtung untersucht. */
         do{
 
-            /****************************************/
-            efficiency++;
-            /*****************************************************/
 
             directionReturnsNoCoord = false;
 
@@ -962,10 +943,6 @@ public abstract class Computer extends Player {
                 //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
                 if( isCoordinateInField (this.currentShipTile[0] -1,  this.currentShipTile[1] ) && !isCoordinateOccupied (this.currentShipTile[0] -1, this.currentShipTile[1] ) ){
 
-                    /**************************************** */
-                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
-                    /*****************************************************/
-
                     return new int[]{ this.currentShipTile[0] -1,  this.currentShipTile[1] } ;
 
                 }
@@ -975,10 +952,6 @@ public abstract class Computer extends Player {
 
                 //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
                 if( isCoordinateInField( this.currentShipTile[0] +1,  this.currentShipTile[1] ) && !isCoordinateOccupied (this.currentShipTile[0] +1,  this.currentShipTile[1]) ){
-
-                    /**************************************** */
-                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
-                    /*****************************************************/
 
                     return new int[]{ this.currentShipTile[0] +1,  this.currentShipTile[1] } ;
 
@@ -991,10 +964,6 @@ public abstract class Computer extends Player {
                 //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
                 if( isCoordinateInField( this.currentShipTile[0] ,  this.currentShipTile[1] -1 ) && !isCoordinateOccupied (this.currentShipTile[0] ,  this.currentShipTile[1] -1)){
 
-                    /**************************************** */
-                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
-                    /*****************************************************/
-
                     return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] -1 } ;
 
                 }
@@ -1005,10 +974,6 @@ public abstract class Computer extends Player {
 
                 //Prüfen ob die aktuelle Koordinate in der Richtung überhaupt im Spielfeld liegt
                 if( isCoordinateInField( this.currentShipTile[0],  this.currentShipTile[1] +1 ) && !isCoordinateOccupied (this.currentShipTile[0],  this.currentShipTile[1] +1)){
-
-                    /**************************************** */
-                    System.out.println("+++ Durchlaeufe fuer Nachbarkoordinate: " + efficiency);
-                    /*****************************************************/
 
                     return new int[]{ this.currentShipTile[0] ,  this.currentShipTile[1] +1 } ;
 
@@ -1066,13 +1031,129 @@ public abstract class Computer extends Player {
 
 
 
+    /**
+     * Erstellt nach einem Muster, bei dem nur alle 3 felder und dessen nach unten-links
+     * in diagonal gerichteten Koordinaten geprüft werden, die X-Koordinaten.
+     *
+     * @param yCoord Die zuvor erstellte Y-Koordinate, die für die Berechnung der X-Koordinate wihctig ist
+     * @return Eine X-Koordinate die dem 3-Feld-Muster entspricht
+     */
+    protected int randomThreePointPatternInt( int yCoord ){
+
+
+        /** Die EbenenStufe wird als 'level' gespeichert, damit berechnet werden kann, wie der
+         * Abstand zwischen den X-Koordinaten immer sein müssen
+         */
+
+        int level = yCoord + 1;
+
+        //Ebene wird überprüft ob es die Stufe 1,2 oder 3 hat und je nachdem wird weiterberechnet
+
+        if (level  % 3 == 1 ){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 1 berechnet werden soll
+
+            return ( 2 + ( 3 * validThreePointPatternColumnInt(1) ));
+
+        } else if ( level % 3 == 2){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 2 berechnet werden soll
 
 
 
+            return ( 1 + ( 3 * validThreePointPatternColumnInt(2) ));
+
+
+        } else if ( level % 3 == 0){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 3 berechnet werden soll
+
+            return ( 3 * validThreePointPatternColumnInt(3) );
+
+        }
+
+
+        return -1;
+    }
+
+
+    /**
+     * Berechnet eine gültige X-Koordinate aus den möglichen Feldern einer Ebene
+     * und gibt diese für weitere Berechnungen zurück
+     *
+     * @param currentLevel DIe Ebene für die die X-Koordinate berechnet wird
+     * @return Eine X-Koordinate die dem 3-Feld-Muster der entsprechenden Ebene entspricht
+     */
+    private int validThreePointPatternColumnInt(int currentLevel){
+
+
+        //Flag zum Überrpüfen ob die erstellte X-Koordinate gültig ist (ob sie zwischen 0 und fieldSize ist UND dem Muster entpricht der aktuellen Ebene)
+        boolean validXCoord = true;
+
+        //Die X-Koordinate die zurückgegeben wird
+        int patternXCoord;
+
+
+        do{
+
+
+            //Der X-Koordinate wird eine zufällige Zahl aus den gespeicherten, noch nicht leeren Spaltenkoordinaten zugewiesen
+            patternXCoord = randomColumnInt() ;
+
+
+            if (currentLevel == 1){
+
+
+                if ( patternXCoordIsInRange(patternXCoord / 3, 1) && ( (patternXCoord - 1) % 3 == 1 )  ){
+
+                    validXCoord = false;
+                }
+
+
+            } else if ( currentLevel == 2){
+
+
+                if ( patternXCoordIsInRange(patternXCoord / 3, 2) && ( (patternXCoord + 1) % 3 == 2 )  ){
+
+                    validXCoord = false;
+                }
+
+            } else {
+
+                if ( patternXCoordIsInRange(patternXCoord / 3, 3) && ( patternXCoord % 3 == 0 ) ){
+
+                    validXCoord = false;
+                }
+
+
+            }
+
+
+        }while ( validXCoord);
 
 
 
+        return (patternXCoord / 3);
 
+    }
+
+
+    /**
+     * Prüft ob eine X-Koordinate, die nach dem 3-feld-Muster erstelt wurde, auch
+     * in der entprechenden Ebene im gültigen Bereich liegt
+     *
+     * @param patternXCoord Die zu überprüfende X-Koordinate
+     * @param currentLevel Die Ebene in der die X-Koordinate erstellt wird
+     * @return Ob die X-Koordinate innerhalb des gültigen Bereichs der Eben bzw. des Musters liegt
+     */
+    private boolean patternXCoordIsInRange (int patternXCoord, int currentLevel){
+
+
+        if (currentLevel == 1 || currentLevel == 2){
+
+            return patternXCoord <= ( (this.fieldSize / 3) - 1);
+
+        }else {
+
+            return patternXCoord <= (this.fieldSize / 3) ;
+
+        }
+
+    }
 
 
     /**

@@ -73,7 +73,7 @@ public class SaveLoad {
 		boolean b = false;
 		
 		if(root.getChildren() != null) {
-			update();
+			updateXML();
 			b = doesGameExist(gameName);
 		}
 		
@@ -141,7 +141,7 @@ public class SaveLoad {
 	 * @return Inhalt des Knotens als String
 	 */
 	private String getNode(String gameName, String node) {
-		update();
+		updateXML();
 		String str = "";
 		
 		List<Element> list = root.getChildren();
@@ -161,7 +161,7 @@ public class SaveLoad {
 	 * @param text Text, der im Knoten eingefügt werden soll
 	 */
 	private void setNode(String gameName, String node, String text) {
-		update();
+		updateXML();
 		List<Element> list = root.getChildren();
 		for(Element e : list) {
 			if(e.getChild("gameName").getText().equals(gameName)) {
@@ -177,7 +177,7 @@ public class SaveLoad {
 	 * die Wurzel-Element und das Dokument speichern,
 	 * werden somit aktualisiert.
 	 */
-	private void update() {
+	private void updateXML() {
 		if(root.getChildren() != new Element("saves").getChildren()) {
 			try {
 				FileInputStream fileinput = new FileInputStream(file);
@@ -212,7 +212,7 @@ public class SaveLoad {
 	 * @param gameName Name des Spielstands
 	 */
 	protected void deleteGame(String gameName) {
-		update();
+		updateXML();
 		if(doesGameExist(gameName)) {
 			List<Element> list = root.getChildren();
 			Element temp = null;
@@ -240,7 +240,7 @@ public class SaveLoad {
 	 */
 	protected String getAllGameNames() {
 		String str = "";
-		update();
+		updateXML();
 		
 		List<Element> list = root.getChildren();
 		for(Element e : list) {
@@ -352,7 +352,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den Namen des ersten Spielers zu playerName im Spielstand gameName.
+	 * ändert den Namen des ersten Spielers zu playerName im Spielstand gameName.
 	 * @param gameName der Spielstand, bei dem der Name des ersten Spielers geändert werden soll.
 	 * @param playerName der neue Name des ersten Spielers
 	 */
@@ -361,7 +361,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den Namen des Gegners eines Spielstands.
+	 * ändert den Namen des Gegners eines Spielstands.
 	 * @param gameName der Spielstand
 	 * @param opponentName
 	 */
@@ -370,7 +370,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert die Feldgröße eines Spielstands.
+	 * ändert die Feldgröße eines Spielstands.
 	 * @param gameName der Spielstand
 	 * @param boardsize
 	 */
@@ -379,7 +379,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den Spielverlauf des ersten Spielers in einem Spielstand.
+	 * ändert den Spielverlauf des ersten Spielers in einem Spielstand.
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
 	 */
@@ -388,7 +388,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den Spielverlauf des zweiten Spielers in einem Spielstand.
+	 * ändert den Spielverlauf des zweiten Spielers in einem Spielstand.
 	 * @param gameName der Spielstand
 	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
 	 */
@@ -397,7 +397,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Ändert den aktuellen Spieler in der Datei.
+	 * ändert den aktuellen Spieler in der Datei.
 	 * @param gameName Name des Spielstands
 	 * @param activePlayer neuer aktueller Spieler
 	 */
@@ -437,12 +437,12 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Überprüft ob ein Spielstand mit bestimmtem Namen vorhanden ist.
+	 * überprüft ob ein Spielstand mit bestimmtem Namen vorhanden ist.
 	 * @param gameName der gewünschte Spielstand
 	 * @return Ist der Spielstand vorhanden?
 	 */
 	private boolean doesGameExist(String gameName) {
-		update();
+		updateXML();
 		boolean doesGameExist = false;
 		List<Element> list = root.getChildren();
 		
@@ -498,7 +498,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Überschreibt eine Datei komplett mit einem String.
+	 * überschreibt eine Datei komplett mit einem String.
 	 * @param file die zu überschreibende Datei.
 	 * @param str der {@link String}, der in die Datei geschrieben werden soll.
 	 */
@@ -523,7 +523,6 @@ public class SaveLoad {
 	
 	/**
 	 * Methode, die immer die aktuelle Zeit berechnet.
-	 * Wird für die korrekte Speicherung der Spielstände benötigt, damit man diese auseinanderhalten kann.
 	 * @return Gibt die aktuelle Zeit zurück.
 	 */
 	private String timestamp() {
@@ -539,7 +538,8 @@ public class SaveLoad {
 	 */
 	public static void main(String[] args) {
 		SaveLoad saveload = new SaveLoad();
-//		saveload.newGame("tesssst", "nur", "noch", "ein", "kleiner", "test");
+//		saveload.newGame("nkjkjjk", "nur", "noch", "ein", "kleiner", "test");
+//		saveload.setPlayerName("nkjkjjk", "TEST");
 		
 	}
 	
