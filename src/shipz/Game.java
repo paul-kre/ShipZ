@@ -2,6 +2,7 @@ package shipz;
 
 import javafx.stage.Stage;
 import shipz.gui.GUI2;
+import shipz.util.Event;
 import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author Max
  * @version	0.1
  */
-public class Game /*implements GameEventListener*/{
+public class Game implements GameEventListener /*implements GameEventListener*/{
 
     //IV
     /** Spielfeld des 1. Spielers */
@@ -46,6 +47,7 @@ public class Game /*implements GameEventListener*/{
         board2 = new char[width][height];
         initiateBoards();
         gui = new GUI2(primaryStage);
+        gui.setEventListener(this);
     }
 
     //Methoden
@@ -771,6 +773,17 @@ public class Game /*implements GameEventListener*/{
      * @param args
      */
     public static void main(String[] args) {
+    }
+
+    @Override
+    public void eventReceived(GameEvent e) {
+        int id = e.getId();
+
+        switch(id) {
+            case FILL_EVENT:
+                test();
+                break;
+        }
     }
 
 

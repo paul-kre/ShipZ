@@ -4,7 +4,7 @@ package shipz.util;
 /**
  * Created by Paul on 06.05.2016.
  */
-public abstract class GameEventSource {
+public abstract class GameEventSource implements EventIds {
     private GameEventListener _listener;
 
     public void setEventListener(GameEventListener listener) {

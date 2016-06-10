@@ -23,13 +23,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import shipz.util.GameEventSource;
 
 
 /**
  *
  * @author nnamf
  */
-public class GUI2 {
+public class GUI2 extends GameEventSource {
 
     //IV
     ImageView ivg = new ImageView();
@@ -251,6 +252,7 @@ public class GUI2 {
                 game.getChildren().clear();
                 game.getChildren().addAll(btnUndo, btnRedo, btnSave, btnExit, hlGame);
                 createField(game);
+                fireGameEvent(FILL_EVENT);
 
             }
         });
