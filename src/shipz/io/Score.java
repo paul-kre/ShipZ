@@ -63,7 +63,7 @@ public class Score {
 				scorePlayer1 -= 30;
 			} else if(playerIndex == 2){
 				scorePlayer2 -= 30;
-			} else error("set");
+			} else System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
 			break;
 		case 'h':
 			combo(playerIndex, event);
@@ -76,7 +76,7 @@ public class Score {
 			else if(playerIndex == 2) scorePlayer2 += 300*comboPlayer2;
 			break;
 		default:
-			error("set");
+			System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
 		}
 	}
 	
@@ -106,43 +106,9 @@ public class Score {
 				comboPlayer1 = 1;
 			}
 		} else {
-			error("combo");
+			System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
 		}
 		
-	}
-	
-	/**
-	 * Ändert die Punkte eines Spielers playerName zum Parameter score.
-	 * @param playerName Der Spieler dessen Punkte geändert werden sollen.
-	 * @param score Die Punkte, die der Spieler bekommen soll.
-	 */
-	@Deprecated
-	private void setScore(int playerIndex, int score) {
-		if(playerIndex == 1) {
-			scorePlayer1 = score;
-		} else if(playerIndex == 2) {
-			scorePlayer2 = score;
-		} else {
-			error("set");
-		}
-	}
-	
-	/**
-	 * Liest die Punkte eines bestimmten Spielers aus der Highscore-Datei
-	 * und gibt diese zurück.
-	 * @param playerName gewünschter Spieler
-	 * @return Die Punktzahl des Spielers
-	 */
-	@Deprecated
-	private int getScore(int playerIndex) {
-		if(playerIndex == 1) {
-			return scorePlayer1;
-		} else if(playerIndex == 2) {
-			return scorePlayer2;
-		} else {
-			error("get");
-			return 0;
-		}
 	}
 	
 	/**
@@ -160,15 +126,6 @@ public class Score {
 			return getCurrentPlayerName(playerName+"#");
 		
 		return playerName.substring(0, playerName.length()-1);
-	}
-	
-	/**
-	 * Mit der Methode aus der SaveLoad-Klasse wird der aktuelle Highscore als {@link String}
-	 * in die Instanz-Variable <i>highscore</i> geschrieben.
-	 */
-	@Deprecated
-	protected String readHighscoreFile() {
-		return saveload.readFile(highscoreFile);
 	}
 	
 	/**
@@ -307,22 +264,6 @@ public class Score {
 	}
 	
 	/**
-	 * Ausgabe der Fehlermeldungen.
-	 * @param e der aufgetretene Fehler
-	 */
-	private void error(String e) {
-		if(e.equals("set")) {
-			System.err.println("Fehler beim Setzen der Punkte! Unzulässiger Playerindex (1 oder 2 erlaubt)!");
-		} else if(e.equals("combo")) {
-			System.err.println("Fehler bei Aktualisierung der Combos! Unzulässiger Playerindex (1 oder 2 erlaubt)!");
-		} else if(e.equals("get")) {
-			System.err.println("Fehler beim getten der Punkte! Unzulässiger Playerindex (1 oder 2 erlaubt)!");
-		} else {
-			System.err.println("Fehler! Unzulässiger Playerindex (1 oder 2 erlaubt)!");
-		}
-	}
-	
-	/**
 	 * Löscht alle Daten, die nicht im Highscore stehen,
 	 * und somit nicht mehr benötigt werden.
 	 * 
@@ -386,7 +327,7 @@ public class Score {
 		} else if(playerIndex == 2) {
 			return comboPlayer2;
 		} else {
-			error("");
+			System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
 			return 0.0;
 		}
 	}
