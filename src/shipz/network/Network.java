@@ -1,5 +1,7 @@
 package shipz.network;
 
+import shipz.util.Event;
+
 import shipz.Player;
 import shipz.util.GameEvent;
 import shipz.util.Timer;
@@ -118,7 +120,7 @@ public class Network extends PlayerTest implements Runnable {
 
         if(_connected) { // Connection was interrupted
             _connected = false;
-            fireGameEvent(DISCONNECT_EVENT);
+            fireGameEvent((byte)Event.DISCONNECT_EVENT.ordinal());
         } else {
             close();
         }

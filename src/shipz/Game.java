@@ -2,7 +2,7 @@ package shipz;
 
 import javafx.stage.Stage;
 import shipz.gui.GUI2;
-import shipz.io.FileStream;
+import shipz.util.Event;
 import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author Max
  * @version	0.1
  */
-public class Game /*implements GameEventListener*/{
+public class Game implements GameEventListener /*implements GameEventListener*/{
 
     //IV
     /** Spielfeld des 1. Spielers */
@@ -28,10 +28,10 @@ public class Game /*implements GameEventListener*/{
     private boolean player1active;
     /** Netzwerkverbindung */
     //private Network network;
-    /** grafische Nutzeroberfl�che */
+    /** grafische Nutzeroberfläche */
     public GUI2 gui;
-    /** Speichern und Laden der Spielst�nde, Highscore und Undo-Redo-Funktionalit�t. */
-    private FileStream filestream;
+    /** Spielstandverwaltung */
+    //private FileStream filestream;
     /** Liste mit den zu verwendenden Schiffen */
     public List<Integer> shipList;
     private Stage primaryStage;
@@ -40,18 +40,19 @@ public class Game /*implements GameEventListener*/{
     /**
      * erstellt ein neues Spiel mit leeren Feldern
      * @param width		Feldbreite
-     * @param height	Feldh�he
+     * @param height	Feldhöhe
      */
     public Game(int width, int height, Stage primaryStage) {
         board1 = new char[width][height];
         board2 = new char[width][height];
         initiateBoards();
         gui = new GUI2(primaryStage);
+        gui.setEventListener(this);
     }
 
     //Methoden
     /**
-     * startet ein neues oder geladenes Spiel mit den ausgew�hlten Optionen
+     * startet ein neues oder geladenes Spiel mit den ausgewählten Optionen
      */
     private void startGame(){};
 
@@ -59,11 +60,11 @@ public class Game /*implements GameEventListener*/{
      * setzt alle Zellen eines Felds auf Wasser
      */
     private void initiateBoards() {
-        //1. Z�hler
+        //1. Zähler
         int y;
-        //2. Z�hler
+        //2. Zähler
         int x;
-        //doppelte Schleife f�r Durchlauf durch alle Felder
+        //doppelte Schleife für Durchlauf durch alle Felder
         for(y=0; y<board1.length; y++) {
             for(x=0; x<board1[y].length; x++) {
                 board1[y][x] = 'w';
@@ -77,13 +78,13 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * �berpr�ft das Ende des Spiels und leitet eventuelle Benachrichtigungen ein
+     * überprüft das Ende des Spiels und leitet eventuelle Benachrichtigungen ein
      * @return gibt an, ob das Spiel beendet ist
      */
     private boolean checkGameOver() {return false;}
 
     /**
-     * �berpr�ft die �bergebenen Koordinaten auf Schiffelemente und ruft eventuell sink() auf
+     * überprüft die übergebenen Koordinaten auf Schiffelemente und ruft eventuell sink() auf
      * @param x 	Koordinate
      * @param y 	Koordinate
      * @return 0	Wasser getroffen
@@ -98,10 +99,10 @@ public class Game /*implements GameEventListener*/{
                 if (sink(x, y)) {
                     r = 2;
                 }
-                //System.out.println("Es wurde ein Schiffelement zerst�rt");
+                //System.out.println("Es wurde ein Schiffelement zerstört");
                 return r;
             } else {
-                //System.out.println("Es wurde kein Schiffelement zerst�rt");
+                //System.out.println("Es wurde kein Schiffelement zerstört");
                 return r;
             }
         }
@@ -111,17 +112,17 @@ public class Game /*implements GameEventListener*/{
                 if (sink(x, y)) {
                     r = 2;
                 }
-                //System.out.println("Es wurde ein Schiffelement zerst�rt");
+                //System.out.println("Es wurde ein Schiffelement zerstört");
                 return r;
             } else {
-                //System.out.println("Es wurde kein Schiffelement zerst�rt");
+                //System.out.println("Es wurde kein Schiffelement zerstört");
                 return r;
             }
         }
     }
 
     /**
-     * setzt die angegebene Zelle auf ein zerst�rtes Schiffelement
+     * setzt die angegebene Zelle auf ein zerstörtes Schiffelement
      * @param x		Koordinate
      * @param y 	Koordinate
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
@@ -138,7 +139,7 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * pr�ft den Gesamtzustand des Schiffs
+     * prüft den Gesamtzustand des Schiffs
      * @param x		Koordinate
      * @param y 	Koordinate
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
@@ -148,7 +149,7 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * pr�ft den Gesamtzustand des Schiffs nach oben
+     * prüft den Gesamtzustand des Schiffs nach oben
      * @param x		Koordinate
      * @param y 	Koordinate
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
@@ -160,8 +161,8 @@ public class Game /*implements GameEventListener*/{
                     return true;                                //Schiff wurde vielleicht versenkt
                 } else if (board2[y - 1][x] == 'x') {                    //Schiffelement auf angrenzendem Feld
                     return false;                                //Schiff wurde nicht versenkt
-                } else {                                            //zerst�rtes Schiffelement auf angrenzendem Feld
-                    return checkShipDestroyedUp(x, y - 1);    //weitere Pr�fung vom angrenzenden Feld
+                } else {                                            //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedUp(x, y - 1);    //weitere Prüfung vom angrenzenden Feld
                 }
             }
             else {
@@ -169,8 +170,8 @@ public class Game /*implements GameEventListener*/{
                     return true;                                //Schiff wurde vielleicht versenkt
                 } else if (board1[y - 1][x] == 'x') {                    //Schiffelement auf angrenzendem Feld
                     return false;                                //Schiff wurde nicht versenkt
-                } else {                                            //zerst�rtes Schiffelement auf angrenzendem Feld
-                    return checkShipDestroyedUp(x, y - 1);    //weitere Pr�fung vom angrenzenden Feld
+                } else {                                            //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedUp(x, y - 1);    //weitere Prüfung vom angrenzenden Feld
                 }
             }
         }
@@ -180,7 +181,7 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * pr�ft den Gesamtzustand des Schiffs nach rechts
+     * prüft den Gesamtzustand des Schiffs nach rechts
      * @param x		Koordinate
      * @param y 	Koordinate
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
@@ -192,8 +193,8 @@ public class Game /*implements GameEventListener*/{
                     return true;                                    //Schiff wurde vielleicht versenkt
                 } else if (board2[y][x + 1] == 'x') {                        //Schiffelement auf angrenzendem Feld
                     return false;                                    //Schiff wurde nicht versenkt
-                } else {                                                //zerst�rtes Schiffelement auf angrenzendem Feld
-                    return checkShipDestroyedRight(x + 1, y);    //weitere Pr�fung vom angrenzenden Feld
+                } else {                                                //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedRight(x + 1, y);    //weitere Prüfung vom angrenzenden Feld
                 }
             } else {
                 return true;
@@ -205,8 +206,8 @@ public class Game /*implements GameEventListener*/{
                     return true;                                    //Schiff wurde vielleicht versenkt
                 } else if (board1[y][x + 1] == 'x') {                        //Schiffelement auf angrenzendem Feld
                     return false;                                    //Schiff wurde nicht versenkt
-                } else {                                                //zerst�rtes Schiffelement auf angrenzendem Feld
-                    return checkShipDestroyedRight(x + 1, y);    //weitere Pr�fung vom angrenzenden Feld
+                } else {                                                //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedRight(x + 1, y);    //weitere Prüfung vom angrenzenden Feld
                 }
             } else {
                 return true;
@@ -215,7 +216,7 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * pr�ft den Gesamtzustand des Schiffs nach unten
+     * prüft den Gesamtzustand des Schiffs nach unten
      * @param x		Koordinate
      * @param y 	Koordinate
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
@@ -227,8 +228,8 @@ public class Game /*implements GameEventListener*/{
                     return true;                                //Schiff wurde vielleicht versenkt
                 } else if (board2[y + 1][x] == 'x') {                    //Schiffelement auf angrenzendem Feld
                     return false;                                //Schiff wurde nicht versenkt
-                } else {                                            //zerst�rtes Schiffelement auf angrenzendem Feld
-                    return checkShipDestroyedDown(x, y + 1);    //weitere Pr�fung vom angrenzenden Feld
+                } else {                                            //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedDown(x, y + 1);    //weitere Prüfung vom angrenzenden Feld
                 }
             } else {
                 return true;
@@ -240,8 +241,8 @@ public class Game /*implements GameEventListener*/{
                     return true;                                //Schiff wurde vielleicht versenkt
                 } else if (board1[y + 1][x] == 'x') {                    //Schiffelement auf angrenzendem Feld
                     return false;                                //Schiff wurde nicht versenkt
-                } else {                                            //zerst�rtes Schiffelement auf angrenzendem Feld
-                    return checkShipDestroyedDown(x, y + 1);    //weitere Pr�fung vom angrenzenden Feld
+                } else {                                            //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedDown(x, y + 1);    //weitere Prüfung vom angrenzenden Feld
                 }
             } else {
                 return true;
@@ -250,7 +251,7 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * pr�ft den Gesamtzustand des Schiffs nach links
+     * prüft den Gesamtzustand des Schiffs nach links
      * @param x		Koordinate
      * @param y 	Koordinate
      * @return		gibt an, ob das gesamte Schiff versenkt wurde
@@ -262,8 +263,8 @@ public class Game /*implements GameEventListener*/{
                     return true;                                    //Schiff wurde vielleicht versenkt
                 } else if (board2[y][x - 1] == 'x') {                        //Schiffelement auf angrenzendem Feld
                     return false;                                    //Schiff wurde nicht versenkt
-                } else {                                                //zerst�rtes Schiffelement auf angrenzendem Feld
-                    return checkShipDestroyedLeft(x - 1, y);    //weitere Pr�fung vom angrenzenden Feld
+                } else {                                                //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedLeft(x - 1, y);    //weitere Prüfung vom angrenzenden Feld
                 }
             }
             else {
@@ -271,8 +272,8 @@ public class Game /*implements GameEventListener*/{
                     return true;                                    //Schiff wurde vielleicht versenkt
                 } else if (board1[y][x - 1] == 'x') {                        //Schiffelement auf angrenzendem Feld
                     return false;                                    //Schiff wurde nicht versenkt
-                } else {                                                //zerst�rtes Schiffelement auf angrenzendem Feld
-                    return checkShipDestroyedLeft(x - 1, y);    //weitere Pr�fung vom angrenzenden Feld
+                } else {                                                //zerstörtes Schiffelement auf angrenzendem Feld
+                    return checkShipDestroyedLeft(x - 1, y);    //weitere Prüfung vom angrenzenden Feld
                 }
             }
         }
@@ -282,13 +283,13 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * z�hlt die Anzahl der Schiffe auf einem Feld
+     * zählt die Anzahl der Schiffe auf einem Feld
      * @return		Anzahl der Schiffe
      */
     private int shipCount() {return 0;}
 
     /**
-     * gibt beide Felder hintereinander auf der Konsole aus (f�r Testzwecke)
+     * gibt beide Felder hintereinander auf der Konsole aus (für Testzwecke)
      */
     public void displayBoards() {
         System.out.println("Spieler 1");
@@ -299,17 +300,17 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * gibt ein Feld auf der Konsole aus (f�r Testzwecke)
+     * gibt ein Feld auf der Konsole aus (für Testzwecke)
      * @param board auszugebendes Feld
      */
     public void displaySingleBoard(char[][] board) {
         //Ausgabe der oberen Feldbeschriftung
         System.out.println("  A B C D E F G H I J");
-        //1. Z�hler
+        //1. Zähler
         int y;
-        //2. Z�hler
+        //2. Zähler
         int x;
-        //doppelte Schleife f�r Durchlauf durch alle Felder
+        //doppelte Schleife für Durchlauf durch alle Felder
         for(y=0; y<board.length; y++) {
             //Ausgabe der seitlichen Feldbeschriftung
             System.out.print(y);
@@ -345,7 +346,7 @@ public class Game /*implements GameEventListener*/{
      * platziert ein einzelnes Schiff
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
     private boolean placeSingleShip(int y, int x, int length, int player) {
@@ -379,20 +380,20 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * �berpr�ft, ob ein einzelnes Schiff gesetzt werden kann (nach oben), und ruft eventuell placeShip auf
+     * überprüft, ob ein einzelnes Schiff gesetzt werden kann (nach oben), und ruft eventuell placeShip auf
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @param player	Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
     private boolean checkShipUp(int y, int x, int length, int player) {
         boolean placeable = false;
-        //Pr�fung, ob alle zu pr�fenden Zellen auf dem Feld liegen
+        //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
         if(player == 1) {
             if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length && y - length + 1 >= 0) {
                 placeable = true;
-                //Pr�fung, ob alle zu pr�fenden Zellen nutzbares Wasser sind
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
                 for (int i = 0; i < length; i++) {
                     if (board1[y - i][x] != 'w') {
                         placeable = false;
@@ -403,7 +404,7 @@ public class Game /*implements GameEventListener*/{
         else {
             if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length && y - length + 1 >= 0) {
                 placeable = true;
-                //Pr�fung, ob alle zu pr�fenden Zellen nutzbares Wasser sind
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
                 for (int i = 0; i < length; i++) {
                     if (board2[y - i][x] != 'w') {
                         placeable = false;
@@ -422,7 +423,7 @@ public class Game /*implements GameEventListener*/{
      * platziert ein einzelnes Schiff (nach oben)
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @param player	Feld
      */
     private void placeShipUp(int y, int x, int length, int player) {
@@ -438,20 +439,20 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * �berpr�ft, ob ein einzelnes Schiff gesetzt werden kann (nach rechts), und ruft eventuell placeShip auf
+     * überprüft, ob ein einzelnes Schiff gesetzt werden kann (nach rechts), und ruft eventuell placeShip auf
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @param player	Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
     private boolean checkShipRight(int y, int x, int length, int player) {
         boolean placeable = false;
         if(player == 1) {
-            //Pr�fung, ob alle zu pr�fenden Zellen auf dem Feld liegen
+            //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
             if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length && x + length - 1 < board1[y].length) {
                 placeable = true;
-                //Pr�fung, ob alle zu pr�fenden Zellen nutzbares Wasser sind
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
                 for (int i = 0; i < length; i++) {
                     if (board1[y][x + i] != 'w') {
                         placeable = false;
@@ -465,10 +466,10 @@ public class Game /*implements GameEventListener*/{
             return false;
         }
         else {
-            //Pr�fung, ob alle zu pr�fenden Zellen auf dem Feld liegen
+            //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
             if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length && x + length - 1 < board2[y].length) {
                 placeable = true;
-                //Pr�fung, ob alle zu pr�fenden Zellen nutzbares Wasser sind
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
                 for (int i = 0; i < length; i++) {
                     if (board2[y][x + i] != 'w') {
                         placeable = false;
@@ -487,7 +488,7 @@ public class Game /*implements GameEventListener*/{
      * platziert ein einzelnes Schiff (nach rechts)
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @param player	Feld
      */
     private void placeShipRight(int y, int x, int length, int player) {
@@ -503,20 +504,20 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * �berpr�ft, ob ein einzelnes Schiff gesetzt werden kann (nach unten), und ruft eventuell placeShip auf
+     * überprüft, ob ein einzelnes Schiff gesetzt werden kann (nach unten), und ruft eventuell placeShip auf
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @param player	Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
     private boolean checkShipDown(int y, int x, int length, int player) {
         boolean placeable = false;
         if(player == 1) {
-            //Pr�fung, ob alle zu pr�fenden Zellen auf dem Feld liegen
+            //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
             if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length && y + length - 1 < board1.length) {
                 placeable = true;
-                //Pr�fung, ob alle zu pr�fenden Zellen nutzbares Wasser sind
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
                 for (int i = 0; i < length; i++) {
                     if (board1[y + i][x] != 'w') {
                         placeable = false;
@@ -530,10 +531,10 @@ public class Game /*implements GameEventListener*/{
             return false;
         }
         else{
-            //Pr�fung, ob alle zu pr�fenden Zellen auf dem Feld liegen
+            //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
             if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length && y + length - 1 < board2.length) {
                 placeable = true;
-                //Pr�fung, ob alle zu pr�fenden Zellen nutzbares Wasser sind
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
                 for (int i = 0; i < length; i++) {
                     if (board2[y + i][x] != 'w') {
                         placeable = false;
@@ -552,7 +553,7 @@ public class Game /*implements GameEventListener*/{
      * platziert ein einzelnes Schiff (nach unten)
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @param player	Feld
      */
     private void placeShipDown(int y, int x, int length, int player) {
@@ -568,20 +569,20 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * �berpr�ft, ob ein einzelnes Schiff gesetzt werden kann (nach links), und ruft eventuell placeShip auf
+     * überprüft, ob ein einzelnes Schiff gesetzt werden kann (nach links), und ruft eventuell placeShip auf
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @param player	Feld
      * @return			gibt an, ob das Schiff erfolgreich platziert wurde
      */
     private boolean checkShipLeft(int y, int x, int length, int player) {
         boolean placeable = false;
-        //Pr�fung, ob alle zu pr�fenden Zellen auf dem Feld liegen
+        //Prüfung, ob alle zu prüfenden Zellen auf dem Feld liegen
         if(player == 1) {
             if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length && x - length + 1 >= 0) {
                 placeable = true;
-                //Pr�fung, ob alle zu pr�fenden Zellen nutzbares Wasser sind
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
                 for (int i = 0; i < length; i++) {
                     if (board1[y][x - i] != 'w') {
                         placeable = false;
@@ -592,7 +593,7 @@ public class Game /*implements GameEventListener*/{
         else {
             if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length && x - length + 1 >= 0) {
                 placeable = true;
-                //Pr�fung, ob alle zu pr�fenden Zellen nutzbares Wasser sind
+                //Prüfung, ob alle zu prüfenden Zellen nutzbares Wasser sind
                 for (int i = 0; i < length; i++) {
                     if (board2[y][x - i] != 'w') {
                         placeable = false;
@@ -611,7 +612,7 @@ public class Game /*implements GameEventListener*/{
      * platziert ein einzelnes Schiff (nach links)
      * @param y			Koordinate
      * @param x			Koordinate
-     * @param length	Schiffl�nge
+     * @param length	Schifflänge
      * @param player	Feld
      */
     private void placeShipLeft(int y, int x, int length, int player) {
@@ -630,7 +631,7 @@ public class Game /*implements GameEventListener*/{
      * blockiert Zellen auf dem Spielfeld, sodass Schiffe nicht aneinander gesetzt werden
      * @param player	Feld
      * @param dir		Richtung in die das zu blockierende Schiff gesetzt wurde
-     * @param length	Schiffsl�nge
+     * @param length	Schiffslänge
      * @param x			Koordinate, von der aus das Schiff gesetzt wurde
      * @param y			Koordinate, von der aus das Schiff gesetzt wurde
      */
@@ -672,22 +673,22 @@ public class Game /*implements GameEventListener*/{
         for(y=posAY-1; y<=posBY+1; y++) {
             for(x=posAX-1; x<=posBX+1; x++) {
                 if(player == 1) {
-                    //Pr�fung, ob die berechnete Koordinate im Feld liegt
+                    //Prüfung, ob die berechnete Koordinate im Feld liegt
                     if (y >= 0 && y < board1.length && x >= 0 && x < board1[y].length) {
-                        //Pr�fung, ob das zu blockierende Feld noch unbelegt ist
+                        //Prüfung, ob das zu blockierende Feld noch unbelegt ist
                         if (board1[y][x] == 'w') {
                             board1[y][x] = 'b';
                         }
-                    } //Ende der Pr�fungen
+                    } //Ende der Prüfungen
                 }
                 else {
-                    //Pr�fung, ob die berechnete Koordinate im Feld liegt
+                    //Prüfung, ob die berechnete Koordinate im Feld liegt
                     if (y >= 0 && y < board2.length && x >= 0 && x < board2[y].length) {
-                        //Pr�fung, ob das zu blockierende Feld noch unbelegt ist
+                        //Prüfung, ob das zu blockierende Feld noch unbelegt ist
                         if (board2[y][x] == 'w') {
                             board2[y][x] = 'b';
                         }
-                    } //Ende der Pr�fungen
+                    } //Ende der Prüfungen
                 }
             }
         } //Ende der Schleifen
@@ -695,7 +696,7 @@ public class Game /*implements GameEventListener*/{
 
     /**
      * ersetzt alle chars auf einem Spielfeld
-     * @param a		    urspr�ngliche chars
+     * @param a		    ursprüngliche chars
      * @param b		    neue chars
      * @param player    Feld
      */
@@ -722,9 +723,9 @@ public class Game /*implements GameEventListener*/{
     }
 
     /**
-     * @param min	kleinstm�gliche gew�nschte Zahl
-     * @param max	gr��tm�gliche gew�nschte Zahl
-     * @return		zuf�llige Zahl zwischen min und max
+     * @param min	kleinstmögliche gewünschte Zahl
+     * @param max	größtmögliche gewünschte Zahl
+     * @return		zufällige Zahl zwischen min und max
      */
     private int randomNumber(int min, int max) {
         int range = (max - min) + 1;
@@ -733,8 +734,8 @@ public class Game /*implements GameEventListener*/{
 
     /**
      * erstellt aus einem String eine Schiffsliste
-     * @param s	numerischer Wert eines chars steht f�r die L�nge eines Schiffs
-     * @return	Integer-Liste mit einem Eintrag f�r jedes Schiff
+     * @param s	numerischer Wert eines chars steht für die Länge eines Schiffs
+     * @return	Integer-Liste mit einem Eintrag für jedes Schiff
      */
     public List<Integer> createShipList(String s) {
         List<Integer> r = new ArrayList<Integer>();
@@ -774,6 +775,17 @@ public class Game /*implements GameEventListener*/{
     public static void main(String[] args) {
     }
 
+    @Override
+    public void eventReceived(GameEvent e) {
+        int id = e.getId();
+
+        switch(id) {
+            case FILL_EVENT:
+                test();
+                break;
+        }
+    }
+
 
 /*    @Override
     public void start(Stage primaryStage) {
@@ -798,6 +810,6 @@ public class Game /*implements GameEventListener*/{
 /*
  * w = Wasser
  * x = Schiff
- * z = zerst�rtes Schiff
+ * z = zerstörtes Schiff
  * b = blockierte Zelle
  */
