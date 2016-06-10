@@ -4,8 +4,6 @@ import javafx.stage.Stage;
 import shipz.gui.GUI2;
 import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
-import javafx.stage.Stage;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class Game /*implements GameEventListener*/{
     /** Verweis auf den 2. Spieler */
     private Player player2;
     /** gibt an, ob Spieler 1 aktiv ist */
-    public boolean player1active;
+    private boolean player1active;
     /** Netzwerkverbindung */
     //private Network network;
     /** grafische Nutzeroberfläche */
@@ -35,6 +33,7 @@ public class Game /*implements GameEventListener*/{
     //private FileStream filestream;
     /** Liste mit den zu verwendenden Schiffen */
     public List<Integer> shipList;
+    private Stage primaryStage;
 
     //Constructor
     /**
@@ -42,10 +41,11 @@ public class Game /*implements GameEventListener*/{
      * @param width		Feldbreite
      * @param height	Feldhöhe
      */
-    public Game(int width, int height) {
+    public Game(int width, int height, Stage primaryStage) {
         board1 = new char[width][height];
         board2 = new char[width][height];
         initiateBoards();
+        gui = new GUI2(primaryStage);
     }
 
     //Methoden
@@ -761,21 +761,23 @@ public class Game /*implements GameEventListener*/{
         }
     }
 
+    protected void test() {
+
+    }
+
 
     /**
      * Main-Methode
      * @param args
      */
     public static void main(String[] args) {
-        Game g = new Game(10, 10);
-        g.shipList = g.createShipList("5443332");
-        System.out.println(g.shipList);
-        g.placeShips(2);
-        g.swapChars('w', '.', 2);
-        g.displaySingleBoard(g.board2);
-        g.gui = new GUI2();
-        //g.gui.start(s);
     }
+
+
+/*    @Override
+    public void start(Stage primaryStage) {
+        gui.start(primaryStage);
+    }*/
 
     /*public void eventReceived(GameEvent e) {
         Player source = e.getSource();
