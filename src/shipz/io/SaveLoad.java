@@ -48,6 +48,7 @@ public class SaveLoad {
 	/**
 	 * Konstruktor der Klasse, der das File-Objekt initialisiert 
 	 * und diesem einen Dateipfad zuordnet.
+	 * Auﬂerdem wird die Grundstruktur des XML-Dokuments erstellt.
 	 */
 	public SaveLoad() {
 		file = new File(fileDirectory() + File.separator + "saves.xml");

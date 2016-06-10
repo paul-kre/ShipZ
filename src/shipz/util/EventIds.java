@@ -2,9 +2,6 @@ package shipz.util;
 
 /**
  * Created by paulkretschel on 17/05/16.
- * 
- * Kann gel�scht werden.
- * @see shipz.util.Event
  */
 
 public interface EventIds {

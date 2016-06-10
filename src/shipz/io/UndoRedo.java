@@ -159,27 +159,7 @@ public class UndoRedo {
 	 * @param args arguments
 	 */
 	public static void main(String[] args) {
-/*		ArrayList<String> ar = new ArrayList<String>();
-		ar.add(0, "a");
-		ar.add(1, "b");
-		ar.add(2, "c");
-		System.out.println(u.listToString(ar)); 
-		System.out.println(ar.toString()); */
-		
 		UndoRedo ur = new UndoRedo();
-//		ur.newDraw("ErsterZug", 1);
-//		ur.newDraw("ZweiterZug", 1);
-//		ur.newDraw("1sterZug", 2);
-//		ur.saveToFile("blabla");
-		
-		
-/*		Stack<String> test = new Stack<String>();
-		test.push("1");
-		test.push("2");
-		test.push("3");
-		System.out.println(test.toString());
-		System.out.println(test.pop());
-		System.out.println(test.toString()); */
 		
 		ur.newDraw("FirstDraw", 1);
 		ur.newDraw("First Draw for player 2", 2);
