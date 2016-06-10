@@ -320,6 +320,28 @@ public class FileStream {
 		return score.highscore();
 	}
 	
+	/**
+	 * Referenz auf die Methode in der Score-Klasse.
+	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
+	 * damit die Punkte in der Datei abgespeichert werden.
+	 * @param playerName Name des ersten Spielers
+	 * @param opponentName Name des zweiten Spielers
+	 */
+	public void saveScoreToFile(String playerName, String opponentName) {
+		score.saveScoreToFile(playerName, opponentName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der Score-Klasse.
+	 * Der Wert der Combo wird zurückgegeben, damit die GUI darstellen kann, 
+	 * welche Combo der Spieler aktuell erreicht hat.
+	 * @param playerIndex 
+	 * @return
+	 */
+	public double getComboValue(int playerIndex) {
+		return score.getComboValue(playerIndex);
+	}
+	
 	public static void main(String[] args) {
 		
 		FileStream fs = new FileStream();

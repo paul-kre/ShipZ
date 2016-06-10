@@ -1,4 +1,4 @@
-package gui;
+package shipz.gui;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -31,7 +31,7 @@ import javafx.stage.Stage;
  *
  * @author nnamf
  */
-public class GUI2 extends Application {
+public class GUI2alt extends Application {
     
 	//IV
 	ImageView ivg = new ImageView();

@@ -47,7 +47,7 @@ public class GameTest implements GameEventListener {
         else
             opponent = _player1;
 
-        byte id = e.getId();
+        int id = e.getId();
 
         int x;
         int y;
