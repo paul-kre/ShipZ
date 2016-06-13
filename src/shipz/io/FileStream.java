@@ -82,7 +82,6 @@ public class FileStream {
 	 * Er wird dafür aus der Liste, die den Spielverlauf speichert gelöscht und in eine
 	 * separate Liste geschrieben, die die rückgangig gemachten Züge speichert.
 	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
-	 * @param gameName Name des Spiels zur Zuordnung
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
@@ -168,8 +167,34 @@ public class FileStream {
 		return score.getComboValue(playerIndex);
 	}
 	
+	/*
+	 * MISCELLANEOUS
+	 */
+	
+	/**
+	 * Gibt alle Buchstaben und Sonderzeichen zurück,
+	 * die in einem Namen nicht verwendet werden dürfen.
+	 * Um diesen String in ein Char-Array umzuwandeln:
+	 * <i>forbiddenCharacters().toCharArray()</i>
+	 * Die Liste ist eventuell noch unvollständig.
+	 * @return die verbotenen Zeichen
+	 */
+	public String forbiddenCharacters() {
+		char[] c = { '=', ',', '{', '}', '<', '>', ';' };
+		String r = "";
+		for(int i = 0; i < c.length; i++) {
+			r += c[i];
+		}
+		return r;
+	}
+	
 	public static void main(String[] args) {
-		
+		FileStream fs = new FileStream();
+		System.out.println(fs.forbiddenCharacters());
+		char[] c = fs.forbiddenCharacters().toCharArray();
+		for(int i = 0; i < c.length; i++) {
+			System.out.println(c[i]);
+		}
 	}
 	
 }

@@ -38,6 +38,7 @@ public class Score {
 	// Konstruktor
 	/**
 	 * Konstruktor von Score.
+	 * Die IVs werden initialisiert und die Highscore-Datei wird erstellt.
 	 */
 	public Score() {
 		saveload = new SaveLoad();
@@ -52,7 +53,6 @@ public class Score {
 	// IM
 	/**
 	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
-	 * @param gameName Name des Spielstands
 	 * @param playerName Name des Spielers
 	 * @param event Events: <b>u</b> für undo, <b>h</b> für hit, <b>s</b> für sink <i>(weitere folgen eventuell. Das liegt nicht in meiner Hand)</i>
 	 */
@@ -81,9 +81,7 @@ public class Score {
 	}
 	
 	/**
-	 * Methode, die die Combos verwaltet,
-	 * den Combo-Counter hochzählt.
-	 * @param gameName Name des Spielstands
+	 * Methode, die die Combos verwaltet und den Combo-Counter hochzählt.
 	 * @param playerName Spielername
 	 * @param event Aktion, die sich auf den Combowert beeinflusst. 
 	 * Zugelassene Werte: <b>h</b> für einen Treffer, <b>s</b> für ein versenktes Schiff.

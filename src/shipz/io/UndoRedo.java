@@ -3,7 +3,7 @@ package shipz.io;
 import java.util.Stack;
 
 /**
- * Diese Klasse speichert alle Züge die getätigt werden und behandelt die Undo-Redo-Mechanik.
+ * Diese Klasse speichert alle Züge die getätigt werden und behandelt die Undo-Redo-Funktion.
  * @author Florian Osterberg
  */
 public class UndoRedo {
@@ -26,7 +26,7 @@ public class UndoRedo {
 	// Konstruktor
 	/**
 	 * Initialisiert ein UndoRedo-Objekt.
-	 * Die Array-Listen werden initialisiert.
+	 * Die Stacks werden initialisiert.
 	 * @param gameName 
 	 */
 	public UndoRedo() {
@@ -52,9 +52,8 @@ public class UndoRedo {
 	 * Er wird dafür aus der Liste, die den Spielverlauf speichert gelöscht und in eine
 	 * separate Liste geschrieben, die die rückgangig gemachten Züge speichert.
 	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
-	 * @param gameName Name des Spiels zur Zuordnung
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
-	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
+	 * @return Die letzten Züge der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
 	protected String undoDraw(int playerIndex) {
 		String result = "";
@@ -92,7 +91,7 @@ public class UndoRedo {
 	
 	/**
 	 * Gibt den Stack für die Züge des ersten Spielers als String zurück.
-	 * @return die ArrayList für die Züge des ersten Spielers als String
+	 * @return die ArrayList für die Züge als String
 	 */
 	protected String getDraws() {
 		return game.toString();
@@ -100,7 +99,7 @@ public class UndoRedo {
 	
 	/**
 	 * Gibt den Stack für die rückgängig gemachten Züge des ersten Spielers zurück.
-	 * @return der Stack für die rückgängig gemachten Züge des ersten Spielers
+	 * @return der Stack für die rückgängig gemachten Züge
 	 */
 	protected String getRedoneDraws() {
 		return redo.toString();
