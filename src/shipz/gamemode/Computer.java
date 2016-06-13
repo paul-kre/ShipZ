@@ -97,7 +97,13 @@ public abstract class Computer extends Player {
     private ArrayList<Integer> includedColumns =  new ArrayList<>();
 
 
-
+    /**
+     * Sobald das Schachbrettmuster aktiviert wird, wird das Spielfeld
+     * nach freien Koordinaten abgesucht, die dem Muster entsprechen und
+     * diese werden in der Liste gespeichert, damit die KI diese entsprechenden
+     * Koordinaten beschießen kann.
+     */
+    private ArrayList<String> validChessBoardPatternCoordinates = new ArrayList<>();
 
 
     //Contructor
@@ -679,6 +685,8 @@ public abstract class Computer extends Player {
      */
     protected int randomRowInt() {
 
+        //@ToDo randomRowInt ThrowException machen
+
         if (includedRows.size() > 0){
             return this.includedRows.get(random.nextInt(includedRows.size()));
         }
@@ -696,6 +704,7 @@ public abstract class Computer extends Player {
      */
     protected int randomColumnInt() {
 
+        //@ToDo randomColumnInt ThrowException machen
         if (includedColumns.size() > 0) {
             return this.includedColumns.get(random.nextInt(includedColumns.size()));
         }
@@ -921,7 +930,7 @@ public abstract class Computer extends Player {
      */
     protected int[] selectNeighbourCoordinates(){
 
-        int efficiency = 0;
+
         //Flag, welches versichert, dass aufjedenfall eine Richtung Koordinaten an generateAICoordinates zurückgibt
         boolean directionReturnsNoCoord;
 
@@ -1055,8 +1064,6 @@ public abstract class Computer extends Player {
 
         } else if ( level % 3 == 2){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 2 berechnet werden soll
 
-
-
             return ( 1 + ( 3 * validThreePointPatternColumnInt(2) ));
 
 
@@ -1065,7 +1072,6 @@ public abstract class Computer extends Player {
             return ( 3 * validThreePointPatternColumnInt(3) );
 
         }
-
 
         return -1;
     }
@@ -1112,7 +1118,7 @@ public abstract class Computer extends Player {
                     validXCoord = false;
                 }
 
-            } else {
+            } else  if (currentLevel == 3){
 
                 if ( patternXCoordIsInRange(patternXCoord / 3, 3) && ( patternXCoord % 3 == 0 ) ){
 
@@ -1123,6 +1129,7 @@ public abstract class Computer extends Player {
             }
 
 
+            //System.out.println("3-Feld-Looped");
         }while ( validXCoord);
 
 
@@ -1157,6 +1164,226 @@ public abstract class Computer extends Player {
 
 
     /**
+     * Prüft ob das Drei-Feld-Muster noch laufen darf.
+     * Gibt FALSE zurück, falls alle Musterkoordinaten
+     * des Musters besetzt wurden und keine Koordinaten mehr
+     * für das Muster erstellt werden können
+     *
+     * @return Ob das Muster noch aktiv sein darf oder nicht
+     */
+    protected boolean threePointPatternIsStillValid(){
+
+
+        /**
+         * Äußere For-Schleife repräsentiert die noch gültigen, verwendbaren Y-Koordinaten
+         *
+         * Im Inneren der Schleife wird anhand der Reihenzahl der Y-Koordinate berechnet, um welche
+         * Ebene es sich bei dem 3-Feld-Muster handelt. Dies ist wichtig, da 2 von 3 Ebenen weniger durchlaufen
+         * müssen die dritte.
+         * Mit der Formel: ( Ebenenzahl + ( 3 * MultiplikatorDerInnerenSchleife) lassen sich in der inneren Schleife
+         * alle entsprechenden Koordinaten des Musters überprüfen.
+         * (Beispiel: Ebene1 hat für dessen Muster die X-Koordinate 2, 4 und 8)
+         * Die jeweiligen Koordinaten werden überprüft ob diese noch frei sind. Wenn dem so ist,
+         * beendet dieMEthode in dem sie TRUE zurückgibt und die KI weiss, dass
+         * sie noch Koordinaten mit diesem Muster erstellen kann.
+         * Andernfalls weiss die KI, dass alle Koordinaten für dieses Muster besetzt sind und kann
+         * dementsprechend auf ein anderes Muster umsteigen.
+         *
+         */
+        for ( int i = 0; i < includedRows.size(); i++){
+
+
+            //Prüft ob die Y-Koordinate der Ebene 1 entspricht
+            if ( (includedRows.get(i) + 1) % 3 == 1){
+
+                //Innere Schleife für die Überprüfung der X-Koordinaten
+                /**
+                 * Das "((this.fieldSize/ 3) -1)" steht für den  höchsten Multiplikator, mit dem die Formel
+                 * die X-Koordinaten der entsprechenden Ebene erstellt. Bei einem Standard 10x10 Feld
+                 * hat die Ebene 1 und 2 einen max. Multiplikator von 2 und Ebene 3 einen von 3.
+                 */
+                for( int j = 0; j <= ((this.fieldSize/ 3) -1) ; j++){
+
+
+
+                    if ( !isCoordinateOccupied(i, (2 + (3 * j)) ) && !isCoordinateShipPart(i, (2 + (3 * j)) )){
+
+                        System.out.println("Ebene: " + ((includedRows.get(i) + 1) % 3 ) + "    Koordinate: " + i + "|" + (2 + (3 * j)) );
+                        return true;
+                    }
+
+                }
+
+                //Prüft ob die Y-Koordinate der Ebene 2 entspricht
+            } else if ( (includedRows.get(i) + 1) % 3 == 2 ){
+
+                for( int k = 0; k <= ((this.fieldSize/ 3) -1); k++){
+
+
+                    if ( !isCoordinateOccupied(i, (1 + (3 * k)) ) && !isCoordinateShipPart(i, (1 + (3 * k)) )){
+
+                        System.out.println("Ebene: " + ((includedRows.get(i) + 1) % 3 ) + "    Koordinate: " + i + "|" + (1 + (3 * k))  );
+                        return true;
+                    }
+
+                }
+
+                //Prüft ob die Y-Koordinate der Ebene 3 entspricht
+            } else if ( (includedRows.get(i) + 1) % 3 == 0 ){
+
+                for( int l= 0; l <= (this.fieldSize/ 3) ; l++){
+
+                    if ( !isCoordinateOccupied(i, (3 * l))  && !isCoordinateShipPart(i, (3 * l) ) ){
+
+                        System.out.println("Ebene: " + ((includedRows.get(i) + 1) % 3 ) + "    Koordinate: " + i + "|" + (3 * l) );
+                        return true;
+                    }
+
+                }
+
+            }
+
+
+        }
+
+
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Erstellt anhand der verbleibenden, freien Koordinaten auf dem Spielfeld
+     * Blöcke und unterteilt diese mithilfe eines Schachbrettmusters.
+     * Die Anzahl der Schüße um ein Schiffsteil damit zu treffen sinkt
+     * und die Chance dabei etwas zu treffen erhöht sich.
+     *
+     * @return Eine beschießbare Koordinate aus einem Block
+     */
+    protected String chessBoardPatternString(){
+
+        //Falls die Liste des Schachbrettmusters leer ist (beim ersten
+        // Aufruf) wird das Feld gescannt und die Liste initialisiert
+        if ( validChessBoardPatternCoordinates.isEmpty()){
+
+            System.out.println("SCHACHBRETTMUSTER!");
+            initiazileChessBoardPattern();
+        }
+
+
+        return validChessBoardPatternCoordinates.get(random.nextInt(validChessBoardPatternCoordinates.size()));
+
+
+    }
+
+
+    /**
+     * Scannt das Spielfeld nach freien Feldern und
+     * speichert mithilfe des Schachbrettmusters
+     * die Koordinaten in das <b>validChessBoardPatternCoordinates</b>
+     * ab
+     */
+    private void initiazileChessBoardPattern(){
+
+        //Flag-Variable die angibt, ob bei der Prüfung der nördlichen Koordinate die aktuelle gespeichert wurde
+        boolean wasSaved;
+
+
+        for ( int i = 0; i < includedRows.size(); i++){
+
+            for (int j = 0; j < includedColumns.size(); j++){
+
+                wasSaved = false;
+
+
+                //Aktuelle Koordinate prüfen ob sie frei ist, ansonsten wird zum nächsten weitergegangen
+                if ( !isCoordinateOccupied( includedRows.get(i), includedColumns.get(j) ) && !isCoordinateShipPart( includedRows.get(i), includedColumns.get(j))){
+
+                    //Nördliche Koordinate prüfen
+                    if( isCoordinateInField( includedRows.get(i) -1, includedColumns.get(j) ) && !isCoordinateShipPart(includedRows.get(i) -1, includedColumns.get(j)) && !isCoordinateOccupied(includedRows.get(i) -1, includedColumns.get(j))){
+
+                       // System.out.println("In Field? " +  (includedRows.get(i) -1) + "|" + includedColumns.get(j)  + " -> " + isCoordinateInField( includedRows.get(i) -1, includedColumns.get(j) ));
+                        //Wenn die nördliche Koordinate nicht gespeichert wurde, wird die aktuelle Koordinate in die Liste
+                        //gespeichert
+                        if( !validChessBoardPatternCoordinates.contains("" + (includedRows.get(i) - 1) + "," + includedColumns.get(j)  )){
+
+                            //System.out.println("Speichern --> " + "" + includedRows.get(i) + "," + includedColumns.get(j) );
+                            validChessBoardPatternCoordinates.add("" + includedRows.get(i) + "," + includedColumns.get(j) );
+                            wasSaved = true;
+                        }
+
+                    }
+
+                    //Wenn die aktuelle Koordinate bei der Überrprüfung des Nordens nicht gespeichert wurde, wird die
+                    //westliche Koordinate überprüft
+                    if ( !wasSaved){
+
+                        //Westliche Koordinate prüfen
+                        if(isCoordinateInField( includedRows.get(i), includedColumns.get(j) - 1) && !isCoordinateShipPart(includedRows.get(i), includedColumns.get(j) - 1) && !isCoordinateOccupied(includedRows.get(i), includedColumns.get(j) - 1) ){
+
+                            //System.out.println("In Field? " +  (includedRows.get(i)) + "|" + (includedColumns.get(j) - 1)  + " -> " + isCoordinateInField( includedRows.get(i), includedColumns.get(j) ));
+                            //Wenn die westliche Koordinate nicht gespeichert wurde, wird die aktuelle Koordinate in die Liste
+                            //gespeichert
+                            if( !validChessBoardPatternCoordinates.contains("" + includedRows.get(i)  + "," + (includedColumns.get(j) -1) )){
+
+                                //System.out.println("Speichern --> " + "" + includedRows.get(i) + "," + includedColumns.get(j) );
+                                validChessBoardPatternCoordinates.add("" + includedRows.get(i) + "," + includedColumns.get(j) );
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    /**
+     * Prüft ob eine Koordinate in der Liste für das
+     * Schachbrettmuster vorhanden ist und löscht diese dann
+     *
+     * @param coord Die zu löschende Koordinate
+     */
+    protected void deleteChessBoardPatternCoordinate( String coord){
+
+        if (validChessBoardPatternCoordinates.contains(coord)){
+
+            validChessBoardPatternCoordinates.remove(coord);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
      * DEBUGGING METHODE FÜR MIRRORFIELD
      *
      * Zeigt das SpiegelFeld als ein Spielfeld.
@@ -1164,7 +1391,7 @@ public abstract class Computer extends Player {
      */
     public void displayMirrorField() {
         //Ausgabe der oberen Feldbeschriftung
-        System.out.println("  A B C D E F G H I J");
+        System.out.println("  0 1 2 3 4 5 6 7 8 9");
         //1. Zähler
         int y;
         //2. Zähler
@@ -1217,8 +1444,37 @@ public abstract class Computer extends Player {
         }
         System.out.println("\n\n");
 
+
+        System.out.print("Schachbrettkoordinaten: ");
+        for (int i = 0; i < validChessBoardPatternCoordinates.size(); i++){
+
+            System.out.print(validChessBoardPatternCoordinates.get(i) +" | ");
+        }
+        System.out.println("\n\n");
+
     }
 
+
+    /**
+     *
+     * Extrahiert aus einem String die Y-Koordinate
+     * @param stringCoord String von welchem extrahiert wird
+     * @return Y-Koordinate
+     */
+    protected int extcractYCoord( String stringCoord){
+        return Integer.parseInt(stringCoord.split(",")[0]);
+    }
+
+
+    /**
+     *
+     * Extrahiert aus einem String die X-Koordinate
+     * @param stringCoord String von welchem extrahiert wird
+     * @return X-Koordinate
+     */
+    protected int extcractXCoord( String stringCoord){
+        return Integer.parseInt(stringCoord.split(",")[1]);
+    }
 
 
 }//end class Computer
