@@ -69,6 +69,10 @@ public class TempKiGame{
 
 
 
+
+
+
+
         board[5][2] = 'x';
         board[6][2] = 'x';
         board[7][2] = 'x';
@@ -104,6 +108,7 @@ public class TempKiGame{
         board[0][9] = 'x';
         board[1][9] = 'x';
         board[2][9] = 'x';
+
 
     }
 
@@ -421,7 +426,9 @@ public class TempKiGame{
             System.out.println("Anzeige des Spiegelfeldes der Ki:");
             ki.displayMirrorField();
             ki.printRowAndColumnItems();
+            System.out.println("ki.threePointPatternIsStillValid(): " + ki.threePointPatternIsStillValid());
             System.out.println("\n");
+
 
         }
 
