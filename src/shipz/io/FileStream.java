@@ -17,10 +17,6 @@ public class FileStream {
 	/** Referenz auf die Speichern-Laden-Klasse */
 	private SaveLoad saveload;
 	
-	// TODO LIST
-
-	// Redo Funktion implementieren
-	
 	/**
 	 * Konstruktor der Klasse.
 	 */
