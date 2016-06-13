@@ -1,3 +1,4 @@
+
 package shipz.network;
 
 import shipz.util.EventIds;
@@ -9,6 +10,7 @@ import java.util.Scanner;
 /**
  * Created by Paul on 05.05.2016.
  */
+@Deprecated
 public class GameTest implements GameEventListener {
     private PlayerTest _player1;
     private PlayerTest _player2;
@@ -110,12 +112,13 @@ public class GameTest implements GameEventListener {
                 break;
         }
     }
-
+/*
     public static void main(String[] args) {
         GameTest game = new GameTest();
         game.init();
         game.start();
     }
+    */
 
 
 

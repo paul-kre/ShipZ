@@ -224,6 +224,8 @@ public abstract class Computer extends Player {
             excludeFullRows(yCoord);
             excludeFullColumns(xCoord);
         }
+
+        generateAICoordinates();
     }
 
 

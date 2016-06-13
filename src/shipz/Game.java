@@ -7,6 +7,7 @@ import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
 import java.util.ArrayList;
 import java.util.List;
+import shipz.gamemode.*;
 
 /**
  * Spielverwaltung
@@ -48,6 +49,7 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
         initiateBoards();
         gui = new GUI2(primaryStage);
         gui.setEventListener(this);
+        player1active = true;
     }
 
     //Methoden
@@ -765,6 +767,41 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
 
     protected void test() {
 
+        shipList = createShipList("5443332");
+        placeShips(1);
+        placeShips(2);
+        displayBoards();
+        drawShipOnGUI();
+        player1 = new Easy(10);
+        player2 = new Easy(10);
+
+        //Schleife zum Test der KI
+        int x;
+        int y;
+        byte result;
+        for(int i = 0; i<20; i++) {
+            if(player1active) {
+                x = player1.getX();
+                y = player1.getY();
+                result = checkTile(x, y);
+                player1.shootResult(y, x, result);
+                gui.drawExplosion(x, y, 2);
+            }
+            else {
+                x = player2.getX();
+                y = player2.getY();
+                result = checkTile(x, y);
+                player2.shootResult(y, x, result);
+                gui.drawExplosion(x, y, 1);
+            }
+            if(player1active) {
+                player1active = false;
+            }
+            else {
+                player1active = true;
+
+            }
+        }
     }
 
 

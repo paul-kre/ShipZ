@@ -29,6 +29,8 @@ public class Easy extends Computer {
     public Easy (int newFieldSize) {
 
         super(newFieldSize);
+        generateAICoordinates();
+
     }
 
 
@@ -86,7 +88,7 @@ public class Easy extends Computer {
          * es wird jetzt der Main Klasse mitgeteilt, dass fertige
          * Koordinaten bereitstehen
          * */
-        //fireGameEvent(SHOOT_EVENT);
+        //fireGameEvent(AI_SHOOT_EVENT);
 
 
     }
