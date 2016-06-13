@@ -9,24 +9,20 @@ import java.util.Stack;
 public class UndoRedo {
 
 	// IV
-	/** Der Spielverlauf des ersten Spielers als Stack für Strings gespeichert. 
-	 * Hier werden alle Züge nacheinander gespeichert. */
-	private Stack<String> gamePlayer1;
-	/** Der Spielverlauf des zweiten Spielers als Stack für Strings gespeichert. 
-	 * Hier werden alle Züge nacheinander gespeichert. */
-	private Stack<String> gamePlayer2;
-	/** Diese Liste speichert die rückgängig gemachten Züge des ersten Spielers.
-	 * Bei einem Redo wird der Zug wieder vom Stack genommen und gelöscht. */
-	private Stack<String> redoPlayer1;
-	/** Diese Liste speichert die rückgängig gemachten Züge des zweiten Spielers.
-	 * Bei einem Redo wird der Zug wieder vom Stack genommen und gelöscht. */
-	private Stack<String> redoPlayer2;
+	/** In diesem Stack werden alle Züge als Strings gespeichert. */
+	private Stack<String> game;
+	/** In diesem Stack werden alle rückgängig gemachten Züge als Strings gespeichert. */
+	private Stack<String> redo;
 	/** Score-Objekt */
 	private Score score;
 	/** SaveLoad-Objekt */
 	private SaveLoad saveload;
 	/** Der String, der einzelne Züge in der Datei trennt. */
 	private String drawSeparator = ",";
+	
+	// TODO
+	// In SaveLoad:
+		// Draws statt DrawHistory1 & DrawHistory2
 	
 	// Konstruktor
 	/**
@@ -35,10 +31,8 @@ public class UndoRedo {
 	 * @param gameName 
 	 */
 	public UndoRedo() {
-		gamePlayer1 = new Stack<String>();
-		gamePlayer2 = new Stack<String>();
-		redoPlayer1 = new Stack<String>();
-		redoPlayer2 = new Stack<String>();
+		game = new Stack<String>();
+		redo = new Stack<String>();
 		score = new Score();
 		saveload = new SaveLoad();
 	}
@@ -50,13 +44,7 @@ public class UndoRedo {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 */
 	protected void newDraw(String draw, int playerIndex) {
-		if(playerIndex == 1) {
-			gamePlayer1.push(draw);
-		} else if(playerIndex == 2) {
-			gamePlayer2.push(draw);
-		} else {
-			System.err.println("Fehler, playerIndex muss entweder 1 oder 2 sein.");
-		}
+		game.push(playerIndex+"|"+draw);
 	}
 	
 	/**
@@ -69,15 +57,16 @@ public class UndoRedo {
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 */
 	protected String undoDraw(int playerIndex) {
-		String lastDraw1 = gamePlayer1.pop();
-		String lastDraw2 = gamePlayer2.pop();
-		
-		redoPlayer1.push(lastDraw1);
-		redoPlayer2.push(lastDraw2);
-		
+		String result = "";
+		String draw = "";
+		while(!(draw.startsWith(playerIndex+""))) {
+			draw = game.pop();
+			redo.push(draw);
+			result += draw + ";";
+		}
 		score.setScore(playerIndex, 'u');
 		
-		return lastDraw1 + ";" + lastDraw2;
+		return result;
 	}
 	
 	/**
@@ -89,45 +78,30 @@ public class UndoRedo {
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
 	protected String redoDraw() {
-		String lastRedoneDraw1 = redoPlayer1.pop();
+/*		String lastRedoneDraw1 = redoPlayer1.pop();
 		String lastRedoneDraw2 = redoPlayer2.pop();
 		
 		gamePlayer1.push(lastRedoneDraw1);
 		gamePlayer2.push(lastRedoneDraw2);
 		
-		return lastRedoneDraw1 + ";" + lastRedoneDraw2; 
+		return lastRedoneDraw1 + ";" + lastRedoneDraw2; */
+		return "";
 	}
 	
 	/**
 	 * Gibt den Stack für die Züge des ersten Spielers als String zurück.
 	 * @return die ArrayList für die Züge des ersten Spielers als String
 	 */
-	protected String getDrawsPlayer1() {
-		return gamePlayer1.toString();
-	}
-	
-	/**
-	 * Gibt den Stack für die Züge des zweiten Spielers als String zurück.
-	 * @return die ArrayList für die Züge des zweiten Spielers als String
-	 */
-	protected String getDrawsPlayer2() {
-		return gamePlayer2.toString();
+	protected String getDraws() {
+		return game.toString();
 	}
 	
 	/**
 	 * Gibt den Stack für die rückgängig gemachten Züge des ersten Spielers zurück.
 	 * @return der Stack für die rückgängig gemachten Züge des ersten Spielers
 	 */
-	protected String getRedoneDrawsPlayer1() {
-		return redoPlayer1.toString();
-	}
-	
-	/**
-	 * Gibt den Stack für die rückgängig gemachten Züge des zweiten Spielers zurück.
-	 * @return der Stack für die rückgängig gemachten Züge des zweiten Spielers
-	 */
-	protected String getRedoneDrawsPlayer2() {
-		return redoPlayer2.toString();
+	protected String getRedoneDraws() {
+		return redo.toString();
 	}
 	
 	/**
@@ -136,8 +110,8 @@ public class UndoRedo {
 	 * @param gameName Name des Spiels zur Zuordnung
 	 */
 	protected void saveToFile(String gameName) {
-		saveload.setDrawHistoryPlayerOne(gameName, gamePlayer1.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
-		saveload.setDrawHistoryPlayerTwo(gameName, gamePlayer2.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
+//		saveload.setDrawHistoryPlayerOne(gameName, gamePlayer1.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
+//		saveload.setDrawHistoryPlayerTwo(gameName, gamePlayer2.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
 	}
 	
 	/**
@@ -148,10 +122,8 @@ public class UndoRedo {
 	 * <i>.saveToFile()</i> aufgerufen werden.
 	 */
 	protected void clear() {
-		gamePlayer1.clear();
-		gamePlayer2.clear();
-		redoPlayer1.clear();
-		redoPlayer2.clear();
+		game.clear();
+		redo.clear();
 	}
 	
 	/**
@@ -159,45 +131,18 @@ public class UndoRedo {
 	 * @param args arguments
 	 */
 	public static void main(String[] args) {
-/*		ArrayList<String> ar = new ArrayList<String>();
-		ar.add(0, "a");
-		ar.add(1, "b");
-		ar.add(2, "c");
-		System.out.println(u.listToString(ar)); 
-		System.out.println(ar.toString()); */
-		
 		UndoRedo ur = new UndoRedo();
-//		ur.newDraw("ErsterZug", 1);
-//		ur.newDraw("ZweiterZug", 1);
-//		ur.newDraw("1sterZug", 2);
-//		ur.saveToFile("blabla");
-		
-		
-/*		Stack<String> test = new Stack<String>();
-		test.push("1");
-		test.push("2");
-		test.push("3");
-		System.out.println(test.toString());
-		System.out.println(test.pop());
-		System.out.println(test.toString()); */
-		
-		ur.newDraw("FirstDraw", 1);
-		ur.newDraw("First Draw for player 2", 2);
-		ur.newDraw("next Draw", 1);
-		ur.newDraw("another Draw", 2);
-		ur.newDraw("another one", 1);
-		ur.newDraw("and another one", 2);
-		
-		System.out.println(ur.getDrawsPlayer1());
-		System.out.println(ur.getDrawsPlayer2()+"\n");
-		
-		ur.undoDraw(1);
-		System.out.println(ur.getDrawsPlayer1());
-		System.out.println(ur.getDrawsPlayer2()+"\n");
-		
-		ur.redoDraw();
-		System.out.println(ur.getDrawsPlayer1());
-		System.out.println(ur.getDrawsPlayer2());
+		ur.newDraw("eins1", 1);
+		ur.newDraw("zwei1", 1);
+		ur.newDraw("drei1", 1);
+		ur.newDraw("eins2", 2);
+		ur.newDraw("zwei2", 2);
+		ur.newDraw("eins_1", 1);
+		ur.newDraw("zwei_1", 1);
+		ur.newDraw("eins_2", 2);
+		System.out.println(ur.getDraws());
+		System.out.println(ur.undoDraw(1));
+		System.out.println(ur.getDraws());
 		
 	}
 	

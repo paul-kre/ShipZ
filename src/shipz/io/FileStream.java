@@ -285,16 +285,6 @@ public class FileStream {
 		undoredo.newDraw(draw, playerIndex);
 	}
 	
-	/**
-	 * Referenz auf die Methode in der UndoRedo-Klasse.
-	 * Die beiden Instanz-Variablen, die die Züge der Spieler speichern,
-	 * speichern hiermit ihren Inhalt in der Datei
-	 * @param gameName Name des Spiels zur Zuordnung
-	 */
-	public void saveDrawsToFile(String gameName) {
-		undoredo.saveToFile(gameName);
-	}
-	
 	/*
 	 * SCORE
 	 * CLASS
@@ -343,17 +333,6 @@ public class FileStream {
 	}
 	
 	public static void main(String[] args) {
-		
-		FileStream fs = new FileStream();
-		
-		fs.newGame("einTestSpiel", "Anna", "Bernd", "WWWWWCCCCDSDFDSFWWWW", "WWWWWWWDSFDFWWWWWW", "10,10");
-		
-		fs.newDraw("firstdraw", 1);
-		fs.newDraw("anotherdraw", 2);
-		fs.newDraw("seconddraw", 1);
-		fs.newDraw("another one", 2);
-		
-		fs.saveDrawsToFile("einTestSpiel");
 		
 	}
 	

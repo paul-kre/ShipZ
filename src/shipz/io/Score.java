@@ -112,23 +112,6 @@ public class Score {
 	}
 	
 	/**
-	 * Gibt immer den aktuellsten Spielernamen zurück.
-	 * Falls also ein Spielername mehrmals in der Datei auftaucht,
-	 * wurden bereits die #-Zeichen angehangen,
-	 * also werden diese mit ausgegeben, damit keine Fehler
-	 * beim Ändern der Punkte auftreten.
-	 * @param playerName Spielername dessen Name gesucht werden soll
-	 * @return der gefundene aktuelle Spielername
-	 */
-	@Deprecated
-	private String getCurrentPlayerName(String playerName) {
-		if(doesPlayerExist(playerName))
-			return getCurrentPlayerName(playerName+"#");
-		
-		return playerName.substring(0, playerName.length()-1);
-	}
-	
-	/**
 	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
 	 * @param playerName Der Spieler, der eingefügt werden soll.
 	 * @param score Punktzahl, die gesetzt werden soll.
@@ -142,20 +125,11 @@ public class Score {
 	}
 	
 	/**
-	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
-	 * @see shipz.io.Score#addPlayerIntoHighscore(String, score)
-	 * @param playerName Der Spieler, der eingefügt werden soll.
-	 */
-	private void addPlayerIntoHighscore(String playerName) {
-		addPlayerIntoHighscore(playerName, 0);
-	}
-	
-	/**
 	 * Überprüft, ob ein Spieler bereits in der Score-Datei steht.
 	 * @param playerName Der Spieler nach dem gesucht wird
 	 * @return Steht der Spieler bereits in der Score-Datei?
 	 */
-	protected boolean doesPlayerExist(String playerName) {
+	private boolean doesPlayerExist(String playerName) {
 		try {
 			scanner = new Scanner(highscoreFile);
 		} catch(FileNotFoundException e) {
@@ -174,46 +148,13 @@ public class Score {
 	}
 	
 	/**
-	 * Erstellt aus der ArrayList, die die Namen und Punkte speichert,
-	 * eine TreeMap mit den richtigen Key-Value-Paaren, wie es in
-	 * der Score-Datei steht.
-	 * @return Daten der Score-Datei als TreeMap
-	 */
-	private TreeMap<String, Integer> scoreMap() {
-		TreeMap<String, Integer> map = new TreeMap<>();
-		
-		ArrayList<String> h = highscoreToArrayList();
-		for(int i = 0; i < h.size(); i++) {
-			map.put(h.get(i), Integer.parseInt(h.get(i+1)));
-			i++;
-		}
-		
-		return map;
-	}
-	
-	/**
 	 * Liest alle Punktzahlen aus dem Highscore-File
 	 * und erstellt eine absteigend sortierte Highscore-Liste.
 	 * Format: "spieler1=punkte1,spieler2=punkte2,spieler3=punkte3,..."
 	 * @return Die Highscore-Liste als String
 	 */
 	protected String highscore() {
-		TreeMap<String, Integer> tm = scoreMap();
-		
-		Comparator<String> comp = new Comparator<String>() {
-			public int compare(String a, String b) {
-				int result = tm.get(b).compareTo(tm.get(a));
-				if(result == 0)
-					return 1;
-				else
-					return result;
-			}
-		};
-		
-		Map<String, Integer> sortedMap = new TreeMap<>(comp);
-		sortedMap.putAll(tm);
-		
-		String str = sortedMap.toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
+		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
 		String[] a = str.split(",");
 		String result = "";
 		if(a.length < 10) {
@@ -239,11 +180,13 @@ public class Score {
 	}
 
 	/**
-	 * Liest alles aus der Score-Datei aus
-	 * und fügt die Daten in eine ArrayList für Strings.
-	 * @return die Daten der Score-Datei in einer ArrayList für String
+	 * Diese Methode lädt alle Einträge aus der Highscore-Datei.
+	 * Die Einträge werden dann sortiert und in einer TreeMap
+	 * zurückgegeben. Dies ist notwendig, um einen String zu generieren,
+	 * der den Highscore repräsentiert.
+	 * @return die TreeMap mit den sortierten Einträgen
 	 */
-	private ArrayList<String> highscoreToArrayList() {
+	private Map<String, Integer> highscoreToSortedMap() {
 		try {
 			scanner = new Scanner(highscoreFile);
 		} catch(FileNotFoundException e) {
@@ -260,18 +203,15 @@ public class Score {
 			result.add(s[1]);
 		}
 		
-		return result;
-	}
-	
-	/**
-	 * Löscht alle Daten, die nicht im Highscore stehen,
-	 * und somit nicht mehr benötigt werden.
-	 * 
-	 * Noch nicht vollständig und korrekt implementiert,
-	 * daher noch nicht zur Benutzung geeignet.
-	 */
-	private void cleanHighscoreFile() {
-		TreeMap<String, Integer> tm = scoreMap();
+		TreeMap<String, Integer> map = new TreeMap<>();
+		
+		ArrayList<String> h = result;
+		for(int i = 0; i < h.size(); i++) {
+			map.put(h.get(i), Integer.parseInt(h.get(i+1)));
+			i++;
+		}
+		
+		TreeMap<String, Integer> tm = map;
 		
 		Comparator<String> comp = new Comparator<String>() {
 			public int compare(String a, String b) {
@@ -285,8 +225,18 @@ public class Score {
 		
 		Map<String, Integer> sortedMap = new TreeMap<>(comp);
 		sortedMap.putAll(tm);
-		
-		String str = sortedMap.toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
+		return sortedMap;
+	}
+	
+	/**
+	 * Löscht alle Daten, die nicht im Highscore stehen,
+	 * und somit nicht mehr benötigt werden.
+	 * 
+	 * Noch nicht vollständig und korrekt implementiert,
+	 * daher noch nicht zur Benutzung geeignet.
+	 */
+	private void cleanHighscoreFile() {
+		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
 		String[] a = str.split(",");
 		String result = "";
 		if(a.length < 10) {
@@ -338,80 +288,15 @@ public class Score {
 	 */
 	public static void main(String[] args) {
 		Score s = new Score();
-//		s.addPlayerIntoHighscore("rwgw", 456454);
-//		s.addPlayerIntoHighscore("idkgdfdfggmg", 43554353);
-//		s.addPlayerIntoHighscore("Test", 123);
-//		s.addPlayerIntoHighscore("hallo", 0);
-//		System.out.println(s.getScore("Test"));
-//		s.updateScoreOnEvent("Test", 'u');
-//		s.updateScoreOnEvent("hallo", 's');
-//		s.updateScore("Test", 666);
-		//System.out.println(s.doesPlayerExist("fsdfvfdv"));
-		//System.out.println(s.doesPlayerExist("hallo"));
-//		System.out.println(s.doesPlayerExist("Test"));
-//		System.out.println(s.doesPlayerExist("tretrhtbhgf"));
-//		s.addPlayerIntoHighscore("TestName");
-//		s.setScore("TestName", 3434543);
-		
-//		s.addPlayerIntoHighscore("Hallo");
-//		s.updateScoreOnEvent("Hallo", 's');
-//		System.out.println(s.getScore("Test"));
-//		s.addPlayerIntoHighscore("TestSpieler365457");
-//		s.addPlayerIntoHighscore("randomguy");
-		
-//		s.addPlayerIntoHighscore("Josef");
-//		s.addPlayerIntoHighscore("Dieter");
-//		s.setScore("Josef", 345);
-//		s.setScore("Dieter", 1023);
-//		s.setScore("TestSpieler365457", 54455);
-//		s.setScore("randomguy", 83);
-		
-//		System.out.println(s.highscore());
-		
-//		s.highscoreTest();
-		 
-//		s.addPlayerIntoHighscore("R2D2");
-/*		System.out.println(s.getScore("R2D2"));
-		s.updateScoreOnEvent("testspiel", "R2D2", 'h');
-		System.out.println(s.getScore("R2D2"));
-		s.updateScoreOnEvent("testspiel", "R2D2", 'h');
-		System.out.println(s.getScore("R2D2"));
-		s.updateScoreOnEvent("testspiel", "R2D2", 's');
-		System.out.println(s.getScore("R2D2"));*/
-		
-/*		System.out.println(s.comboPlayer1);
-		System.out.println(s.comboPlayer2);
-		s.combo("testspiel", "R2D2", 'h');
-		System.out.println(s.comboPlayer1);
-		System.out.println(s.comboPlayer2); */
-		
-//		s.highscoreTest();
-		
-//		System.out.println(s.getScore("C3PO"));
-//		s.setScore("C3PO", 123);
-//		System.out.println(s.getScore("C3PO"));
-//		System.out.println(s.getScore("Dieter"));
-//		System.out.println(s.findPlayer(0));
-		
-//		s.addPlayerIntoHighscore("testSpieler123");
-		
-/*		TreeMap<String, Integer> tm = s.scoreMap();
-		System.out.println(tm.toString());*/
-		
-//		System.out.println(s.highscore());
-//		s.addPlayerIntoHighscore("test");
-		
-//		s.setScore("Marc", 345);
-//		s.cleanHighscoreFile();
-		
-		s.setScore(1, 'h');
-		s.setScore(1, 'h');
-		s.setScore(1, 'h');
 		s.setScore(1, 's');
-		s.setScore(2, 'h');
-		s.setScore(2, 'h');
-		s.setScore(2, 'h');
-		s.saveScoreToFile("ABC", "DEF");
+		s.setScore(1, 's');
+		s.setScore(1, 's');
+		s.setScore(1, 's');
+		s.setScore(2, 's');
+		s.setScore(2, 's');
+		s.setScore(2, 's');
+//		s.saveScoreToFile("TestSpieler1", "TestSpieler2");
+		System.out.println(s.highscore());
 		
 	}
 

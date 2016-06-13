@@ -48,6 +48,12 @@ public class Normal extends Computer {
 	 */
 	protected void generateAICoordinates() {
 
+
+
+        /** Speicherung der Koordinate des Schachbrettmusters */
+        String chessBoardCoordinate;
+
+
         //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben
         if (isShipTileHit()){
 
@@ -64,8 +70,24 @@ public class Normal extends Computer {
 
             do{
 
-                super.setY(super.randomRowInt());
-                super.setX(super.randomThreePointPatternInt(super.getY()));
+                //Solange das 3-Feld-Muster noch Koordinaten beschießen kann,
+                //wird es ausgeführt
+                if (threePointPatternIsStillValid()){
+
+                    super.setY(super.randomRowInt());
+                    super.setX(super.randomThreePointPatternInt(super.getY()));
+
+                } else { //Wenn das 3-Feld-Muster zu Ende gegangen ist, wird das Schachbrettmuster ausgeführt
+
+                    chessBoardCoordinate = chessBoardPatternString();
+                    super.setY(super.extcractYCoord(chessBoardCoordinate));
+                    super.setX(super.extcractXCoord(chessBoardCoordinate));
+
+                    //Die erstelle Koordinate war gültig und wurde für die Verwaltung gespeichert, deshalb
+                    // wird diese aus der Schachbrettmuster-Liste gelöscht
+                    deleteChessBoardPatternCoordinate(chessBoardCoordinate);
+                }
+
 
                 //Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
                 //Zelle verweist. Ansonsten wird die Koordinate neu generiert bis sie es ist.
@@ -76,6 +98,7 @@ public class Normal extends Computer {
 
                 }
 
+                System.out.println("test");
             }while (loopAgain);
 
 
@@ -91,8 +114,14 @@ public class Normal extends Computer {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+
 
 	}
+
+
+    public static void main (String args[]){
+        int includedRows = 3;
+        System.out.println((includedRows+ 1) % 3);
+    }
 
 }//end class Normal
