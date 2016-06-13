@@ -19,13 +19,7 @@ public class FileStream {
 	
 	// TODO LIST
 
-	// UndoRedo Bug fixen
-		// Wenn Spieler 1 einen Zug getätigt hat und diesen rückgängig macht
-		// darf nicht der zuletzt getätigte Zug von Spieler 2 rückgängig gemacht werden
-	
-	// SaveLoad
-		// Daten eher in IVs speichern
-		// EINE Methode um am Ende die IVs in einen XML-Node zu speichern
+	// Redo Funktion implementieren
 	
 	/**
 	 * Konstruktor der Klasse.
@@ -44,19 +38,6 @@ public class FileStream {
 	// IM
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Erstellt einen Spielstand und speichert alle wichtigen Informationen als {@link String}.
-	 * @param playerName Name des ersten Spielers
-	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
-	 * @param boardSize Feldgröße
-	 * @param board Das gesamte Feld als {@link String} gespeichert.
-	 * @param game Der Spielverlauf als {@link String} gespeichert.
-	 */
-	public void newGame(String gameName, String playerName, String opponentName, String boardPlayer1, String boardPlayer2, String boardsize) {
-		saveload.newGame(gameName, playerName, opponentName, boardPlayer1, boardPlayer2, boardsize);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Speichert die Informationen eines bestimmten Spiels.
 	 * Wird von der Game-Klasse genutzt, um ein Spiel zwischenzeitlich abzuspeichern.
 	 * @param gameName Name des Spielstands
@@ -66,8 +47,8 @@ public class FileStream {
 	 * @param boardPlayerTwo Spielbrett des zweiten Spielers als {@link String}
 	 * @param activePlayer aktiver Spieler
 	 */
-	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int activePlayer) {
-		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, activePlayer);
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer) {
+		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer);
 		undoredo.saveToFile(gameName);
 	}
 	
@@ -87,162 +68,11 @@ public class FileStream {
 	
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Diese Methode lädt aus dem gespeicherten Spielstand des Spielers das gespeicherte Spielfeld heraus.
-	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
-	 * @param playerName Name des ersten Spielers zur Identifizierung des gespeicherten Spielstands.
-	 * @return Das geladene Spielfeld
-	 */
-	public String getBoardPlayerOne(String gameName) {
-		return saveload.getBoardPlayerOne(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Diese Methode lädt aus dem gespeicherten Spielstand des Spielers das gespeicherte Spielfeld heraus.
-	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
-	 * @param playerName Name des ersten Spielers zur Identifizierung des gespeicherten Spielstands.
-	 * @return Das geladene Spielfeld
-	 */
-	public String getBoardPlayerTwo(String gameName) {
-		return saveload.getBoardPlayerTwo(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Gibt den Spielernamen eines Speicherstands zurück.
-	 * @param gameName der gewünschte Speicherstand
-	 * @return Spielername eines Speicherstands
-	 */
-	public String getPlayerName(String gameName) {
-		return saveload.getPlayerName(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Gibt den Namen des Gegners eines bestimmten Speicherstands zurück.
-	 * @param gameName der gewünschte Speicherstand
-	 * @return Namen des Gegners eines bestimmten Speicherstands
-	 */
-	public String getOpponentName(String gameName) {
-		return saveload.getOpponentName(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Feldgröße eines bestimmten Spielstands
-	 */
-	public String getBoardsize(String gameName) {
-		return saveload.getBoardsize(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des ersten Spielers speichert.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Die Spielzüge als {@link String}
-	 */
-	public String getDrawHistoryPlayerOne(String gameName) {
-		return saveload.getDrawHistoryPlayerOne(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des zweiten Spielers speichert.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Die Spielzüge als {@link String}
-	 */
-	public String getDrawHistoryPlayerTwo(String gameName) {
-		return saveload.getDrawHistoryPlayerTwo(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
 	public void deleteGame(String gameName) {
 		saveload.deleteGame(gameName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Diese Methode speichert das Spielfeld des ersten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
-	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
-	 * @param board das Spielbrett als {@link String}
-	 */
-	public void setBoardPlayerOne(String gameName, String boardPlayerOne) {
-		saveload.setBoardPlayerOne(gameName, boardPlayerOne);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
-	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
-	 * @param board das Spielbrett als {@link String}
-	 */
-	public void setBoardPlayerTwo(String gameName, String boardPlayerTwo) {
-		saveload.setBoardPlayerTwo(gameName, boardPlayerTwo);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Ändert den Namen des ersten Spielers zu playerName im Spielstand gameName.
-	 * @param gameName der Spielstand, bei dem der Name des ersten Spielers geändert werden soll.
-	 * @param playerName der neue Name des ersten Spielers
-	 */
-	public void setPlayerName(String gameName, String playerName) {
-		saveload.setPlayerName(gameName, playerName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Ändert den Namen des Gegners eines Spielstands.
-	 * @param gameName der Spielstand
-	 * @param opponentName
-	 */
-	public void setOpponentName(String gameName, String opponentName) {
-		saveload.setOpponentName(gameName, opponentName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Ändert die Feldgröße eines Spielstands.
-	 * @param gameName der Spielstand
-	 * @param boardSize
-	 */
-	public void setBoardsize(String gameName, String boardSize) {
-		saveload.setBoardsize(gameName, boardSize);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Ändert den Spielverlauf des ersten Spielers in einem Spielstand.
-	 * @param gameName der Spielstand
-	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
-	 */
-	public void setDrawHistoryPlayerOne(String gameName, String drawHistoryPlayer1) {
-		saveload.setDrawHistoryPlayerOne(gameName, drawHistoryPlayer1);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Ändert den Spielverlauf des zweiten Spielers in einem Spielstand.
-	 * @param gameName der Spielstand
-	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
-	 */
-	public void setDrawHistoryPlayerTwo(String gameName, String drawHistoryPlayer2) {
-		saveload.setDrawHistoryPlayerTwo(gameName, drawHistoryPlayer2);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Aktualisiert die Uhrzeit eines Spielstands.
-	 * @param gameName der Spielstand
-	 */
-	public void updateTime(String gameName) {
-		saveload.updateTime(gameName);
 	}
 	
 	/*
@@ -283,6 +113,16 @@ public class FileStream {
 	 */
 	public void newDraw(String draw, int playerIndex) {
 		undoredo.newDraw(draw, playerIndex);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der UndoRedo-Klasse.
+	 * Die Instanz-Variable, die die Züge der Spieler speichert,
+	 * speichert hiermit ihren Inhalt in der Datei
+	 * @param gameName Name des Spielstands
+	 */
+	public void saveToFile(String gameName) {
+		undoredo.saveToFile(gameName);
 	}
 	
 	/*

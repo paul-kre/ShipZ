@@ -70,7 +70,7 @@ public class SaveLoad {
 	 * @param boardPlayer2 Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
 	 * @param boardsize Größe des Feldes. Format: "Höhe,Breite"
 	 */
-	protected void newGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize) {
+	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer) {
 		boolean b = false;
 		
 		if(root.getChildren() != null) {
@@ -87,31 +87,21 @@ public class SaveLoad {
 			gameElement.addContent(new Element("boardPlayerOne").setText(boardPlayerOne));
 			gameElement.addContent(new Element("boardPlayerTwo").setText(boardPlayerTwo));
 			gameElement.addContent(new Element("boardsize").setText(boardsize));
-			gameElement.addContent(new Element("drawHistoryPlayerOne").setText("null"));
-			gameElement.addContent(new Element("drawHistoryPlayerTwo").setText("null"));
-			gameElement.addContent(new Element("activePlayer").setText("1"));
+			gameElement.addContent(new Element("draws").setText("null"));
+			gameElement.addContent(new Element("activePlayer").setText(activePlayer+""));
 			
 			root.addContent(gameElement);
 			document.setContent(root);
 			writeXML();
 		} else {
-			System.err.println("Fehler beim Erstellen des Spielstands! Dieser Spielstand existiert bereits!");
+			setActivePlayer(gameName, activePlayer);
+			updateTime(gameName);
+			setBoardPlayerOne(gameName, boardPlayerOne);
+			setBoardPlayerTwo(gameName, boardPlayerTwo);
+			setPlayerName(gameName, playerName);
+			setOpponentName(gameName, opponentName);
+			setBoardsize(gameName, boardsize);
 		}
-	}
-	
-	/**
-	 * Speichert die Informationen eines bestimmten Spiels.
-	 * @param gameName Name des Spiels
-	 * @param playerName Name des ersten Spielers
-	 * @param opponentName Name des zweiten Spielers
-	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert. Format: "Feldhöhe,Feldbreite,Spielfeld"
-	 */
-	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int activePlayer) {
-		setPlayerName(gameName, playerName);
-		setOpponentName(gameName, opponentName);
-		setBoardPlayerOne(gameName, boardPlayerOne);
-		setBoardPlayerTwo(gameName, boardPlayerTwo);
-		setActivePlayer(gameName, activePlayer);
 	}
 	
 	/**
@@ -299,21 +289,12 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des ersten Spielers speichert.
+	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge speichert.
 	 * @param gameName der gewünschte Spielstand
 	 * @return Die Spielzüge als {@link String}
 	 */
-	protected String getDrawHistoryPlayerOne(String gameName) {
-		return getNode(gameName, "drawHistoryPlayerOne");
-	}
-	
-	/**
-	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge des zweiten Spielers speichert.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Die Spielzüge als {@link String}
-	 */
-	protected String getDrawHistoryPlayerTwo(String gameName) {
-		return getNode(gameName, "drawHistoryPlayerTwo");
+	protected String getDraws(String gameName) {
+		return getNode(gameName, "draws");
 	}
 	
 	/**
@@ -380,21 +361,12 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * ändert den Spielverlauf des ersten Spielers in einem Spielstand.
+	 * Speichert den Spielverlauf in einem Spielstand.
 	 * @param gameName der Spielstand
-	 * @param drawHistoryPlayer1 der neue Spielverlauf des ersten Spielers
+	 * @param draws der neue Spielverlauf des ersten Spielers
 	 */
-	protected void setDrawHistoryPlayerOne(String gameName, String drawHistoryPlayerOne) {
-		setNode(gameName, "drawHistoryPlayerOne", drawHistoryPlayerOne);
-	}
-	
-	/**
-	 * ändert den Spielverlauf des zweiten Spielers in einem Spielstand.
-	 * @param gameName der Spielstand
-	 * @param drawHistoryPlayer2 der neue Spielverlauf des zweiten Spielers
-	 */
-	protected void setDrawHistoryPlayerTwo(String gameName, String drawHistoryPlayerTwo) {
-		setNode(gameName, "drawHistoryPlayerTwo", drawHistoryPlayerTwo);
+	protected void setDraws(String gameName, String draws) {
+		setNode(gameName, "draws", draws);
 	}
 	
 	/**

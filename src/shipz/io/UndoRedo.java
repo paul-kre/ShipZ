@@ -20,10 +20,6 @@ public class UndoRedo {
 	/** Der String, der einzelne Züge in der Datei trennt. */
 	private String drawSeparator = ",";
 	
-	// TODO
-	// In SaveLoad:
-		// Draws statt DrawHistory1 & DrawHistory2
-	
 	// Konstruktor
 	/**
 	 * Initialisiert ein UndoRedo-Objekt.
@@ -73,18 +69,9 @@ public class UndoRedo {
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
-	 * @param gameName Name des Spiels zur Zuordnung
-	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
 	protected String redoDraw() {
-/*		String lastRedoneDraw1 = redoPlayer1.pop();
-		String lastRedoneDraw2 = redoPlayer2.pop();
-		
-		gamePlayer1.push(lastRedoneDraw1);
-		gamePlayer2.push(lastRedoneDraw2);
-		
-		return lastRedoneDraw1 + ";" + lastRedoneDraw2; */
 		return "";
 	}
 	
@@ -105,13 +92,12 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Die beiden Instanz-Variablen, die die Züge der Spieler speichern,
-	 * speichern hiermit ihren Inhalt in der Datei
+	 * Die Instanz-Variable, die die Züge der Spieler speichert,
+	 * speichert hiermit ihren Inhalt in der Datei
 	 * @param gameName Name des Spiels zur Zuordnung
 	 */
 	protected void saveToFile(String gameName) {
-//		saveload.setDrawHistoryPlayerOne(gameName, gamePlayer1.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
-//		saveload.setDrawHistoryPlayerTwo(gameName, gamePlayer2.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
+		saveload.setDraws(gameName, game.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
 	}
 	
 	/**
