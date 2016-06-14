@@ -17,6 +17,10 @@ public class FileStream {
 	/** Referenz auf die Speichern-Laden-Klasse */
 	private SaveLoad saveload;
 	
+	// TODO
+	// Highscore-Namen mit Uhrzeit abspeichern statt #
+	// Undo/Redo Problem fixen
+	
 	/**
 	 * Konstruktor der Klasse.
 	 */
@@ -41,6 +45,7 @@ public class FileStream {
 	 * @param opponentName Name des Gegners / zweiten Spielers
 	 * @param boardPlayerOne Spielbrett des ersten Spielers als {@link String}
 	 * @param boardPlayerTwo Spielbrett des zweiten Spielers als {@link String}
+	 * @param boardsize Größe des Spielfelds
 	 * @param activePlayer aktiver Spieler
 	 */
 	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer) {
@@ -180,7 +185,7 @@ public class FileStream {
 	 * @return die verbotenen Zeichen
 	 */
 	public String forbiddenCharacters() {
-		char[] c = { '=', ',', '{', '}', '<', '>', ';' };
+		char[] c = { '=', ',', '{', '}', '<', '>', ';', '#' };
 		String r = "";
 		for(int i = 0; i < c.length; i++) {
 			r += c[i];
