@@ -498,7 +498,7 @@ public class SaveLoad {
 	 * Methode, die immer die aktuelle Zeit berechnet.
 	 * @return Gibt die aktuelle Zeit zurück.
 	 */
-	private String timestamp() {
+	protected String timestamp() {
 		Calendar c = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.y_HH-mm-ss");
 		return sdf.format(c.getTime());

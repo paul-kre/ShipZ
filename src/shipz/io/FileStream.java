@@ -99,10 +99,11 @@ public class FileStream {
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
-	public void redoDraw() {
-		undoredo.redoDraw();
+	public void redoDraw(int playerIndex) {
+		undoredo.redoDraw(playerIndex);
 	}
 	
 	/**

@@ -115,11 +115,7 @@ public class Score {
 	 * @param score Punktzahl, die gesetzt werden soll.
 	 */
 	private void addPlayerIntoHighscore(String playerName, int score) {
-		if(doesPlayerExist(playerName) == false) {
-			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+scoreSeparator+score);
-		} else {
-			addPlayerIntoHighscore(playerName+"#", score);
-		}
+		saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+"#"+saveload.timestamp()+scoreSeparator+score);
 	}
 	
 	/**

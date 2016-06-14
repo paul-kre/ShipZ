@@ -19,9 +19,6 @@ public class UndoRedo {
 	private SaveLoad saveload;
 	/** Der String, der einzelne Züge in der Datei trennt. */
 	private String drawSeparator = ",";
-	/** Stack, der bei jedem Undo zählt, wie viele Züge rückgängig gemacht wurden,
-	 * und die Anzahl auf den Stapel legt. Notwendig für Redo. */
-	private Stack<Integer> redoneDrawsCounter;
 	
 	// Konstruktor
 	/**
@@ -32,7 +29,6 @@ public class UndoRedo {
 	public UndoRedo() {
 		game = new Stack<String>();
 		redo = new Stack<String>();
-		redoneDrawsCounter = new Stack<Integer>();
 		score = new Score();
 		saveload = new SaveLoad();
 	}
@@ -58,15 +54,12 @@ public class UndoRedo {
 	protected String undoDraw(int playerIndex) {
 		String result = "";
 		String draw = "";
-		int i = 0;
 		while(!(draw.startsWith(playerIndex+""))) {
 			draw = game.pop();
 			redo.push(draw);
 			result += draw + ";";
-			i++;
 		}
 		score.setScore(playerIndex, 'u');
-		redoneDrawsCounter.push(i);
 		
 		return result;
 	}
@@ -77,11 +70,10 @@ public class UndoRedo {
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
-	protected String redoDraw() {
+	protected String redoDraw(int playerIndex) {
 		String result = "";
 		String draw = "";
-		int r = redoneDrawsCounter.pop();
-		for(int i = 0; i < r; i++) {
+		while(!(draw.startsWith(playerIndex+""))) {
 			draw = redo.pop();
 			game.push(draw);
 			result += draw + ";";
@@ -144,8 +136,12 @@ public class UndoRedo {
 		System.out.println(ur.undoDraw(1));
 		System.out.println(ur.getDraws());
 		System.out.println(ur.getRedoneDraws());
-		ur.redoDraw();
+		ur.redoDraw(1);
 		System.out.println(ur.getDraws());
+		System.out.println(ur.getRedoneDraws());
+		ur.redoDraw(2);
+		System.out.println(ur.getDraws());
+		System.out.println(ur.getRedoneDraws());
 		
 	}
 	
