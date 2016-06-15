@@ -13,6 +13,7 @@ package shipz.gamemode;
  */
 public class Normal extends Computer {
 
+    static int loopHole;
 
 
 	//Constructor
@@ -47,11 +48,13 @@ public class Normal extends Computer {
 	 *
 	 */
 	protected void generateAICoordinates() {
-
+        //loopHoleVar = 0;
 
 
         /** Speicherung der Koordinate des Schachbrettmusters */
         String chessBoardCoordinate;
+
+
 
 
         //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben
@@ -69,6 +72,7 @@ public class Normal extends Computer {
             boolean loopAgain = true;
 
             do{
+
 
                 //Solange das 3-Feld-Muster noch Koordinaten beschießen kann,
                 //wird es ausgeführt
@@ -98,7 +102,12 @@ public class Normal extends Computer {
 
                 }
 
-                System.out.println("test");
+                if (loopHole <99){
+
+                    //System.out.println("test");
+                    loopHole++;
+                }
+
             }while (loopAgain);
 
 

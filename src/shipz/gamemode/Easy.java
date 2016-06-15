@@ -29,7 +29,7 @@ public class Easy extends Computer {
     public Easy (int newFieldSize) {
 
         super(newFieldSize);
-        generateAICoordinates();
+       generateAICoordinates();
 
     }
 
@@ -94,6 +94,10 @@ public class Easy extends Computer {
     }
 
 
+    public static void main (String args[]){
+        int patternXCoord = 3;
+        System.out.println( (patternXCoord - 1) % 3);
+    }
 
      public void run() {
         // TODO Auto-generated method stub
