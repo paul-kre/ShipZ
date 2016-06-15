@@ -112,8 +112,8 @@ public class FileStream {
 	 * @param draw Der Zug, der getätigt wird als {@link String}
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 */
-	public void newDraw(String draw, int playerIndex) {
-		undoredo.newDraw(draw, playerIndex);
+	public void newDraw(String draw, int playerIndex, byte result) {
+		undoredo.newDraw(draw, playerIndex, result);
 	}
 	
 	/**
@@ -137,8 +137,9 @@ public class FileStream {
 	 * @param playerName Name des Spielers
 	 * @param event Events: u für undo, h für hit, s für sink (weitere folgen)
 	 */
+	@Deprecated
 	public void setScore(int playerIndex, char event) {
-		score.setScore(playerIndex, event);
+//		score.setScore(playerIndex, event);
 	}
 	
 	/**

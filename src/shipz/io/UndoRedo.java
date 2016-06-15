@@ -36,11 +36,13 @@ public class UndoRedo {
 	// IM
 	/**
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
-	 * @param draw Der Zug, der getätigt wird als {@link String}
+	 * @param draw Der Zug, der getätigt wird als {@link String}. Format: x,y
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
+	 * @param result 
 	 */
-	protected void newDraw(String draw, int playerIndex) {
-		game.push(playerIndex+"|"+draw);
+	protected void newDraw(String draw, int playerIndex, byte result) {
+		game.push(playerIndex+"|"+draw + "|" + result);
+		score.setScore(playerIndex, (byte)Character.getNumericValue(draw.charAt(draw.length()-1)));
 	}
 	
 	/**
@@ -59,7 +61,7 @@ public class UndoRedo {
 			redo.push(draw);
 			result += draw + ";";
 		}
-		score.setScore(playerIndex, 'u');
+		score.setScore(playerIndex, (byte)3);
 		
 		return result;
 	}
@@ -124,14 +126,14 @@ public class UndoRedo {
 	 */
 	public static void main(String[] args) {
 		UndoRedo ur = new UndoRedo();
-		ur.newDraw("eins1", 1);
+/*		ur.newDraw("eins1", 1);
 		ur.newDraw("zwei1", 1);
 		ur.newDraw("drei1", 1);
 		ur.newDraw("eins2", 2);
 		ur.newDraw("zwei2", 2);
 		ur.newDraw("eins_1", 1);
 		ur.newDraw("zwei_1", 1);
-		ur.newDraw("eins_2", 2);
+		ur.newDraw("eins_2", 2);*/
 		System.out.println(ur.getDraws());
 		System.out.println(ur.undoDraw(1));
 		System.out.println(ur.getDraws());

@@ -54,24 +54,25 @@ public class Score {
 	/**
 	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
 	 * @param playerName Name des Spielers
+	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
 	 * @param event Events: <b>u</b> für undo, <b>h</b> für hit, <b>s</b> für sink <i>(weitere folgen eventuell. Das liegt nicht in meiner Hand)</i>
 	 */
-	protected void setScore(int playerIndex, char event) {
-		switch(event) {
-		case 'u':
+	protected void setScore(int playerIndex, byte result) {
+		switch(result) {
+		case 3:
 			if(playerIndex == 1) {
 				scorePlayer1 -= 30;
 			} else if(playerIndex == 2){
 				scorePlayer2 -= 30;
 			} else System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
 			break;
-		case 'h':
-			combo(playerIndex, event);
+		case 1:
+			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 50*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 50*comboPlayer2;
 			break;
-		case 's':
-			combo(playerIndex, event);
+		case 2:
+			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 300*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 300*comboPlayer2;
 			break;
@@ -84,22 +85,23 @@ public class Score {
 	 * Methode, die die Combos verwaltet und den Combo-Counter hochzählt.
 	 * @param playerName Spielername
 	 * @param event Aktion, die sich auf den Combowert beeinflusst. 
+	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
 	 * Zugelassene Werte: <b>h</b> für einen Treffer, <b>s</b> für ein versenktes Schiff.
 	 */
-	private void combo(int playerIndex, char event) {
+	private void combo(int playerIndex, byte result) {
 		if(playerIndex == 1) {
-			if(event == 'h') {
+			if(result == 1) {
 				comboPlayer1 = comboPlayer1*2;
 				comboPlayer2 = 1;
-			} else if (event == 's'){
+			} else if (result == 2){
 				comboPlayer1 += 0.5;
 				comboPlayer2 = 1;
 			}
 		} else if(playerIndex == 2) {
-			if(event == 'h') {
+			if(result == 1) {
 				comboPlayer2 = comboPlayer2*2;
 				comboPlayer1 = 1;
-			} else if (event == 's') {
+			} else if (result == 2) {
 				comboPlayer2 += 0.5;
 				comboPlayer1 = 1;
 			}
@@ -282,13 +284,13 @@ public class Score {
 	 */
 	public static void main(String[] args) {
 		Score s = new Score();
-		s.setScore(1, 's');
+/*		s.setScore(1, 's');
 		s.setScore(1, 's');
 		s.setScore(1, 's');
 		s.setScore(1, 's');
 		s.setScore(2, 's');
 		s.setScore(2, 's');
-		s.setScore(2, 's');
+		s.setScore(2, 's');*/
 //		s.saveScoreToFile("TestSpieler1", "TestSpieler2");
 		System.out.println(s.highscore());
 		
