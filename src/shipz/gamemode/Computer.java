@@ -19,6 +19,8 @@ public abstract class Computer extends Player {
 
     //IV
 
+    static int loopHoleVar = 0;
+
 
     /** Die Feldgröße des aktuellen Spiels. Standardmäßig ist es 10 x 10  */
     private int fieldSize = 10;
@@ -1052,11 +1054,18 @@ public abstract class Computer extends Player {
     protected int randomThreePointPatternInt( int yCoord ){
 
 
+       // loopHoleVar = 0;
         /** Die EbenenStufe wird als 'level' gespeichert, damit berechnet werden kann, wie der
          * Abstand zwischen den X-Koordinaten immer sein müssen
          */
 
         int level = yCoord + 1;
+        if (loopHoleVar < 200){
+
+            System.out.println("Y-Koordinate: " + yCoord);
+            loopHoleVar++;
+        }
+
 
         //Ebene wird überprüft ob es die Stufe 1,2 oder 3 hat und je nachdem wird weiterberechnet
 
@@ -1088,9 +1097,10 @@ public abstract class Computer extends Player {
      */
     private int validThreePointPatternColumnInt(int currentLevel){
 
+        //loopHoleVar = 0;
 
         //Flag zum Überrpüfen ob die erstellte X-Koordinate gültig ist (ob sie zwischen 0 und fieldSize ist UND dem Muster entpricht der aktuellen Ebene)
-        boolean validXCoord = true;
+        boolean validXCoord = false;
 
         //Die X-Koordinate die zurückgegeben wird
         int patternXCoord;
@@ -1106,35 +1116,40 @@ public abstract class Computer extends Player {
             if (currentLevel == 1){
 
 
-                if ( patternXCoordIsInRange(patternXCoord / 3, 1) && ( (patternXCoord - 1) % 3 == 1 )  ){
+                if ( patternXCoordIsInRange( (patternXCoord / 3), 1) /** && ( ((patternXCoord - 1) % 3) == 1 ) */ ){
 
-                    validXCoord = false;
+                    validXCoord = true;
                 }
 
 
             } else if ( currentLevel == 2){
 
 
-                if ( patternXCoordIsInRange(patternXCoord / 3, 2) && ( (patternXCoord + 1) % 3 == 2 )  ){
+                if ( patternXCoordIsInRange( (patternXCoord / 3), 2) /**&& ( ((patternXCoord + 1) % 3) == 2 ) */ ){
 
-                    validXCoord = false;
+                    validXCoord = true;
                 }
 
             } else  if (currentLevel == 3){
 
-                if ( patternXCoordIsInRange(patternXCoord / 3, 3) && ( patternXCoord % 3 == 0 ) ){
+                if ( patternXCoordIsInRange( (patternXCoord / 3), 3) /**&& ( (patternXCoord % 3) == 0 )*/ ){
 
-                    validXCoord = false;
+                    validXCoord = true;
                 }
 
 
             }
 
 
-            //System.out.println("3-Feld-Looped");
-        }while ( validXCoord);
+
+            if (loopHoleVar < 200){
 
 
+               System.out.println(" Echte Zahl: " + patternXCoord  );
+                loopHoleVar++;
+            }
+
+        }while ( !validXCoord);
 
         return (patternXCoord / 3);
 
@@ -1210,7 +1225,7 @@ public abstract class Computer extends Player {
 
                     if ( !isCoordinateOccupied(i, (2 + (3 * j)) ) && !isCoordinateShipPart(i, (2 + (3 * j)) )){
 
-                        System.out.println("Ebene: " + ((includedRows.get(i) + 1) % 3 ) + "    Koordinate: " + i + "|" + (2 + (3 * j)) );
+                     //   System.out.println("Ebene: " + ((includedRows.get(i) + 1) % 3 ) + "    Koordinate: " + i + "|" + (2 + (3 * j)) );
                         return true;
                     }
 
@@ -1224,7 +1239,7 @@ public abstract class Computer extends Player {
 
                     if ( !isCoordinateOccupied(i, (1 + (3 * k)) ) && !isCoordinateShipPart(i, (1 + (3 * k)) )){
 
-                        System.out.println("Ebene: " + ((includedRows.get(i) + 1) % 3 ) + "    Koordinate: " + i + "|" + (1 + (3 * k))  );
+                      //  System.out.println("Ebene: " + ((includedRows.get(i) + 1) % 3 ) + "    Koordinate: " + i + "|" + (1 + (3 * k))  );
                         return true;
                     }
 
@@ -1313,7 +1328,7 @@ public abstract class Computer extends Player {
                     //Nördliche Koordinate prüfen
                     if( isCoordinateInField( includedRows.get(i) -1, includedColumns.get(j) ) && !isCoordinateShipPart(includedRows.get(i) -1, includedColumns.get(j)) && !isCoordinateOccupied(includedRows.get(i) -1, includedColumns.get(j))){
 
-                       // System.out.println("In Field? " +  (includedRows.get(i) -1) + "|" + includedColumns.get(j)  + " -> " + isCoordinateInField( includedRows.get(i) -1, includedColumns.get(j) ));
+
                         //Wenn die nördliche Koordinate nicht gespeichert wurde, wird die aktuelle Koordinate in die Liste
                         //gespeichert
                         if( !validChessBoardPatternCoordinates.contains("" + (includedRows.get(i) - 1) + "," + includedColumns.get(j)  )){
@@ -1332,7 +1347,6 @@ public abstract class Computer extends Player {
                         //Westliche Koordinate prüfen
                         if(isCoordinateInField( includedRows.get(i), includedColumns.get(j) - 1) && !isCoordinateShipPart(includedRows.get(i), includedColumns.get(j) - 1) && !isCoordinateOccupied(includedRows.get(i), includedColumns.get(j) - 1) ){
 
-                            //System.out.println("In Field? " +  (includedRows.get(i)) + "|" + (includedColumns.get(j) - 1)  + " -> " + isCoordinateInField( includedRows.get(i), includedColumns.get(j) ));
                             //Wenn die westliche Koordinate nicht gespeichert wurde, wird die aktuelle Koordinate in die Liste
                             //gespeichert
                             if( !validChessBoardPatternCoordinates.contains("" + includedRows.get(i)  + "," + (includedColumns.get(j) -1) )){
