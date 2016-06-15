@@ -13,8 +13,6 @@ public class UndoRedo {
 	private Stack<String> game;
 	/** In diesem Stack werden alle rückgängig gemachten Züge als Strings gespeichert. */
 	private Stack<String> redo;
-	/** Score-Objekt */
-	private Score score;
 	/** SaveLoad-Objekt */
 	private SaveLoad saveload;
 	/** Der String, der einzelne Züge in der Datei trennt. */
@@ -29,7 +27,6 @@ public class UndoRedo {
 	public UndoRedo() {
 		game = new Stack<String>();
 		redo = new Stack<String>();
-		score = new Score();
 		saveload = new SaveLoad();
 	}
 	
@@ -38,11 +35,10 @@ public class UndoRedo {
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
 	 * @param draw Der Zug, der getätigt wird als {@link String}. Format: x,y
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
-	 * @param result 
+	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
-	protected void newDraw(String draw, int playerIndex, byte result) {
-		game.push(playerIndex+"|"+draw + "|" + result);
-		score.setScore(playerIndex, (byte)Character.getNumericValue(draw.charAt(draw.length()-1)));
+	protected void newDraw(int x, int y, int playerIndex, byte result) {
+		game.push(playerIndex + "|" + x + "," + y + "|" + result);
 	}
 	
 	/**
@@ -61,8 +57,6 @@ public class UndoRedo {
 			redo.push(draw);
 			result += draw + ";";
 		}
-		score.setScore(playerIndex, (byte)3);
-		
 		return result;
 	}
 	
@@ -126,22 +120,22 @@ public class UndoRedo {
 	 */
 	public static void main(String[] args) {
 		UndoRedo ur = new UndoRedo();
-/*		ur.newDraw("eins1", 1);
-		ur.newDraw("zwei1", 1);
-		ur.newDraw("drei1", 1);
-		ur.newDraw("eins2", 2);
-		ur.newDraw("zwei2", 2);
-		ur.newDraw("eins_1", 1);
-		ur.newDraw("zwei_1", 1);
-		ur.newDraw("eins_2", 2);*/
+		ur.newDraw(8, 8, 1, (byte)1);
+		ur.newDraw(4, 5, 1, (byte)1);
+		ur.newDraw(1, 1, 1, (byte)0);
+		ur.newDraw(7, 6, 2, (byte)1);
+		ur.newDraw(2, 2, 2, (byte)0);
+		ur.newDraw(9, 9, 1, (byte)1);
+		ur.newDraw(1, 3, 1, (byte)0);
+		ur.newDraw(2, 7, 2, (byte)0);
 		System.out.println(ur.getDraws());
 		System.out.println(ur.undoDraw(1));
 		System.out.println(ur.getDraws());
 		System.out.println(ur.getRedoneDraws());
-		ur.redoDraw(1);
+		System.out.println(ur.redoDraw(1));
 		System.out.println(ur.getDraws());
 		System.out.println(ur.getRedoneDraws());
-		ur.redoDraw(2);
+		System.out.println(ur.redoDraw(2));
 		System.out.println(ur.getDraws());
 		System.out.println(ur.getRedoneDraws());
 		
