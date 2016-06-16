@@ -76,8 +76,7 @@ public class Score {
 			if(playerIndex == 1) scorePlayer1 += 300*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 300*comboPlayer2;
 			break;
-		default:
-			System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
+		default: break;
 		}
 	}
 	
@@ -91,19 +90,23 @@ public class Score {
 	private void combo(int playerIndex, byte result) {
 		if(playerIndex == 1) {
 			if(result == 1) {
-				comboPlayer1 = comboPlayer1*2;
+				comboPlayer1 += 1;
 				comboPlayer2 = 1;
 			} else if (result == 2){
-				comboPlayer1 += 0.5;
+				comboPlayer1 = comboPlayer1*2;
 				comboPlayer2 = 1;
+			} else if(result == 0) {
+				comboPlayer1 = 1;
 			}
 		} else if(playerIndex == 2) {
 			if(result == 1) {
-				comboPlayer2 = comboPlayer2*2;
+				comboPlayer2 += 1;
 				comboPlayer1 = 1;
 			} else if (result == 2) {
-				comboPlayer2 += 0.5;
+				comboPlayer2 = comboPlayer2*2;
 				comboPlayer1 = 1;
+			} else if(result == 0) {
+				comboPlayer2 = 1;
 			}
 		} else {
 			System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
@@ -117,7 +120,11 @@ public class Score {
 	 * @param score Punktzahl, die gesetzt werden soll.
 	 */
 	private void addPlayerIntoHighscore(String playerName, int score) {
-		saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+"#"+saveload.timestamp()+scoreSeparator+score);
+		if(!doesPlayerExist(playerName)) {
+			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+"#"+saveload.timestamp()+scoreSeparator+score);
+		} else {
+			addPlayerIntoHighscore(playerName+"~", score);
+		}
 	}
 	
 	/**
@@ -261,6 +268,19 @@ public class Score {
 	}
 	
 	/**
+	 * Gibt die Punktzahl eines Spielers zurück.
+	 * @param 1 = Spieler1, 2 = Spieler2
+	 * @return Punktzahl des Spielers
+	 */
+	protected int getScore(int playerIndex) {
+		switch(playerIndex) {
+		case 1: return scorePlayer1;
+		case 2: return scorePlayer2;
+		default: System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt."); return 0;
+		}
+	}
+	
+	/**
 	 * Der Wert der Combo wird zurückgegeben,
 	 * damit die GUI darstellen kann, welche Combo der Spieler
 	 * aktuell erreicht hat.
@@ -268,13 +288,10 @@ public class Score {
 	 * @return
 	 */
 	protected double getComboValue(int playerIndex) {
-		if(playerIndex == 1) {
-			return comboPlayer1;
-		} else if(playerIndex == 2) {
-			return comboPlayer2;
-		} else {
-			System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
-			return 0.0;
+		switch(playerIndex) {
+		case 1: return comboPlayer1;
+		case 2: return comboPlayer2;
+		default: System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt."); return 0.0;
 		}
 	}
 	

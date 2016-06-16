@@ -17,10 +17,6 @@ public class FileStream {
 	/** Referenz auf die Speichern-Laden-Klasse */
 	private SaveLoad saveload;
 	
-	// TODO
-	// Highscore-Namen mit Uhrzeit abspeichern statt #
-	// Undo/Redo Problem fixen
-	
 	/**
 	 * Konstruktor der Klasse.
 	 */
@@ -92,6 +88,7 @@ public class FileStream {
 	 */
 	public void undoDraw(int playerIndex) {
 		undoredo.undoDraw(playerIndex);
+		score.setScore(playerIndex, (byte)3);
 	}
 	
 	/**
@@ -112,18 +109,9 @@ public class FileStream {
 	 * @param draw Der Zug, der getätigt wird als {@link String}
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 */
-	public void newDraw(String draw, int playerIndex, byte result) {
-		undoredo.newDraw(draw, playerIndex, result);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der UndoRedo-Klasse.
-	 * Die Instanz-Variable, die die Züge der Spieler speichert,
-	 * speichert hiermit ihren Inhalt in der Datei
-	 * @param gameName Name des Spielstands
-	 */
-	public void saveToFile(String gameName) {
-		undoredo.saveToFile(gameName);
+	public void newDraw(int x, int y, int playerIndex, byte result) {
+		undoredo.newDraw(x, y, playerIndex, result);
+		score.setScore(playerIndex, result);
 	}
 	
 	/*
@@ -133,13 +121,12 @@ public class FileStream {
 	
 	/**
 	 * Referenz auf die Methode in der Score-Klasse.
-	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
-	 * @param playerName Name des Spielers
-	 * @param event Events: u für undo, h für hit, s für sink (weitere folgen)
+	 * Gibt die Punktzahl eines Spielers zurück.
+	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
+	 * @return Punktzahl des Spielers
 	 */
-	@Deprecated
-	public void setScore(int playerIndex, char event) {
-//		score.setScore(playerIndex, event);
+	public int getScore(int playerIndex) {
+		return score.getScore(playerIndex);
 	}
 	
 	/**
@@ -197,11 +184,13 @@ public class FileStream {
 	
 	public static void main(String[] args) {
 		FileStream fs = new FileStream();
-		System.out.println(fs.forbiddenCharacters());
-		char[] c = fs.forbiddenCharacters().toCharArray();
-		for(int i = 0; i < c.length; i++) {
-			System.out.println(c[i]);
-		}
+		fs.newDraw(0, 0, 1, (byte)1);
+		fs.newDraw(0, 0, 1, (byte)1);
+		fs.newDraw(0, 0, 1, (byte)2);
+		fs.newDraw(0, 0, 1, (byte)0);
+		System.out.println(fs.getScore(1));
+		System.out.println(fs.getComboValue(1));
+		
 	}
 	
 }
