@@ -106,6 +106,28 @@ public abstract class Computer extends Player {
     private ArrayList<String> validChessBoardPatternCoordinates = new ArrayList<>();
 
 
+    /**
+     * Flagvaribale die abspeichert ob das Schachbrettmuster initialisiert wurde oder nicht<br><br>
+     *
+     * Sobald es einmal initialisiert wurde, bleibt der Wert auf TRUE, damit nach
+     * dem Abschuss aller Koordinaten des Schachbrettmuster keine weiteren mehr erzeugt werden
+     * müssen, da danach nur noch Einser-Felder exisiteren und diese nicht dem Schachbrettmuster
+     * entsprechen.<br>
+     *
+     * */
+    private boolean chessBoardPatternActivated = false;
+
+
+    /**
+     * Optionsvariable für das Platzieren von Schiffen an der
+     * Kante eines anderen Schiffes
+     * Wenn es TRUE ist, ist das platzieren erlaubt,
+     * ansonsten nicht
+     */
+    private boolean placingShipsAtEdgePossible;
+
+
+
     //Contructor
 
     /**
@@ -114,10 +136,12 @@ public abstract class Computer extends Player {
      * wird an die Subklassen vererbt.
      *
      * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
+     * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
      */
-    public Computer(int newFieldSize){
+    public Computer(int newFieldSize, boolean placingAtEdge){
 
         fieldSize = newFieldSize;
+        placingShipsAtEdgePossible = placingAtEdge;
         initiateMirrorField();
 
         //ArrayList mit den gültigen Reihen die generiert initialisieren
@@ -377,44 +401,87 @@ public abstract class Computer extends Player {
 
     /**
      * Speichert die vertikalen Seiten eines Schiffsteils als dessen
-     * Umgebung ins Spiegelfeld ab
+     * Umgebung ins Spiegelfeld ab<br><br>
      *
      * Geeignet nur für Nördliche und Südliche Richtung
      *
      * @param currentY Aktuelle vertikale Y-Koordinate
      * @param currentX Aktuelle vertikale X-Koordinate
+     * @param yDirection X-Richtung für die Überprüfung, ob die untere
+     *                   Reihe gespeichert werden kann, wenn die Option
+     *                   "Schiffe an der Kante von anderen Schiffen
+     *                   platzieren" aktiviert wurde
+     * @param xDirection Y-Richtung für die Überprüfung, ob die obere
+     *                   Reihe gespeichert werden kann, wenn die Option
+     *                   "Schiffe an der Kante von anderen Schiffen
+     *                   platzieren" aktiviert wurde
      */
-    private void saveShipVerticalSideEdge(int currentY, int currentX){
-
-        //Süd-Westlich von current speichern
-        if ( isCoordinateInField(currentY+1, currentX-1) ){
-            setCoordinateOccupied(currentY+1, currentX-1);
-        }
+    private void saveShipVerticalSideEdge(int currentY, int currentX, int yDirection, int xDirection){
 
         //Westlich von current speichern
         if ( isCoordinateInField(currentY, currentX-1) ){
+            System.out.println(" Vertikal - Seite: Westlich abspeichern");
             setCoordinateOccupied(currentY, currentX-1);
-        }
-
-        //Nord-Westlich von current speichern
-        if ( isCoordinateInField(currentY-1, currentX-1) ){
-            setCoordinateOccupied(currentY-1, currentX-1);
-        }
-
-        //Süd-Östlich von current speichern
-        if ( isCoordinateInField(currentY+1, currentX+1) ){
-            setCoordinateOccupied(currentY+1, currentX+1);
         }
 
         //Östlich von current speichern
         if ( isCoordinateInField(currentY, currentX+1) ){
+            System.out.println("Vertikal - Seite: Oestlich abspeichern");
             setCoordinateOccupied(currentY, currentX+1);
         }
 
-        //Nord-Östlich von current speichern
-        if ( isCoordinateInField(currentY-1, currentX+1) ){
-            setCoordinateOccupied(currentY-1, currentX+1);
+
+
+        /**
+         * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
+         * wird die obere Reihe nicht als Schiffsumgebung
+         * mitgespeichert */
+        if ( placingShipsAtEdgePossible && (yDirection == 1 && xDirection ==0) ){
+
+            //Obere Kante wird nicht abgespeichert
+
+        } else { //Bei allen anderen Fällen wird die untere Kante abgespeichert
+
+            //Nord-Westlich von current speichern
+            if ( isCoordinateInField(currentY-1, currentX-1) ){
+                System.out.println("Vertikal - Seite: Nord-Westlich abspeichern");
+                setCoordinateOccupied(currentY-1, currentX-1);
+            }
+
+            //Nord-Östlich von current speichern
+            if ( isCoordinateInField(currentY-1, currentX+1) ){
+                System.out.println("Vertikal - Seite: Nord-Oestlich abspeichern");
+                setCoordinateOccupied(currentY-1, currentX+1);
+            }
+
+
+
         }
+
+        /**
+         * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
+         * wird die untere Reihe nicht als Schiffsumgebung
+         * mitgespeichert */
+        if (placingShipsAtEdgePossible && (yDirection == -1 && xDirection ==0)){
+
+            //Untere Kante wird nicht abgespeichert
+
+        } else{ //Bei allen anderen Fällen wird die untere Kante abgespeichert
+
+            //Süd-Westlich von current speichern
+            if ( isCoordinateInField(currentY+1, currentX-1) ){
+                System.out.println("Vertikal - Seite: Sued-Westlich abspeichern");
+                setCoordinateOccupied(currentY+1, currentX-1);
+            }
+
+            //Süd-Östlich von current speichern
+            if ( isCoordinateInField(currentY+1, currentX+1) ){
+                System.out.println("Vertikal - Seite: Sued-Oestlich abspeichern");
+                setCoordinateOccupied(currentY+1, currentX+1);
+            }
+
+        }
+
 
 
         /*Nachdem das vertikal platzierte Schiff mit samt Umgebung in mirrorField gespeichert wurde,
@@ -423,7 +490,6 @@ public abstract class Computer extends Player {
         excludeFullRows(currentY);
         excludeFullRows(currentY+1);
         excludeFullRows(currentY-1);
-
 
         excludeFullColumns(currentX);
         excludeFullColumns(currentX-1);
@@ -441,38 +507,86 @@ public abstract class Computer extends Player {
      *
      * @param currentY Aktuelle horizontale Y-Koordinate
      * @param currentX Aktuelle horizontale X-Koordinate
+     * @param yDirection X-Richtung für die Überprüfung, ob die westliche/östliche
+     *                   Reihe gespeichert werden kann, wenn die Option
+     *                   "Schiffe an der Kante von anderen Schiffen
+     *                   platzieren" aktiviert wurde
+     * @param xDirection Y-Richtung für die Überprüfung, ob die westliche/östliche
+     *                   Reihe gespeichert werden kann, wenn die Option
+     *                   "Schiffe an der Kante von anderen Schiffen
+     *                   platzieren" aktiviert wurde
      */
-    private void saveShipHorizontalSideEdge(int currentY, int currentX){
+    private void saveShipHorizontalSideEdge(int currentY, int currentX, int yDirection, int xDirection){
 
-        //Süd-Westlich von current speichern
-        if ( isCoordinateInField(currentY+1, currentX-1) ){
-            setCoordinateOccupied(currentY+1, currentX-1);
+
+        //Nördlich von current speichern
+        if ( isCoordinateInField(currentY-1, currentX) ){
+            System.out.println("Horizontal - Seite: Noerdlich abspeichern");
+            setCoordinateOccupied(currentY-1, currentX);
         }
 
         //Südlich von current speichern
         if ( isCoordinateInField(currentY+1, currentX) ){
+            System.out.println("Horizontal -Seite: Suedlich abspeichern");
             setCoordinateOccupied(currentY+1, currentX);
         }
 
-        //Süd-Östlich von current speichern
-        if ( isCoordinateInField(currentY+1, currentX+1) ){
-            setCoordinateOccupied(currentY+1, currentX+1);
+
+
+        /**
+         * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
+         * wird die letzte Reihe westlich nicht als Schiffsumgebung
+         * mitgespeichert */
+        if (placingShipsAtEdgePossible && (yDirection == 0 && xDirection == -1)){
+
+            //Westliche Reihe wird nicht abgespeichert
+
+        } else{ //Bei allen anderen Fällen wird die westliche Kante abgespeichert
+
+            //Süd-Westlich von current speichern
+            if ( isCoordinateInField(currentY+1, currentX-1) ){
+                System.out.println("Horizontal -Seite: Sued-Westlich  abspeichern");
+                setCoordinateOccupied(currentY+1, currentX-1);
+            }
+
+
+            //Nord-Westlich von current speichern
+            if ( isCoordinateInField(currentY-1, currentX+1) ){
+                System.out.println("Horizontal -Seite: Nord-Westlich abspeichern");
+                setCoordinateOccupied(currentY-1, currentX+1);
+            }
+
+
         }
 
-        //Nord-Westlich von current speichern
-        if ( isCoordinateInField(currentY-1, currentX+1) ){
-            setCoordinateOccupied(currentY-1, currentX+1);
+
+
+        /**
+         * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
+         * wird die letzte Reihe östlich nicht als Schiffsumgebung
+         * mitgespeichert */
+        if (placingShipsAtEdgePossible && (yDirection == 0 && xDirection == 1)){
+
+            //Östliche Reihe wird nicht abgespeichert
+
+        } else{ //Bei allen anderen Fällen wird die östliche Kante abgespeichert
+
+            //Süd-Östlich von current speichern
+            if ( isCoordinateInField(currentY+1, currentX+1) ){
+                System.out.println("Horizontal -Seite: Sued-Oestlich abspeichern");
+                setCoordinateOccupied(currentY+1, currentX+1);
+            }
+
+
+            //Nord-Östlich von current speichern
+            if ( isCoordinateInField(currentY-1, currentX+1) ){
+                System.out.println("Horizontal -Seite: Nord-Oestlich abspeichern");
+                setCoordinateOccupied(currentY-1, currentX+1);
+            }
+
+
         }
 
-        //Nördlich von current speichern
-        if ( isCoordinateInField(currentY-1, currentX) ){
-            setCoordinateOccupied(currentY-1, currentX);
-        }
-
-        //Nord-Östlich von current speichern
-        if ( isCoordinateInField(currentY-1, currentX+1) ){
-            setCoordinateOccupied(currentY-1, currentX+1);
-        }
 
         /*Nachdem das horizontal platzierte Schiff mit samt Umgebung in mirrorField gespeichert wurde,
         wird geprüft, ob in dessen Reihen noch freie Plätze sind oder ob die Spalte ausgeschlossen
@@ -497,15 +611,6 @@ public abstract class Computer extends Player {
         //current in das Spiegelfeld speichern
         setCoordinateOccupied(currentY, currentX);
 
-        //Linker und Rechter Nachbar von current speichern
-        if ( isCoordinateInField(currentY, currentX-1) ){ //Links von current
-            setCoordinateOccupied(currentY, currentX-1);
-        }
-
-        if ( isCoordinateInField(currentY, currentX+1) ){ //Rechts von current
-            setCoordinateOccupied(currentY, currentX+1);
-        }
-
         /*Nachdem das horizontal platzierte Schiff mit samt Umgebung in mirrorField gespeichert wurde,
         wird geprüft, ob in dessen Reihen noch freie Plätze sind oder ob die Reihe ausgeschlossen
         werden kann bei der Generierung der Zufallszahlen */
@@ -515,8 +620,34 @@ public abstract class Computer extends Player {
         wird geprüft, ob in dessen Reihen noch freie Plätze sind oder ob die Spalte ausgeschlossen
         werden kann bei der Generierung der Zufallszahlen */
         excludeFullColumns(currentX);
-        excludeFullColumns(currentX-1);
-        excludeFullColumns(currentX+1);
+
+
+
+        /**
+         * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
+         * werden die oberen und unteren Nachbarn der aktuellen Variable nicht
+         * mitgespeichert */
+        if (!placingShipsAtEdgePossible){
+
+            //Linker und Rechter Nachbar von current speichern
+            if ( isCoordinateInField(currentY, currentX-1) ){ //oben von current
+
+                setCoordinateOccupied(currentY, currentX-1);
+            }
+
+            if ( isCoordinateInField(currentY, currentX+1) ){ //unten von current
+
+
+                setCoordinateOccupied(currentY, currentX+1);
+            }
+
+            excludeFullColumns(currentX-1);
+            excludeFullColumns(currentX+1);
+        }
+
+
+
+
 
     }
 
@@ -536,21 +667,39 @@ public abstract class Computer extends Player {
         //current in das Spiegelfeld speichern
         setCoordinateOccupied(currentY, currentX);
 
-        //Oberer und Unterer Nachbar von current speichern
-        if ( isCoordinateInField(currentY-1, currentX) ){ //Links von current
-            setCoordinateOccupied(currentY-1, currentX);
-        }
-
-        if ( isCoordinateInField(currentY+1, currentX) ){ //Rechts von current
-            setCoordinateOccupied(currentY+1, currentX);
-        }
-
-        /*Nachdem das vertikal platzierte Schiff mit samt Umgebung in mirrorField gespeichert wurde,
+        /*
+        Nachdem das vertikal platzierte Schiff mit samt Umgebung in mirrorField gespeichert wurde,
         wird geprüft, ob in dessen Reihen noch freie Plätze sind oder ob die Reihe ausgeschlossen
         werden kann bei der Generierung der Zufallszahlen */
         excludeFullRows(currentY);
-        excludeFullRows(currentY+1);
-        excludeFullRows(currentY-1);
+
+
+        /**
+         * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
+         * werden die linken und rechten Nachbarn der aktuellen Variable nicht
+         * mitgespeichert */
+        if (!placingShipsAtEdgePossible){
+
+            //Oberer und Unterer Nachbar von current speichern
+            if ( isCoordinateInField(currentY-1, currentX) ){ //Links von current
+
+                setCoordinateOccupied(currentY-1, currentX);
+            }
+
+            if ( isCoordinateInField(currentY+1, currentX) ){ //Rechts von current
+
+                setCoordinateOccupied(currentY+1, currentX);
+            }
+
+
+            excludeFullRows(currentY+1);
+            excludeFullRows(currentY-1);
+
+        }
+
+
+
+
     }
 
 
@@ -610,12 +759,12 @@ public abstract class Computer extends Player {
                         if ( directionIsNorthOrSouth (yDirection, xDirection) ){
 
                             //Vertikalen Seiten abspeichern
-                            saveShipVerticalSideEdge(currentY,currentX);
+                            saveShipVerticalSideEdge(currentY,currentX, yDirection, xDirection);
 
                         } else { // Bei West- oder Ostrichtung
 
                             //Horizontal Seiten abspeichern
-                            saveShipHorizontalSideEdge(currentY,currentX);
+                            saveShipHorizontalSideEdge(currentY,currentX, yDirection, xDirection);
                         }
 
 
@@ -1260,10 +1409,19 @@ public abstract class Computer extends Player {
 
 
 
+
+
+
+
+
+
+
+
+
     /**
      * Erstellt anhand der verbleibenden, freien Koordinaten auf dem Spielfeld
-     * Blöcke und unterteilt diese mithilfe eines Schachbrettmusters.
-     * Die Anzahl der Schüße um ein Schiffsteil damit zu treffen sinkt
+     * Blöcke und unterteilt diese mithilfe eines Schachbrettmusters.<br>
+     * Die Anzahl der Schüsse um ein Schiffsteil damit zu treffen sinkt
      * und die Chance dabei etwas zu treffen erhöht sich.
      *
      * @return Eine beschießbare Koordinate aus einem Block
@@ -1271,15 +1429,28 @@ public abstract class Computer extends Player {
     protected String chessBoardPatternString(){
 
         //Falls die Liste des Schachbrettmusters leer ist (beim ersten
-        // Aufruf) wird das Feld gescannt und die Liste initialisiert
-        if ( validChessBoardPatternCoordinates.isEmpty()){
+        // Aufruf), wird das Feld gescannt und die Liste initialisiert
+        if ( !chessBoardPatternActivated){
 
             System.out.println("SCHACHBRETTMUSTER!");
             initiazileChessBoardPattern();
+            chessBoardPatternActivated = true;
         }
 
 
-        return validChessBoardPatternCoordinates.get(random.nextInt(validChessBoardPatternCoordinates.size()));
+        /**
+         * Nachdem geprüft wurde ob das Schachbrettmuster initialisiert wurde oder nicht,
+         * wird eine Koordinate aus der Liste zurückgegeben.
+         * Wenn die Liste allerdings leer ist (da nur noch Einser-Schiffe auf dem Spielfeld
+         * exisiteren), werden die restlichen Felder zufällig beschossen.
+         */
+        if  (!validChessBoardPatternCoordinates.isEmpty()){
+
+            return validChessBoardPatternCoordinates.get(random.nextInt(validChessBoardPatternCoordinates.size()));
+        }else {
+            return "" + randomRowInt() + "," + randomColumnInt();
+        }
+
 
 
     }

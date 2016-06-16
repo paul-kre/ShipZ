@@ -399,7 +399,7 @@ public class TempKiGame{
 
 
 
-        Computer ki = new Normal(10);
+        Computer ki = new Normal(10, true);
         System.out.println("Game Spielfeld mit Schiff(en):");
         this.displaySingleBoard(board1);
         System.out.println("\n");

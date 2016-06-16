@@ -120,7 +120,7 @@ public class Network extends GameEventSource implements Runnable {
 
         if(_connected) { // Connection was interrupted
             _connected = false;
-            fireGameEvent((byte)Event.DISCONNECT_EVENT.ordinal());
+            fireGameEvent(Event.DISCONNECT_EVENT);
         } else {
             close();
         }

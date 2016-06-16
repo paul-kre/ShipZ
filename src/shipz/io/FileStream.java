@@ -44,8 +44,8 @@ public class FileStream {
 	 * @param boardsize Größe des Spielfelds
 	 * @param activePlayer aktiver Spieler
 	 */
-	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer) {
-		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer);
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String settings) {
+		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, settings);
 		undoredo.saveToFile(gameName);
 	}
 	

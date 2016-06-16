@@ -1,26 +1,32 @@
 package shipz.util;
 
 /**
- * Die einzelnen Event-IDs werden als Aufzählungstyp abgespeichert.
- * Zugriff auf die einzelnen Werte:
- * Event.SHOOT_EVENT.value
- * @author Florian Osterberg
+ * Created by paulkretschel on 17/05/16.
  */
-public enum Event {
 
-	// General
-	SHOOT_EVENT,
-	CLOSE_EVENT,
-	
-	// Network
-	DISCONNECT_EVENT,
-	SHOOT_RESULT,
-	
-	// IO
-	SAVE_EVENT,
-	LOAD_EVENT,
-	UNDO_EVENT,
-	REDO_EVENT,
-	HIGHSCORE_EVENT;
-	
+public interface Event {
+
+    // General
+    byte SHOOT_EVENT = 10;
+    byte CLOSE_EVENT = 20;
+
+    // Network
+    byte NET_SHOOT_EVENT = 30;
+    byte DISCONNECT_EVENT = 31;
+    byte SHOOT_RESULT = 32;
+
+    // AI
+    byte AI_SHOOT_EVENT = 40;
+
+    // GUI
+    byte GUI_SHOOT_EVENT = 50;
+    byte FILL_EVENT = 51;
+    
+    // IO
+    byte NO_DRAWS_TO_UNDO_EVENT = 80;
+    byte NO_DRAWS_TO_REDO_EVENT = 81;
+    
+    // IDs von 110-120 reserviert
+    
+
 }
