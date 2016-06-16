@@ -772,8 +772,8 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
         placeShips(2);
         displayBoards();
         drawShipOnGUI();
-        player1 = new Easy(10);
-        player2 = new Easy(10);
+        player1 = new Easy(10, true);
+        player2 = new Easy(10, true);
 
         //Schleife zum Test der KI
         int x;

@@ -29,10 +29,11 @@ public class Hard extends Computer {
 	 * und Treffern sind auf den Standardwert gesetzt.<br>
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
+     * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
 	 */
-	public Hard (int newFieldSize) {
+	public Hard (int newFieldSize, boolean placingAtEdge) {
 
-		super(newFieldSize);
+		super(newFieldSize,placingAtEdge);
 	}
 
 

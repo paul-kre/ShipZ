@@ -25,10 +25,11 @@ public class Normal extends Computer {
 	 * der geprüften Richtungen und Treffern sind auf den Standardwert gesetzt.<br>
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
+     * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
 	 */
-	public Normal (int newFieldSize) {
+	public Normal (int newFieldSize, boolean placingAtEdge) {
 
-		super(newFieldSize);
+		super(newFieldSize,placingAtEdge);
 	}
 
 	//IM
@@ -80,7 +81,12 @@ public class Normal extends Computer {
                     super.setY(super.randomRowInt());
                     super.setX(super.randomThreePointPatternInt(super.getY()));
 
-                } else { //Wenn das 3-Feld-Muster zu Ende gegangen ist, wird das Schachbrettmuster ausgeführt
+                } else {
+                    /**
+                     * Wenn das 3-Feld-Muster zu Ende gegangen ist, wird das Schachbrettmuster ausgeführt
+                     * Sobald auch das Schachbrettmuster fertig ist, werden die restlichen Einser-Felder
+                     * beschossen, die noch auf dem Spielfeld stehen.
+                     */
 
                     chessBoardCoordinate = chessBoardPatternString();
                     super.setY(super.extcractYCoord(chessBoardCoordinate));

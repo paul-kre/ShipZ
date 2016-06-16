@@ -25,10 +25,11 @@ public class Easy extends Computer {
      * und Treffern sind standardmäßig auf null.<br>
      *
      * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
+     * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
      */
-    public Easy (int newFieldSize) {
+    public Easy (int newFieldSize,boolean placingAtEdge) {
 
-        super(newFieldSize);
+        super(newFieldSize,placingAtEdge);
        generateAICoordinates();
 
     }
