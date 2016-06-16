@@ -13,7 +13,6 @@ package shipz.gamemode;
  */
 public class Normal extends Computer {
 
-    static int loopHole;
 
 
 	//Constructor
@@ -102,11 +101,6 @@ public class Normal extends Computer {
 
                 }
 
-                if (loopHole <99){
-
-                    //System.out.println("test");
-                    loopHole++;
-                }
 
             }while (loopAgain);
 

@@ -426,7 +426,6 @@ public class TempKiGame{
             System.out.println("Anzeige des Spiegelfeldes der Ki:");
             ki.displayMirrorField();
             ki.printRowAndColumnItems();
-            System.out.println("ki.threePointPatternIsStillValid(): " + ki.threePointPatternIsStillValid());
             System.out.println("\n");
 
 
