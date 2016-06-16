@@ -4,6 +4,7 @@ import shipz.util.Event;
 
 import shipz.Player;
 import shipz.util.GameEvent;
+import shipz.util.GameEventSource;
 import shipz.util.Timer;
 
 import java.io.BufferedReader;
@@ -50,7 +51,7 @@ import java.net.SocketTimeoutException;
  *
  */
 
-public class Network extends PlayerTest implements Runnable {
+public class Network extends GameEventSource implements Runnable {
 
     private final static char PING_ACTION = 0;
 
@@ -78,8 +79,7 @@ public class Network extends PlayerTest implements Runnable {
      *
      */
 
-    public Network(String name, boolean isHost) {
-        super(name);
+    public Network(boolean isHost) {
 
         _isHost = isHost;
         _connected = false;
@@ -157,9 +157,6 @@ public class Network extends PlayerTest implements Runnable {
 
     private void convertShot(String s) {
         String values = s.split("//")[1];
-        setX( convertX(values) );
-        setY( convertY(values) );
-        setResult( convertResult(values) );
     }
 
     private byte getAction(String s) {
@@ -384,17 +381,6 @@ public class Network extends PlayerTest implements Runnable {
 
     public String toString() {
         return "Network";
-    }
-
-    @Override
-    public String shootField() {
-        return null;
-    }
-
-    //
-    @Override
-    public void shootResult(int yCoord, int xCoord, byte result) {
-
     }
 
     public void end() {
