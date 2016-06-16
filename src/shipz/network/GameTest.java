@@ -1,7 +1,7 @@
 
 package shipz.network;
 
-import shipz.util.EventIds;
+import shipz.util.Event;
 import shipz.util.GameEventListener;
 import shipz.util.GameEvent;
 
