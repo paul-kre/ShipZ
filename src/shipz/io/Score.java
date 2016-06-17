@@ -83,9 +83,7 @@ public class Score {
 	/**
 	 * Methode, die die Combos verwaltet und den Combo-Counter hochzählt.
 	 * @param playerName Spielername
-	 * @param event Aktion, die sich auf den Combowert beeinflusst. 
 	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
-	 * Zugelassene Werte: <b>h</b> für einen Treffer, <b>s</b> für ein versenktes Schiff.
 	 */
 	private void combo(int playerIndex, byte result) {
 		if(playerIndex == 1) {
