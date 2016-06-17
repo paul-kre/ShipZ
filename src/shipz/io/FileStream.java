@@ -1,5 +1,7 @@
 package shipz.io;
 
+import shipz.util.NoDrawException;
+
 /**
  * Diese Klasse verwaltet die anderen vier Klassen.
  * Es werden alle wichtigen Methoden, die die Verwaltung des Spiels
@@ -44,8 +46,8 @@ public class FileStream {
 	 * @param boardsize Größe des Spielfelds
 	 * @param activePlayer aktiver Spieler
 	 */
-	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String settings) {
-		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, settings);
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String preferences) {
+		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences);
 		undoredo.saveToFile(gameName);
 	}
 	
@@ -85,8 +87,9 @@ public class FileStream {
 	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
+	 * @throws NoDrawException tritt auf, falls keine weiteren Züge rückgängig gemacht werden können
 	 */
-	public void undoDraw(int playerIndex) {
+	public void undoDraw(int playerIndex) throws NoDrawException {
 		undoredo.undoDraw(playerIndex);
 		score.setScore(playerIndex, (byte)3);
 	}
@@ -98,8 +101,9 @@ public class FileStream {
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
+	 * @throws NoDrawException tritt auf, falls keine weiteren Züge wiederholt werden können
 	 */
-	public void redoDraw(int playerIndex) {
+	public void redoDraw(int playerIndex) throws NoDrawException {
 		undoredo.redoDraw(playerIndex);
 	}
 	

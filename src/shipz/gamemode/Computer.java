@@ -1,7 +1,7 @@
 package shipz.gamemode;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
+
 import shipz.Player;
 
 
@@ -41,7 +41,7 @@ public abstract class Computer extends Player {
      *
      * Werte werden beim instanziieren standardweise auf -1|-1 gesetzt.<br>
      *
-     * Dieser Zustand bedeutet, dass es in dem Moment keine gültige,
+     * Dieser Zustand bedeutet, dass in dem Moment keine gültige,
      * zuletzt getroffene Koordinate existiert. Dies hat zur Folge, dass eine neue
      * Koordinate generiert wird.
      * */
@@ -120,13 +120,29 @@ public abstract class Computer extends Player {
 
     /**
      * Optionsvariable für das Platzieren von Schiffen an der
-     * Kante eines anderen Schiffes
+     * Kante eines anderen Schiffes.<br>
      * Wenn es TRUE ist, ist das platzieren erlaubt,
      * ansonsten nicht
      */
     private boolean placingShipsAtEdgePossible;
 
 
+    /**
+     * Speicherung der Anzahl der Schiffe
+     * die im Spiel auf dem Spielfeld
+     * pro Spieler gesetzt werden.<br><br>
+     *
+     * Jeder Key repräsentiert eine Schiffsgröße und
+     * dessen Value enthält die Anzahl der
+     * entsprechenden Schiffe.<br>
+     * Die Keys werden folgendermaßen eingeteilt:<br>
+     *     0: 5-er Schiffe<br>
+     *     1: 4er-Schiffe<br>
+     *     2: 3er-Schiffe<br>
+     *     3: 2er-Schiffe<br>
+     *     4: 1er-Schiffe<br>
+     */
+    private TreeMap<Integer, Integer> shipList = new TreeMap<>();
 
     //Contructor
 
@@ -137,8 +153,9 @@ public abstract class Computer extends Player {
      *
      * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
      * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
+     * @param newShipList Größe und Anzahl von Schiffen die für dieses Spiel verwendet werden
      */
-    public Computer(int newFieldSize, boolean placingAtEdge){
+    public Computer(int newFieldSize, boolean placingAtEdge, List<Integer> newShipList){
 
         fieldSize = newFieldSize;
         placingShipsAtEdgePossible = placingAtEdge;
@@ -148,6 +165,10 @@ public abstract class Computer extends Player {
         initializeList(includedRows);
         initializeList(includedColumns);
 
+        //Initialisieren der Schiffsliste
+        for (int i= 0; i < 5; i++){
+            shipList.put(i,0);
+        }
 
     }
 
@@ -420,13 +441,11 @@ public abstract class Computer extends Player {
 
         //Westlich von current speichern
         if ( isCoordinateInField(currentY, currentX-1) ){
-            System.out.println(" Vertikal - Seite: Westlich abspeichern");
             setCoordinateOccupied(currentY, currentX-1);
         }
 
         //Östlich von current speichern
         if ( isCoordinateInField(currentY, currentX+1) ){
-            System.out.println("Vertikal - Seite: Oestlich abspeichern");
             setCoordinateOccupied(currentY, currentX+1);
         }
 
@@ -436,7 +455,7 @@ public abstract class Computer extends Player {
          * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
          * wird die obere Reihe nicht als Schiffsumgebung
          * mitgespeichert */
-        if ( placingShipsAtEdgePossible && (yDirection == 1 && xDirection ==0) ){
+        if ( placingShipsAtEdgePossible && (yDirection == -1 && xDirection == 0) ){
 
             //Obere Kante wird nicht abgespeichert
 
@@ -444,13 +463,11 @@ public abstract class Computer extends Player {
 
             //Nord-Westlich von current speichern
             if ( isCoordinateInField(currentY-1, currentX-1) ){
-                System.out.println("Vertikal - Seite: Nord-Westlich abspeichern");
                 setCoordinateOccupied(currentY-1, currentX-1);
             }
 
             //Nord-Östlich von current speichern
             if ( isCoordinateInField(currentY-1, currentX+1) ){
-                System.out.println("Vertikal - Seite: Nord-Oestlich abspeichern");
                 setCoordinateOccupied(currentY-1, currentX+1);
             }
 
@@ -462,7 +479,7 @@ public abstract class Computer extends Player {
          * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
          * wird die untere Reihe nicht als Schiffsumgebung
          * mitgespeichert */
-        if (placingShipsAtEdgePossible && (yDirection == -1 && xDirection ==0)){
+        if (placingShipsAtEdgePossible && (yDirection == 1 && xDirection ==0)){
 
             //Untere Kante wird nicht abgespeichert
 
@@ -470,13 +487,11 @@ public abstract class Computer extends Player {
 
             //Süd-Westlich von current speichern
             if ( isCoordinateInField(currentY+1, currentX-1) ){
-                System.out.println("Vertikal - Seite: Sued-Westlich abspeichern");
                 setCoordinateOccupied(currentY+1, currentX-1);
             }
 
             //Süd-Östlich von current speichern
             if ( isCoordinateInField(currentY+1, currentX+1) ){
-                System.out.println("Vertikal - Seite: Sued-Oestlich abspeichern");
                 setCoordinateOccupied(currentY+1, currentX+1);
             }
 
@@ -521,13 +536,11 @@ public abstract class Computer extends Player {
 
         //Nördlich von current speichern
         if ( isCoordinateInField(currentY-1, currentX) ){
-            System.out.println("Horizontal - Seite: Noerdlich abspeichern");
             setCoordinateOccupied(currentY-1, currentX);
         }
 
         //Südlich von current speichern
         if ( isCoordinateInField(currentY+1, currentX) ){
-            System.out.println("Horizontal -Seite: Suedlich abspeichern");
             setCoordinateOccupied(currentY+1, currentX);
         }
 
@@ -545,15 +558,13 @@ public abstract class Computer extends Player {
 
             //Süd-Westlich von current speichern
             if ( isCoordinateInField(currentY+1, currentX-1) ){
-                System.out.println("Horizontal -Seite: Sued-Westlich  abspeichern");
                 setCoordinateOccupied(currentY+1, currentX-1);
             }
 
 
             //Nord-Westlich von current speichern
-            if ( isCoordinateInField(currentY-1, currentX+1) ){
-                System.out.println("Horizontal -Seite: Nord-Westlich abspeichern");
-                setCoordinateOccupied(currentY-1, currentX+1);
+            if ( isCoordinateInField(currentY-1, currentX-1) ){
+                setCoordinateOccupied(currentY-1, currentX-1);
             }
 
 
@@ -573,14 +584,12 @@ public abstract class Computer extends Player {
 
             //Süd-Östlich von current speichern
             if ( isCoordinateInField(currentY+1, currentX+1) ){
-                System.out.println("Horizontal -Seite: Sued-Oestlich abspeichern");
                 setCoordinateOccupied(currentY+1, currentX+1);
             }
 
 
             //Nord-Östlich von current speichern
             if ( isCoordinateInField(currentY-1, currentX+1) ){
-                System.out.println("Horizontal -Seite: Nord-Oestlich abspeichern");
                 setCoordinateOccupied(currentY-1, currentX+1);
             }
 

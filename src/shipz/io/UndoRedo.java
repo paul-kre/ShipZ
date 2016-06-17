@@ -2,6 +2,8 @@ package shipz.io;
 
 import java.util.Stack;
 
+import shipz.util.NoDrawException;
+
 /**
  * Diese Klasse speichert alle Züge die getätigt werden und behandelt die Undo-Redo-Funktion.
  * @author Florian Osterberg
@@ -48,14 +50,19 @@ public class UndoRedo {
 	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Die letzten Züge der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
+	 * @throws NoDrawException 
 	 */
-	protected String undoDraw(int playerIndex) {
+	protected String undoDraw(int playerIndex) throws NoDrawException {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
-			draw = game.pop();
-			redo.push(draw);
-			result += draw + ";";
+			if(game.isEmpty() == false) {
+				draw = game.pop();
+				redo.push(draw);
+				result += draw + ";";
+			} else {
+				throw new NoDrawException("Keine weiteren Züge vorhanden!");
+			}
 		}
 		return result;
 	}
@@ -66,13 +73,17 @@ public class UndoRedo {
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 */
-	protected String redoDraw(int playerIndex) {
+	protected String redoDraw(int playerIndex) throws NoDrawException {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
-			draw = redo.pop();
-			game.push(draw);
-			result += draw + ";";
+			if(redo.empty() == false) {
+				draw = redo.pop();
+				game.push(draw);
+				result += draw + ";";
+			} else {
+				throw new NoDrawException("Keine weiteren Züge vorhanden!");
+			}
 		}
 		return result;
 	}
@@ -128,17 +139,21 @@ public class UndoRedo {
 		ur.newDraw(9, 9, 1, (byte)1);
 		ur.newDraw(1, 3, 1, (byte)0);
 		ur.newDraw(2, 7, 2, (byte)0);
-		System.out.println(ur.getDraws());
-		System.out.println(ur.undoDraw(1));
-		System.out.println(ur.getDraws());
-		System.out.println(ur.getRedoneDraws());
-		System.out.println(ur.redoDraw(1));
-		System.out.println(ur.getDraws());
-		System.out.println(ur.getRedoneDraws());
-		System.out.println(ur.redoDraw(2));
-		System.out.println(ur.getDraws());
-		System.out.println(ur.getRedoneDraws());
-		
+		try {
+			System.out.println(ur.getDraws());
+			System.out.println(ur.undoDraw(1));
+			System.out.println(ur.getDraws());
+			System.out.println(ur.getRedoneDraws());
+			System.out.println(ur.redoDraw(1));
+			System.out.println(ur.getDraws());
+			System.out.println(ur.getRedoneDraws());
+			System.out.println(ur.redoDraw(2));
+			System.out.println(ur.getDraws());
+			System.out.println(ur.getRedoneDraws());
+		} catch(NoDrawException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 }

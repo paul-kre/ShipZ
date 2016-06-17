@@ -1,5 +1,7 @@
 package shipz.gamemode;
 
+import java.util.List;
+
 /**
  * Schwerer Schwierigkeitsgrad<br><br>
  *
@@ -30,10 +32,11 @@ public class Hard extends Computer {
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
      * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
+     * @param newShipList Größe und Anzahl von Schiffen die für dieses Spiel verwendet werden
 	 */
-	public Hard (int newFieldSize, boolean placingAtEdge) {
+	public Hard (int newFieldSize, boolean placingAtEdge, List<Integer> newShipList) {
 
-		super(newFieldSize,placingAtEdge);
+		super(newFieldSize,placingAtEdge, newShipList);
 	}
 
 
