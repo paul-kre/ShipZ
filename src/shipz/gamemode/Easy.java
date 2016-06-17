@@ -1,6 +1,8 @@
 package shipz.gamemode;
 
 
+import java.util.List;
+
 /**
  * Einfacher Schwierigkeitsgrad<br><br>
  *
@@ -26,10 +28,11 @@ public class Easy extends Computer {
      *
      * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
      * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
+     * @param newShipList Größe und Anzahl von Schiffen die für dieses Spiel verwendet werden
      */
-    public Easy (int newFieldSize,boolean placingAtEdge) {
+    public Easy (int newFieldSize,boolean placingAtEdge, List<Integer> newShipList) {
 
-        super(newFieldSize,placingAtEdge);
+        super(newFieldSize,placingAtEdge, newShipList);
        generateAICoordinates();
 
     }
@@ -94,11 +97,6 @@ public class Easy extends Computer {
 
     }
 
-
-    public static void main (String args[]){
-        int patternXCoord = 3;
-        System.out.println( (patternXCoord - 1) % 3);
-    }
 
      public void run() {
         // TODO Auto-generated method stub

@@ -1,5 +1,7 @@
 package shipz.gamemode;
 
+import java.util.List;
+
 /**
  * Normaler Schwierigkeitsgrad<br><br>
  *
@@ -26,10 +28,11 @@ public class Normal extends Computer {
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
      * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
+     * @param newShipList Größe und Anzahl von Schiffen die für dieses Spiel verwendet werden
 	 */
-	public Normal (int newFieldSize, boolean placingAtEdge) {
+	public Normal (int newFieldSize, boolean placingAtEdge, List<Integer> newShipList) {
 
-		super(newFieldSize,placingAtEdge);
+		super(newFieldSize,placingAtEdge, newShipList);
 	}
 
 	//IM
@@ -126,11 +129,5 @@ public class Normal extends Computer {
 
 
 	}
-
-
-    public static void main (String args[]){
-        int includedRows = 3;
-        System.out.println((includedRows+ 1) % 3);
-    }
 
 }//end class Normal
