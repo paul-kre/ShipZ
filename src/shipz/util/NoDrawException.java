@@ -8,6 +8,7 @@ package shipz.util;
  */
 public class NoDrawException extends Exception {
 	
+	// Konstruktoren
 	public NoDrawException() {}
 	
 	public NoDrawException(String message) {

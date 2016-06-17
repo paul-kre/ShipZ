@@ -72,7 +72,7 @@ public class SaveLoad {
 	 * @param activePlayer Spieler der gerade am Zug ist
 	 * @param settings Einstellungen des Spiels, die am Anfang gesetzt wurden
 	 */
-	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String settings) {
+	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String preferences) {
 		boolean b = false;
 		
 		if(root.getChildren() != null) {
@@ -91,20 +91,20 @@ public class SaveLoad {
 			gameElement.addContent(new Element("boardsize").setText(boardsize));
 			gameElement.addContent(new Element("draws").setText("null"));
 			gameElement.addContent(new Element("activePlayer").setText(activePlayer+""));
-			gameElement.addContent(new Element("settings").setText(settings));
+			gameElement.addContent(new Element("preferences").setText(preferences));
 			
 			root.addContent(gameElement);
 			document.setContent(root);
 			writeXML();
 		} else {
-			setActivePlayer(gameName, activePlayer);
-			updateTime(gameName);
-			setBoardPlayerOne(gameName, boardPlayerOne);
-			setBoardPlayerTwo(gameName, boardPlayerTwo);
-			setPlayerName(gameName, playerName);
-			setOpponentName(gameName, opponentName);
-			setBoardsize(gameName, boardsize);
-			setNode(gameName, "settings", settings);
+			setNode(gameName, "activePlayer", activePlayer+"");
+			setNode(gameName, "time", timestamp());
+			setNode(gameName, "boardPlayerOne", boardPlayerOne);
+			setNode(gameName, "boardPlayerTwo", boardPlayerTwo);
+			setNode(gameName, "playerName", playerName);
+			setNode(gameName, "opponentName", opponentName);
+			setNode(gameName, "boardsize", boardsize);
+			setNode(gameName, "preferences", preferences);
 		}
 	}
 	
@@ -320,72 +320,12 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
-	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
-	 * @param board das Spielbrett als {@link String}
-	 */
-	@Deprecated
-	protected void setBoardPlayerOne(String gameName, String boardPlayerOne) {
-		setNode(gameName, "boardPlayerOne", boardPlayerOne);
-	}
-	
-	/**
-	 * Diese Methode speichert das Spielfeld des zweiten Spielers, das als Parameter übergeben wird in den Spielstand gameName.
-	 * @param gameName der Spielstand, bei dem das Spielbrett abgespeichert werden soll.
-	 * @param board das Spielbrett als {@link String}
-	 */
-	@Deprecated
-	protected void setBoardPlayerTwo(String gameName, String boardPlayerTwo) {
-		setNode(gameName, "boardPlayerTwo", boardPlayerTwo);
-	}
-	
-	/**
-	 * ändert den Namen des ersten Spielers zu playerName im Spielstand gameName.
-	 * @param gameName der Spielstand, bei dem der Name des ersten Spielers geändert werden soll.
-	 * @param playerName der neue Name des ersten Spielers
-	 */
-	@Deprecated
-	protected void setPlayerName(String gameName, String playerName) {
-		setNode(gameName, "playerName", playerName);
-	}
-	
-	/**
-	 * ändert den Namen des Gegners eines Spielstands.
-	 * @param gameName der Spielstand
-	 * @param opponentName
-	 */
-	@Deprecated
-	protected void setOpponentName(String gameName, String opponentName) {
-		setNode(gameName, "opponentName", opponentName);
-	}
-	
-	/**
-	 * ändert die Feldgröße eines Spielstands.
-	 * @param gameName der Spielstand
-	 * @param boardsize
-	 */
-	@Deprecated
-	protected void setBoardsize(String gameName, String boardsize) {
-		setNode(gameName, "boardsize", boardsize);
-	}
-	
-	/**
 	 * Speichert den Spielverlauf in einem Spielstand.
 	 * @param gameName der Spielstand
 	 * @param draws der neue Spielverlauf des ersten Spielers
 	 */
 	protected void setDraws(String gameName, String draws) {
 		setNode(gameName, "draws", draws);
-	}
-	
-	/**
-	 * ändert den aktuellen Spieler in der Datei.
-	 * @param gameName Name des Spielstands
-	 * @param activePlayer neuer aktueller Spieler
-	 */
-	@Deprecated
-	protected void setActivePlayer(String gameName, int activePlayer) {
-		setNode(gameName, "activePlayer", ""+activePlayer);
 	}
 	
 	/**
@@ -410,14 +350,6 @@ public class SaveLoad {
 		}
 		
 		return result;
-	}
-	
-	/**
-	 * Aktualisiert die Uhrzeit eines Spielstands.
-	 * @param gameName der Spielstand
-	 */
-	protected void updateTime(String gameName) {
-		setNode(gameName, "time", timestamp());
 	}
 	
 	/**
