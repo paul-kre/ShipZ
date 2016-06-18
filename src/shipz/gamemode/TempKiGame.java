@@ -1,5 +1,7 @@
 package shipz.gamemode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import shipz.Player;
@@ -398,8 +400,18 @@ public class TempKiGame{
     private void startGame(){
 
 
+        List<Integer> shipList = new ArrayList<>();
+        shipList.add(5);
+        shipList.add(4);
+        shipList.add(4);
+        shipList.add(3);
+        shipList.add(3);
+        shipList.add(3);
+        shipList.add(2);
 
-        Computer ki = new Normal(10);
+
+
+        Computer ki = new Normal(10, false, shipList);
         System.out.println("Game Spielfeld mit Schiff(en):");
         this.displaySingleBoard(board1);
         System.out.println("\n");

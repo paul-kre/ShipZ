@@ -2,7 +2,6 @@ package shipz;
 
 import javafx.stage.Stage;
 import shipz.gui.GUI2;
-import shipz.io.FileStream;
 import shipz.util.Event;
 import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
@@ -33,15 +32,10 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
     /** grafische Nutzeroberfläche */
     public GUI2 gui;
     /** Spielstandverwaltung */
-    private FileStream filestream;
+    //private FileStream filestream;
     /** Liste mit den zu verwendenden Schiffen */
     public List<Integer> shipList;
-    /** aktive x-Koordinate */
-    int ax;
-    /** aktive y-Koordinate */
-    int ay;
-    /** Ergebnis des zuletzt ausgeführten Zugs */
-    byte aresult;
+    private Stage primaryStage;
 
     //Constructor
     /**
@@ -56,7 +50,6 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
         gui = new GUI2(primaryStage);
         gui.setEventListener(this);
         player1active = true;
-        filestream = new FileStream();
     }
 
     //Methoden
@@ -96,7 +89,9 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
      * überprüft die übergebenen Koordinaten auf Schiffelemente und ruft eventuell sink() auf
      * @param x 	Koordinate
      * @param y 	Koordinate
-     * @return      0 Wasser getroffen, 1 Schiff getroffen, 2 Schiff versenkt
+     * @return 0	Wasser getroffen
+     * @return 1	Schiff getroffen
+     * @return 2	Schiff versenkt
      */
     private byte checkTile(int x, int y) {
         byte r = 0;
@@ -768,109 +763,47 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
                 }
             }
         }
-}
-
-    /**
-     * wechselt den aktiven Spieler
-     */
-    private void changePlayer() {
-        if(player1active) {
-            player1active = false;
-        }
-        else {
-            player1active = true;
-        }
     }
-
-    /**
-     * Führt genau einen Zug des aktiven Spielers aus
-     */
-    private void nextTurn() {
-        if(player1active) {
-            ax = player1.getX();
-            ay = player1.getY();
-            aresult = checkTile(ax, ay);
-            System.out.println(ay + "/" + ax + " => " + aresult);
-            player1.shootResult(ay, ax, aresult);
-            if(aresult == 0) {
-                gui.drawWater(ay, ax, 2);
-            }
-            else {
-                gui.drawExplosion(ay, ax, 2);
-            }
-        }
-    }
-
-    /**
-     * @return  gibt an, ob das Spiel beendet ist
-     */
-    private boolean gameFinished() {
-        boolean r = true;
-        int x;
-        int y;
-        for(y=0; y<board1.length; y++) {
-            for (x = 0; x < board1[y].length; x++) {
-                if(r == true && board1[y][x] == 'x') {
-                    r = false;
-                }
-            }
-        }
-        for(y=0; y<board2.length; y++) {
-            for (x = 0; x < board2[y].length; x++) {
-                if(r == true && board2[y][x] == 'x') {
-                    r = false;
-                }
-            }
-        }
-        return r;
-    }
-
 
     protected void test() {
 
+        shipList = createShipList("5443332");
+        placeShips(1);
+        placeShips(2);
+        displayBoards();
+        drawShipOnGUI();
         player1 = new Easy(10);
         player2 = new Easy(10);
-        nextTurn();
 
         //Schleife zum Test der KI
-        /*for(int i = 0; i<20; i++) {
+        int x;
+        int y;
+        byte result;
+        for(int i = 0; i<20; i++) {
             if(player1active) {
-                ax = player1.getX();
-                ay = player1.getY();
-                aresult = checkTile(ax, ay);
-                System.out.println(aresult);
-                player1.shootResult(ay, ax, aresult);
-                if(aresult == 0) {
-                    gui.drawWater(ax, ay, 2);
-                    System.out.println("Wasser");
-                }
-                else {
-                    gui.drawExplosion(ax, ay, 2);
-                    System.out.println("Treffer");
-                }
-                //filestream.newDraw(x + "," + y, 1, result);
+                x = player1.getX();
+                y = player1.getY();
+                result = checkTile(x, y);
+                player1.shootResult(y, x, result);
+                gui.drawExplosion(x, y, 2);
             }
             else {
-                ax = player2.getX();
-                ay = player2.getY();
-                aresult = checkTile(ax, ay);
-                System.out.println(aresult);
-                player2.shootResult(ay, ax, aresult);
-                if(aresult == 0) {
-                    gui.drawWater(ax, ay, 1);
-                    System.out.println("Wasser");
-                }
-                else {
-                    gui.drawExplosion(ax, ay, 1);
-                    System.out.println("Treffer");
-                }
-                //filestream.newDraw(x + "," + y, 2, result);
+                x = player2.getX();
+                y = player2.getY();
+                result = checkTile(x, y);
+                player2.shootResult(y, x, result);
+                gui.drawExplosion(x, y, 1);
             }
-            changePlayer();
+            if(player1active) {
+                player1active = false;
+            }
+            else {
+                player1active = true;
+
+            }
         }
-        displayBoards();
-        System.out.println(gameFinished()); //test */
     }
+
 
     /**
      * Main-Methode
@@ -885,20 +818,31 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
 
         switch(id) {
             case FILL_EVENT:
-                System.out.println(gameFinished()); //test
-                shipList = createShipList("5443332");
-                placeShips(1);
-                placeShips(2);
-                displayBoards();
-                drawShipOnGUI();
-                break;
-            case READY_EVENT:
                 test();
                 break;
         }
     }
-}
 
+
+/*    @Override
+    public void start(Stage primaryStage) {
+        gui.start(primaryStage);
+    }*/
+
+    /*public void eventReceived(GameEvent e) {
+        Player source = e.getSource();
+        byte id = e.getId();
+
+        switch(id) {
+            case SHOOT_EVENT:
+                if(isHost) {
+                    source.shootResult();
+                }
+
+                break;
+        }
+    }*/
+}
 
 /*
  * w = Wasser

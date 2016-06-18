@@ -1,5 +1,7 @@
 package shipz.gamemode;
 
+import java.util.List;
+
 /**
  * Normaler Schwierigkeitsgrad<br><br>
  *
@@ -25,10 +27,12 @@ public class Normal extends Computer {
 	 * der geprüften Richtungen und Treffern sind auf den Standardwert gesetzt.<br>
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
+     * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
+     * @param newShipList Größe und Anzahl von Schiffen die für dieses Spiel verwendet werden
 	 */
-	public Normal (int newFieldSize) {
+	public Normal (int newFieldSize, boolean placingAtEdge, List<Integer> newShipList) {
 
-		super(newFieldSize);
+		super(newFieldSize,placingAtEdge, newShipList);
 	}
 
 	//IM
@@ -80,7 +84,12 @@ public class Normal extends Computer {
                     super.setY(super.randomRowInt());
                     super.setX(super.randomThreePointPatternInt(super.getY()));
 
-                } else { //Wenn das 3-Feld-Muster zu Ende gegangen ist, wird das Schachbrettmuster ausgeführt
+                } else {
+                    /**
+                     * Wenn das 3-Feld-Muster zu Ende gegangen ist, wird das Schachbrettmuster ausgeführt
+                     * Sobald auch das Schachbrettmuster fertig ist, werden die restlichen Einser-Felder
+                     * beschossen, die noch auf dem Spielfeld stehen.
+                     */
 
                     chessBoardCoordinate = chessBoardPatternString();
                     super.setY(super.extcractYCoord(chessBoardCoordinate));
@@ -120,11 +129,5 @@ public class Normal extends Computer {
 
 
 	}
-
-
-    public static void main (String args[]){
-        int includedRows = 3;
-        System.out.println((includedRows+ 1) % 3);
-    }
 
 }//end class Normal
