@@ -33,6 +33,7 @@ public class Normal extends Computer {
 	public Normal (int newFieldSize, boolean placingAtEdge, List<Integer> newShipList) {
 
 		super(newFieldSize,placingAtEdge, newShipList);
+        //generateAICoordinates();
 	}
 
 	//IM
@@ -84,6 +85,14 @@ public class Normal extends Computer {
                     super.setY(super.randomRowInt());
                     super.setX(super.randomThreePointPatternInt(super.getY()));
 
+                    if (super.random.nextInt(8) == 3){
+
+                            super.setX(super.randomColumnInt());
+
+                        System.out.println("RANDOMIZIRER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                    }
+
                 } else {
                     /**
                      * Wenn das 3-Feld-Muster zu Ende gegangen ist, wird das Schachbrettmuster ausgeführt
@@ -92,8 +101,8 @@ public class Normal extends Computer {
                      */
 
                     chessBoardCoordinate = chessBoardPatternString();
-                    super.setY(super.extcractYCoord(chessBoardCoordinate));
-                    super.setX(super.extcractXCoord(chessBoardCoordinate));
+                    super.setY(super.extractYCoord(chessBoardCoordinate));
+                    super.setX(super.extractXCoord(chessBoardCoordinate));
 
                     //Die erstelle Koordinate war gültig und wurde für die Verwaltung gespeichert, deshalb
                     // wird diese aus der Schachbrettmuster-Liste gelöscht
@@ -103,6 +112,7 @@ public class Normal extends Computer {
 
                 //Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
                 //Zelle verweist. Ansonsten wird die Koordinate neu generiert bis sie es ist.
+
                 if ( !isCoordinateOccupied (super.getY(), super.getX()) && !isCoordinateShipPart(super.getY(), super.getX()) ){
 
                     loopAgain = false;
@@ -123,6 +133,40 @@ public class Normal extends Computer {
          * */
        // fireGameEvent(SHOOT_EVENT);
 	}
+
+
+    /**
+     * Überschreibung der shootResult-Methode der Klasse
+     * Computer.<br><br>
+     *
+     * Nach der Auswertung der Ergebnisse wird das Spielfeld
+     * für weitere Berechnung untersucht.<br>
+     * Folgendes wird untersucht:<br>
+     *      - Aktualisierung der Schiffsliste und ausschließen von Feldern die
+     *      keine Schiffe mehr enthalten können (Beispiel:
+     *      Alle 2er-Schiffe wurden zerstört -> Alle restlichen, zusammenstehenden
+     *      2er-Felder werden für die Generierung weiterer Koordinaten ausgeschlossen)<br><br>
+     *
+     *      - Streuverhalten der Abschüsse durch das Viertel-Muster bestimmen und entsprechend kalibrieren,
+     *      sodass während des 3-Feld-Musters immer möglichst alle Bereiche gleich viel beschossen werden
+     *      können<br>
+     *
+     *
+     * @param yCoord Y-Koordinate der Zelle
+     * @param xCoord X-Koordinate der Zelle
+     * @param hitState Status der beschossenen Koordinate.
+     *                 byte kann folgenden Status besitzen:<br>
+     *                 0: Wasser wurde getroffen.<br>
+     *                 1: Schiffsteil wurde getroffen.<br>
+     */
+    public void shootResult(int yCoord, int xCoord, byte hitState ){
+
+        super.shootResult(yCoord, xCoord,hitState);
+        //generateAICoordinates();
+
+    }
+
+
 
 	@Override
 	public void run() {

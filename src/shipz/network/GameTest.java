@@ -34,8 +34,12 @@ public class GameTest implements GameEventListener {
         String ip = ask("Please enter your opponent's ip adress.", "((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\\.){3}((25[0-5])|(2[0-4][0-9])|(1?[0-9][0-9]?))");
         int port = Integer.parseInt( ask("Please enter the port.", "[0-9]{1,8}") );
 
-        network.connect(ip, port);
-
+        try {
+            network.connect(ip, port);
+        } catch (Exception e) {
+            System.err.println(e.getMessage() + "\n\n");
+            init();
+        }
 
 
     }

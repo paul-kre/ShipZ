@@ -70,7 +70,7 @@ public abstract class Computer extends Player {
 
 
     /** Random-Object zur Generierung von zufälligen Integer Zahlen */
-    private Random random = new Random();
+    Random random = new Random();
 
 
     /** Liste in der Zahlen von 0 bis <b>fieldSize</b> gespeichert werden, die von der KI
@@ -111,7 +111,7 @@ public abstract class Computer extends Player {
      *
      * Sobald es einmal initialisiert wurde, bleibt der Wert auf TRUE, damit nach
      * dem Abschuss aller Koordinaten des Schachbrettmuster keine weiteren mehr erzeugt werden
-     * müssen, da danach nur noch Einser-Felder exisiteren und diese nicht dem Schachbrettmuster
+     * müssen, da danach nur noch Einser-Felder existieren und diese nicht dem Schachbrettmuster
      * entsprechen.<br>
      *
      * */
@@ -136,15 +136,37 @@ public abstract class Computer extends Player {
      * dessen Value enthält die Anzahl der
      * entsprechenden Schiffe.<br>
      * Die Keys werden folgendermaßen eingeteilt:<br>
-     *     0: 5-er Schiffe<br>
-     *     1: 4er-Schiffe<br>
-     *     2: 3er-Schiffe<br>
-     *     3: 2er-Schiffe<br>
-     *     4: 1er-Schiffe<br>
+     *     1: 1er-Schiffe<br>
+     *     2: 2er-Schiffe<br>
+     *     3: 3er-Schiffe<br>
+     *     4: 4er-Schiffe<br>
+     *     5: 5-er Schiffe<br>
      */
     private TreeMap<Integer, Integer> shipList = new TreeMap<>();
 
-    //Contructor
+
+    /**
+     * Speicherung des zuletzt getroffenen Spielfeldviertels.<br>
+     * Das Spielfeldviertel-Muster wird parallel zum 3-Feld-Muster
+     * ausgeführt und sorgt dafür, dass das 3-Feld-Muster nicht nur
+     * in einem Bereich in diagonalen schießt, sodass es für den
+     * menschlichen Spieler sofort ersichtlich ist wie die KI vor geht. Durch
+     * das Spielfeldviertel-Muster werden die Beschüsse des 3-Feld-Musters
+     * besser verstreut<br>
+     *
+     * <b>lastHitQuarter</b> hat vor der Initialisierung den Wert -1.
+     * Sobald das Viertel-Muster parallel mit dem 3-Feld-Muster einsetzt, kann
+     * diese Variable folgende Werte enthalten:<br>
+     *     0: Oberes-Linkes Viertel
+     *     1: Oberes-Rechtes Viertel
+     *     2: Unteres-Linkes Viertel
+     *     3: Unteres-Rechte Viertel
+     *
+     *
+     */
+    private byte lastHitQuarter = -1;
+
+    //Constructor
 
     /**
      * Constructor der KI-Superklassen Computer.<br>
@@ -161,14 +183,12 @@ public abstract class Computer extends Player {
         placingShipsAtEdgePossible = placingAtEdge;
         initiateMirrorField();
 
-        //ArrayList mit den gültigen Reihen die generiert initialisieren
+        //ArrayList mit den gültigen Reihen und Spalten initialisieren
         initializeList(includedRows);
         initializeList(includedColumns);
 
         //Initialisieren der Schiffsliste
-        for (int i= 0; i < 5; i++){
-            shipList.put(i,0);
-        }
+        setShipList(newShipList);
 
     }
 
@@ -276,7 +296,6 @@ public abstract class Computer extends Player {
             excludeFullColumns(xCoord);
         }
 
-        //generateAICoordinates();
     }
 
 
@@ -777,7 +796,7 @@ public abstract class Computer extends Player {
                         }
 
 
-                        //Nördliche Richtung wurde noch nicht zu Ende durchsucht, deshalb läuft die Schleife weiter
+                        // Richtung wurde noch nicht zu Ende durchsucht, deshalb läuft die Schleife weiter
                         directionCheck = true;
 
                     } else { //Koordinate ist kein Schiffsteil
@@ -1217,25 +1236,27 @@ public abstract class Computer extends Player {
 
         int level = yCoord + 1;
 
+        int threePointPatternInt = -1;
 
         //Ebene wird überprüft ob es die Stufe 1,2 oder 3 hat und je nachdem wird weiterberechnet
 
         if (level  % 3 == 1 ){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 1 berechnet werden soll
 
-            return ( 2 + ( 3 * validThreePointPatternColumnInt(1) ));
+            threePointPatternInt = ( 2 + ( 3 * validThreePointPatternColumnInt(1) ));
 
         } else if ( level % 3 == 2){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 2 berechnet werden soll
 
-            return ( 1 + ( 3 * validThreePointPatternColumnInt(2) ));
+            threePointPatternInt = ( 1 + ( 3 * validThreePointPatternColumnInt(2) ));
 
 
         } else if ( level % 3 == 0){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 3 berechnet werden soll
 
-            return ( 3 * validThreePointPatternColumnInt(3) );
+            threePointPatternInt = ( 3 * validThreePointPatternColumnInt(3) );
 
         }
 
-        return -1;
+            return threePointPatternInt;
+
     }
 
 
@@ -1400,7 +1421,6 @@ public abstract class Computer extends Player {
 
             }
 
-
         }
 
 
@@ -1441,8 +1461,7 @@ public abstract class Computer extends Player {
         // Aufruf), wird das Feld gescannt und die Liste initialisiert
         if ( !chessBoardPatternActivated){
 
-            System.out.println("SCHACHBRETTMUSTER!");
-            initiazileChessBoardPattern();
+            initializeChessBoardPattern();
             chessBoardPatternActivated = true;
         }
 
@@ -1451,7 +1470,7 @@ public abstract class Computer extends Player {
          * Nachdem geprüft wurde ob das Schachbrettmuster initialisiert wurde oder nicht,
          * wird eine Koordinate aus der Liste zurückgegeben.
          * Wenn die Liste allerdings leer ist (da nur noch Einser-Schiffe auf dem Spielfeld
-         * exisiteren), werden die restlichen Felder zufällig beschossen.
+         * existieren), werden die restlichen Felder zufällig beschossen.
          */
         if  (!validChessBoardPatternCoordinates.isEmpty()){
 
@@ -1471,7 +1490,7 @@ public abstract class Computer extends Player {
      * die Koordinaten in das <b>validChessBoardPatternCoordinates</b>
      * ab
      */
-    private void initiazileChessBoardPattern(){
+    private void initializeChessBoardPattern(){
 
         //Flag-Variable die angibt, ob bei der Prüfung der nördlichen Koordinate die aktuelle gespeichert wurde
         boolean wasSaved;
@@ -1546,9 +1565,36 @@ public abstract class Computer extends Player {
 
 
 
+    /**
+     * Schiffsliste wird mit der Anzahl der Schiffe
+     * für das startende Spiel initialisiert
+     *
+     * @param list Übergebene Liste mit der Anzahl der Schiffen
+     */
+    private void setShipList (List<Integer> list){
 
 
+        /**
+         * Zuerst werden die Indices für die einzelnen
+         * Schiffsgrößen erstellt und deren Values am
+         * Anfang auf 0 gesetzt
+         * */
+        for (int i= 1; i <= 5; i++){
+            this.shipList.put(i,0);
+        }
 
+
+        /**
+         * Die Liste wird durchiteriert und jedes Schiff
+         * wird entsprechend seinem Platz in dem TreeMap
+         * dazu addiert
+         */
+        for( Integer l : list){
+
+            this.shipList.put(l, shipList.get(l)+1 );
+        }
+
+    }
 
 
 
@@ -1628,6 +1674,16 @@ public abstract class Computer extends Player {
         }
         System.out.println("\n\n");
 
+
+        /*
+        System.out.print("Schiffsliste:\n");
+        for (Map.Entry m: shipList.entrySet()){
+
+            System.out.println( m.getKey()  + ": " + m.getValue() + ", ");
+        }
+        System.out.println("\n\n");
+*/
+
     }
 
 
@@ -1637,7 +1693,7 @@ public abstract class Computer extends Player {
      * @param stringCoord String von welchem extrahiert wird
      * @return Y-Koordinate
      */
-    protected int extcractYCoord( String stringCoord){
+    protected int extractYCoord( String stringCoord){
         return Integer.parseInt(stringCoord.split(",")[0]);
     }
 
@@ -1648,7 +1704,7 @@ public abstract class Computer extends Player {
      * @param stringCoord String von welchem extrahiert wird
      * @return X-Koordinate
      */
-    protected int extcractXCoord( String stringCoord){
+    protected int extractXCoord( String stringCoord){
         return Integer.parseInt(stringCoord.split(",")[1]);
     }
 
