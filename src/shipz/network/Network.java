@@ -26,25 +26,10 @@ import java.net.SocketTimeoutException;
  * The following example shows how to start a server and accept a connecting client.
  * <blockquote><pre>
  * 	Network server = new Network(true);
- * 	if(server.connect(5555)) {
- * 		// Server is running and connected to the client
- *
- * 		server.close();
- * 	} else {
- * 		// Something went wrong.
- * 		System.err.println(server._error());
- * 	}
  * </pre></blockquote><p>
  * This is how to connect to a server as a client:
  * <blockquote><pre>
  * 	Network client = new Network(false);
- * 	if(client.connect("localhost", 5555)) {
- * 		// Client is connected to the client.
- *
- * 		client.close();
- * 	} else {
- * 		System.err.println(client._error());
- * 	}
  * </pre></blockquote>
  *
  * @author Paul Kretschel
@@ -55,7 +40,7 @@ public class Network extends GameEventSource implements Runnable {
 
     private final static char PING_ACTION = 0;
 
-    private final static int CONNECTION_TIMEOUT = 60000;
+    private final static int CONNECTION_TIMEOUT = 5000;
 
     private boolean _isHost;
 
@@ -63,7 +48,6 @@ public class Network extends GameEventSource implements Runnable {
     private BufferedReader _in;
     private PrintWriter _out;
 
-    private String _error;
     private boolean _connected;
 
     private String _ip;
@@ -113,7 +97,7 @@ public class Network extends GameEventSource implements Runnable {
                 }
 
             } catch (IOException e) {
-                _error = e.getMessage();
+                e.printStackTrace();
             }
 
         }
@@ -135,7 +119,7 @@ public class Network extends GameEventSource implements Runnable {
      * @return	{@code True} if the connection was successful, {@code false} if it failed.
      */
 
-    public void connect(String ip, int port) {
+    public void connect(String ip, int port) throws Exception {
         _port = port;
         _ip = ip;
 
@@ -150,7 +134,7 @@ public class Network extends GameEventSource implements Runnable {
      * @return	{@code True} if the connection was successful, {@code false} if it failed.
      */
 
-    private void connectHost() {
+    private void connectHost() throws Exception {
         if(!_isHost)
             return;
 
@@ -175,11 +159,7 @@ public class Network extends GameEventSource implements Runnable {
             open();
 
         } catch(SocketTimeoutException s) {
-            _error = "Connection timeout.";
-        } catch(IOException e) {
-            _error = e.getMessage();
-        } catch(IllegalArgumentException i) {
-            _error = i.getMessage();
+            throw new Exception("Connection timeout.");
         }
     }
 
@@ -188,7 +168,7 @@ public class Network extends GameEventSource implements Runnable {
      * Also checks if the connection was successful.
      */
 
-    private void connectClient() {
+    private void connectClient() throws Exception {
         if (_isHost)
             return;
 
@@ -204,17 +184,13 @@ public class Network extends GameEventSource implements Runnable {
                 _connected = true;
                 open();
 
-            } catch(SocketTimeoutException s) {
-                _error = "Connection timeout.";
             } catch(IOException e) {
-                _error = e.getMessage();
-            } catch(IllegalArgumentException i) {
-                _error = i.getMessage();
+                throw new Exception("Failed to connect: " + e.getMessage());
             }
         }
 
         if(!timer.hasTime())
-            _error = "Connection timeout.";
+            throw new Exception("Connection timeout.");
     }
 
     private void evaluateString(String s) {
@@ -302,7 +278,7 @@ public class Network extends GameEventSource implements Runnable {
         return hit.charAt(0);
     }
 
-    public void reconnect() {
+    public void reconnect() throws Exception {
         if(_connected)
             return;
 
@@ -320,17 +296,20 @@ public class Network extends GameEventSource implements Runnable {
      * Opens the connection.
      */
 
-    private void open() throws IOException {
+    private void open() throws Exception {
         if(!_connected)
             return;
 
-        InputStream inputStream;
+        try {
+            InputStream inputStream = _socket.getInputStream();
+            _in = new BufferedReader( new InputStreamReader( inputStream ));
 
-        inputStream = _socket.getInputStream();
-        _in = new BufferedReader( new InputStreamReader( inputStream ));
+            OutputStream outputStream = _socket.getOutputStream();
+            _out = new PrintWriter( outputStream );
 
-        OutputStream outputStream = _socket.getOutputStream();
-        _out = new PrintWriter( outputStream );
+        } catch(IOException e) {
+            throw new Exception("Failed to open connection: " + e.getMessage());
+        }
     }
 
 
@@ -357,7 +336,7 @@ public class Network extends GameEventSource implements Runnable {
             _in = null;
             _out = null;
 
-        } catch (IOException e) { _error = e.getMessage(); }
+        } catch (IOException e) { System.err.println("Failed to close: " + e.getMessage()); }
 
     }
 
@@ -380,10 +359,6 @@ public class Network extends GameEventSource implements Runnable {
 
     public boolean connected() {
         return _connected;
-    }
-
-    public String error() {
-        return _error;
     }
 
     public String toString() {
