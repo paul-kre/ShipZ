@@ -50,6 +50,7 @@ public class FileStream {
 	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String preferences) {
 		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences);
 		undoredo.saveToFile(gameName);
+		score.saveScoreToFile(playerName, opponentName);
 	}
 	
 	/**
@@ -149,19 +150,6 @@ public class FileStream {
 	
 	/**
 	 * Referenz auf die Methode in der Score-Klasse.
-	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
-	 * damit die Punkte in der Datei abgespeichert werden.
-	 * Die Punkte werden zusammen mit dem Namen und der aktuellen Uhrzeit
-	 * abgespeichert im Format <i>Name#Uhrzeit=Punkte</i>.
-	 * @param playerName Name des ersten Spielers
-	 * @param opponentName Name des zweiten Spielers
-	 */
-	public void saveScoreToFile(String playerName, String opponentName) {
-		score.saveScoreToFile(playerName, opponentName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der Score-Klasse.
 	 * Der Wert der Combo wird zurückgegeben, damit die GUI darstellen kann, 
 	 * welche Combo der Spieler aktuell erreicht hat.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
@@ -201,8 +189,10 @@ public class FileStream {
 		fs.newDraw(0, 0, 1, (byte)1);
 		fs.newDraw(0, 0, 1, (byte)2);
 		fs.newDraw(0, 0, 1, (byte)0);
+		fs.newDraw(0, 0, 2, (byte)1);
 		System.out.println(fs.getScore(1));
 		System.out.println(fs.getComboValue(1));
+		fs.saveGame("testSpielxx", "Dieter", "Heinz", "WWWWWWW", "WWFFWWWWW", "8,8", 1, "a");
 		
 	}
 	
