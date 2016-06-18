@@ -65,6 +65,8 @@ public class GUI2 extends GameEventSource {
         Button btnRedo = new Button("Redo");
         Button btnSave = new Button("Save");
         Button btnExit = new Button("Exit");
+        Button btnRndm = new Button("Random Placement");
+        Button btnRdy = new Button("Ready");
         Button btnStart = new Button("Start");
         Button btnEGame = new Button("End game");
         RadioButton rbtnPvP = new RadioButton("Player vs Player");
@@ -128,6 +130,14 @@ public class GUI2 extends GameEventSource {
         btnExit.layoutXProperty().setValue(750);
         btnExit.layoutYProperty().setValue(100);
         btnExit.setPrefWidth(150);
+
+        btnRndm.layoutXProperty().setValue(100);
+        btnRndm.layoutYProperty().setValue(150);
+        btnRndm.setPrefWidth(150);
+
+        btnRdy.layoutXProperty().setValue(300);
+        btnRdy.layoutYProperty().setValue(150);
+        btnRdy.setPrefWidth(150);
 
         btnEGame.layoutXProperty().setValue(825);
         btnEGame.layoutYProperty().setValue(40);
@@ -250,9 +260,28 @@ public class GUI2 extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 game.getChildren().clear();
-                game.getChildren().addAll(btnUndo, btnRedo, btnSave, btnExit, hlGame);
+                game.getChildren().addAll(btnUndo, btnRedo, btnSave, btnExit, btnRndm, btnRdy, hlGame);
                 createField(game);
+
+            }
+        });
+
+        btnRndm.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
                 fireGameEvent(FILL_EVENT);
+
+            }
+        });
+
+        btnRdy.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                fireGameEvent(READY_EVENT);
 
             }
         });

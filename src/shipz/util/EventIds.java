@@ -21,6 +21,7 @@ public interface EventIds {
     // GUI
     byte GUI_SHOOT_EVENT = 50;
     byte FILL_EVENT = 51;
+    byte READY_EVENT = 52;
     
     // IO
     byte SAVE_EVENT = 110;
