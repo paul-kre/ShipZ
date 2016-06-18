@@ -25,6 +25,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import shipz.util.GameEventSource;
 
+import static shipz.util.EventIds.FINISHED_ROUND;
+import static shipz.util.EventIds.READY_EVENT;
+
 
 /**
  *
@@ -371,6 +374,7 @@ public class GUI2 extends GameEventSource {
         else{
             t2[x][y].explosion(t2[x][y].iv1);
         }
+        fireGameEvent(FINISHED_ROUND);
     }
 
     /**
@@ -386,6 +390,7 @@ public class GUI2 extends GameEventSource {
         else{
             t2[x][y].water(t2[x][y].iv1);
         }
+        fireGameEvent(FINISHED_ROUND);
     }
 
     /**

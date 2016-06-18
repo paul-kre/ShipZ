@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import shipz.gamemode.*;
 
+import static shipz.util.EventIds.FINISHED_ROUND;
+import static shipz.util.EventIds.READY_EVENT;
+
 /**
  * Spielverwaltung
  * @author Max
@@ -35,7 +38,14 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
     //private FileStream filestream;
     /** Liste mit den zu verwendenden Schiffen */
     public List<Integer> shipList;
-    private Stage primaryStage;
+    /** aktive x-Koordinate */
+    private int aX;
+    /** aktive y-Koordinate */
+    private int aY;
+    /** letztberechnetes Ergebnis */
+    private byte aResult;
+    /** gibt an, ob auf die GUI gewartet werden muss */
+    public boolean waitForGUI;
 
     //Constructor
     /**
@@ -747,6 +757,9 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
         return r;
     }
 
+    /**
+     * zeichnet alle Schiffe auf die GUI
+     */
     public void drawShipOnGUI() {
         int x, y;
         for(y=0; y<board1.length; y++) {
@@ -765,18 +778,66 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
         }
     }
 
+    private void nextRound() {
+        //Test zur Ausgabe der ersten zehn Schüsse auf Feld2
+        for(int i = 0; i<10; i++) {
+            if (player1active) {
+                waitForGUI = true;
+                aX = player1.getX();
+                aY = player1.getY();
+                aResult = checkTile(aX, aY);
+                player1.shootResult(aY, aX, aResult);
+                System.out.println(aY + "/" + aX + " => " + aResult);
+                if (aResult == 0) {
+                    gui.drawWater(aY, aX, 2);
+                } else {
+                    gui.drawExplosion(aY, aX, 2);
+                }
+                while(waitForGUI) {
+                    //nichts
+                }
+            }
+        }
+    }
+
+    /**
+     * @return gibt an, ob das Spiel beendet wurde
+     */
+    private boolean gameFinished() {
+        boolean r = true;
+        //1. Zähler
+        int y;
+        //2. Zähler
+        int x;
+
+        //doppelte Schleife für Durchlauf durch alle Felder
+        for(y=0; y<board1.length; y++) {
+            for(x=0; x<board1[y].length; x++) {
+                if(r && board1[y][x] == 'x') {
+                    r = false;
+                }
+            }//Ende ySchleife
+        }//Ende xSchleife
+
+        //doppelte Schleife für Durchlauf durch alle Felder
+        for(y=0; y<board2.length; y++) {
+            for(x=0; x<board2[y].length; x++) {
+                if(r && board2[y][x] == 'x') {
+                    r = false;
+                }
+            }//Ende ySchleife
+        }//Ende xSchleife
+        return r;
+    }
+
     protected void test() {
 
-        shipList = createShipList("5443332");
-        placeShips(1);
-        placeShips(2);
-        displayBoards();
-        drawShipOnGUI();
-        player1 = new Easy(10);
-        player2 = new Easy(10);
+        player1 = new Easy(10, false, shipList);
+        player2 = new Easy(10, false, shipList);
+        nextRound();
 
         //Schleife zum Test der KI
-        int x;
+        /*int x;
         int y;
         byte result;
         for(int i = 0; i<20; i++) {
@@ -801,7 +862,7 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
                 player1active = true;
 
             }
-        }
+        }*/
     }
 
 
@@ -818,8 +879,17 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
 
         switch(id) {
             case FILL_EVENT:
+                shipList = createShipList("5443332");
+                placeShips(1);
+                placeShips(2);
+                displayBoards();
+                drawShipOnGUI();
+                break;
+            case READY_EVENT:
                 test();
                 break;
+            case FINISHED_ROUND:
+                waitForGUI = false;
         }
     }
 
