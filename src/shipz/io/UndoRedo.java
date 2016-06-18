@@ -50,7 +50,7 @@ public class UndoRedo {
 	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Die letzten Züge der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
-	 * @throws NoDrawException 
+	 * @throws NoDrawException tritt auf falls keine weiteren Züge auf dem Stack sind die rückgängig gemacht werden können.
 	 */
 	protected String undoDraw(int playerIndex) throws NoDrawException {
 		String result = "";
@@ -71,7 +71,9 @@ public class UndoRedo {
 	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
 	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
+	 * @throws NoDrawException tritt auf, falls keine weiteren Züge auf dem Stack sind, die wiederholt werden können.
 	 */
 	protected String redoDraw(int playerIndex) throws NoDrawException {
 		String result = "";

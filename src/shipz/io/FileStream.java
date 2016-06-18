@@ -3,8 +3,8 @@ package shipz.io;
 import shipz.util.NoDrawException;
 
 /**
- * Diese Klasse verwaltet die anderen vier Klassen.
- * Es werden alle wichtigen Methoden, die die Verwaltung des Spiels
+ * Diese Klasse verwaltet die anderen drei Klassen.
+ * Es werden alle wichtigen Methoden, die die Verwaltung-Klasse des Spiels {@link shipz.Game}
  * zum Speichern, Laden, Undo/ Redo und für die Punkte- und Highscore-Verwaltung
  * benötigt, redefiniert und bilden somit eine Referenz zu den anderen Klassen.
  * @author Florian Osterberg
@@ -37,7 +37,7 @@ public class FileStream {
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Speichert die Informationen eines bestimmten Spiels.
-	 * Wird von der Game-Klasse genutzt, um ein Spiel zwischenzeitlich abzuspeichern.
+	 * Wird von {@link shipz.Game} genutzt, um ein Spiel abzuspeichern.
 	 * @param gameName Name des Spielstands
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des Gegners / zweiten Spielers
@@ -45,6 +45,7 @@ public class FileStream {
 	 * @param boardPlayerTwo Spielbrett des zweiten Spielers als {@link String}
 	 * @param boardsize Größe des Spielfelds
 	 * @param activePlayer aktiver Spieler
+	 * @param preferences die Einstellungen des Spiels
 	 */
 	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String preferences) {
 		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences);
@@ -81,37 +82,39 @@ public class FileStream {
 	
 	/**
 	 * Referenz auf die Methode in der UndoRedo-Klasse.
-	 * Der letzte Zug wird rückgängig gemacht.
-	 * Er wird dafür aus der Liste, die den Spielverlauf speichert gelöscht und in eine
-	 * separate Liste geschrieben, die die rückgangig gemachten Züge speichert.
-	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
+	 * Die rückgängig zu machenden Züge werden vom Stack genommen, der die im Spiel getätigten
+	 * Züge speichert, und auf den Stack gelegt, der die rückgängig gemachten Züge speichert.
+	 * Alle rückgängig gemachten Züge werden als String zurückgegeben.
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
-	 * @return Der letzte Zug der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
+	 * @return Die Züge die rückgängig gemacht werden als {@link String}
 	 * @throws NoDrawException tritt auf, falls keine weiteren Züge rückgängig gemacht werden können
 	 */
-	public void undoDraw(int playerIndex) throws NoDrawException {
-		undoredo.undoDraw(playerIndex);
+	public String undoDraw(int playerIndex) throws NoDrawException {
 		score.setScore(playerIndex, (byte)3);
+		return undoredo.undoDraw(playerIndex);
 	}
 	
 	/**
 	 * Referenz auf die Methode in der UndoRedo-Klasse.
-	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
-	 * die den Spielverlauf speichert.
-	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
+	 * Die Züge, die wiederhergestellt werden, werdem vom Redo-Stack genommen und wieder oben
+	 * auf den Stack gelegt, der die Züge des Spiels gespeichert, gelegt.
+	 * Alle wiederhergestellten Züge werden als String zurückgegeben.
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
-	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
+	 * @return Die wiederhergestellten Züge als {@link String}
 	 * @throws NoDrawException tritt auf, falls keine weiteren Züge wiederholt werden können
 	 */
-	public void redoDraw(int playerIndex) throws NoDrawException {
-		undoredo.redoDraw(playerIndex);
+	public String redoDraw(int playerIndex) throws NoDrawException {
+		return undoredo.redoDraw(playerIndex);
 	}
 	
 	/**
 	 * Referenz auf die Methode in der UndoRedo-Klasse.
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
-	 * @param draw Der Zug, der getätigt wird als {@link String}
+	 * Außerdem wird anhand der Variable <b>result</b> die Punktzahl des Spielers aktualisiert.
+	 * @param x x-Koordinate des Zugs
+	 * @param y y-Koordinate des Zugs
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
+	 * @param result <b>0</b> = kein Treffer, <b>1</b> = Treffer, <b>2</b> = Schiff versenkt, <b>3</b> = Zug rückgängig gemacht
 	 */
 	public void newDraw(int x, int y, int playerIndex, byte result) {
 		undoredo.newDraw(x, y, playerIndex, result);
@@ -137,6 +140,7 @@ public class FileStream {
 	 * Referenz auf die Methode in der Score-Klasse.
 	 * Liest alle Punktzahlen aus dem Highscore-File
 	 * und erstellt eine absteigend sortierte Highscore-Liste.
+	 * Es werden maximal die zehn besten Spieler angezeigt.
 	 * @return Die Highscore-Liste als String
 	 */
 	public String highscore() {
@@ -147,6 +151,8 @@ public class FileStream {
 	 * Referenz auf die Methode in der Score-Klasse.
 	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
 	 * damit die Punkte in der Datei abgespeichert werden.
+	 * Die Punkte werden zusammen mit dem Namen und der aktuellen Uhrzeit
+	 * abgespeichert im Format <i>Name#Uhrzeit=Punkte</i>.
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers
 	 */
@@ -158,10 +164,10 @@ public class FileStream {
 	 * Referenz auf die Methode in der Score-Klasse.
 	 * Der Wert der Combo wird zurückgegeben, damit die GUI darstellen kann, 
 	 * welche Combo der Spieler aktuell erreicht hat.
-	 * @param playerIndex 
-	 * @return
+	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
+	 * @return aktueller Combowert des Spielers
 	 */
-	public double getComboValue(int playerIndex) {
+	public int getComboValue(int playerIndex) {
 		return score.getComboValue(playerIndex);
 	}
 	
@@ -174,7 +180,6 @@ public class FileStream {
 	 * die in einem Namen nicht verwendet werden dürfen.
 	 * Um diesen String in ein Char-Array umzuwandeln:
 	 * <i>forbiddenCharacters().toCharArray()</i>
-	 * Die Liste ist eventuell noch unvollständig.
 	 * @return die verbotenen Zeichen
 	 */
 	public String forbiddenCharacters() {
@@ -186,6 +191,10 @@ public class FileStream {
 		return r;
 	}
 	
+	/**
+	 * Main-Methode zum Testen
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		FileStream fs = new FileStream();
 		fs.newDraw(0, 0, 1, (byte)1);

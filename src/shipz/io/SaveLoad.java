@@ -320,36 +320,21 @@ public class SaveLoad {
 	}
 	
 	/**
+	 * Gibt die Einstellungen eines Spielstands zurück.
+	 * @param gameName Name des Spielstands
+	 * @return Einstellungen als String
+	 */
+	protected String getPreferences(String gameName) {
+		return getNode(gameName, "preferences");
+	}
+	
+	/**
 	 * Speichert den Spielverlauf in einem Spielstand.
 	 * @param gameName der Spielstand
 	 * @param draws der neue Spielverlauf des ersten Spielers
 	 */
 	protected void setDraws(String gameName, String draws) {
 		setNode(gameName, "draws", draws);
-	}
-	
-	/**
-	 * Gibt anhand eines Namen eines Spielstands und einem Spielernamen zurück,
-	 * ob es sich bei dem Spieler um den ersten, oder um den zweiten
-	 * Spieler handelt.
-	 * Dies ist wichtig für die Verwaltung der Combos in der Score-Klasse.
-	 * @param gameName Name des Spielstands
-	 * @param playerName Name des Spielers
-	 * @return 1 = Spieler ist der erste Spieler, 2 = Spieler ist der zweite Spieler, 0 = error
-	 */
-	@Deprecated
-	protected byte getPlayersNumber(String gameName, String playerName) {
-		byte result = 0;
-		
-		if(playerName.equals(getPlayerName(gameName))) {
-			result = 1;
-		} else if(playerName.equals(getOpponentName(gameName))) {
-			result = 2;
-		} else {
-			result = 0;
-		}
-		
-		return result;
 	}
 	
 	/**
@@ -443,7 +428,7 @@ public class SaveLoad {
 	 */
 	protected String timestamp() {
 		Calendar c = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.y_HH-mm-ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.y_HH:mm:ss");
 		return sdf.format(c.getTime());
 	}
 	
