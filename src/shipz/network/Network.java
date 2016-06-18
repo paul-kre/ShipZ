@@ -4,6 +4,7 @@ import shipz.util.Event;
 
 import shipz.Player;
 import shipz.util.GameEvent;
+import shipz.util.GameEventSource;
 import shipz.util.Timer;
 
 import java.io.BufferedReader;
@@ -25,36 +26,21 @@ import java.net.SocketTimeoutException;
  * The following example shows how to start a server and accept a connecting client.
  * <blockquote><pre>
  * 	Network server = new Network(true);
- * 	if(server.connect(5555)) {
- * 		// Server is running and connected to the client
- *
- * 		server.close();
- * 	} else {
- * 		// Something went wrong.
- * 		System.err.println(server._error());
- * 	}
  * </pre></blockquote><p>
  * This is how to connect to a server as a client:
  * <blockquote><pre>
  * 	Network client = new Network(false);
- * 	if(client.connect("localhost", 5555)) {
- * 		// Client is connected to the client.
- *
- * 		client.close();
- * 	} else {
- * 		System.err.println(client._error());
- * 	}
  * </pre></blockquote>
  *
  * @author Paul Kretschel
  *
  */
 
-public class Network extends PlayerTest implements Runnable {
+public class Network extends GameEventSource implements Runnable {
 
     private final static char PING_ACTION = 0;
 
-    private final static int CONNECTION_TIMEOUT = 60000;
+    private final static int CONNECTION_TIMEOUT = 5000;
 
     private boolean _isHost;
 
@@ -62,7 +48,6 @@ public class Network extends PlayerTest implements Runnable {
     private BufferedReader _in;
     private PrintWriter _out;
 
-    private String _error;
     private boolean _connected;
 
     private String _ip;
@@ -78,8 +63,7 @@ public class Network extends PlayerTest implements Runnable {
      *
      */
 
-    public Network(String name, boolean isHost) {
-        super(name);
+    public Network(boolean isHost) {
 
         _isHost = isHost;
         _connected = false;
@@ -113,7 +97,7 @@ public class Network extends PlayerTest implements Runnable {
                 }
 
             } catch (IOException e) {
-                _error = e.getMessage();
+                e.printStackTrace();
             }
 
         }
@@ -125,6 +109,88 @@ public class Network extends PlayerTest implements Runnable {
             close();
         }
 
+    }
+
+    /**
+     * Connects to the given ip and port.
+     *
+     * @param 	port
+     * 			The port that the new server is going to use. (Better choose a high number)
+     * @return	{@code True} if the connection was successful, {@code false} if it failed.
+     */
+
+    public void connect(String ip, int port) throws Exception {
+        _port = port;
+        _ip = ip;
+
+        if(_isHost) connectHost();
+        else connectClient();
+    }
+
+    /**
+     * Starts a new server and waits for a client to connect.
+     * Also checks if the connection was successful.
+     *
+     * @return	{@code True} if the connection was successful, {@code false} if it failed.
+     */
+
+    private void connectHost() throws Exception {
+        if(!_isHost)
+            return;
+
+        try {
+            System.out.println("Binding to port " + _port + " ...");
+            ServerSocket serverSocket = new ServerSocket(_port);
+            serverSocket.setSoTimeout( CONNECTION_TIMEOUT );
+
+            System.out.println("Waiting for a client ...");
+            _socket = serverSocket.accept();
+            serverSocket.close();
+            serverSocket = null;
+
+            System.out.println("Client accepted.");
+
+            String connectedIp = _socket.getInetAddress().getHostAddress();
+            // If the connected ip is not the same as the specified -> repeat connect.
+            if(!_ip.equals(connectedIp)) connectHost();
+
+            _connected = true;
+
+            open();
+
+        } catch(SocketTimeoutException s) {
+            throw new Exception("Connection timeout.");
+        }
+    }
+
+    /**
+     * Connects to a server with the specified ip and port.
+     * Also checks if the connection was successful.
+     */
+
+    private void connectClient() throws Exception {
+        if (_isHost)
+            return;
+
+
+        System.out.println("Connecting to port " + _port + " ...");
+
+        Timer timer = new Timer(CONNECTION_TIMEOUT);
+        while(!_connected && timer.hasTime()) {
+            try {
+
+                _socket = new Socket(_ip, _port);
+                System.out.println("Client connected.");
+                _connected = true;
+                open();
+
+            } catch(IOException e) {
+                throw new Exception("Failed to connect: " + e.getMessage());
+            }
+        }
+
+        if(!timer.hasTime())
+            throw new Exception("Connection timeout.");
     }
 
     private void evaluateString(String s) {
@@ -157,9 +223,6 @@ public class Network extends PlayerTest implements Runnable {
 
     private void convertShot(String s) {
         String values = s.split("//")[1];
-        setX( convertX(values) );
-        setY( convertY(values) );
-        setResult( convertResult(values) );
     }
 
     private byte getAction(String s) {
@@ -215,95 +278,12 @@ public class Network extends PlayerTest implements Runnable {
         return hit.charAt(0);
     }
 
-    /**
-     * Starts a new server and waits for a client to connect.
-     * Also checks if the connection was successful.
-     *
-     * @param 	port
-     * 			The port that the new server is going to use. (Better choose a high number)
-     * @return	{@code True} if the connection was successful, {@code false} if it failed.
-     */
-
-    public void connect(int port) {
-        if(!_isHost)
-            return;
-
-        _port = port;
-
-        try {
-            System.out.println("Binding to port " + port + " ...");
-            ServerSocket serverSocket = new ServerSocket(port);
-            serverSocket.setSoTimeout( CONNECTION_TIMEOUT );
-
-            System.out.println("Waiting for a client ...");
-            _socket = serverSocket.accept();
-            serverSocket.close();
-            serverSocket = null;
-
-            System.out.println("Client accepted: " + _socket.getInetAddress());
-
-            _connected = true;
-
-            open();
-
-        } catch(SocketTimeoutException s) {
-            _error = "Connection timeout.";
-        } catch(IOException e) {
-            _error = e.getMessage();
-        } catch(IllegalArgumentException i) {
-            _error = i.getMessage();
-        }
-    }
-
-    /**
-     * Connects to a server with the specified ip and port.
-     * Also checks if the connection was successful.
-     *
-     * @param	ip
-     * 			The ip that the server is using.
-     * 			"localhost" if client and server are running on the same machine.
-     * @param 	port
-     * 			The port that the server is using.
-     * @return	{@code True} if the connection was successful, {@code false} if it failed.
-     */
-
-    public void connect(String ip, int port) {
-        if (_isHost)
-            return;
-
-        _port = port;
-        _ip = ip;
-
-        System.out.println("Connecting to port " + port + " ...");
-
-        Timer timer = new Timer(CONNECTION_TIMEOUT);
-        while(!_connected && timer.hasTime()) {
-            try {
-
-                _socket = new Socket(ip, port);
-                System.out.println("Client connected.");
-                _connected = true;
-                open();
-
-            } catch(SocketTimeoutException s) {
-                _error = "Connection timeout.";
-            } catch(IOException e) {
-                _error = e.getMessage();
-            } catch(IllegalArgumentException i) {
-                _error = i.getMessage();
-            }
-        }
-
-        if(!timer.hasTime())
-            _error = "Connection timeout.";
-    }
-
-    public void reconnect() {
+    public void reconnect() throws Exception {
         if(_connected)
             return;
 
         if(_isHost) {
-            connect(_port);
+            connect(_ip, _port);
         }
         if(!_isHost) {
             connect(_ip, _port);
@@ -316,17 +296,20 @@ public class Network extends PlayerTest implements Runnable {
      * Opens the connection.
      */
 
-    private void open() throws IOException {
+    private void open() throws Exception {
         if(!_connected)
             return;
 
-        InputStream inputStream;
+        try {
+            InputStream inputStream = _socket.getInputStream();
+            _in = new BufferedReader( new InputStreamReader( inputStream ));
 
-        inputStream = _socket.getInputStream();
-        _in = new BufferedReader( new InputStreamReader( inputStream ));
+            OutputStream outputStream = _socket.getOutputStream();
+            _out = new PrintWriter( outputStream );
 
-        OutputStream outputStream = _socket.getOutputStream();
-        _out = new PrintWriter( outputStream );
+        } catch(IOException e) {
+            throw new Exception("Failed to open connection: " + e.getMessage());
+        }
     }
 
 
@@ -353,7 +336,7 @@ public class Network extends PlayerTest implements Runnable {
             _in = null;
             _out = null;
 
-        } catch (IOException e) { _error = e.getMessage(); }
+        } catch (IOException e) { System.err.println("Failed to close: " + e.getMessage()); }
 
     }
 
@@ -378,23 +361,8 @@ public class Network extends PlayerTest implements Runnable {
         return _connected;
     }
 
-    public String error() {
-        return _error;
-    }
-
     public String toString() {
         return "Network";
-    }
-
-    @Override
-    public String shootField() {
-        return null;
-    }
-
-    //
-    @Override
-    public void shootResult(int yCoord, int xCoord, byte result) {
-
     }
 
     public void end() {

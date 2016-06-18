@@ -24,9 +24,9 @@ public class Score {
 	/** Scanner, der aus einer Datei liest. */
 	private Scanner scanner;
 	/** Zählt die Combos des ersten Spielers */
-	private double comboPlayer1;
+	private int comboPlayer1;
 	/** Zählt die Combos des zweiten Spielers */
-	private double comboPlayer2;
+	private int comboPlayer2;
 	/** Trennzeichen zwischen Namen und Punkten.
 	 * Format: <i>spielername=punkte</i> */
 	private String scoreSeparator = "=";
@@ -55,7 +55,6 @@ public class Score {
 	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
 	 * @param playerName Name des Spielers
 	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
-	 * @param event Events: <b>u</b> für undo, <b>h</b> für hit, <b>s</b> für sink <i>(weitere folgen eventuell. Das liegt nicht in meiner Hand)</i>
 	 */
 	protected void setScore(int playerIndex, byte result) {
 		switch(result) {
@@ -83,9 +82,7 @@ public class Score {
 	/**
 	 * Methode, die die Combos verwaltet und den Combo-Counter hochzählt.
 	 * @param playerName Spielername
-	 * @param event Aktion, die sich auf den Combowert beeinflusst. 
 	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
-	 * Zugelassene Werte: <b>h</b> für einen Treffer, <b>s</b> für ein versenktes Schiff.
 	 */
 	private void combo(int playerIndex, byte result) {
 		if(playerIndex == 1) {
@@ -109,7 +106,7 @@ public class Score {
 				comboPlayer2 = 1;
 			}
 		} else {
-			System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
+			throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 		}
 		
 	}
@@ -162,21 +159,25 @@ public class Score {
 		String result = "";
 		if(a.length < 10) {
 			for(int i = 0; i < a.length; i++) {
-				if(a[i].contains((CharSequence)"#")) {
+				result += a[i] + ",";
+				
+				/*if(a[i].contains((CharSequence)"#")) {
 					String[] temp = a[i].split("=");
 					result += a[i].split("#")[0] + "=" + temp[1] + ",";
 				} else {
 					result += a[i] + ",";
-				}
+				}*/
 			}
 		} else {
 			for(int i = 0; i < 10; i++) {
-				if(a[i].contains((CharSequence)"#")) {
+				result += a[i] + ",";
+				
+				/*if(a[i].contains((CharSequence)"#")) {
 					String[] temp = a[i].split("=");
 					result += a[i].split("#")[0] + "=" + temp[1] + ",";
 				} else {
 					result += a[i] + ",";
-				}
+				}*/
 			}
 		}
 		return result;
@@ -276,7 +277,7 @@ public class Score {
 		switch(playerIndex) {
 		case 1: return scorePlayer1;
 		case 2: return scorePlayer2;
-		default: System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt."); return 0;
+		default: throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 		}
 	}
 	
@@ -287,12 +288,27 @@ public class Score {
 	 * @param playerIndex
 	 * @return
 	 */
-	protected double getComboValue(int playerIndex) {
+	protected int getComboValue(int playerIndex) {
 		switch(playerIndex) {
 		case 1: return comboPlayer1;
 		case 2: return comboPlayer2;
-		default: System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt."); return 0.0;
+		default: throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 		}
+	}
+	
+	/**
+	 * So ähnlich wird der Highscore in der Game-Klasse für die GUI dargestellt.
+	 */
+	private void test() {
+		System.out.println("RANK\tNAME\t\t\tSCORE\t\tDATE");
+		String[] highscoreArray = highscore().split(",");
+		for(int i = 0; i < highscoreArray.length; i++) {
+			String score = highscoreArray[i].split("=")[1];
+			String name = highscoreArray[i].split("=")[0].split("#")[0];
+			String date = highscoreArray[i].split("=")[0].split("#")[1].replaceAll("_", " ").replaceAll("-", ":");
+			System.out.println(i+1 + "\t" + name + "\t\t" + score + "\t\t" + date);
+		}
+		
 	}
 	
 	/**
@@ -310,6 +326,7 @@ public class Score {
 		s.setScore(2, 's');*/
 //		s.saveScoreToFile("TestSpieler1", "TestSpieler2");
 		System.out.println(s.highscore());
+		s.test();
 		
 	}
 
