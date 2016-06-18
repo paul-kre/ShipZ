@@ -127,6 +127,96 @@ public class Network extends GameEventSource implements Runnable {
 
     }
 
+    /**
+     * Connects to the given ip and port.
+     *
+     * @param 	port
+     * 			The port that the new server is going to use. (Better choose a high number)
+     * @return	{@code True} if the connection was successful, {@code false} if it failed.
+     */
+
+    public void connect(String ip, int port) {
+        _port = port;
+        _ip = ip;
+
+        if(_isHost) connectHost();
+        else connectClient();
+    }
+
+    /**
+     * Starts a new server and waits for a client to connect.
+     * Also checks if the connection was successful.
+     *
+     * @return	{@code True} if the connection was successful, {@code false} if it failed.
+     */
+
+    private void connectHost() {
+        if(!_isHost)
+            return;
+
+        try {
+            System.out.println("Binding to port " + _port + " ...");
+            ServerSocket serverSocket = new ServerSocket(_port);
+            serverSocket.setSoTimeout( CONNECTION_TIMEOUT );
+
+            System.out.println("Waiting for a client ...");
+            _socket = serverSocket.accept();
+            serverSocket.close();
+            serverSocket = null;
+
+            System.out.println("Client accepted.");
+
+            String connectedIp = _socket.getInetAddress().getHostAddress();
+            // If the connected ip is not the same as the specified -> repeat connect.
+            if(!_ip.equals(connectedIp)) connectHost();
+
+            _connected = true;
+
+            open();
+
+        } catch(SocketTimeoutException s) {
+            _error = "Connection timeout.";
+        } catch(IOException e) {
+            _error = e.getMessage();
+        } catch(IllegalArgumentException i) {
+            _error = i.getMessage();
+        }
+    }
+
+    /**
+     * Connects to a server with the specified ip and port.
+     * Also checks if the connection was successful.
+     */
+
+    private void connectClient() {
+        if (_isHost)
+            return;
+
+
+        System.out.println("Connecting to port " + _port + " ...");
+
+        Timer timer = new Timer(CONNECTION_TIMEOUT);
+        while(!_connected && timer.hasTime()) {
+            try {
+
+                _socket = new Socket(_ip, _port);
+                System.out.println("Client connected.");
+                _connected = true;
+                open();
+
+            } catch(SocketTimeoutException s) {
+                _error = "Connection timeout.";
+            } catch(IOException e) {
+                _error = e.getMessage();
+            } catch(IllegalArgumentException i) {
+                _error = i.getMessage();
+            }
+        }
+
+        if(!timer.hasTime())
+            _error = "Connection timeout.";
+    }
+
     private void evaluateString(String s) {
         byte action = getAction(s);
 
@@ -212,95 +302,12 @@ public class Network extends GameEventSource implements Runnable {
         return hit.charAt(0);
     }
 
-    /**
-     * Starts a new server and waits for a client to connect.
-     * Also checks if the connection was successful.
-     *
-     * @param 	port
-     * 			The port that the new server is going to use. (Better choose a high number)
-     * @return	{@code True} if the connection was successful, {@code false} if it failed.
-     */
-
-    public void connect(int port) {
-        if(!_isHost)
-            return;
-
-        _port = port;
-
-        try {
-            System.out.println("Binding to port " + port + " ...");
-            ServerSocket serverSocket = new ServerSocket(port);
-            serverSocket.setSoTimeout( CONNECTION_TIMEOUT );
-
-            System.out.println("Waiting for a client ...");
-            _socket = serverSocket.accept();
-            serverSocket.close();
-            serverSocket = null;
-
-            System.out.println("Client accepted: " + _socket.getInetAddress());
-
-            _connected = true;
-
-            open();
-
-        } catch(SocketTimeoutException s) {
-            _error = "Connection timeout.";
-        } catch(IOException e) {
-            _error = e.getMessage();
-        } catch(IllegalArgumentException i) {
-            _error = i.getMessage();
-        }
-    }
-
-    /**
-     * Connects to a server with the specified ip and port.
-     * Also checks if the connection was successful.
-     *
-     * @param	ip
-     * 			The ip that the server is using.
-     * 			"localhost" if client and server are running on the same machine.
-     * @param 	port
-     * 			The port that the server is using.
-     * @return	{@code True} if the connection was successful, {@code false} if it failed.
-     */
-
-    public void connect(String ip, int port) {
-        if (_isHost)
-            return;
-
-        _port = port;
-        _ip = ip;
-
-        System.out.println("Connecting to port " + port + " ...");
-
-        Timer timer = new Timer(CONNECTION_TIMEOUT);
-        while(!_connected && timer.hasTime()) {
-            try {
-
-                _socket = new Socket(ip, port);
-                System.out.println("Client connected.");
-                _connected = true;
-                open();
-
-            } catch(SocketTimeoutException s) {
-                _error = "Connection timeout.";
-            } catch(IOException e) {
-                _error = e.getMessage();
-            } catch(IllegalArgumentException i) {
-                _error = i.getMessage();
-            }
-        }
-
-        if(!timer.hasTime())
-            _error = "Connection timeout.";
-    }
-
     public void reconnect() {
         if(_connected)
             return;
 
         if(_isHost) {
-            connect(_port);
+            connect(_ip, _port);
         }
         if(!_isHost) {
             connect(_ip, _port);

@@ -25,13 +25,16 @@ public class GameTest implements GameEventListener {
     public void init() {
         System.out.println("--- ShipZ Game ---\n");
         String horj = ask("Host or join game? (h/j)", "[h|j]");
+
         if(horj.charAt(0) == 'h')
             network = new Network(true);
         else
             network = new Network(false);
 
-        String ip = ask("Please enter your opponent's ip adress.", "((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\\.){3}((25[0-5])|(2[0-4][0-9])|(1?[0-9][0-9]?))|(localhost)");
-        String port = ask("Please enter the port.", "[0-9]{1,8}");
+        String ip = ask("Please enter your opponent's ip adress.", "((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\\.){3}((25[0-5])|(2[0-4][0-9])|(1?[0-9][0-9]?))");
+        int port = Integer.parseInt( ask("Please enter the port.", "[0-9]{1,8}") );
+
+        network.connect(ip, port);
 
 
 
