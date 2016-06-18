@@ -1,6 +1,5 @@
 package shipz.gamemode;
 
-
 import java.util.List;
 
 /**
@@ -62,7 +61,7 @@ public class Easy extends Computer {
 
         } else { //Falls noch kein Schiff getroffen wurde, werden zufällige erstellt und zurückgegeben.
 
-            //Zufallskoordinaten solange erstellen und speichern bis sie gültig sind und beschießbar sind
+            //Zufallskoordinaten solange erstellen und speichern bis sie gültig und beschießbar sind
 
             //Flag welches den Durchlauf der Schleifen bestimmt
             boolean loopAgain = true;
@@ -95,6 +94,26 @@ public class Easy extends Computer {
         //fireGameEvent(AI_SHOOT_EVENT);
 
 
+    }
+
+
+    /**
+     * Überschreibung der shootResult-Methode der Klasse
+     * Computer. Wertet die Ergebnisse normal wie auch in
+     * Computer aus, da es dessen Methode mit dem
+     * Super-Operator aufruft
+     *
+     * @param yCoord Y-Koordinate der Zelle
+     * @param xCoord X-Koordinate der Zelle
+     * @param hitState Status der beschossenen Koordinate.
+     *                 byte kann folgenden Status besitzen:<br>
+     *                 0: Wasser wurde getroffen.<br>
+     *                 1: Schiffsteil wurde getroffen.<br>
+     */
+    public void shootResult(int yCoord, int xCoord, byte hitState ){
+
+        super.shootResult(yCoord, xCoord,hitState);
+        generateAICoordinates();
     }
 
 
