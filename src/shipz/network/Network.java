@@ -1,10 +1,6 @@
 package shipz.network;
 
-import shipz.util.Event;
-
 import shipz.Player;
-import shipz.util.GameEvent;
-import shipz.util.GameEventSource;
 import shipz.util.Timer;
 
 import java.io.BufferedReader;
@@ -16,6 +12,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.regex.Pattern;
 
 
 /**
@@ -36,11 +33,10 @@ import java.net.SocketTimeoutException;
  *
  */
 
-public class Network extends GameEventSource implements Runnable {
+public class Network extends Player {
 
-    private final static char PING_ACTION = 0;
-
-    private final static int CONNECTION_TIMEOUT = 5000;
+    private final static char pingAction = 0;
+    private final static int connectionTimeout = 60000;
 
     private boolean _isHost;
 
@@ -64,6 +60,7 @@ public class Network extends GameEventSource implements Runnable {
      */
 
     public Network(boolean isHost) {
+        super();
 
         _isHost = isHost;
         _connected = false;
@@ -73,42 +70,6 @@ public class Network extends GameEventSource implements Runnable {
         _out = null;
 
         _ip = null;
-    }
-
-
-
-    public void run() {
-        Timer timer = new Timer(100);
-
-
-        send(PING_ACTION + "//");
-
-        String s;
-        while(_connected && timer.hasTime()) {
-
-            try {
-                s = _in.readLine();
-                if(s != null && !s.isEmpty()) { // Message received
-
-                    timer.reset();
-
-                    evaluateString(s);
-
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        if(_connected) { // Connection was interrupted
-            _connected = false;
-            fireGameEvent(Event.DISCONNECT_EVENT);
-        } else {
-            close();
-        }
-
     }
 
     /**
@@ -135,13 +96,12 @@ public class Network extends GameEventSource implements Runnable {
      */
 
     private void connectHost() throws Exception {
-        if(!_isHost)
-            return;
+        if(!_isHost) return;
 
         try {
             System.out.println("Binding to port " + _port + " ...");
             ServerSocket serverSocket = new ServerSocket(_port);
-            serverSocket.setSoTimeout( CONNECTION_TIMEOUT );
+            serverSocket.setSoTimeout( connectionTimeout );
 
             System.out.println("Waiting for a client ...");
             _socket = serverSocket.accept();
@@ -169,13 +129,12 @@ public class Network extends GameEventSource implements Runnable {
      */
 
     private void connectClient() throws Exception {
-        if (_isHost)
-            return;
+        if (_isHost) return;
 
 
         System.out.println("Connecting to port " + _port + " ...");
 
-        Timer timer = new Timer(CONNECTION_TIMEOUT);
+        Timer timer = new Timer(connectionTimeout);
         while(!_connected && timer.hasTime()) {
             try {
 
@@ -193,101 +152,99 @@ public class Network extends GameEventSource implements Runnable {
             throw new Exception("Connection timeout.");
     }
 
-    private void evaluateString(String s) {
-        byte action = getAction(s);
+    @Override
+    public void run() {
+        Timer timer = new Timer(100);
 
-        if(action == PING_ACTION) return;
+        send(pingAction + "");
 
-        switch (action) {
-            case SHOOT_EVENT:
-                if( !validShot(s) ) break;
+        String s;
+        while(!isEnd() && _connected && timer.hasTime()) {
+            try {
+                s = _in.readLine();
+                if(s != null && !s.isEmpty()) { // Message received
+                    timer.reset();
+                    evaluateString(s);
+                }
+            } catch (Exception e) {
+                System.out.println("Connection error: " + e.getMessage());
+                connectionError();
+            }
 
-                convertShot(s);
-
-                fireGameEvent(SHOOT_EVENT);
-                break;
-            case SHOOT_RESULT:
-                if( !validShot(s) ) break;
-
-                convertShot(s);
-
-                fireGameEvent(SHOOT_RESULT);
-                break;
-            case CLOSE_EVENT:
-                fireGameEvent(CLOSE_EVENT);
-                break;
-            default:
-                break;
+            if(!timer.hasTime()) {
+                System.out.println("Connection error.");
+                connectionError();
+            }
         }
+    }
+
+    private void connectionError() {
+        _connected = false;
+        fireGameEvent(DISCONNECT_EVENT);
+    }
+
+    private void evaluateString(String s) {
+        if(validMessage(s))  {
+            byte action = getAction(s);
+
+            switch (action) {
+                case SHOOT_EVENT:
+                    convertShot(s);
+
+                    fireGameEvent(SHOOT_EVENT);
+                    break;
+                case SHOOT_RESULT:
+                    convertShot(s);
+
+                    fireGameEvent(SHOOT_RESULT);
+                    break;
+                case CLOSE_EVENT:
+                    fireGameEvent(CLOSE_EVENT);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    }
+
+    private boolean validMessage(String s) {
+        return Pattern.matches("[0-9]{1,3}//[0-9]{1,2}(:[0-9]{1,2}){2}", s);
     }
 
     private void convertShot(String s) {
-        String values = s.split("//")[1];
+        if(validMessage(s)) {
+            String values = s.split("//")[1];
+            int x = Integer.parseInt( values.split(":")[0] );
+            int y = Integer.parseInt( values.split(":")[1] );
+            byte res = (byte) Integer.parseInt( values.split(":")[2] );
+            setX(x);
+            setY(y);
+            setResult(res);
+        }
     }
 
     private byte getAction(String s) {
-        byte action;
-        try {
-            action = (byte) Integer.parseInt( s.split("//")[0] );
-        } catch(NumberFormatException e) {
-            action = -1;
-        }
-        return action;
+        if(validMessage(s)) {
+            String action = s.split("//")[0];
+            return (byte) Integer.parseInt(action);
+        } else return pingAction;
     }
 
-    public void shootField(int x, int y, char res) {
+    public void shootField(int y, int x, byte res) {
         send( SHOOT_EVENT + "//" + x + ":" + y + ":" + res);
     }
 
-    public void shootResult(int x, int y, char res) {
+    public void shootResult(int y, int x, byte res) {
         if(_isHost) {
             send( SHOOT_RESULT + "//" + x + ":" + y + ":" + res);
         }
     }
 
-    private boolean validShot(String s) {
-        String[] split = s.split("//");
-        if(split.length != 2) return false;
-        String[] split2 = split[1].split(":");
-        if(split2.length != 3) return false;
-        if(split2[2].length() != 1) return false;
-        int x, y;
-        try {
-            x = Integer.parseInt( split2[0] );
-            y = Integer.parseInt( split2[1] );
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        if(x < 0 && y < 0) return false;
-
-        return true;
-    }
-
-    private int convertX(String s) {
-        String x = s.split(":")[0];
-        return Integer.parseInt( x );
-    }
-
-    private int convertY(String s) {
-        String y = s.split(":")[1];
-        return Integer.parseInt( y );
-    }
-
-    private char convertResult(String s) {
-        String hit = s.split(":")[2];
-        return hit.charAt(0);
-    }
-
     public void reconnect() throws Exception {
-        if(_connected)
-            return;
+        if(_connected) return;
 
-        if(_isHost) {
-            connect(_ip, _port);
-        }
-        if(!_isHost) {
-            connect(_ip, _port);
-        }
+        connect(_ip, _port);
     }
 
 
@@ -297,8 +254,7 @@ public class Network extends GameEventSource implements Runnable {
      */
 
     private void open() throws Exception {
-        if(!_connected)
-            return;
+        if(!_connected) return;
 
         try {
             InputStream inputStream = _socket.getInputStream();
@@ -321,23 +277,18 @@ public class Network extends GameEventSource implements Runnable {
 
     public void close() {
         try{
-            _connected = false;
-
-            if(_socket != null)
-                _socket.close();
-
-            if(_in != null)
-                _in.close();
-
-            if(_out != null)
-                _out.close();
+            if(_socket != null) _socket.close();
+            if(_in != null) _in.close();
+            if(_out != null) _out.close();
 
             _socket = null;
             _in = null;
             _out = null;
 
-        } catch (IOException e) { System.err.println("Failed to close: " + e.getMessage()); }
 
+        } catch (IOException e) { System.out.println("Failed to close: " + e.getMessage()); }
+
+        _connected = false;
     }
 
     /**
@@ -352,23 +303,13 @@ public class Network extends GameEventSource implements Runnable {
         _out.flush();
     }
 
-    public void disconnect() {
-        _connected = false;
-        close();
-    }
-
     public boolean connected() {
         return _connected;
     }
 
-    public String toString() {
-        return "Network";
-    }
-
+    @Override
     public void end() {
-        if(_connected)
-            send( CLOSE_EVENT + "");
-        disconnect();
+        if(_connected) send( CLOSE_EVENT + "");
+        close();
     }
-
 }
