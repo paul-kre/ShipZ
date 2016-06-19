@@ -61,7 +61,7 @@ public class UndoRedo {
 				redo.push(draw);
 				result += draw + ";";
 			} else {
-				throw new NoDrawException("Keine weiteren Züge vorhanden!");
+				throw new NoDrawException();
 			}
 		}
 		return result;
@@ -84,7 +84,7 @@ public class UndoRedo {
 				game.push(draw);
 				result += draw + ";";
 			} else {
-				throw new NoDrawException("Keine weiteren Züge vorhanden!");
+				throw new NoDrawException();
 			}
 		}
 		return result;
