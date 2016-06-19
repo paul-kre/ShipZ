@@ -18,7 +18,7 @@ public class UndoRedo {
 	/** SaveLoad-Objekt */
 	private SaveLoad saveload;
 	/** Der String, der einzelne Züge in der Datei trennt. */
-	private String drawSeparator = ",";
+	private String drawSeparator = ";";
 	
 	// Konstruktor
 	/**
