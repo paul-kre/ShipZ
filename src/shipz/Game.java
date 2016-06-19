@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import shipz.gamemode.*;
 
-import static shipz.util.EventIds.FINISHED_ROUND;
-import static shipz.util.EventIds.READY_EVENT;
-
 /**
  * Spielverwaltung
  * @author Max
