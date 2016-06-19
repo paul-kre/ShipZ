@@ -175,7 +175,7 @@ public class Normal extends Computer {
 
         super.shootResult(yCoord, xCoord,hitState);
 
-        //Streuverhalten des 3-Feld-Musters mit dem Viertel-Muster kalibrieren
+        //Streuverhalten des 3-Feld-Musters mit dem Viertel-Muster kalibrieren//
         updateFieldQuarterPattern();
 
         //Aktualisierung der Schiffsliste

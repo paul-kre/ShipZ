@@ -436,7 +436,7 @@ public class TempKiGame{
             int yCoord = ki.getY();
             int xCoord = ki.getX();
 
-            //Verwaltung übergibt dem Player das Ergebnis mit shootResult mit.
+            //Verwaltung übergibt dem Player das Ergebnis mit shootResult mit.//
             ki.shootResult(yCoord, xCoord, checkTile( xCoord, yCoord) );
 
             System.out.println("Treffer auf :" + yCoord + "|" + xCoord );

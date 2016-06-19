@@ -1909,6 +1909,7 @@ public abstract class Computer extends Player {
                 //eingeschlossenen Felder nicht valide
                 if(!isCoordinateOccupied(yCoord, xCoord -1) || !isCoordinateShipPart(yCoord, xCoord -1)){
 
+                    //
                     isValid = false;
                 }
             }

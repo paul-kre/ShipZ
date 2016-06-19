@@ -52,7 +52,7 @@ public class Easy extends Computer {
     protected void generateAICoordinates() {
 
 
-        //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben
+        //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben//
         if (isShipTileHit()){
 
             int[] tempReturn =  selectNeighbourCoordinates();
