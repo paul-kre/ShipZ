@@ -69,6 +69,96 @@ public class FileStream {
 	
 	/**
 	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
+	 * @return Das geladene Spielfeld
+	 */
+	public String getBoardPlayerOne(String gameName) {
+		return saveload.getBoardPlayerOne(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
+	 * @return Das geladene Spielfeld
+	 */
+	public String getBoardPlayerTwo(String gameName) {
+		return saveload.getBoardPlayerTwo(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt den Spielernamen eines Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Spielername eines Spielstand
+	 */
+	public String getPlayerName(String gameName) {
+		return saveload.getPlayerName(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Namen des Gegners eines bestimmten Spielstands
+	 */
+	public String getOpponentName(String gameName) {
+		return saveload.getOpponentName(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
+	 */
+	public String getBoardsize(String gameName) {
+		return saveload.getBoardsize(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurück.
+	 * @param gameName Name des Spielstands
+	 * @return der aktive Spieler
+	 */
+	public int getActivePlayer(String gameName) {
+		return saveload.getActivePlayer(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return die gespeicherte Uhrzeit als {@link String}
+	 */
+	public String getTime(String gameName) {
+		return saveload.getTime(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt die Einstellungen eines Spielstands zurück.
+	 * @param gameName Name des Spielstands
+	 * @return Einstellungen als String
+	 */
+	public String getPreferences(String gameName) {
+		return saveload.getPreferences(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
@@ -120,6 +210,19 @@ public class FileStream {
 	public void newDraw(int x, int y, int playerIndex, byte result) {
 		undoredo.newDraw(x, y, playerIndex, result);
 		score.setScore(playerIndex, result);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der UndoRedo-Klasse.
+	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
+	 * Außerdem werden die Instanz-Variablen, die die Punkte- und Combo-Werte speichern,
+	 * in der Score-Klasse aktualisiert.
+	 * Wird verwendet, wenn ein Spielstand geladen wird.
+	 * @param gameName Name des Spielstands
+	 */
+	public void loadDraws(String gameName) {
+		undoredo.loadDraws(gameName);
+		score.loadScore(gameName);
 	}
 	
 	/*
