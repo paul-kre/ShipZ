@@ -297,6 +297,22 @@ public class Score {
 	}
 	
 	/**
+	 * Lädt die Züge aus einer Datei und aktualisiert damit die Punkte-
+	 * und Combo-Werte. Diese Methode wird für das Laden von Spielständen benötigt.
+	 * @param gameName Name des Spielstands
+	 */
+	protected void loadScore(String gameName) {
+		String[] draws = saveload.getDraws(gameName).split(";");
+		int playerIndex;
+		byte result;
+		for(int i = 0; i < draws.length; i++) {
+			playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+			result = Byte.parseByte(draws[i].split("|")[2]);
+			setScore(playerIndex, result);
+		}
+	}
+	
+	/**
 	 * So ähnlich wird der Highscore in der Game-Klasse für die GUI dargestellt.
 	 */
 	private void test() {

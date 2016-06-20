@@ -35,7 +35,10 @@ public class UndoRedo {
 	// IM
 	/**
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
-	 * @param draw Der Zug, der getätigt wird als {@link String}. Format: x,y
+	 * Format des fertigen Strings:
+	 * <b>playerIndex</b>|<b>x</b>,<b>y</b>|<b>result</b>
+	 * @param x x-Koordinate des Zugs
+	 * @param y y-Koordinate des Zugs
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
@@ -116,15 +119,24 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Leert alle Stacks.
-	 * Alle getätigten Züge werden gelöscht,
-	 * sie werden NICHT in der Datei gespeichert.
-	 * Um die Daten zu speichern sollte vorher die Methode
-	 * <i>.saveToFile()</i> aufgerufen werden.
+	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
+	 * Wird verwendet, wenn ein Spielstand geladen wird.
+	 * @param gameName Name des Spielstands
 	 */
-	protected void clear() {
+	protected void loadDraws(String gameName) {
 		game.clear();
 		redo.clear();
+		
+		String[] draws = saveload.getDraws(gameName).split(";");
+		int x = 0, y = 0, playerIndex = 0;
+		byte result = 0;
+		for(int i = 0; i < draws.length; i++) {
+			x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
+			y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
+			result = Byte.parseByte(draws[i].split("|")[2]);
+			playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+			newDraw(x, y, playerIndex, result);
+		}
 	}
 	
 	/**
