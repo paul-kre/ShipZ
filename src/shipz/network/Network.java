@@ -144,7 +144,7 @@ public class Network extends Player {
                 open();
 
             } catch(IOException e) {
-                throw new Exception("Failed to connect: " + e.getMessage());
+                System.out.println("Failed to connect: " + e.getMessage());
             }
         }
 
