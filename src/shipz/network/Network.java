@@ -60,7 +60,11 @@ public class Network extends Player {
      */
 
     public Network(boolean isHost) {
-        super();
+        this("Network", isHost);
+    }
+
+    public Network(String name, boolean isHost) {
+        super(name);
 
         _isHost = isHost;
         _connected = false;
@@ -154,28 +158,27 @@ public class Network extends Player {
 
     @Override
     public void run() {
-        Timer timer = new Timer(100);
+        Timer timer = new Timer(500);
 
         send(pingAction + "");
 
         String s;
-        while(!isEnd() && _connected && timer.hasTime()) {
+        while(!isEnd() && timer.hasTime()) {
             try {
                 s = _in.readLine();
                 if(s != null && !s.isEmpty()) { // Message received
                     timer.reset();
                     evaluateString(s);
                 }
-            } catch (Exception e) {
-                System.out.println("Connection error: " + e.getMessage());
-                connectionError();
-            }
-
-            if(!timer.hasTime()) {
-                System.out.println("Connection error.");
-                connectionError();
-            }
+            } catch (Exception e) { }
         }
+
+        if(!timer.hasTime() && !isEnd()) {
+            System.out.println("Connection error.");
+            connectionError();
+        }
+
+        close();
     }
 
     private void connectionError() {
@@ -199,6 +202,8 @@ public class Network extends Player {
                     fireGameEvent(SHOOT_RESULT);
                     break;
                 case CLOSE_EVENT:
+                    close();
+                    end();
                     fireGameEvent(CLOSE_EVENT);
                     break;
                 default:
@@ -209,7 +214,7 @@ public class Network extends Player {
     }
 
     private boolean validMessage(String s) {
-        return Pattern.matches("[0-9]{1,3}//[0-9]{1,2}(:[0-9]{1,2}){2}", s);
+        return Pattern.matches("[0-9]{1,3}(//[0-9]{1,2}(:[0-9]{1,2}){2})?", s);
     }
 
     private void convertShot(String s) {
@@ -276,6 +281,8 @@ public class Network extends Player {
      */
 
     public void close() {
+        _connected = false;
+
         try{
             if(_socket != null) _socket.close();
             if(_in != null) _in.close();
@@ -288,7 +295,6 @@ public class Network extends Player {
 
         } catch (IOException e) { System.out.println("Failed to close: " + e.getMessage()); }
 
-        _connected = false;
     }
 
     /**
@@ -310,6 +316,6 @@ public class Network extends Player {
     @Override
     public void end() {
         if(_connected) send( CLOSE_EVENT + "");
-        close();
+        super.end();
     }
 }

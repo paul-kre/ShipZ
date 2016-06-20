@@ -138,10 +138,14 @@ public class GameTest implements GameEventListener {
                 op.turn();
                 break;
             case DISCONNECT_EVENT:
+                Network nw = (Network) p;
                 System.out.println("Connection lost.");
-                reconnect((Network) p);
+                String reco = ask("Do you want to try to reconnect? (j/n)", "(j|n)");
+                if(reco.charAt(0) == 'j') reconnect(nw);
+                else gameOver();
                 break;
             case CLOSE_EVENT:
+                System.out.println(p + " left the game.");
                 gameOver();
                 break;
         }

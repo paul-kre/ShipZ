@@ -90,4 +90,9 @@ public abstract class Player extends GameEventSource implements Runnable {
     protected boolean isEnd() {
         return _end;
     }
+
+    @Override
+    public String toString() {
+        return _name;
+    }
 }
