@@ -42,7 +42,7 @@ public class UndoRedo {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
-	protected void newDraw(int x, int y, int playerIndex, byte result) {
+	protected void newDraw(int x, int y, int playerIndex, int result) {
 		game.push(playerIndex + "|" + x + "," + y + "|" + result);
 	}
 	
@@ -59,7 +59,7 @@ public class UndoRedo {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
-			if(game.isEmpty() == false) {
+			if(!game.isEmpty()) {
 				draw = game.pop();
 				redo.push(draw);
 				result += draw + ";";
@@ -82,7 +82,7 @@ public class UndoRedo {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
-			if(redo.empty() == false) {
+			if(!redo.empty()) {
 				draw = redo.pop();
 				game.push(draw);
 				result += draw + ";";
@@ -145,14 +145,14 @@ public class UndoRedo {
 	 */
 	public static void main(String[] args) {
 		UndoRedo ur = new UndoRedo();
-		ur.newDraw(8, 8, 1, (byte)1);
-		ur.newDraw(4, 5, 1, (byte)1);
-		ur.newDraw(1, 1, 1, (byte)0);
-		ur.newDraw(7, 6, 2, (byte)1);
-		ur.newDraw(2, 2, 2, (byte)0);
-		ur.newDraw(9, 9, 1, (byte)1);
-		ur.newDraw(1, 3, 1, (byte)0);
-		ur.newDraw(2, 7, 2, (byte)0);
+		ur.newDraw(8, 8, 1, 1);
+		ur.newDraw(4, 5, 1, 1);
+		ur.newDraw(1, 1, 1, 0);
+		ur.newDraw(7, 6, 2, 1);
+		ur.newDraw(2, 2, 2, 0);
+		ur.newDraw(9, 9, 1, 1);
+		ur.newDraw(1, 3, 1, 0);
+		ur.newDraw(2, 7, 2, 0);
 		try {
 			System.out.println(ur.getDraws());
 			System.out.println(ur.undoDraw(1));

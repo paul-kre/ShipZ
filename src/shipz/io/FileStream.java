@@ -28,6 +28,9 @@ public class FileStream {
 		saveload = new SaveLoad();
 	}
 	
+	// TODO
+	// Qualitätssicherung des eigenen Codes
+	
 	/*
 	 * SAVE-LOAD
 	 * CLASS
@@ -181,7 +184,7 @@ public class FileStream {
 	 * @throws NoDrawException tritt auf, falls keine weiteren Züge rückgängig gemacht werden können
 	 */
 	public String undoDraw(int playerIndex) throws NoDrawException {
-		score.setScore(playerIndex, (byte)3);
+		score.setScore(playerIndex, 3);
 		return undoredo.undoDraw(playerIndex);
 	}
 	
@@ -207,7 +210,7 @@ public class FileStream {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @param result <b>0</b> = kein Treffer, <b>1</b> = Treffer, <b>2</b> = Schiff versenkt, <b>3</b> = Zug rückgängig gemacht
 	 */
-	public void newDraw(int x, int y, int playerIndex, byte result) {
+	public void newDraw(int x, int y, int playerIndex, int result) {
 		undoredo.newDraw(x, y, playerIndex, result);
 		score.setScore(playerIndex, result);
 	}
