@@ -88,8 +88,13 @@ public class Network extends Player {
         _port = port;
         _ip = ip;
 
+        if(!_isHost) connectClient();
+    }
+
+    public void connect(int port) throws Exception {
+        _port = port;
+
         if(_isHost) connectHost();
-        else connectClient();
     }
 
     /**
@@ -115,8 +120,6 @@ public class Network extends Player {
             System.out.println("Client accepted.");
 
             String connectedIp = _socket.getInetAddress().getHostAddress();
-            // If the connected ip is not the same as the specified -> repeat connect.
-            if(!_ip.equals(connectedIp)) connectHost();
 
             _connected = true;
 

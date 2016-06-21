@@ -70,9 +70,48 @@ public class GameTest implements GameEventListener {
     }
 
     private Network createNetwork() {
-        Network nw = new Network(isHost);
-        connect(nw);
+        if(isHost) return createHost();
+        else return createClient();
+    }
+
+    private Network createHost() {
+        Network nw = new Network(true);
+        boolean done = false;
+        while(!done) {
+            try {
+                nw.connect(getPort());
+                done = true;
+            } catch (Exception e) {
+                System.out.println("Failed to create host: " + e.getMessage() + "\n\n");
+                done = false;
+            }
+        }
+
         return nw;
+    }
+
+    private Network createClient() {
+        Network nw = new Network(false);
+        boolean done = false;
+        while(!done) {
+            try {
+                nw.connect(getIp(), getPort());
+                done = true;
+            } catch (Exception e) {
+                System.out.println("Failed to create client: " + e.getMessage() + "\n\n");
+                done = false;
+            }
+        }
+
+        return nw;
+    }
+
+    private int getPort() {
+        return Integer.parseInt( ask("Please enter the port.", "[0-9]{1,8}") );
+    }
+
+    private String getIp() {
+        return ask("Please enter your opponent's ip adress.", "((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\\.){3}((25[0-5])|(2[0-4][0-9])|(1?[0-9][0-9]?))");
     }
 
     private void connect(Network nw) {
