@@ -274,15 +274,10 @@ public class FileStream {
 	 * die in einem Namen nicht verwendet werden dürfen.
 	 * Um diesen String in ein Char-Array umzuwandeln:
 	 * <i>forbiddenCharacters().toCharArray()</i>
-	 * @return die verbotenen Zeichen
+	 * @return die verbotenen Zeichen als String
 	 */
 	public String forbiddenCharacters() {
-		char[] c = { '=', ',', '{', '}', '<', '>', ';', '#' };
-		String r = "";
-		for(int i = 0; i < c.length; i++) {
-			r += c[i];
-		}
-		return r;
+		return "=,{}<>;#";
 	}
 	
 	/**
@@ -291,11 +286,11 @@ public class FileStream {
 	 */
 	public static void main(String[] args) {
 		FileStream fs = new FileStream();
-		fs.newDraw(0, 0, 1, (byte)1);
-		fs.newDraw(0, 0, 1, (byte)1);
-		fs.newDraw(0, 0, 1, (byte)2);
-		fs.newDraw(0, 0, 1, (byte)0);
-		fs.newDraw(0, 0, 2, (byte)1);
+		fs.newDraw(0, 0, 1, 1);
+		fs.newDraw(0, 0, 1, 1);
+		fs.newDraw(0, 0, 1, 2);
+		fs.newDraw(0, 0, 1, 0);
+		fs.newDraw(0, 0, 2, 1);
 		System.out.println(fs.getScore(1));
 		System.out.println(fs.getComboValue(1));
 		fs.saveGame("testSpielxx", "Dieter", "Heinz", "WWWWWWW", "WWFFWWWWW", "8,8", 1, "a");

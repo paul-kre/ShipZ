@@ -24,5 +24,9 @@ public class NoDrawException extends Exception {
 	public NoDrawException(String message, Throwable cause) {
 		super(message, cause);
 	}
+	
+	public NoDrawException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
 
 }

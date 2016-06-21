@@ -70,7 +70,7 @@ public class SaveLoad {
 	 * @param boardPlayer2 Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
 	 * @param boardsize Größe des Feldes. Format: "Höhe,Breite"
 	 * @param activePlayer Spieler der gerade am Zug ist
-	 * @param settings Einstellungen des Spiels, die am Anfang gesetzt wurden
+	 * @param preferences Einstellungen des Spiels, die am Anfang gesetzt wurden
 	 */
 	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String preferences) {
 		boolean b = false;
@@ -109,7 +109,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Falls die Dateien noch nicht vorhanden sind, werden sie erstellt.
+	 * Falls die Ordner und Dateien noch nicht vorhanden sind, werden sie erstellt.
 	 * @param file Datei, die erstellt werden soll.
 	 */
 	protected void makeDirectory(File file) {
