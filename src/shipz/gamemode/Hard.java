@@ -67,23 +67,7 @@ public class Hard extends Computer {
 	 */
 	protected void generateAICoordinates() {
 
-        maxHitProbabilityCoordinates ();
 	}
-
-	/**
-	 * Untersucht die Liste der schon beschossenen Koordinaten und generiert nach einem
-	 * Muster die zu beschiessenden Koordinaten die die höchste Trefferwahrscheinlichkeit
-	 * besitzt.<br>
-	 *
-	 * @return Zu beschiessende Koordinaten mit der höchsten Trefferwarscheinlichkeit zum Zeitpunkt
-	 * des Spielfeldes
-	 *
-	 */
-	private int [] maxHitProbabilityCoordinates () {
-
-		return null;
-	}
-
 
 
 	@Override
