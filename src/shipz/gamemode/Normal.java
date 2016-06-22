@@ -82,16 +82,28 @@ public class Normal extends Computer {
                 //wird es ausgeführt
                 if (threePointPatternIsStillValid()){
 
-                    super.setY(super.randomRowInt());
-                    super.setX(super.randomThreePointPatternInt(super.getY()));
+                    //Zur besseren Streuung werden die Koordinaten mittels
+                    // des Viertel-Musters generiert und überprüft
+                    do {
 
-                    if (super.random.nextInt(8) == 3){
+                        super.setY(super.randomRowInt());
+                        super.setX(super.randomThreePointPatternInt(super.getY()));
+
+                    }while(!fieldQuarterPatternIsValid());
+
+
+
+
+
+                    if (super.random.nextInt(5) == 2){
 
                             super.setX(super.randomColumnInt());
 
-                        System.out.println("RANDOMIZIRER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                       // System.out.println("RANDOMIZIRER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
                     }
+
+
 
                 } else {
                     /**
@@ -162,6 +174,20 @@ public class Normal extends Computer {
     public void shootResult(int yCoord, int xCoord, byte hitState ){
 
         super.shootResult(yCoord, xCoord,hitState);
+
+        //Streuverhalten des 3-Feld-Musters mit dem Viertel-Muster kalibrieren//
+        updateFieldQuarterPattern();
+
+        //Aktualisierung der Schiffsliste
+        if (hitState == 2){
+
+            updateShipList();
+
+        }
+
+        //Eingeschlossene Felder ausschließen
+        excludeInvalidFields();
+
         //generateAICoordinates();
 
     }

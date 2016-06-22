@@ -111,7 +111,7 @@ public class TempKiGame{
         board[1][9] = 'x';
         board[2][9] = 'x';
 
-       // board[3][2] = 'x';
+       board[3][2] = 'x';
         // board[4][1] = 'x';
 
 
@@ -412,9 +412,7 @@ public class TempKiGame{
         shipList.add(3);
         shipList.add(2);
         shipList.add(1);
-        shipList.add(1);
-        shipList.add(1);
-        shipList.add(1);
+
 
 
 
@@ -438,13 +436,12 @@ public class TempKiGame{
             int yCoord = ki.getY();
             int xCoord = ki.getX();
 
-            //Verwaltung übergibt dem Player das Ergebnis mit shootResult mit.
+            //Verwaltung übergibt dem Player das Ergebnis mit shootResult mit.//
             ki.shootResult(yCoord, xCoord, checkTile( xCoord, yCoord) );
 
             System.out.println("Treffer auf :" + yCoord + "|" + xCoord );
             System.out.println("Anzeige des Spiegelfeldes der Ki:");
 
-            this.displaySingleBoard(board1);
             ki.displayMirrorField();
             ki.printRowAndColumnItems();
             System.out.println("\n");

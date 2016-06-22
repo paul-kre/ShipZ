@@ -18,7 +18,7 @@ public class UndoRedo {
 	/** SaveLoad-Objekt */
 	private SaveLoad saveload;
 	/** Der String, der einzelne Züge in der Datei trennt. */
-	private String drawSeparator = ",";
+	private String drawSeparator = ";";
 	
 	// Konstruktor
 	/**
@@ -35,11 +35,14 @@ public class UndoRedo {
 	// IM
 	/**
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
-	 * @param draw Der Zug, der getätigt wird als {@link String}. Format: x,y
+	 * Format des fertigen Strings:
+	 * <b>playerIndex</b>|<b>x</b>,<b>y</b>|<b>result</b>
+	 * @param x x-Koordinate des Zugs
+	 * @param y y-Koordinate des Zugs
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
-	protected void newDraw(int x, int y, int playerIndex, byte result) {
+	protected void newDraw(int x, int y, int playerIndex, int result) {
 		game.push(playerIndex + "|" + x + "," + y + "|" + result);
 	}
 	
@@ -56,12 +59,12 @@ public class UndoRedo {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
-			if(game.isEmpty() == false) {
+			if(!game.isEmpty()) {
 				draw = game.pop();
 				redo.push(draw);
 				result += draw + ";";
 			} else {
-				throw new NoDrawException("Keine weiteren Züge vorhanden!");
+				throw new NoDrawException();
 			}
 		}
 		return result;
@@ -79,12 +82,12 @@ public class UndoRedo {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
-			if(redo.empty() == false) {
+			if(!redo.empty()) {
 				draw = redo.pop();
 				game.push(draw);
 				result += draw + ";";
 			} else {
-				throw new NoDrawException("Keine weiteren Züge vorhanden!");
+				throw new NoDrawException();
 			}
 		}
 		return result;
@@ -116,15 +119,24 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Leert alle Stacks.
-	 * Alle getätigten Züge werden gelöscht,
-	 * sie werden NICHT in der Datei gespeichert.
-	 * Um die Daten zu speichern sollte vorher die Methode
-	 * <i>.saveToFile()</i> aufgerufen werden.
+	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
+	 * Wird verwendet, wenn ein Spielstand geladen wird.
+	 * @param gameName Name des Spielstands
 	 */
-	protected void clear() {
+	protected void loadDraws(String gameName) {
 		game.clear();
 		redo.clear();
+		
+		String[] draws = saveload.getDraws(gameName).split(";");
+		int x = 0, y = 0, playerIndex = 0;
+		byte result = 0;
+		for(int i = 0; i < draws.length; i++) {
+			x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
+			y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
+			result = Byte.parseByte(draws[i].split("|")[2]);
+			playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+			newDraw(x, y, playerIndex, result);
+		}
 	}
 	
 	/**
@@ -133,14 +145,14 @@ public class UndoRedo {
 	 */
 	public static void main(String[] args) {
 		UndoRedo ur = new UndoRedo();
-		ur.newDraw(8, 8, 1, (byte)1);
-		ur.newDraw(4, 5, 1, (byte)1);
-		ur.newDraw(1, 1, 1, (byte)0);
-		ur.newDraw(7, 6, 2, (byte)1);
-		ur.newDraw(2, 2, 2, (byte)0);
-		ur.newDraw(9, 9, 1, (byte)1);
-		ur.newDraw(1, 3, 1, (byte)0);
-		ur.newDraw(2, 7, 2, (byte)0);
+		ur.newDraw(8, 8, 1, 1);
+		ur.newDraw(4, 5, 1, 1);
+		ur.newDraw(1, 1, 1, 0);
+		ur.newDraw(7, 6, 2, 1);
+		ur.newDraw(2, 2, 2, 0);
+		ur.newDraw(9, 9, 1, 1);
+		ur.newDraw(1, 3, 1, 0);
+		ur.newDraw(2, 7, 2, 0);
 		try {
 			System.out.println(ur.getDraws());
 			System.out.println(ur.undoDraw(1));

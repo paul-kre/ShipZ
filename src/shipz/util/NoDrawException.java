@@ -9,7 +9,9 @@ package shipz.util;
 public class NoDrawException extends Exception {
 	
 	// Konstruktoren
-	public NoDrawException() {}
+	public NoDrawException() {
+		super("Keine weiteren Züge vorhanden!");
+	}
 	
 	public NoDrawException(String message) {
 		super(message);
@@ -21,6 +23,10 @@ public class NoDrawException extends Exception {
 	
 	public NoDrawException(String message, Throwable cause) {
 		super(message, cause);
+	}
+	
+	public NoDrawException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
 	}
 
 }

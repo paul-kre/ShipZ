@@ -28,6 +28,9 @@ public class FileStream {
 		saveload = new SaveLoad();
 	}
 	
+	// TODO
+	// Qualitätssicherung des eigenen Codes
+	
 	/*
 	 * SAVE-LOAD
 	 * CLASS
@@ -50,6 +53,7 @@ public class FileStream {
 	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String preferences) {
 		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences);
 		undoredo.saveToFile(gameName);
+		score.saveScoreToFile(playerName, opponentName);
 	}
 	
 	/**
@@ -64,6 +68,96 @@ public class FileStream {
 	 */
 	public String getAllGameNames() {
 		return saveload.getAllGameNames();
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
+	 * @return Das geladene Spielfeld
+	 */
+	public String getBoardPlayerOne(String gameName) {
+		return saveload.getBoardPlayerOne(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
+	 * @return Das geladene Spielfeld
+	 */
+	public String getBoardPlayerTwo(String gameName) {
+		return saveload.getBoardPlayerTwo(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt den Spielernamen eines Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Spielername eines Spielstand
+	 */
+	public String getPlayerName(String gameName) {
+		return saveload.getPlayerName(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Namen des Gegners eines bestimmten Spielstands
+	 */
+	public String getOpponentName(String gameName) {
+		return saveload.getOpponentName(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
+	 */
+	public String getBoardsize(String gameName) {
+		return saveload.getBoardsize(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurück.
+	 * @param gameName Name des Spielstands
+	 * @return der aktive Spieler
+	 */
+	public int getActivePlayer(String gameName) {
+		return saveload.getActivePlayer(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return die gespeicherte Uhrzeit als {@link String}
+	 */
+	public String getTime(String gameName) {
+		return saveload.getTime(gameName);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der SaveLoad-Klasse.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt die Einstellungen eines Spielstands zurück.
+	 * @param gameName Name des Spielstands
+	 * @return Einstellungen als String
+	 */
+	public String getPreferences(String gameName) {
+		return saveload.getPreferences(gameName);
 	}
 	
 	/**
@@ -90,7 +184,7 @@ public class FileStream {
 	 * @throws NoDrawException tritt auf, falls keine weiteren Züge rückgängig gemacht werden können
 	 */
 	public String undoDraw(int playerIndex) throws NoDrawException {
-		score.setScore(playerIndex, (byte)3);
+		score.setScore(playerIndex, 3);
 		return undoredo.undoDraw(playerIndex);
 	}
 	
@@ -116,9 +210,22 @@ public class FileStream {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @param result <b>0</b> = kein Treffer, <b>1</b> = Treffer, <b>2</b> = Schiff versenkt, <b>3</b> = Zug rückgängig gemacht
 	 */
-	public void newDraw(int x, int y, int playerIndex, byte result) {
+	public void newDraw(int x, int y, int playerIndex, int result) {
 		undoredo.newDraw(x, y, playerIndex, result);
 		score.setScore(playerIndex, result);
+	}
+	
+	/**
+	 * Referenz auf die Methode in der UndoRedo-Klasse.
+	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
+	 * Außerdem werden die Instanz-Variablen, die die Punkte- und Combo-Werte speichern,
+	 * in der Score-Klasse aktualisiert.
+	 * Wird verwendet, wenn ein Spielstand geladen wird.
+	 * @param gameName Name des Spielstands
+	 */
+	public void loadDraws(String gameName) {
+		undoredo.loadDraws(gameName);
+		score.loadScore(gameName);
 	}
 	
 	/*
@@ -149,19 +256,6 @@ public class FileStream {
 	
 	/**
 	 * Referenz auf die Methode in der Score-Klasse.
-	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
-	 * damit die Punkte in der Datei abgespeichert werden.
-	 * Die Punkte werden zusammen mit dem Namen und der aktuellen Uhrzeit
-	 * abgespeichert im Format <i>Name#Uhrzeit=Punkte</i>.
-	 * @param playerName Name des ersten Spielers
-	 * @param opponentName Name des zweiten Spielers
-	 */
-	public void saveScoreToFile(String playerName, String opponentName) {
-		score.saveScoreToFile(playerName, opponentName);
-	}
-	
-	/**
-	 * Referenz auf die Methode in der Score-Klasse.
 	 * Der Wert der Combo wird zurückgegeben, damit die GUI darstellen kann, 
 	 * welche Combo der Spieler aktuell erreicht hat.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
@@ -180,15 +274,10 @@ public class FileStream {
 	 * die in einem Namen nicht verwendet werden dürfen.
 	 * Um diesen String in ein Char-Array umzuwandeln:
 	 * <i>forbiddenCharacters().toCharArray()</i>
-	 * @return die verbotenen Zeichen
+	 * @return die verbotenen Zeichen als String
 	 */
 	public String forbiddenCharacters() {
-		char[] c = { '=', ',', '{', '}', '<', '>', ';', '#' };
-		String r = "";
-		for(int i = 0; i < c.length; i++) {
-			r += c[i];
-		}
-		return r;
+		return "=,{}<>;#";
 	}
 	
 	/**
@@ -197,12 +286,14 @@ public class FileStream {
 	 */
 	public static void main(String[] args) {
 		FileStream fs = new FileStream();
-		fs.newDraw(0, 0, 1, (byte)1);
-		fs.newDraw(0, 0, 1, (byte)1);
-		fs.newDraw(0, 0, 1, (byte)2);
-		fs.newDraw(0, 0, 1, (byte)0);
+		fs.newDraw(0, 0, 1, 1);
+		fs.newDraw(0, 0, 1, 1);
+		fs.newDraw(0, 0, 1, 2);
+		fs.newDraw(0, 0, 1, 0);
+		fs.newDraw(0, 0, 2, 1);
 		System.out.println(fs.getScore(1));
 		System.out.println(fs.getComboValue(1));
+		fs.saveGame("testSpielxx", "Dieter", "Heinz", "WWWWWWW", "WWFFWWWWW", "8,8", 1, "a");
 		
 	}
 	

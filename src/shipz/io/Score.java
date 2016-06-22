@@ -56,24 +56,26 @@ public class Score {
 	 * @param playerName Name des Spielers
 	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
 	 */
-	protected void setScore(int playerIndex, byte result) {
+	protected void setScore(int playerIndex, int result) {
 		switch(result) {
 		case 3:
 			if(playerIndex == 1) {
 				scorePlayer1 -= 30;
 			} else if(playerIndex == 2){
 				scorePlayer2 -= 30;
-			} else System.err.println("Fehler! \nUnzulässiger playerIndex. \n1 oder 2 erlaubt.");
+			} else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		case 1:
 			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 50*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 50*comboPlayer2;
+			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		case 2:
 			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 300*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 300*comboPlayer2;
+			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		default: break;
 		}
@@ -84,7 +86,7 @@ public class Score {
 	 * @param playerName Spielername
 	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
 	 */
-	private void combo(int playerIndex, byte result) {
+	private void combo(int playerIndex, int result) {
 		if(playerIndex == 1) {
 			if(result == 1) {
 				comboPlayer1 += 1;
@@ -92,7 +94,7 @@ public class Score {
 			} else if (result == 2){
 				comboPlayer1 = comboPlayer1*2;
 				comboPlayer2 = 1;
-			} else if(result == 0) {
+			} else if(result == 0 || result == 3) {
 				comboPlayer1 = 1;
 			}
 		} else if(playerIndex == 2) {
@@ -102,7 +104,7 @@ public class Score {
 			} else if (result == 2) {
 				comboPlayer2 = comboPlayer2*2;
 				comboPlayer1 = 1;
-			} else if(result == 0) {
+			} else if(result == 0 || result == 3) {
 				comboPlayer2 = 1;
 			}
 		} else {
@@ -160,24 +162,10 @@ public class Score {
 		if(a.length < 10) {
 			for(int i = 0; i < a.length; i++) {
 				result += a[i] + ",";
-				
-				/*if(a[i].contains((CharSequence)"#")) {
-					String[] temp = a[i].split("=");
-					result += a[i].split("#")[0] + "=" + temp[1] + ",";
-				} else {
-					result += a[i] + ",";
-				}*/
 			}
 		} else {
 			for(int i = 0; i < 10; i++) {
 				result += a[i] + ",";
-				
-				/*if(a[i].contains((CharSequence)"#")) {
-					String[] temp = a[i].split("=");
-					result += a[i].split("#")[0] + "=" + temp[1] + ",";
-				} else {
-					result += a[i] + ",";
-				}*/
 			}
 		}
 		return result;
@@ -297,6 +285,22 @@ public class Score {
 	}
 	
 	/**
+	 * Lädt die Züge aus einer Datei und aktualisiert damit die Punkte-
+	 * und Combo-Werte. Diese Methode wird für das Laden von Spielständen benötigt.
+	 * @param gameName Name des Spielstands
+	 */
+	protected void loadScore(String gameName) {
+		String[] draws = saveload.getDraws(gameName).split(";");
+		int playerIndex;
+		byte result;
+		for(int i = 0; i < draws.length; i++) {
+			playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+			result = Byte.parseByte(draws[i].split("|")[2]);
+			setScore(playerIndex, result);
+		}
+	}
+	
+	/**
 	 * So ähnlich wird der Highscore in der Game-Klasse für die GUI dargestellt.
 	 */
 	private void test() {
@@ -308,7 +312,6 @@ public class Score {
 			String date = highscoreArray[i].split("=")[0].split("#")[1].replaceAll("_", " ").replaceAll("-", ":");
 			System.out.println(i+1 + "\t" + name + "\t\t" + score + "\t\t" + date);
 		}
-		
 	}
 	
 	/**

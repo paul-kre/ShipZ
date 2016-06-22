@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import shipz.gamemode.*;
 
-import static shipz.util.EventIds.FINISHED_ROUND;
-import static shipz.util.EventIds.READY_EVENT;
-
 /**
  * Spielverwaltung
  * @author Max
@@ -28,6 +25,7 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
     private Player player1;
     /** Verweis auf den 2. Spieler */
     private Player player2;
+
     /** gibt an, ob Spieler 1 aktiv ist */
     private boolean player1active;
     /** Netzwerkverbindung */

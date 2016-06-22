@@ -6,24 +6,31 @@ package shipz.util;
 
 public interface Event {
 
-    // General
+	// General
 	byte SHOOT_EVENT = 10;
 	byte CLOSE_EVENT = 20;
 
-    // Network
+	// Network
 	byte NET_SHOOT_EVENT = 30;
 	byte DISCONNECT_EVENT = 31;
 	byte SHOOT_RESULT = 32;
 
-    // AI
+	// AI
 	byte AI_SHOOT_EVENT = 40;
 
-    // GUI
+	// GUI
 	byte GUI_SHOOT_EVENT = 50;
 	byte FILL_EVENT = 51;
-    
-    // IO
-//	byte NO_DRAWS_TO_UNDO_EVENT = 80;
-//	byte NO_DRAWS_TO_REDO_EVENT = 81;
+	byte FINISHED_ROUND = 52;
+	byte READY_EVENT = 53;
+
+	// IO
+	byte SAVE_EVENT = 110;
+	byte LOAD_EVENT = 111;
+	byte UNDO_EVENT = 112;
+	byte REDO_EVENT = 113;
+	byte HIGHSCORE_EVENT = 114;
+
+	// IDs von 110-120 reserviert
     
 }

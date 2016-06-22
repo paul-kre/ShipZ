@@ -25,9 +25,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import shipz.util.GameEventSource;
 
-import static shipz.util.EventIds.FINISHED_ROUND;
-import static shipz.util.EventIds.READY_EVENT;
-
 
 /**
  *

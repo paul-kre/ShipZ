@@ -157,14 +157,34 @@ public abstract class Computer extends Player {
      * <b>lastHitQuarter</b> hat vor der Initialisierung den Wert -1.
      * Sobald das Viertel-Muster parallel mit dem 3-Feld-Muster einsetzt, kann
      * diese Variable folgende Werte enthalten:<br>
-     *     0: Oberes-Linkes Viertel
-     *     1: Oberes-Rechtes Viertel
-     *     2: Unteres-Linkes Viertel
-     *     3: Unteres-Rechte Viertel
+     *     0: Oberes-Linkes Viertel<br>
+     *     1: Oberes-Rechtes Viertel<br>
+     *     2: Unteres-Linkes Viertel<br>
+     *     3: Unteres-Rechte Viertel<br><br>
+     *
+     *  Der Wert sorgt dafür, dass die generierten Koordinaten im nächsten
+     *  Zug nicht im selben Viertel wie davor beschossen wird.
      *
      *
      */
     private byte lastHitQuarter = -1;
+
+
+    /**
+     * Zählt die Länge eines gerade beschossenen Schiffes. Sobald
+     * das betrachtete Schiff zerstört wird, wird der Wert auf
+     * den Anfangswert 1 gesetzt.<br>
+     *
+     * Der Anfangswert beträgt 1, weil das Schiffsteil, von dem
+     * aus in alle Richtungen nach anderen Schiffsteilen gesucht wird, sich
+     * nicht selber mitzählt, weshalb man immer ein Schiffsteil dazu addieren
+     * muss.
+     */
+    private int hitShipLength = 1;
+
+
+
+
 
     //Constructor
 
@@ -295,6 +315,7 @@ public abstract class Computer extends Player {
             excludeFullRows(yCoord);
             excludeFullColumns(xCoord);
         }
+
 
     }
 
@@ -795,6 +816,10 @@ public abstract class Computer extends Player {
                             saveShipHorizontalSideEdge(currentY,currentX, yDirection, xDirection);
                         }
 
+
+
+                        //Die Länge des aktuell betrachteten Schiffes wird gespeichert
+                        this.hitShipLength++;
 
                         // Richtung wurde noch nicht zu Ende durchsucht, deshalb läuft die Schleife weiter
                         directionCheck = true;
@@ -1565,6 +1590,13 @@ public abstract class Computer extends Player {
 
 
 
+
+
+
+
+
+
+
     /**
      * Schiffsliste wird mit der Anzahl der Schiffe
      * für das startende Spiel initialisiert
@@ -1595,6 +1627,447 @@ public abstract class Computer extends Player {
         }
 
     }
+
+
+    /**
+     * Überprüfung ob die generierten Koordinaten der KI
+     * sich im angegebenen Viertel aufhält oder nicht
+     *
+     * @param rowBeginn Anfangspunkt der Reihe
+     * @param rowEnd Endpunkt der Reihe
+     * @param columnBeginn Anfangspunkt der Spalte
+     * @param columnEnd Endpunkt der Spalte
+     * @return Ob sich eine Koordinate in einem angegebenen Viertel aufhält oder nicht
+     */
+    private boolean isInFieldQuarter ( int rowBeginn, int rowEnd, int columnBeginn, int columnEnd){
+
+
+
+        for ( int r = rowBeginn; r < rowEnd; r++ ){ //Äußere FOR-Schleife läuft die Y-Koordinaten durch
+
+            for ( int c = columnBeginn; c < columnEnd; c++){ //Innere FOR-Schleife läuft die X-Koordinaten durch
+
+
+                if ( (super.getY() == r) && (super.getX() == c)){
+
+                    //Sobald im Viertel die angegebenen Koordinaten erkannt wurden, wird die Methode beendet
+                    return true;
+
+                }
+
+            }
+        }
+
+        //Alle Koordinaten des Viertels wurden durchlaufen und die Koordinaten waren nicht im angegebenen Viertel
+        return false;
+    }
+
+
+    /**
+     * Die erstellten Koordinaten der KI werden überprüft, ob
+     * sich das Viertel, in dem die zuletzt erstellte, an die Main übergebene
+     * Koordinate mit dem Viertel der neu generierten unterscheidet. Nur
+     * wenn sie sich unterscheiden wird TRUE ausgegeben.
+     *
+     * @return Ob sich die das letzte Viertel mit dem neuen unterscheidet oder nicht
+     */
+    protected boolean fieldQuarterPatternIsValid (){
+
+        //Beim ersten Aufruf gab es noch keinen letzten ZUg, deshalb ist der erste automatisch gültig
+        if (lastHitQuarter == -1){
+            return true;
+        }
+
+
+
+        //Prüfen ob der neue Zug im Oberen-Linken Viertel und daher FALSE ist
+        if ( lastHitQuarter == 0){
+
+           return  !isInFieldQuarter(0, (fieldSize/2), 0,(fieldSize/2));
+        }
+
+        //Prüfen ob der neue Zug im Oberen-Rechten Viertel und daher FALSE ist
+        if ( lastHitQuarter == 1){
+
+            return  !isInFieldQuarter(0, (fieldSize/2), (fieldSize/2), fieldSize);
+        }
+
+        //Prüfen ob der neue Zug im Unteren-Linken Viertel und daher FALSE ist
+        if ( lastHitQuarter == 2){
+
+            return  !isInFieldQuarter( (fieldSize/2), fieldSize, 0,(fieldSize/2));
+        }
+
+        //Prüfen ob der neue Zug im Unteren-Rechten Viertel und daher FALSE ist
+        if ( lastHitQuarter == 3){
+
+            return  !isInFieldQuarter((fieldSize/2), fieldSize, (fieldSize/2), fieldSize);
+
+        }
+
+
+
+        //Der neue Zug entspricht dem Viertel-Muster und ist daher gültig
+        return true;
+
+
+
+    }
+
+
+    /**
+     * Das zuletzt beschossene Viertel wird abgespeichert,
+     * sodass es nicht im nächsten Zug nochmal beschossen
+     * werden kann
+     */
+    protected void updateFieldQuarterPattern(){
+
+        //Prüfen ob sich die beschossene Koordinate im Oberen-Linken Viertel befindet
+        if ( isInFieldQuarter(0, (fieldSize/2), 0,(fieldSize/2)) ){
+
+            lastHitQuarter = 0;
+        }
+
+        //Prüfen ob sich die beschossene Koordinate im Oberen-Rechten Viertel befindet
+        if ( isInFieldQuarter(0, (fieldSize/2), (fieldSize/2), fieldSize) ){
+
+            lastHitQuarter = 1;
+        }
+
+        //Prüfen ob sich die beschossene Koordinate im Unteren-Linken Viertel befindet
+        if ( isInFieldQuarter( (fieldSize/2), fieldSize, 0,(fieldSize/2)) ){
+
+            lastHitQuarter = 2;
+        }
+
+        //Prüfen ob sich die beschossene Koordinate im Unteren-Rechten Viertel befindet
+        if ( isInFieldQuarter((fieldSize/2), fieldSize, (fieldSize/2), fieldSize) ){
+
+            lastHitQuarter = 3;
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Das zuletzt zerstörte Schiff wird aus der
+     * Schiffsliste gelöscht und die Variable
+     * zur Speicherung der Länge des aktuell
+     * beschossenen Schiffes wird resettet
+     *
+     */
+    protected void updateShipList(){
+
+        //Das zuletzt zerstörte Schiff aus der Schiffsliste streichen
+        this.shipList.put(hitShipLength, (shipList.get(hitShipLength) - 1) );
+
+        //Schiffslänge wieder auf den Anfangsstatus setzen
+        this.hitShipLength = 1;
+    }
+
+
+
+
+
+
+    /**
+     * Mit der Berücksichtigung der Schiffsliste
+     * werden leere Felder auf dem Spielfeld, auf dem sich
+     * keine Schiffe mehr befinden können, automatisch
+     * aussortiert und nicht mehr von der KI
+     * beachtet.<br><br>
+     *
+     * Beispiel: Wenn alle 1er- und 2er-Schiffe
+     * zersört wurden, werden alle eingeschlossenen
+     * 2er- und 1er-Felder auf dem Spielfeld ausgeschlossen.
+     */
+    protected void excludeInvalidFields(){
+
+
+        //Scannen des Spielfeldes und Ausschließen von leeren 3er-Feldern wenn alle 3er-, 2er- und 1er-Schiffe zerstört wurden
+        if ( (shipList.get(3) == 0) && (shipList.get(2) == 0)  && (shipList.get(1) == 0) ){
+
+            scanTrappedFields(3);
+
+        }
+
+
+
+        //Scannen des Spielfeldes und Ausschließen von leeren 2er-Feldern wenn alle 2er- und 1er-Schiffe zerstört wurden
+        if ( (shipList.get(2) == 0)  && (shipList.get(1) == 0) ){
+
+
+            scanTrappedFields(2);
+
+        }
+
+        //Scannen des Spielfeldes und Ausschließen von leeren 1er-Feldern wenn alle 1er-Schiffe zerstört wurden
+        if ( (shipList.get(1) == 0) ){
+
+            scanTrappedFields(1);
+
+        }
+
+    }
+
+
+    /**
+     * Überprüft ob irgendwo auf dem Spielfeld zusammengehörige
+     * Felder einer bestimmten Größe eingeschlossen sind und
+     * schließt diese entsprechend aus der Berechnung der KI
+     * aus
+     *
+     * @param trappedFieldSize Die Größe der eingeschlossenen Felder welche auf dem Spielfeld überprüft werden sollen
+     */
+    private void scanTrappedFields(int trappedFieldSize){
+
+
+        for( int r = 0; r < includedRows.size(); r++ ){ //Äußere Schleife für die Überprüfung der Reihen
+
+            for (int c = 0; c < includedColumns.size(); c++){   //Innere Schleife für die Spalten
+
+                int i;
+
+                if (trappedFieldsAreValid(includedRows.get(r), includedColumns.get(c), trappedFieldSize, 0) ){
+
+                    for (i = 0; i < trappedFieldSize; i++){
+
+
+                        setCoordinateOccupied(includedRows.get(r), includedColumns.get(c) + i);
+
+                        //Wenn die ausgeschlossenen Koordinaten Teil des Schachbrettmusters sind,
+                        //werden die entsprechenden Koordinaten aus der Schachbrettmuster-Liste entfernt
+                        if (validChessBoardPatternCoordinates.contains("" + includedRows.get(r) + "," + (includedColumns.get(c) + i)) ){
+
+                            validChessBoardPatternCoordinates.remove("" + includedRows.get(r) + "," + (includedColumns.get(c) + i) ) ;
+                        }
+
+                    }
+
+                }
+
+               if (trappedFieldsAreValid(includedRows.get(r), includedColumns.get(c), trappedFieldSize, 1) ){
+
+                   for (i = 0; i < trappedFieldSize; i++){
+
+                       setCoordinateOccupied(includedRows.get(r) + i, includedColumns.get(c) );
+
+                       //Wenn die ausgeschlossenen Koordinaten Teil des Schachbrettmusters sind,
+                       //werden die entsprechenden Koordinaten aus der Schachbrettmuster-Liste entfernt
+                       if (validChessBoardPatternCoordinates.contains("" + (includedRows.get(r) + i) + "," + includedColumns.get(c) ) ){
+
+                           validChessBoardPatternCoordinates.remove("" + (includedRows.get(r) + i) + "," + includedColumns.get(c) ) ;
+                       }
+                   }
+
+               }
+
+            }
+
+        }
+    }
+
+
+    /**
+     * Überprüft von einer bestimmten Koordinate in einer Richtung
+     * ob die eingeschlossenen Felder zum Ausschließen geeignte sind
+     * oder nicht
+     *
+     * @param yCoord Zu überprüfende Y-Koordinate
+     * @param xCoord Zu überprüfende X-Koordinate
+     * @param direction Die Richtung in welche die Felder geprüft werden.
+     *                  Folgende Werte sind erlaubt:<br>
+     *                  0: Horizontale Richtung<br>
+     *                  1: Vertikale Richtung <br>
+     *
+     * @param trappedFieldSize Die Größe der eingeschlossenen Felder welche auf dem Spielfeld überprüft werden sollen
+     *
+     * @return  Ob die eingeschlossenen Felder zum Auschließen geeignte sind oder nicht
+     */
+    private boolean trappedFieldsAreValid (int yCoord, int xCoord, int trappedFieldSize, int direction){
+
+        boolean isValid = true;
+
+
+        //Schritt 1: Links neben bzw. ein Feld über der aktuellen Koordinate überprüfen, ob das Feld dort
+        //eingeschlossen ist
+
+        if (direction == 0){ //Horizontale Richtung
+
+            //Zuerst überprüfen ob die Koordinate im Spielfeld ist oder aus dem Spielfeld herausragt
+            if (isCoordinateInField(yCoord, xCoord -1)){
+
+                //Wenn Sie im Spielfeld ist und keine besetzte Koordinate ist, dann sind die
+                //eingeschlossenen Felder nicht valide
+                if(!isCoordinateOccupied(yCoord, xCoord -1) || !isCoordinateShipPart(yCoord, xCoord -1)){
+
+                    //
+                    isValid = false;
+                }
+            }
+
+        } else {    //Vertikale Richtung
+
+            //Zuerst überprüfen ob die Koordinate im Spielfeld ist oder aus dem Spielfeld herausragt
+            if (isCoordinateInField(yCoord -1, xCoord )){
+
+                //Wenn Sie im Spielfeld ist und keine besetzte Koordinate ist, dann sind die
+                //eingeschlossenen Felder nicht valide
+                if(!isCoordinateOccupied(yCoord -1, xCoord) || !isCoordinateShipPart(yCoord -1, xCoord)){
+
+                    isValid = false;
+                }
+            }
+
+        }
+
+
+        //Schritt 2: Die Koordinaten die Frei sind und dessen oberen/unteren bzw. linken/rechten Nachbarkoordinaten
+        //Werden überprüft
+
+        for( int i = 0; i < trappedFieldSize; i++){
+
+
+            if (direction == 0){ //Horizontale Richtung
+
+                //Obere und untere Nachbarkoordinate des eingeschlossenen Feldes überprüfen
+
+                if (isCoordinateInField(yCoord -1, xCoord + i) ){
+
+                    if(!isCoordinateOccupied(yCoord -1, xCoord + i) || !isCoordinateShipPart(yCoord -1, xCoord + i)){ //Obere Nachbarkoordinate
+
+                        isValid = false;
+                    }
+
+                }
+
+
+                if (isCoordinateInField(yCoord +1, xCoord + i) ){
+
+                    if(!isCoordinateOccupied(yCoord +1, xCoord + i) || !isCoordinateShipPart(yCoord +1, xCoord + i)){ //Untere Nachbarkoordinate
+
+                        isValid = false;
+                    }
+
+                }
+
+                /** Jetzt wird die eigentliche eingeschlossene Koordinate geprüft. Diese muss frei sein. Wenn i = 0 ist,
+                 * wird die übergebene Koordinate zuerst geprüft. i wird dann incrementiert und die zu überprüfenden, eingeschlossenen
+                 * Felder wandern nach rechts
+                 * */
+
+                if (isCoordinateInField(yCoord, xCoord + i) ){
+
+                    if (isCoordinateOccupied(yCoord, xCoord + i) || isCoordinateShipPart(yCoord, xCoord + i) ){
+
+                        isValid = false;
+                    }
+
+                } else {
+
+                    //Wenn die eigentliche eingeschlossene Koordinate nicht im Feld ist, wird das ganze n-große Feld
+                    // nicht eingeschlossen
+                    isValid = false;
+                }
+
+
+
+            }else { //Vertikale Richtung
+
+
+                //Linke und rechte Nachbarkoordinate des eingeschlossenen Feldes überprüfen
+
+                if (isCoordinateInField(yCoord + i, xCoord - 1) ){
+
+                    if(!isCoordinateOccupied(yCoord + i, xCoord - 1) || !isCoordinateShipPart(yCoord + i, xCoord - 1)){ //Linke Nachbarkoordinate
+
+                        isValid = false;
+                    }
+
+                }
+
+                if (isCoordinateInField(yCoord + i, xCoord + 1) ){
+
+                    if(!isCoordinateOccupied(yCoord + i, xCoord + 1) || !isCoordinateShipPart(yCoord + i, xCoord + 1)){ //Rechte Nachbarkoordinate
+
+                        isValid = false;
+                    }
+                }
+
+
+                /** Jetzt wird die eigentliche eingeschlossene Koordinate geprüft. Diese muss frei sein. Wenn i = 0 ist,
+                 * wird die übergebene Koordinate zuerst geprüft. i wird dann incrementiert und die zu überprüfenden, eingeschlossenen
+                 * Felder wandern nach unten
+                 * */
+
+                if (isCoordinateInField(yCoord + i, xCoord) ){
+
+                    if (isCoordinateOccupied(yCoord + i, xCoord) || isCoordinateShipPart(yCoord + i, xCoord) ){
+
+                        isValid = false;
+                    }
+
+                } else {
+
+                    //Wenn die eigentliche eingeschlossene Koordinate nicht im Feld ist, wird das ganze n-große Feld
+                    // nicht eingeschlossen
+                    isValid = false;
+                }
+
+
+
+
+
+            }
+
+        }
+
+
+
+        //Schritt 3: Letzter Schritt. Wie am Anfang auch, wird am Ende die rechte bzw. unterste Koordinate neben/unter der
+        //letzten eingeschlossenen Koordinate geprüft, ob diese besetzt ist
+
+        if (direction == 0){ //Ganz rechts untersuchen
+
+            //Zuerst überprüfen ob die Koordinate im Spielfeld ist oder aus dem Spielfeld herausragt
+            if (isCoordinateInField(yCoord, xCoord + trappedFieldSize)){
+
+                //Besetzte Koordinate ganz Rechts untersuchen
+                if(!isCoordinateOccupied(yCoord, xCoord + trappedFieldSize) || !isCoordinateShipPart(yCoord, xCoord + trappedFieldSize)){
+
+                    isValid = false;
+                }
+            }
+
+
+        }else { //Ganz unten untersuchen
+
+            //Zuerst überprüfen ob die Koordinate im Spielfeld ist oder aus dem Spielfeld herausragt
+            if (isCoordinateInField(yCoord + trappedFieldSize, xCoord )){
+
+                //Besetzte Koordinate ganz unten untersuchen
+                if(!isCoordinateOccupied(yCoord + trappedFieldSize, xCoord) || !isCoordinateShipPart(yCoord + trappedFieldSize, xCoord)){
+
+                    isValid = false;
+                }
+            }
+
+        }
+
+
+
+
+        return isValid;
+    }
+
 
 
 
@@ -1675,16 +2148,22 @@ public abstract class Computer extends Player {
         System.out.println("\n\n");
 
 
-        /*
+
         System.out.print("Schiffsliste:\n");
         for (Map.Entry m: shipList.entrySet()){
 
-            System.out.println( m.getKey()  + ": " + m.getValue() + ", ");
+            System.out.print( m.getKey()  + ": " + m.getValue() + ", ");
         }
         System.out.println("\n\n");
-*/
+
 
     }
+
+
+
+
+
+
 
 
     /**

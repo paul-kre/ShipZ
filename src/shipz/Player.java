@@ -7,11 +7,18 @@ public abstract class Player extends GameEventSource implements Runnable {
     private int _x;
     private int _y;
     private byte _result;
+    private boolean _turn;
 
-    public Player(){}
+    private boolean _end;
+
+    public Player(){
+        this("Player");
+    }
 
     public Player(String name) {
         _name = name;
+        _end = false;
+        _turn = false;
     }
 
     public String name() {
@@ -65,5 +72,27 @@ public abstract class Player extends GameEventSource implements Runnable {
 
     public void shootField(int x, int y, byte result) {}
 
-	//public abstract void end();
+    public void turn() {
+        _turn = true;
+    }
+
+    public boolean isMyTurn() {
+        if(_turn) {
+            _turn = false;
+            return true;
+        } else return false;
+    }
+
+	public void end() {
+        _end = true;
+    }
+
+    protected boolean isEnd() {
+        return _end;
+    }
+
+    @Override
+    public String toString() {
+        return _name;
+    }
 }
