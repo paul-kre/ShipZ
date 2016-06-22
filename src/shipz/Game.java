@@ -46,6 +46,8 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
     private byte aResult;
     /** gibt an, ob auf die GUI gewartet werden muss */
     public boolean waitForGUI;
+    /** zählt die Spielzüge für Testzwecke */
+    private int testCounter;
 
     //Constructor
     /**
@@ -60,6 +62,7 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
         gui = new GUI2(primaryStage);
         gui.setEventListener(this);
         player1active = true;
+        testCounter = 1;
     }
 
     //Methoden
@@ -779,23 +782,24 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
     }
 
     private void nextRound() {
-        //Test zur Ausgabe der ersten zehn Schüsse auf Feld2
-        for(int i = 0; i<10; i++) {
-            if (player1active) {
-                waitForGUI = true;
-                aX = player1.getX();
-                aY = player1.getY();
-                aResult = checkTile(aX, aY);
-                player1.shootResult(aY, aX, aResult);
-                System.out.println(aY + "/" + aX + " => " + aResult);
-                if (aResult == 0) {
-                    gui.drawWater(aY, aX, 2);
-                } else {
-                    gui.drawExplosion(aY, aX, 2);
-                }
-                while(waitForGUI) {
-                    //nichts
-                }
+        if (player1active) {
+            try {
+                Thread.sleep(1000);
+                //TimerTask
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            waitForGUI = true;
+            aX = player1.getX();
+            aY = player1.getY();
+            aResult = checkTile(aX, aY);
+            player1.shootResult(aY, aX, aResult);
+            System.out.println("Zug" + testCounter + ": " + aY + "/" + aX + " => " + aResult);
+            testCounter++;
+            if (aResult == 0) {
+                gui.drawWater(aY, aX, 2);
+            } else {
+                gui.drawExplosion(aY, aX, 2);
             }
         }
     }
@@ -889,7 +893,12 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
                 test();
                 break;
             case FINISHED_ROUND:
-                waitForGUI = false;
+                if(testCounter <= 10) {
+                    nextRound();
+                }
+                else {
+                    System.out.println("Ende");
+                }
         }
     }
 
