@@ -184,6 +184,8 @@ public class SaveLoad {
 			} catch (JDOMException | IOException e) {
 				e.printStackTrace();
 			}
+		} else {
+			throw new RuntimeException("Fehler beim Bearbeiten des XML-Dokuments!");
 		}
 	}
 	
@@ -220,7 +222,7 @@ public class SaveLoad {
 			document.setContent(root);
 			writeXML();
 		} else {
-			System.err.println("Fehler beim Löschen des Spielstands! Dieser Spielstand existiert nicht!");
+			throw new RuntimeException("Fehler beim Löschen des Spielstands! Dieser Spielstand existiert nicht!");
 		}
 	}
 	
@@ -430,18 +432,6 @@ public class SaveLoad {
 		Calendar c = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.y_HH:mm:ss");
 		return sdf.format(c.getTime());
-	}
-	
-	/**
-	 * main method
-	 * für tests
-	 * @param args arguments
-	 */
-	public static void main(String[] args) {
-		SaveLoad saveload = new SaveLoad();
-//		saveload.newGame("nkjkjjk", "nur", "noch", "ein", "kleiner", "test");
-//		saveload.setPlayerName("nkjkjjk", "TEST");
-		
 	}
 	
 }

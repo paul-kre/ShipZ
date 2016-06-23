@@ -19,6 +19,11 @@ public class FileStream {
 	/** Referenz auf die Speichern-Laden-Klasse */
 	private SaveLoad saveload;
 	
+	// TODO
+	// SaveLoad Code säubern
+	// Kommentare überarbeiten
+	
+	// Konstruktor
 	/**
 	 * Konstruktor der Klasse.
 	 */
@@ -27,9 +32,6 @@ public class FileStream {
 		undoredo = new UndoRedo();
 		saveload = new SaveLoad();
 	}
-	
-	// TODO
-	// Qualitätssicherung des eigenen Codes
 	
 	/*
 	 * SAVE-LOAD
