@@ -52,7 +52,6 @@ public class Normal extends Computer {
 	 *
 	 */
 	protected void generateAICoordinates() {
-        //loopHoleVar = 0;
 
 
         /** Speicherung der Koordinate des Schachbrettmusters */
@@ -89,17 +88,12 @@ public class Normal extends Computer {
                         super.setY(super.randomRowInt());
                         super.setX(super.randomThreePointPatternInt(super.getY()));
 
-                    }while(!fieldQuarterPatternIsValid());
-
-
-
+                    }while( !fieldQuarterPatternIsValid());
 
 
                     if (super.random.nextInt(5) == 2){
 
                             super.setX(super.randomColumnInt());
-
-                       // System.out.println("RANDOMIZIRER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
                     }
 
@@ -160,8 +154,7 @@ public class Normal extends Computer {
      *      2er-Felder werden für die Generierung weiterer Koordinaten ausgeschlossen)<br><br>
      *
      *      - Streuverhalten der Abschüsse durch das Viertel-Muster bestimmen und entsprechend kalibrieren,
-     *      sodass während des 3-Feld-Musters immer möglichst alle Bereiche gleich viel beschossen werden
-     *      können<br>
+     *      sodass während des 3-Feld-Musters immer möglichst alle Bereiche gleich viel beschossen werden<br>
      *
      *
      * @param yCoord Y-Koordinate der Zelle

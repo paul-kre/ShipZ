@@ -32,7 +32,7 @@ public class Easy extends Computer {
     public Easy (int newFieldSize,boolean placingAtEdge, List<Integer> newShipList) {
 
         super(newFieldSize,placingAtEdge, newShipList);
-       generateAICoordinates();
+       //generateAICoordinates();
 
     }
 
@@ -52,7 +52,7 @@ public class Easy extends Computer {
     protected void generateAICoordinates() {
 
 
-        //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben//
+        //Falls schon ein Schiff getroffen wurde, wird um den Treffer gesucht und eine Koordinate zurückgegeben
         if (isShipTileHit()){
 
             int[] tempReturn =  selectNeighbourCoordinates();
@@ -114,12 +114,11 @@ public class Easy extends Computer {
 
         super.shootResult(yCoord, xCoord,hitState);
 
-        generateAICoordinates();
+       // generateAICoordinates();
     }
 
 
      public void run() {
-        // TODO Auto-generated method stub
 
     }
 

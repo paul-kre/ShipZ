@@ -21,7 +21,7 @@ public abstract class Computer extends Player {
 
 
     /** Die Feldgröße des aktuellen Spiels. Standardmäßig ist es 10 x 10  */
-    private int fieldSize = 10;
+    protected int fieldSize = 10;
 
     /**
      * Zweidimensionales Byte-Array, welches als Kopie des zu beschießenen Feldes dient<br>
@@ -82,7 +82,7 @@ public abstract class Computer extends Player {
      * freie Koordinaren haben, mal der Größe von <b>fieldSize</b>
      * beschränkt wird.
      */
-    private ArrayList<Integer> includedRows =  new ArrayList<>();
+    protected ArrayList<Integer> includedRows =  new ArrayList<>();
 
 
     /** Liste in der Zahlen von 0 bis <b>fieldSize</b> gespeichert werden, die von der KI
@@ -94,7 +94,7 @@ public abstract class Computer extends Player {
      * freie Koordinaren haben, mal der Größe von <b>fieldSize</b>
      * beschränkt wird.
      */
-    private ArrayList<Integer> includedColumns =  new ArrayList<>();
+    protected ArrayList<Integer> includedColumns =  new ArrayList<>();
 
 
     /**
@@ -142,7 +142,7 @@ public abstract class Computer extends Player {
      *     4: 4er-Schiffe<br>
      *     5: 5-er Schiffe<br>
      */
-    private TreeMap<Integer, Integer> shipList = new TreeMap<>();
+    protected TreeMap<Integer, Integer> shipList = new TreeMap<>();
 
 
     /**
@@ -356,7 +356,7 @@ public abstract class Computer extends Player {
      * @param xCoord X-Koordinate der Zelle
      *
      */
-    private void setCoordinateOccupied(int yCoord, int xCoord) {
+    protected void setCoordinateOccupied(int yCoord, int xCoord) {
 
         this.mirrorField[yCoord][xCoord] = 1;
 
@@ -429,7 +429,7 @@ public abstract class Computer extends Player {
      * @param xCoord X-Koordinate der Zelle
      * @return Ob eine Koordinate sich im Spielfeld befindet oder nicht
      */
-    private boolean isCoordinateInField(int yCoord, int xCoord){
+    protected boolean isCoordinateInField(int yCoord, int xCoord){
 
         return ( (yCoord >= 0 && yCoord < this.fieldSize) && (xCoord >= 0 && xCoord < this.fieldSize) );
     }
@@ -1672,7 +1672,7 @@ public abstract class Computer extends Player {
      */
     protected boolean fieldQuarterPatternIsValid (){
 
-        //Beim ersten Aufruf gab es noch keinen letzten ZUg, deshalb ist der erste automatisch gültig
+        //Beim ersten Aufruf gab es noch keinen letzten Zug, deshalb ist der erste automatisch gültig
         if (lastHitQuarter == -1){
             return true;
         }
@@ -1895,7 +1895,7 @@ public abstract class Computer extends Player {
      *
      * @param trappedFieldSize Die Größe der eingeschlossenen Felder welche auf dem Spielfeld überprüft werden sollen
      *
-     * @return  Ob die eingeschlossenen Felder zum Auschließen geeignte sind oder nicht
+     * @return  Ob die eingeschlossenen Felder zum Auschließen geeigntet sind oder nicht
      */
     private boolean trappedFieldsAreValid (int yCoord, int xCoord, int trappedFieldSize, int direction){
 
