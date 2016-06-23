@@ -1069,7 +1069,6 @@ public abstract class Computer extends Player {
 
 
 
-
     /**
      * Löscht eine bestimmte Reihe aus dem ArrayList<b>includedRows</b>, damit es nicht mehr bei der
      * Generierung der Zufallszahlen auftritt.
@@ -1804,7 +1803,6 @@ public abstract class Computer extends Player {
         //Scannen des Spielfeldes und Ausschließen von leeren 2er-Feldern wenn alle 2er- und 1er-Schiffe zerstört wurden
         if ( (shipList.get(2) == 0)  && (shipList.get(1) == 0) ){
 
-
             scanTrappedFields(2);
 
         }
@@ -1841,6 +1839,8 @@ public abstract class Computer extends Player {
                     for (i = 0; i < trappedFieldSize; i++){
 
 
+                        System.out.println("Eingeschlossene Koordinate entfernen -> " + (includedRows.get(r))+ "|"+ (includedColumns.get(c) + i) );
+
                         setCoordinateOccupied(includedRows.get(r), includedColumns.get(c) + i);
 
                         //Wenn die ausgeschlossenen Koordinaten Teil des Schachbrettmusters sind,
@@ -1850,6 +1850,7 @@ public abstract class Computer extends Player {
                             validChessBoardPatternCoordinates.remove("" + includedRows.get(r) + "," + (includedColumns.get(c) + i) ) ;
                         }
 
+
                     }
 
                 }
@@ -1858,6 +1859,7 @@ public abstract class Computer extends Player {
 
                    for (i = 0; i < trappedFieldSize; i++){
 
+                       System.out.println("Eingeschlossene Koordinate entfernen -> " + (includedRows.get(r) + i)+ "|"+ (includedColumns.get(c)) );
                        setCoordinateOccupied(includedRows.get(r) + i, includedColumns.get(c) );
 
                        //Wenn die ausgeschlossenen Koordinaten Teil des Schachbrettmusters sind,
@@ -1866,6 +1868,7 @@ public abstract class Computer extends Player {
 
                            validChessBoardPatternCoordinates.remove("" + (includedRows.get(r) + i) + "," + includedColumns.get(c) ) ;
                        }
+
                    }
 
                }
@@ -1873,6 +1876,8 @@ public abstract class Computer extends Player {
             }
 
         }
+
+
     }
 
 
@@ -1905,25 +1910,30 @@ public abstract class Computer extends Player {
             //Zuerst überprüfen ob die Koordinate im Spielfeld ist oder aus dem Spielfeld herausragt
             if (isCoordinateInField(yCoord, xCoord -1)){
 
+
                 //Wenn Sie im Spielfeld ist und keine besetzte Koordinate ist, dann sind die
                 //eingeschlossenen Felder nicht valide
-                if(!isCoordinateOccupied(yCoord, xCoord -1) || !isCoordinateShipPart(yCoord, xCoord -1)){
+                if( !isCoordinateOccupied(yCoord, xCoord -1) ){
 
-                    //
+
                     isValid = false;
+
                 }
             }
 
         } else {    //Vertikale Richtung
 
+
             //Zuerst überprüfen ob die Koordinate im Spielfeld ist oder aus dem Spielfeld herausragt
             if (isCoordinateInField(yCoord -1, xCoord )){
 
+
                 //Wenn Sie im Spielfeld ist und keine besetzte Koordinate ist, dann sind die
                 //eingeschlossenen Felder nicht valide
-                if(!isCoordinateOccupied(yCoord -1, xCoord) || !isCoordinateShipPart(yCoord -1, xCoord)){
+                if(!isCoordinateOccupied(yCoord -1, xCoord) ){
 
                     isValid = false;
+
                 }
             }
 
@@ -1942,9 +1952,11 @@ public abstract class Computer extends Player {
 
                 if (isCoordinateInField(yCoord -1, xCoord + i) ){
 
-                    if(!isCoordinateOccupied(yCoord -1, xCoord + i) || !isCoordinateShipPart(yCoord -1, xCoord + i)){ //Obere Nachbarkoordinate
+
+                    if(!isCoordinateOccupied(yCoord -1, xCoord + i) ){ //Obere Nachbarkoordinate
 
                         isValid = false;
+
                     }
 
                 }
@@ -1952,9 +1964,11 @@ public abstract class Computer extends Player {
 
                 if (isCoordinateInField(yCoord +1, xCoord + i) ){
 
-                    if(!isCoordinateOccupied(yCoord +1, xCoord + i) || !isCoordinateShipPart(yCoord +1, xCoord + i)){ //Untere Nachbarkoordinate
+
+                    if(!isCoordinateOccupied(yCoord +1, xCoord + i) ){ //Untere Nachbarkoordinate
 
                         isValid = false;
+
                     }
 
                 }
@@ -1964,11 +1978,15 @@ public abstract class Computer extends Player {
                  * Felder wandern nach rechts
                  * */
 
+
                 if (isCoordinateInField(yCoord, xCoord + i) ){
 
-                    if (isCoordinateOccupied(yCoord, xCoord + i) || isCoordinateShipPart(yCoord, xCoord + i) ){
+
+                    if (isCoordinateOccupied(yCoord, xCoord + i) || isCoordinateShipPart(yCoord, xCoord + i)){
 
                         isValid = false;
+
+
                     }
 
                 } else {
@@ -1985,20 +2003,26 @@ public abstract class Computer extends Player {
 
                 //Linke und rechte Nachbarkoordinate des eingeschlossenen Feldes überprüfen
 
+
                 if (isCoordinateInField(yCoord + i, xCoord - 1) ){
 
-                    if(!isCoordinateOccupied(yCoord + i, xCoord - 1) || !isCoordinateShipPart(yCoord + i, xCoord - 1)){ //Linke Nachbarkoordinate
+                    if(!isCoordinateOccupied(yCoord + i, xCoord - 1) ){ //Linke Nachbarkoordinate
 
                         isValid = false;
+
+
                     }
 
                 }
 
+
                 if (isCoordinateInField(yCoord + i, xCoord + 1) ){
 
-                    if(!isCoordinateOccupied(yCoord + i, xCoord + 1) || !isCoordinateShipPart(yCoord + i, xCoord + 1)){ //Rechte Nachbarkoordinate
+                    if(!isCoordinateOccupied(yCoord + i, xCoord + 1) ){ //Rechte Nachbarkoordinate
 
                         isValid = false;
+
+
                     }
                 }
 
@@ -2008,11 +2032,13 @@ public abstract class Computer extends Player {
                  * Felder wandern nach unten
                  * */
 
+
                 if (isCoordinateInField(yCoord + i, xCoord) ){
 
-                    if (isCoordinateOccupied(yCoord + i, xCoord) || isCoordinateShipPart(yCoord + i, xCoord) ){
+                    if (isCoordinateOccupied(yCoord + i, xCoord)|| isCoordinateShipPart(yCoord + i, xCoord) ){
 
                         isValid = false;
+
                     }
 
                 } else {
@@ -2037,26 +2063,30 @@ public abstract class Computer extends Player {
 
         if (direction == 0){ //Ganz rechts untersuchen
 
+
             //Zuerst überprüfen ob die Koordinate im Spielfeld ist oder aus dem Spielfeld herausragt
             if (isCoordinateInField(yCoord, xCoord + trappedFieldSize)){
 
                 //Besetzte Koordinate ganz Rechts untersuchen
-                if(!isCoordinateOccupied(yCoord, xCoord + trappedFieldSize) || !isCoordinateShipPart(yCoord, xCoord + trappedFieldSize)){
+                if(!isCoordinateOccupied(yCoord, xCoord + trappedFieldSize) ){
 
                     isValid = false;
+
                 }
             }
 
 
         }else { //Ganz unten untersuchen
 
+
             //Zuerst überprüfen ob die Koordinate im Spielfeld ist oder aus dem Spielfeld herausragt
             if (isCoordinateInField(yCoord + trappedFieldSize, xCoord )){
 
                 //Besetzte Koordinate ganz unten untersuchen
-                if(!isCoordinateOccupied(yCoord + trappedFieldSize, xCoord) || !isCoordinateShipPart(yCoord + trappedFieldSize, xCoord)){
+                if(!isCoordinateOccupied(yCoord + trappedFieldSize, xCoord) ){
 
                     isValid = false;
+
                 }
             }
 

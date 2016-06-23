@@ -113,6 +113,7 @@ public class Easy extends Computer {
     public void shootResult(int yCoord, int xCoord, byte hitState ){
 
         super.shootResult(yCoord, xCoord,hitState);
+
         generateAICoordinates();
     }
 
