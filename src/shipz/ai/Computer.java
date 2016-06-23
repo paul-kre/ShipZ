@@ -1,4 +1,4 @@
-package shipz.gamemode;
+package shipz.ai;
 
 import java.util.*;
 
