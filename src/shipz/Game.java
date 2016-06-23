@@ -782,69 +782,86 @@ public class Game implements GameEventListener {
         }
     }
 
-    private void nextRound() {
+    private void nextRoundAI() {
+        Player activePlayer;
+        if (player1active) {
+            activePlayer = player1;
+        }
+        else {
+            activePlayer = player2;
+        }
         Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
+        timer.schedule(new TimerTask() {@Override
             public void run() {
-                if(testCounter <= 10) {
-                    if (player1active) {
-                        waitForGUI = true;
-                        aX = player1.getX();
-                        aY = player1.getY();
-                        aResult = checkTile(aX, aY);
-                        player1.shootResult(aY, aX, aResult);
-                        System.out.println("Zug" + testCounter + ": " + aY + "/" + aX + " => " + aResult);
-                        testCounter++;
-                if (aResult == 0) {
-                    gui.drawWater(aY, aX, 2);
-                } else {
-                    gui.drawExplosion(aY, aX, 2);
+                aX = activePlayer.getX();
+                aY = activePlayer.getY();
+                aResult = checkTile(aX, aY);
+                activePlayer.shootResult(aY, aX, aResult);
+                System.out.println("Zug" + testCounter + ": " + aY + "/" + aX + " => " + aResult);
+                if(player1active) {
+                    if (aResult == 0) {
+                        gui.drawWater(aY, aX, 2);
+                    } else {
+                        gui.drawExplosion(aY, aX, 2);
+                    }
                 }
+                else {
+                    if (aResult == 0) {
+                        gui.drawWater(aY, aX, 1);
+                    } else {
+                        gui.drawExplosion(aY, aX, 1);
                     }
                 }
             }
-        }, 2000);
-
-
+        }, 250);
     }
 
 
     /**
-     * @return gibt an, ob das Spiel beendet wurde
+     * @return gibt an, ob das Spiel beendet wurde und wer gewonnen hat
      */
-    private boolean gameFinished() {
-        boolean r = true;
+    private byte gameFinished() {
+        boolean r1 = true;
+        boolean r2 = true;
         //1. Zähler
         int y;
         //2. Zähler
         int x;
 
         //doppelte Schleife für Durchlauf durch alle Felder
-        for(y=0; y<board1.length; y++) {
-            for(x=0; x<board1[y].length; x++) {
-                if(r && board1[y][x] == 'x') {
-                    r = false;
+        for (y = 0; y < board1.length; y++) {
+            for (x = 0; x < board1[y].length; x++) {
+                if (board1[y][x] == 'x') {
+                    r1 = false;
                 }
             }//Ende ySchleife
         }//Ende xSchleife
 
         //doppelte Schleife für Durchlauf durch alle Felder
-        for(y=0; y<board2.length; y++) {
-            for(x=0; x<board2[y].length; x++) {
-                if(r && board2[y][x] == 'x') {
-                    r = false;
+        for (y = 0; y < board2.length; y++) {
+            for (x = 0; x < board2[y].length; x++) {
+                if (board2[y][x] == 'x') {
+                    r2 = false;
                 }
             }//Ende ySchleife
         }//Ende xSchleife
-        return r;
+
+        if(r1 && !r2) {
+            return 2;
+        }
+        else if(!r1 && r2) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
     }
 
     protected void test() {
 
         player1 = new Easy(10, false, shipList);
         player2 = new Easy(10, false, shipList);
-        nextRound();
+        nextRoundAI();
 
         //Schleife zum Test der KI
         /*int x;
@@ -899,10 +916,31 @@ public class Game implements GameEventListener {
                 test();
                 break;
             case FINISHED_ROUND:
-                nextRound();
+                if(gameFinished() == 0) {
+                    if(aResult == 0) {
+                        testCounter++;
+                        changeActivePlayer();
+                    }
+                    nextRoundAI();
+                }
+                else {
+                    System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
+                }
             }
         }
+
+    /**
+     * wechselt den aktiven Spieler
+     */
+    private void changeActivePlayer() {
+        if(player1active) {
+            player1active = false;
+        }
+        else {
+            player1active = true;
+        }
     }
+}
 
 
 /*    @Override
