@@ -7,6 +7,9 @@ import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import shipz.gamemode.*;
 
 /**
@@ -14,7 +17,7 @@ import shipz.gamemode.*;
  * @author Max
  * @version	0.1
  */
-public class Game implements GameEventListener /*implements GameEventListener*/{
+public class Game implements GameEventListener {
 
     //IV
     /** Spielfeld des 1. Spielers */
@@ -780,27 +783,32 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
     }
 
     private void nextRound() {
-        if (player1active) {
-            try {
-                Thread.sleep(1000);
-                //TimerTask
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(testCounter <= 10) {
+                    if (player1active) {
+                        waitForGUI = true;
+                        aX = player1.getX();
+                        aY = player1.getY();
+                        aResult = checkTile(aX, aY);
+                        player1.shootResult(aY, aX, aResult);
+                        System.out.println("Zug" + testCounter + ": " + aY + "/" + aX + " => " + aResult);
+                        testCounter++;
+                if (aResult == 0) {
+                    gui.drawWater(aY, aX, 2);
+                } else {
+                    gui.drawExplosion(aY, aX, 2);
+                }
+                    }
+                }
             }
-            waitForGUI = true;
-            aX = player1.getX();
-            aY = player1.getY();
-            aResult = checkTile(aX, aY);
-            player1.shootResult(aY, aX, aResult);
-            System.out.println("Zug" + testCounter + ": " + aY + "/" + aX + " => " + aResult);
-            testCounter++;
-            if (aResult == 0) {
-                gui.drawWater(aY, aX, 2);
-            } else {
-                gui.drawExplosion(aY, aX, 2);
-            }
-        }
+        }, 2000);
+
+
     }
+
 
     /**
      * @return gibt an, ob das Spiel beendet wurde
@@ -891,12 +899,8 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
                 test();
                 break;
             case FINISHED_ROUND:
-                if(testCounter <= 10) {
-                    nextRound();
-                }
-                else {
-                    System.out.println("Ende");
-                }
+                nextRound();
+            }
         }
     }
 
@@ -919,7 +923,7 @@ public class Game implements GameEventListener /*implements GameEventListener*/{
                 break;
         }
     }*/
-}
+
 
 /*
  * w = Wasser
