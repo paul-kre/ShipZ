@@ -2,7 +2,6 @@ package shipz.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Scanner;
@@ -27,13 +26,15 @@ public class Score {
 	private int comboPlayer1;
 	/** Zählt die Combos des zweiten Spielers */
 	private int comboPlayer2;
-	/** Trennzeichen zwischen Namen und Punkten.
-	 * Format: <i>spielername=punkte</i> */
-	private String scoreSeparator = "=";
 	/** Punktestand des ersten Spielers */
 	private int scorePlayer1;
 	/** Punktestand des zweiten Spielers */
 	private int scorePlayer2;
+	
+	// Konstanten
+	/** Trennzeichen zwischen Namen und Punkten.
+	 * Format: <i>spielername=punkte</i> */
+	private final static String SCORE_SEPARATOR = "=";
 	
 	// Konstruktor
 	/**
@@ -54,17 +55,10 @@ public class Score {
 	/**
 	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
 	 * @param playerName Name des Spielers
-	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
+	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
 	 */
 	protected void setScore(int playerIndex, int result) {
 		switch(result) {
-		case 3:
-			if(playerIndex == 1) {
-				scorePlayer1 -= 30;
-			} else if(playerIndex == 2){
-				scorePlayer2 -= 30;
-			} else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
-			break;
 		case 1:
 			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 50*comboPlayer1;
@@ -75,6 +69,11 @@ public class Score {
 			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 300*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 300*comboPlayer2;
+			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
+			break;
+		case 3:
+			if(playerIndex == 1) scorePlayer1 -= 30;
+			else if(playerIndex == 2)scorePlayer2 -= 30;
 			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		default: break;
@@ -110,7 +109,6 @@ public class Score {
 		} else {
 			throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 		}
-		
 	}
 	
 	/**
@@ -120,7 +118,7 @@ public class Score {
 	 */
 	private void addPlayerIntoHighscore(String playerName, int score) {
 		if(!doesPlayerExist(playerName)) {
-			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+"#"+saveload.timestamp()+scoreSeparator+score);
+			saveload.writeFile(highscoreFile, saveload.readFile(highscoreFile)+playerName+"#"+saveload.timestamp()+SCORE_SEPARATOR+score);
 		} else {
 			addPlayerIntoHighscore(playerName+"~", score);
 		}
@@ -142,7 +140,7 @@ public class Score {
 		while(exists == false && scanner.hasNextLine()) {
 			String str = scanner.nextLine();
 			
-			if(str.startsWith(playerName+scoreSeparator)) {
+			if(str.startsWith(playerName+SCORE_SEPARATOR)) {
 				exists = true;
 			}
 		}
@@ -159,12 +157,12 @@ public class Score {
 		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
 		String[] a = str.split(",");
 		String result = "";
-		if(a.length < 10) {
-			for(int i = 0; i < a.length; i++) {
+		if(a.length < 10) { // wenn weniger als zehn Spieler im Highscore stehen
+			for(int i = 0; i < a.length; i++) { // ... werden je nach dem wie viele es sind an den String angehangen
 				result += a[i] + ",";
 			}
-		} else {
-			for(int i = 0; i < 10; i++) {
+		} else { // wenn mehr als 10 Spieler im Highscore stehen
+			for(int i = 0; i < 10; i++) { // werden nur die ersten zehn an den String angehangen
 				result += a[i] + ",";
 			}
 		}
@@ -173,12 +171,13 @@ public class Score {
 
 	/**
 	 * Diese Methode lädt alle Einträge aus der Highscore-Datei.
-	 * Die Einträge werden dann sortiert und in einer TreeMap
-	 * zurückgegeben. Dies ist notwendig, um einen String zu generieren,
-	 * der den Highscore repräsentiert.
+	 * Diese werden dann sortiert und in eine TreeMap geschrieben.
+ 	 * Dies ist notwendig, um einen String zu generieren,
+	 * der den Highscore wiedergibt.
 	 * @return die TreeMap mit den sortierten Einträgen
 	 */
 	private Map<String, Integer> highscoreToSortedMap() {
+		// Scanner-Objekt zum Lesen der Highscore-Datei
 		try {
 			scanner = new Scanner(highscoreFile);
 		} catch(FileNotFoundException e) {
@@ -186,28 +185,24 @@ public class Score {
 		}
 		
 		String line = "";
-		ArrayList<String> result = new ArrayList<>();
+		TreeMap<String, Integer> map = new TreeMap<>(); // TreeMap, die die Highscore-Einträge als KeyValue-Paare speichert
 		
 		while(scanner.hasNextLine()) {
 			line = scanner.nextLine();
-			String[] s = line.split(scoreSeparator);
-			result.add(s[0]);
-			result.add(s[1]);
+			String[] s = line.split(SCORE_SEPARATOR);
+			map.put(s[0], Integer.parseInt(s[1]));
 		}
 		
-		TreeMap<String, Integer> map = new TreeMap<>();
-		
-		ArrayList<String> h = result;
-		for(int i = 0; i < h.size(); i++) {
-			map.put(h.get(i), Integer.parseInt(h.get(i+1)));
-			i++;
-		}
-		
-		TreeMap<String, Integer> tm = map;
-		
-		Comparator<String> comp = new Comparator<String>() {
+		// Comparator, vergleicht die Punktzahlen und ordnet die Einträge nach Punktzahlen
+		Comparator<String> comp = new Comparator<String>() { // anonymer Funktionsaufruf, Redefinierung einer Methode eines Interfaces
+			/**
+			 * Vergleicht die Values (Punkte) zweier Keys (Spielernamen)
+			 * miteinander.
+			 * @param a erster Key/ Spielername
+			 * @param b zweiter Key/ Spielername
+			 */
 			public int compare(String a, String b) {
-				int result = tm.get(b).compareTo(tm.get(a));
+				int result = map.get(b).compareTo(map.get(a));
 				if(result == 0)
 					return 1;
 				else
@@ -215,17 +210,14 @@ public class Score {
 			}
 		};
 		
-		Map<String, Integer> sortedMap = new TreeMap<>(comp);
-		sortedMap.putAll(tm);
+		Map<String, Integer> sortedMap = new TreeMap<>(comp); // neue TreeMap, die mit dem oben definierten Comparator arbeitet
+		sortedMap.putAll(map); // Einträge des Highscores werden durch das Einfügen sofort sortiert, da der Comparator im Konstruktor übergeben wurde
 		return sortedMap;
 	}
 	
 	/**
 	 * Löscht alle Daten, die nicht im Highscore stehen,
 	 * und somit nicht mehr benötigt werden.
-	 * 
-	 * Noch nicht vollständig und korrekt implementiert,
-	 * daher noch nicht zur Benutzung geeignet.
 	 */
 	private void cleanHighscoreFile() {
 		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
@@ -273,8 +265,8 @@ public class Score {
 	 * Der Wert der Combo wird zurückgegeben,
 	 * damit die GUI darstellen kann, welche Combo der Spieler
 	 * aktuell erreicht hat.
-	 * @param playerIndex
-	 * @return
+	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
+	 * @return Combo-Wert des Spielers
 	 */
 	protected int getComboValue(int playerIndex) {
 		switch(playerIndex) {
@@ -291,11 +283,10 @@ public class Score {
 	 */
 	protected void loadScore(String gameName) {
 		String[] draws = saveload.getDraws(gameName).split(";");
-		int playerIndex;
-		byte result;
+		int playerIndex, result;
 		for(int i = 0; i < draws.length; i++) {
 			playerIndex = Integer.parseInt(draws[i].split("|")[0]);
-			result = Byte.parseByte(draws[i].split("|")[2]);
+			result = Integer.parseInt(draws[i].split("|")[2]);
 			setScore(playerIndex, result);
 		}
 	}
