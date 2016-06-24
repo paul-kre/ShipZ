@@ -11,7 +11,7 @@ import java.util.Map;
  * KI berücksichtigt zuletzt getroffene Felder und prüft
  * dementsprechend das herumliegende Gebiet.<br><br>
  *
- * Zusätlich werden Koordinaten die alleine stehen bzw. keine Nachbarkoordinaten
+ * Zusätzlich werden Koordinaten die alleine stehen bzw. keine Nachbarkoordinaten
  * haben nicht berücksichtigt. <br><br>
  *
  * Für die Generierung der Koordinaten scannt das Feld ab und wählt dementsprechend
@@ -39,7 +39,6 @@ public class Hard extends Computer {
 
 
 
-
 	//Constructor
 	/**
 	 * Constructor zur Initialisierung des
@@ -57,10 +56,39 @@ public class Hard extends Computer {
 	public Hard (int newFieldSize, boolean placingAtEdge, List<Integer> newShipList) {
 
 		super(newFieldSize,placingAtEdge, newShipList);
+
+        //Beim instanziieren werden schon die ersten Koordinaten generiert
+        generateAICoordinates();
 	}
 
 
 	//IM
+
+
+    /**
+     * Erhöht die Trefferwahrscheinlichkeit einer einzelnen Koordinate um
+     * einen bestimmten Betrag.<br><br>
+     *
+     * Kann benutzt werden um Bereiche, in der der Gegner
+     * Schiffe platziert wo geringere Trefferwahrscheinlichkeiten
+     * herrschen, zu verstärken.<br>
+     * Die Wahrscheinlichkeiten werden nur erhöht, wenn die angegebene
+     * Koordinate noch frei ist, sonst bleibt diese auf "0"
+     *
+     * @param yCoord Y-Koordinate
+     * @param xCoord X-Koordinate
+     * @param increase Anzahl um der die Wahrscheinlichkeit der Koordinate erhöht werden soll
+     */
+    private void increaseOneCoordProbability (int yCoord, int xCoord, int increase){
+
+        if (isCoordinateInField(yCoord,xCoord)){
+
+            if ( !isCoordinateOccupied(yCoord,xCoord) && !isCoordinateShipPart(yCoord,xCoord) ){
+
+                probabilityField[yCoord][xCoord] += increase;
+            }
+        }
+    }
 
 
     /**
@@ -81,36 +109,6 @@ public class Hard extends Computer {
 
             }
         }
-
-
-        probabilityField[0][0] += 8;
-        probabilityField[0][9] += 8;
-        probabilityField[9][0] += 8;
-        probabilityField[9][9] += 8;
-
-
-
-
-
-        probabilityField[0][1] += 6;
-        probabilityField[1][0] += 6;
-
-        probabilityField[0][8] += 6;
-        probabilityField[1][9] += 6;
-
-        probabilityField[8][0] += 6;
-        probabilityField[9][1] += 6;
-
-        probabilityField[9][8] += 6;
-        probabilityField[8][9] += 6;
-
-
-
-
-        probabilityField[0][2] += 4;
-        probabilityField[2][0] += 4;
-
-
 
 
 
@@ -136,7 +134,8 @@ public class Hard extends Computer {
          */
         for (Map.Entry<Integer,Integer> currentShipSize : super.shipList.entrySet()){
 
-            if (currentShipSize.getKey() > 0 ){
+            //Zuerst wird geprüft ob die aktuelle Schiffsgröße noch im Spiel ist
+            if (currentShipSize.getValue() > 0 ){
 
                 for ( Integer row : super.includedRows){ //Äußere Schleife für Reihen
 
@@ -154,6 +153,19 @@ public class Hard extends Computer {
             }
 
         }
+
+        /**
+         * Die berechneten Trefferwahrscheinlichkeiten haben die geringsten Werte in den
+         * Ecken. Dies kann sich der Gegner als Vorteil verschaffen und seine Schiffe
+         * dort platzieren. In dem wir künstlich die Wahrscheinlichkeiten der Ecken,
+         * die noch frei sind, erhöhen, können wir die Schwachstelle aushebeln.
+         */
+        int increaseEdge = 18;
+        increaseOneCoordProbability(0,0,increaseEdge);  // Linke-Obere Ecke
+        increaseOneCoordProbability(0, fieldSize -1, increaseEdge); //Rechte-Obere Ecke
+        increaseOneCoordProbability(fieldSize-1,0,increaseEdge);    //Linke-Untere Ecke
+        increaseOneCoordProbability(fieldSize-1,fieldSize-1,increaseEdge);  //Rechte-Untere Ecke
+
     }
 
 
@@ -336,11 +348,6 @@ public class Hard extends Computer {
             }
         }
 
-        /** ***************************************
-        for (String coord : finalMaxProbabilityCoords){
-            System.out.println(coord);
-        }
-         ************************************** */
 
         //Von den gültigen Koordinaten eine zufällige zurückgeben
         return finalMaxProbabilityCoords.get(random.nextInt(finalMaxProbabilityCoords.size()));
@@ -373,9 +380,6 @@ public class Hard extends Computer {
 	 */
 	protected void generateAICoordinates() {
 
-        /** Speicherung der Koordinate des Schachbrettmusters */
-        String chessBoardCoordinate;
-
 
         //Beim Treffer eines Schiffes werden die herumliegenden Koordinaten nach weiteren
         //Schiffsteilen abgesucht
@@ -391,32 +395,16 @@ public class Hard extends Computer {
             //Wahrscheinlichkeiten für den nächsten Zug berechnet
             generateHitProbabilities();
 
+            displayProbabilityField();
             //Flag welches den Durchlauf der Schleifen bestimmt
             boolean loopAgain = true;
 
             do{
-
-
-                /*if (shipList.get(5) == 0 && shipList.get(4) == 0 && shipList.get(3) == 0){
-
-                    chessBoardCoordinate = chessBoardPatternString();
-                    super.setY(super.extractYCoord(chessBoardCoordinate));
-                    super.setX(super.extractXCoord(chessBoardCoordinate));
-
-                    //Die erstelle Koordinate war gültig und wurde für die Verwaltung gespeichert, deshalb
-                    // wird diese aus der Schachbrettmuster-Liste gelöscht
-                    deleteChessBoardPatternCoordinate(chessBoardCoordinate);
-
-                } else {*/
-
-
                     //Eine Koordinate mit der höchsten Trefferwahrscheinlichkeit zurückgeben
                     String returnCoordinate = maxHitProbabilityCoordinate();
 
                     super.setY(Integer.parseInt(returnCoordinate.split(",")[1]) );
                     super.setX(Integer.parseInt(returnCoordinate.split(",")[2]));
-
-                //}
 
 
                 //Es wird überprüft, ob die generierte Koordinate auf eine leere, nicht beschossene
@@ -431,7 +419,7 @@ public class Hard extends Computer {
 
             }while (loopAgain);
 
-            displayProbabilityField();
+            //displayProbabilityField();
 
         }
 
@@ -469,7 +457,10 @@ public class Hard extends Computer {
 
         //Eingeschlossene Felder ausschließen
        excludeInvalidFields();
-        //generateAICoordinates();
+
+
+        //Nach der Auswertung der Ergebnisse wird die nächste Koordinate generiert
+        generateAICoordinates();
 
     }
 

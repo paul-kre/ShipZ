@@ -8,8 +8,17 @@ import shipz.Player;
 /**
  * Hauptklasse für die Künstliche Intelligenz<br><br>
  *
- * Die Klasse vererbt alle notwendigen Instanzvariablen und -methoden <br>
- * für die Schwierigkeitsgrade Easy, Normal und Hard <br>
+ * Enthält die notwendigen Grundelemente die alle Künstlichen
+ * Intelligenzen zum Laufen brauchen:<br><br>
+ *
+ * - Speichern von schon beschossenen Koordinaten und getroffenen Schiffsteilen<br>
+ * - Absuchen nach weiteren Schiffsteilen, nachdem ein Schiff getroffen wurde<br>
+ * - Umgebung eines Schiffes speichern, nachdem ein Schiff zerstört wurde<br>
+ * - Ausschließen von vollen Reihen und Spalten für die Generierung weiterer Koordinaten<br>
+ * - Ergebnisse der eigenen Beschüsse auswerten und entsprechende Maßnahmen ergreifen.
+ *   (Bezieht sich in dieser Klasse auf die Grundlegenen Elemente. In den nachfolgenden
+ *   Subklassen werden weitere Ergebnisse ausgewertet und mehr Maßnahmen ausgeführt)
+ *
  *
  * @author Artur Hergert
  *
@@ -24,8 +33,8 @@ public abstract class Computer extends Player {
     protected int fieldSize = 10;
 
     /**
-     * Zweidimensionales Byte-Array, welches als Kopie des zu beschießenen Feldes dient<br>
-     * Zur Speicherung der Felder die man schon getroffen hat und die man nicht mehr
+     * Zweidimensionales Byte-Array, welches als Kopie des zu beschießenen Feldes dient.<br>
+     * Speichert die Felder die man schon getroffen hat und die man nicht mehr
      * beschießen darf.<br>
      *
      * Die Indices können folgende Zustände aufweisen:<br>
@@ -37,25 +46,26 @@ public abstract class Computer extends Player {
 
     /**
      * Speichert zur Identifikation die Koordinaten des Schiffsteil, welches zuerst bei einem Schiff getroffenen wurde,
-     * um von dort aus alle Richtungen zu überrpüfen <br>
+     * um von dort aus alle Richtungen zu überrpüfen.<br><br>
      *
      * Werte werden beim instanziieren standardweise auf -1|-1 gesetzt.<br>
-     *
      * Dieser Zustand bedeutet, dass in dem Moment keine gültige,
-     * zuletzt getroffene Koordinate existiert. Dies hat zur Folge, dass eine neue
-     * Koordinate generiert wird.
+     * zuletzt getroffene Koordinate existiert. Bei der Überprüfung dieses
+     * Standardwerts weiß die KI, ob aktuell ein Schiff getroffen wurde
+     * oder nicht
      * */
     private int[] firstShipTileHit = new int[] {-1, -1};
 
     /**
-     * Die aktuell getroffenen X und Y-Koordinaten eines Schiffes der KI werden zur
+     * Die aktuell getroffenen Y- und X-Koordinaten eines Schiffes der KI werden zur
      * Weiterverwendung gespeichert.<br>
      *
      */
     private int[] currentShipTile = new int[]{0, 0};
 
 
-    /** Die aktuelle Richtung in der die KI ein getroffenes Schiffsteil auf weitere
+    /**
+     * Die aktuelle Richtung, in der die KI ein getroffenes Schiffsteil auf weitere
      * Schiffsteile überpüft<br><br>
      *
      * Variable kann folgende werte enthalten:<br>
@@ -69,66 +79,45 @@ public abstract class Computer extends Player {
 
 
 
-    /** Random-Object zur Generierung von zufälligen Integer Zahlen */
+    /** Random-Objekt zur Generierung von zufälligen Integer Zahlen */
     Random random = new Random();
 
 
-    /** Liste in der Zahlen von 0 bis <b>fieldSize</b> gespeichert werden, die von der KI
+    /**
+     * Liste in der Zahlen von 0 bis <b>fieldSize</b>-1 gespeichert werden, die von der KI
      * noch zufällig generiert werden können.<br>
      * Sobald eine Reihe im Spielfeld voll ist, muss keine Koordinate mehr für diese erstellt werden und
      * die Reihe wird aus der ArrayListe gelöscht.<br>
      * Sorgt für mehr Effizienz bei der Generierung der Koordinaten,
-     * da die maximale Durchlaufzahl auf die Anzahl der Reihen, die
-     * freie Koordinaren haben, mal der Größe von <b>fieldSize</b>
-     * beschränkt wird.
+     * da die maximale Durchlaufzahl dadurch verringert wird.
      */
     protected ArrayList<Integer> includedRows =  new ArrayList<>();
 
 
-    /** Liste in der Zahlen von 0 bis <b>fieldSize</b> gespeichert werden, die von der KI
+    /**
+     * Liste in der Zahlen von 0 bis <b>fieldSize</b>-1 gespeichert werden, die von der KI
      * noch zufällig generiert werden können.<br>
      * Sobald eine Spalte im Spielfeld voll ist, muss keine Koordinate mehr für diese erstellt werden und
      * die Spalte wird aus der ArrayListe gelöscht.<br>
      * Sorgt für mehr Effizienz bei der Generierung der Koordinaten,
-     * da die maximale Durchlaufzahl auf die Anzahl der Spalten, die
-     * freie Koordinaren haben, mal der Größe von <b>fieldSize</b>
-     * beschränkt wird.
+     * da die maximale Durchlaufzahl dadurch verringert wird.
      */
     protected ArrayList<Integer> includedColumns =  new ArrayList<>();
 
 
-    /**
-     * Sobald das Schachbrettmuster aktiviert wird, wird das Spielfeld
-     * nach freien Koordinaten abgesucht, die dem Muster entsprechen und
-     * diese werden in der Liste gespeichert, damit die KI diese entsprechenden
-     * Koordinaten beschießen kann.
-     */
-    private ArrayList<String> validChessBoardPatternCoordinates = new ArrayList<>();
-
-
-    /**
-     * Flagvaribale die abspeichert ob das Schachbrettmuster initialisiert wurde oder nicht<br><br>
-     *
-     * Sobald es einmal initialisiert wurde, bleibt der Wert auf TRUE, damit nach
-     * dem Abschuss aller Koordinaten des Schachbrettmuster keine weiteren mehr erzeugt werden
-     * müssen, da danach nur noch Einser-Felder existieren und diese nicht dem Schachbrettmuster
-     * entsprechen.<br>
-     *
-     * */
-    private boolean chessBoardPatternActivated = false;
 
 
     /**
      * Optionsvariable für das Platzieren von Schiffen an der
      * Kante eines anderen Schiffes.<br>
-     * Wenn es TRUE ist, ist das platzieren erlaubt,
+     * Wenn es TRUE ist, ist das Platzieren erlaubt,
      * ansonsten nicht
      */
     private boolean placingShipsAtEdgePossible;
 
 
     /**
-     * Speicherung der Anzahl der Schiffe
+     * Speicherung der Anzahl der Schiffe,
      * die im Spiel auf dem Spielfeld
      * pro Spieler gesetzt werden.<br><br>
      *
@@ -145,35 +134,11 @@ public abstract class Computer extends Player {
     protected TreeMap<Integer, Integer> shipList = new TreeMap<>();
 
 
-    /**
-     * Speicherung des zuletzt getroffenen Spielfeldviertels.<br>
-     * Das Spielfeldviertel-Muster wird parallel zum 3-Feld-Muster
-     * ausgeführt und sorgt dafür, dass das 3-Feld-Muster nicht nur
-     * in einem Bereich in diagonalen schießt, sodass es für den
-     * menschlichen Spieler sofort ersichtlich ist wie die KI vor geht. Durch
-     * das Spielfeldviertel-Muster werden die Beschüsse des 3-Feld-Musters
-     * besser verstreut<br>
-     *
-     * <b>lastHitQuarter</b> hat vor der Initialisierung den Wert -1.
-     * Sobald das Viertel-Muster parallel mit dem 3-Feld-Muster einsetzt, kann
-     * diese Variable folgende Werte enthalten:<br>
-     *     0: Oberes-Linkes Viertel<br>
-     *     1: Oberes-Rechtes Viertel<br>
-     *     2: Unteres-Linkes Viertel<br>
-     *     3: Unteres-Rechte Viertel<br><br>
-     *
-     *  Der Wert sorgt dafür, dass die generierten Koordinaten im nächsten
-     *  Zug nicht im selben Viertel wie davor beschossen wird.
-     *
-     *
-     */
-    private byte lastHitQuarter = -1;
-
 
     /**
      * Zählt die Länge eines gerade beschossenen Schiffes. Sobald
      * das betrachtete Schiff zerstört wird, wird der Wert auf
-     * den Anfangswert 1 gesetzt.<br>
+     * den Anfangswert 1 gesetzt.<br><br>
      *
      * Der Anfangswert beträgt 1, weil das Schiffsteil, von dem
      * aus in alle Richtungen nach anderen Schiffsteilen gesucht wird, sich
@@ -227,10 +192,10 @@ public abstract class Computer extends Player {
 
 
     /**
-     * Abstrakte Methode die in den Subklassen implementiert wird
+     * Abstrakte Methode die in den Subklassen implementiert wird<br><br>
      *
      * KI generiert mithilfe dessen Algorithmus die nächste
-     * Koordinate die beschossen werden soll und speichert diese
+     * Koordinate, die beschossen werden soll und speichert diese
      * in die Instanzvariablen der Superklasse Player.
      */
     protected abstract void generateAICoordinates();
@@ -239,12 +204,12 @@ public abstract class Computer extends Player {
 
 
     /**
-     * Überprüfen von Koordinaten ob diese von der KI
-     * beschossen und eventuell ein Schiff getroffen/zerstört wurden<br><br>
+     * Überprüfen von Koordinaten, ob diese von der KI
+     * beschossen wurden und eventuell ein Schiff getroffen/zerstört wurde<br><br>
      *
-     * Methode sollte direkt nach dem Aufruf des FireGameEvents in der Main Methode
+     * Methode sollte direkt nach dem Aufruf der Main Methode
      * ausgeführt werden, damit eine Generierung von redundanten
-     * Koordinaten vermiedern werden kann.
+     * Koordinaten vermieden werden kann.
      *
      * @param yCoord Y-Koordinate der Zelle
      * @param xCoord X-Koordinate der Zelle
@@ -318,6 +283,7 @@ public abstract class Computer extends Player {
 
 
     }
+
 
 
 
@@ -437,8 +403,8 @@ public abstract class Computer extends Player {
 
 
     /**
-     * Untersucht alle vier Richtungen um einen versenkten Treffer
-     * welcher ein Schiff zerstört hat und speichert die Umgebung ab
+     * Untersucht alle vier Richtungen um einen versenkten Treffer,
+     * welches ein Schiff zerstört hat, und speichert die Umgebung ab
      *
      * @param yCoord Y-Koordinate der Zelle
      * @param xCoord X-Koordinate der Zelle
@@ -648,7 +614,7 @@ public abstract class Computer extends Player {
 
     /**
      * Speichert die vertikale Oberkante eines Schiffsteils als dessen
-     * Umgebung ins Spiegelfeld ab
+     * Umgebung ins Spiegelfeld ab<br><br>
      *
      * Geeignet nur für Nördliche und Südliche Richtung
      *
@@ -693,18 +659,13 @@ public abstract class Computer extends Player {
             excludeFullColumns(currentX-1);
             excludeFullColumns(currentX+1);
         }
-
-
-
-
-
     }
 
 
 
     /**
      * Speichert die vertikale Oberkante eines Schiffsteils als dessen
-     * Umgebung ins Spiegelfeld ab
+     * Umgebung ins Spiegelfeld ab<br><br>
      *
      * Geeignet nur für Nördliche und Südliche Richtung
      *
@@ -745,16 +706,12 @@ public abstract class Computer extends Player {
             excludeFullRows(currentY-1);
 
         }
-
-
-
-
     }
 
 
     /**
-     * Prüft ob die übergebene X- und
-     * Y-Richtung in die nördliche oder
+     * Prüft ob die übergebene Y- und
+     * X-Richtung in die nördliche oder
      * südliche Richtung prüfen
      *
      * @param yDirection X-Richtung
@@ -866,7 +823,7 @@ public abstract class Computer extends Player {
 
 
     /**
-     * Füllt eine Liste mit den Werten von 0 bis <b>fieldSize</b> für die Generierung der
+     * Füllt eine Liste mit den Werten von 0 bis <b>fieldSize</b>-1 für die Generierung der
      * Zufallszahlen
      *
      * @param list Die Arrayliste die mit standardwerten von 0 bis <b>fieldSize</b> gefüllt werden soll
@@ -880,8 +837,8 @@ public abstract class Computer extends Player {
 
 
     /**
-     * Gibt eine zufällige integerzahl für die Verwendung als Y-Koordinate aus der ArrayListe <b>includedRows</b> zurück.<br>
-     * Die zufälligen Zahlen können innerhalb 0 bis <b>fieldSize</b> liegen.<br>
+     * Gibt eine zufällige Integerzahl für die Verwendung als Y-Koordinate aus der ArrayListe <b>includedRows</b> zurück.<br>
+     * Die zufälligen Zahlen können innerhalb 0 bis <b>fieldSize</b>-1 liegen.<br>
      * Ist die Reihe einer Y-Koordinate voll, wurde die Reihe ausgeschlossen und die entsprechende Zahl ist in der
      * ArrayListe nicht mehr verfügbar für den Rest des Spiels.
      *
@@ -889,7 +846,6 @@ public abstract class Computer extends Player {
      */
     protected int randomRowInt() {
 
-        //@ToDo randomRowInt ThrowException machen
 
         if (includedRows.size() > 0){
             return this.includedRows.get(random.nextInt(includedRows.size()));
@@ -900,7 +856,7 @@ public abstract class Computer extends Player {
 
     /**
      * Gibt eine zufällige integerzahl für die Verwendung als X-Koordinate aus der ArrayListe <b>includedColumns</b> zurück.<br>
-     * Die zufälligen Zahlen können innerhalb 0 bis <b>fieldSize</b> liegen.<br>
+     * Die zufälligen Zahlen können innerhalb 0 bis <b>fieldSize</b>-1 liegen.<br>
      * Ist die Reihe einer X-Koordinate voll, wurde die Reihe ausgeschlossen und die entsprechende Zahl ist in der
      * ArrayListe nicht mehr verfügbar für den Rest des Spiels.
      *
@@ -908,7 +864,6 @@ public abstract class Computer extends Player {
      */
     protected int randomColumnInt() {
 
-        //@ToDo randomColumnInt ThrowException machen
         if (includedColumns.size() > 0) {
             return this.includedColumns.get(random.nextInt(includedColumns.size()));
         }
@@ -1070,7 +1025,7 @@ public abstract class Computer extends Player {
 
 
     /**
-     * Löscht eine bestimmte Reihe aus dem ArrayList<b>includedRows</b>, damit es nicht mehr bei der
+     * Löscht eine bestimmte Reihe aus dem ArrayList <b>includedRows</b>, damit es nicht mehr bei der
      * Generierung der Zufallszahlen auftritt.
      *
      * @param row Die Reihe dessen Listenvariable gelöscht wird
@@ -1083,7 +1038,7 @@ public abstract class Computer extends Player {
     }
 
     /**
-     * Löscht eine bestimmte Spalte aus dem ArrayList<b>includedColumns</b>, damit es nicht mehr bei der
+     * Löscht eine bestimmte Spalte aus dem ArrayList <b>includedColumns</b>, damit es nicht mehr bei der
      * Generierung der Zufallszahlen auftritt.
      *
      * @param column Die Spalte dessen Listenvariable gelöscht wird
@@ -1144,7 +1099,6 @@ public abstract class Computer extends Player {
          in der Richtung wird zurückgegeben. Wenn zurückgegebene Koordinate nicht im Spielfeld
          liegt, wird die nächste Richtung untersucht. */
         do{
-
 
             directionReturnsNoCoord = false;
 
@@ -1243,354 +1197,6 @@ public abstract class Computer extends Player {
 
 
 
-    /**
-     * Erstellt nach einem Muster, bei dem nur alle 3 felder und dessen nach unten-links
-     * in diagonal gerichteten Koordinaten geprüft werden, die X-Koordinaten.
-     *
-     * @param yCoord Die zuvor erstellte Y-Koordinate, die für die Berechnung der X-Koordinate wihctig ist
-     * @return Eine X-Koordinate die dem 3-Feld-Muster entspricht
-     */
-    protected int randomThreePointPatternInt( int yCoord ){
-
-
-       // loopHoleVar = 0;
-        /** Die EbenenStufe wird als 'level' gespeichert, damit berechnet werden kann, wie der
-         * Abstand zwischen den X-Koordinaten immer sein müssen
-         */
-
-        int level = yCoord + 1;
-
-        int threePointPatternInt = -1;
-
-        //Ebene wird überprüft ob es die Stufe 1,2 oder 3 hat und je nachdem wird weiterberechnet
-
-        if (level  % 3 == 1 ){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 1 berechnet werden soll
-
-            threePointPatternInt = ( 2 + ( 3 * validThreePointPatternColumnInt(1) ));
-
-        } else if ( level % 3 == 2){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 2 berechnet werden soll
-
-            threePointPatternInt = ( 1 + ( 3 * validThreePointPatternColumnInt(2) ));
-
-
-        } else if ( level % 3 == 0){ //Prüfen ob X-Koordinate für eine Ebene der Stufe 3 berechnet werden soll
-
-            threePointPatternInt = ( 3 * validThreePointPatternColumnInt(3) );
-
-        }
-
-            return threePointPatternInt;
-
-    }
-
-
-    /**
-     * Berechnet eine gültige X-Koordinate aus den möglichen Feldern einer Ebene
-     * und gibt diese für weitere Berechnungen zurück
-     *
-     * @param currentLevel Die Ebene für die die X-Koordinate berechnet wird
-     * @return Eine X-Koordinate die dem 3-Feld-Muster der entsprechenden Ebene entspricht
-     */
-    private int validThreePointPatternColumnInt(int currentLevel){
-
-        //loopHoleVar = 0;
-
-        //Flag zum Überrpüfen ob die erstellte X-Koordinate gültig ist (ob sie zwischen 0 und fieldSize ist UND dem Muster entpricht der aktuellen Ebene)
-        boolean validXCoord = false;
-
-        //Die X-Koordinate die zurückgegeben wird
-        int patternXCoord;
-
-
-        do{
-
-
-            //Der X-Koordinate wird eine zufällige Zahl aus den gespeicherten, noch nicht leeren Spaltenkoordinaten zugewiesen
-            patternXCoord = randomColumnInt() ;
-
-
-            if (currentLevel == 1){
-
-
-                if ( patternXCoordIsInRange( (patternXCoord / 3), 1) ){
-
-                    validXCoord = true;
-                }
-
-
-            } else if ( currentLevel == 2){
-
-
-                if ( patternXCoordIsInRange( (patternXCoord / 3), 2) ){
-
-                    validXCoord = true;
-                }
-
-            } else  if (currentLevel == 3){
-
-                if ( patternXCoordIsInRange( (patternXCoord / 3), 3) ){
-
-                    validXCoord = true;
-                }
-
-
-            }
-
-
-        }while ( !validXCoord);
-
-        return (patternXCoord / 3);
-
-    }
-
-
-    /**
-     * Prüft ob eine X-Koordinate, die nach dem 3-feld-Muster erstelt wurde, auch
-     * in der entprechenden Ebene im gültigen Bereich liegt
-     *
-     * @param patternXCoord Die zu überprüfende X-Koordinate
-     * @param currentLevel Die Ebene in der die X-Koordinate erstellt wird
-     * @return Ob die X-Koordinate innerhalb des gültigen Bereichs der Eben bzw. des Musters liegt
-     */
-    private boolean patternXCoordIsInRange (int patternXCoord, int currentLevel){
-
-
-        if (currentLevel == 1 || currentLevel == 2){
-
-            return patternXCoord <= ( (this.fieldSize / 3) - 1);
-
-        }else {
-
-            return patternXCoord <= (this.fieldSize / 3) ;
-
-        }
-
-    }
-
-
-    /**
-     * Prüft ob das Drei-Feld-Muster noch laufen darf.
-     * Gibt FALSE zurück, falls alle Musterkoordinaten
-     * des Musters besetzt wurden und keine Koordinaten mehr
-     * für das Muster erstellt werden können
-     *
-     * @return Ob das Muster noch aktiv sein darf oder nicht
-     */
-    protected boolean threePointPatternIsStillValid(){
-
-
-        /**
-         * Äußere For-Schleife repräsentiert die noch gültigen, verwendbaren Y-Koordinaten
-         *
-         * Im Inneren der Schleife wird anhand der Reihenzahl der Y-Koordinate berechnet, um welche
-         * Ebene es sich bei dem 3-Feld-Muster handelt. Dies ist wichtig, da 2 von 3 Ebenen weniger durchlaufen
-         * müssen die dritte.
-         * Mit der Formel: ( Ebenenzahl + ( 3 * MultiplikatorDerInnerenSchleife) lassen sich in der inneren Schleife
-         * alle entsprechenden Koordinaten des Musters überprüfen.
-         * (Beispiel: Ebene1 hat für dessen Muster die X-Koordinate 2, 4 und 8)
-         * Die jeweiligen Koordinaten werden überprüft ob diese noch frei sind. Wenn dem so ist,
-         * beendet dieMEthode in dem sie TRUE zurückgibt und die KI weiss, dass
-         * sie noch Koordinaten mit diesem Muster erstellen kann.
-         * Andernfalls weiss die KI, dass alle Koordinaten für dieses Muster besetzt sind und kann
-         * dementsprechend auf ein anderes Muster umsteigen.
-         *
-         */
-        for ( int i = 0; i < includedRows.size(); i++){
-
-
-            //Prüft ob die Y-Koordinate der Ebene 1 entspricht
-            if ( (includedRows.get(i) + 1) % 3 == 1){
-
-                //Innere Schleife für die Überprüfung der X-Koordinaten
-                /**
-                 * Das "((this.fieldSize/ 3) -1)" steht für den  höchsten Multiplikator, mit dem die Formel
-                 * die X-Koordinaten der entsprechenden Ebene erstellt. Bei einem Standard 10x10 Feld
-                 * hat die Ebene 1 und 2 einen max. Multiplikator von 2 und Ebene 3 einen von 3.
-                 */
-                for( int j = 0; j <= ((this.fieldSize/ 3) -1) ; j++){
-
-
-
-                    if ( !isCoordinateOccupied(includedRows.get(i), (2 + (3 * j)) ) && !isCoordinateShipPart(includedRows.get(i), (2 + (3 * j)) )){
-
-                        return true;
-                    }
-
-                }
-
-                //Prüft ob die Y-Koordinate der Ebene 2 entspricht
-            } else if ( (includedRows.get(i) + 1) % 3 == 2 ){
-
-                for( int k = 0; k <= ((this.fieldSize/ 3) -1); k++){
-
-
-                    if ( !isCoordinateOccupied(includedRows.get(i), (1 + (3 * k)) ) && !isCoordinateShipPart(includedRows.get(i), (1 + (3 * k)) )){
-
-                       return true;
-                    }
-
-                }
-
-                //Prüft ob die Y-Koordinate der Ebene 3 entspricht
-            } else if ( (includedRows.get(i) + 1) % 3 == 0 ){
-
-                for( int l= 0; l <= (this.fieldSize/ 3) ; l++){
-
-                    if ( !isCoordinateOccupied(includedRows.get(i), (3 * l))  && !isCoordinateShipPart(includedRows.get(i), (3 * l) ) ){
-
-                       return true;
-                    }
-
-                }
-
-            }
-
-        }
-
-
-        return false;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Erstellt anhand der verbleibenden, freien Koordinaten auf dem Spielfeld
-     * Blöcke und unterteilt diese mithilfe eines Schachbrettmusters.<br>
-     * Die Anzahl der Schüsse um ein Schiffsteil damit zu treffen sinkt
-     * und die Chance dabei etwas zu treffen erhöht sich.
-     *
-     * @return Eine beschießbare Koordinate aus einem Block
-     */
-    protected String chessBoardPatternString(){
-
-        //Falls die Liste des Schachbrettmusters leer ist (beim ersten
-        // Aufruf), wird das Feld gescannt und die Liste initialisiert
-        if ( !chessBoardPatternActivated){
-
-            initializeChessBoardPattern();
-            chessBoardPatternActivated = true;
-        }
-
-
-        /**
-         * Nachdem geprüft wurde ob das Schachbrettmuster initialisiert wurde oder nicht,
-         * wird eine Koordinate aus der Liste zurückgegeben.
-         * Wenn die Liste allerdings leer ist (da nur noch Einser-Schiffe auf dem Spielfeld
-         * existieren), werden die restlichen Felder zufällig beschossen.
-         */
-        if  (!validChessBoardPatternCoordinates.isEmpty()){
-
-            return validChessBoardPatternCoordinates.get(random.nextInt(validChessBoardPatternCoordinates.size()));
-        }else {
-            return "" + randomRowInt() + "," + randomColumnInt();
-        }
-
-
-
-    }
-
-
-    /**
-     * Scannt das Spielfeld nach freien Feldern und
-     * speichert mithilfe des Schachbrettmusters
-     * die Koordinaten in das <b>validChessBoardPatternCoordinates</b>
-     * ab
-     */
-    private void initializeChessBoardPattern(){
-
-        //Flag-Variable die angibt, ob bei der Prüfung der nördlichen Koordinate die aktuelle gespeichert wurde
-        boolean wasSaved;
-
-
-        for ( int i = 0; i < includedRows.size(); i++){
-
-            for (int j = 0; j < includedColumns.size(); j++){
-
-                wasSaved = false;
-
-
-                //Aktuelle Koordinate prüfen ob sie frei ist, ansonsten wird zum nächsten weitergegangen
-                if ( !isCoordinateOccupied( includedRows.get(i), includedColumns.get(j) ) && !isCoordinateShipPart( includedRows.get(i), includedColumns.get(j))){
-
-                    //Nördliche Koordinate prüfen
-                    if( isCoordinateInField( includedRows.get(i) -1, includedColumns.get(j) ) && !isCoordinateShipPart(includedRows.get(i) -1, includedColumns.get(j)) && !isCoordinateOccupied(includedRows.get(i) -1, includedColumns.get(j))){
-
-
-                        //Wenn die nördliche Koordinate nicht gespeichert wurde, wird die aktuelle Koordinate in die Liste
-                        //gespeichert
-                        if( !validChessBoardPatternCoordinates.contains("" + (includedRows.get(i) - 1) + "," + includedColumns.get(j)  )){
-
-                            validChessBoardPatternCoordinates.add("" + includedRows.get(i) + "," + includedColumns.get(j) );
-                            wasSaved = true;
-                        }
-
-                    }
-
-                    //Wenn die aktuelle Koordinate bei der Überrprüfung des Nordens nicht gespeichert wurde, wird die
-                    //westliche Koordinate überprüft
-                    if ( !wasSaved){
-
-                        //Westliche Koordinate prüfen
-                        if(isCoordinateInField( includedRows.get(i), includedColumns.get(j) - 1) && !isCoordinateShipPart(includedRows.get(i), includedColumns.get(j) - 1) && !isCoordinateOccupied(includedRows.get(i), includedColumns.get(j) - 1) ){
-
-                            //Wenn die westliche Koordinate nicht gespeichert wurde, wird die aktuelle Koordinate in die Liste
-                            //gespeichert
-                            if( !validChessBoardPatternCoordinates.contains("" + includedRows.get(i)  + "," + (includedColumns.get(j) -1) )){
-
-                                validChessBoardPatternCoordinates.add("" + includedRows.get(i) + "," + includedColumns.get(j) );
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    /**
-     * Prüft ob eine Koordinate in der Liste für das
-     * Schachbrettmuster vorhanden ist und löscht diese dann
-     *
-     * @param coord Die zu löschende Koordinate
-     */
-    protected void deleteChessBoardPatternCoordinate( String coord){
-
-        if (validChessBoardPatternCoordinates.contains(coord)){
-
-            validChessBoardPatternCoordinates.remove(coord);
-        }
-
-    }
-
-
-
-
-
 
 
 
@@ -1629,134 +1235,6 @@ public abstract class Computer extends Player {
 
 
     /**
-     * Überprüfung ob die generierten Koordinaten der KI
-     * sich im angegebenen Viertel aufhält oder nicht
-     *
-     * @param rowBeginn Anfangspunkt der Reihe
-     * @param rowEnd Endpunkt der Reihe
-     * @param columnBeginn Anfangspunkt der Spalte
-     * @param columnEnd Endpunkt der Spalte
-     * @return Ob sich eine Koordinate in einem angegebenen Viertel aufhält oder nicht
-     */
-    private boolean isInFieldQuarter ( int rowBeginn, int rowEnd, int columnBeginn, int columnEnd){
-
-
-
-        for ( int r = rowBeginn; r < rowEnd; r++ ){ //Äußere FOR-Schleife läuft die Y-Koordinaten durch
-
-            for ( int c = columnBeginn; c < columnEnd; c++){ //Innere FOR-Schleife läuft die X-Koordinaten durch
-
-
-                if ( (super.getY() == r) && (super.getX() == c)){
-
-                    //Sobald im Viertel die angegebenen Koordinaten erkannt wurden, wird die Methode beendet
-                    return true;
-
-                }
-
-            }
-        }
-
-        //Alle Koordinaten des Viertels wurden durchlaufen und die Koordinaten waren nicht im angegebenen Viertel
-        return false;
-    }
-
-
-    /**
-     * Die erstellten Koordinaten der KI werden überprüft, ob
-     * sich das Viertel, in dem die zuletzt erstellte, an die Main übergebene
-     * Koordinate mit dem Viertel der neu generierten unterscheidet. Nur
-     * wenn sie sich unterscheiden wird TRUE ausgegeben.
-     *
-     * @return Ob sich die das letzte Viertel mit dem neuen unterscheidet oder nicht
-     */
-    protected boolean fieldQuarterPatternIsValid (){
-
-        //Beim ersten Aufruf gab es noch keinen letzten Zug, deshalb ist der erste automatisch gültig
-        if (lastHitQuarter == -1){
-            return true;
-        }
-
-
-
-        //Prüfen ob der neue Zug im Oberen-Linken Viertel und daher FALSE ist
-        if ( lastHitQuarter == 0){
-
-           return  !isInFieldQuarter(0, (fieldSize/2), 0,(fieldSize/2));
-        }
-
-        //Prüfen ob der neue Zug im Oberen-Rechten Viertel und daher FALSE ist
-        if ( lastHitQuarter == 1){
-
-            return  !isInFieldQuarter(0, (fieldSize/2), (fieldSize/2), fieldSize);
-        }
-
-        //Prüfen ob der neue Zug im Unteren-Linken Viertel und daher FALSE ist
-        if ( lastHitQuarter == 2){
-
-            return  !isInFieldQuarter( (fieldSize/2), fieldSize, 0,(fieldSize/2));
-        }
-
-        //Prüfen ob der neue Zug im Unteren-Rechten Viertel und daher FALSE ist
-        if ( lastHitQuarter == 3){
-
-            return  !isInFieldQuarter((fieldSize/2), fieldSize, (fieldSize/2), fieldSize);
-
-        }
-
-
-
-        //Der neue Zug entspricht dem Viertel-Muster und ist daher gültig
-        return true;
-
-
-
-    }
-
-
-    /**
-     * Das zuletzt beschossene Viertel wird abgespeichert,
-     * sodass es nicht im nächsten Zug nochmal beschossen
-     * werden kann
-     */
-    protected void updateFieldQuarterPattern(){
-
-        //Prüfen ob sich die beschossene Koordinate im Oberen-Linken Viertel befindet
-        if ( isInFieldQuarter(0, (fieldSize/2), 0,(fieldSize/2)) ){
-
-            lastHitQuarter = 0;
-        }
-
-        //Prüfen ob sich die beschossene Koordinate im Oberen-Rechten Viertel befindet
-        if ( isInFieldQuarter(0, (fieldSize/2), (fieldSize/2), fieldSize) ){
-
-            lastHitQuarter = 1;
-        }
-
-        //Prüfen ob sich die beschossene Koordinate im Unteren-Linken Viertel befindet
-        if ( isInFieldQuarter( (fieldSize/2), fieldSize, 0,(fieldSize/2)) ){
-
-            lastHitQuarter = 2;
-        }
-
-        //Prüfen ob sich die beschossene Koordinate im Unteren-Rechten Viertel befindet
-        if ( isInFieldQuarter((fieldSize/2), fieldSize, (fieldSize/2), fieldSize) ){
-
-            lastHitQuarter = 3;
-        }
-
-    }
-
-
-
-
-
-
-
-
-
-
-    /**
      * Das zuletzt zerstörte Schiff wird aus der
      * Schiffsliste gelöscht und die Variable
      * zur Speicherung der Länge des aktuell
@@ -1771,6 +1249,13 @@ public abstract class Computer extends Player {
         //Schiffslänge wieder auf den Anfangsstatus setzen
         this.hitShipLength = 1;
     }
+
+
+
+
+
+
+
 
 
 
@@ -1843,13 +1328,6 @@ public abstract class Computer extends Player {
 
                         setCoordinateOccupied(includedRows.get(r), includedColumns.get(c) + i);
 
-                        //Wenn die ausgeschlossenen Koordinaten Teil des Schachbrettmusters sind,
-                        //werden die entsprechenden Koordinaten aus der Schachbrettmuster-Liste entfernt
-                        if (validChessBoardPatternCoordinates.contains("" + includedRows.get(r) + "," + (includedColumns.get(c) + i)) ){
-
-                            validChessBoardPatternCoordinates.remove("" + includedRows.get(r) + "," + (includedColumns.get(c) + i) ) ;
-                        }
-
 
                     }
 
@@ -1862,12 +1340,6 @@ public abstract class Computer extends Player {
                        System.out.println("Eingeschlossene Koordinate entfernen -> " + (includedRows.get(r) + i)+ "|"+ (includedColumns.get(c)) );
                        setCoordinateOccupied(includedRows.get(r) + i, includedColumns.get(c) );
 
-                       //Wenn die ausgeschlossenen Koordinaten Teil des Schachbrettmusters sind,
-                       //werden die entsprechenden Koordinaten aus der Schachbrettmuster-Liste entfernt
-                       if (validChessBoardPatternCoordinates.contains("" + (includedRows.get(r) + i) + "," + includedColumns.get(c) ) ){
-
-                           validChessBoardPatternCoordinates.remove("" + (includedRows.get(r) + i) + "," + includedColumns.get(c) ) ;
-                       }
 
                    }
 
@@ -1882,8 +1354,8 @@ public abstract class Computer extends Player {
 
 
     /**
-     * Überprüft von einer bestimmten Koordinate in einer Richtung
-     * ob die eingeschlossenen Felder zum Ausschließen geeignte sind
+     * Überprüft von einer bestimmten Koordinate aus in einer Richtung,
+     * ob die eingeschlossenen Felder zum Ausschließen geeignet sind
      * oder nicht
      *
      * @param yCoord Zu überprüfende Y-Koordinate
@@ -2048,10 +1520,6 @@ public abstract class Computer extends Player {
                     isValid = false;
                 }
 
-
-
-
-
             }
 
         }
@@ -2097,11 +1565,6 @@ public abstract class Computer extends Player {
 
         return isValid;
     }
-
-
-
-
-
 
 
 
@@ -2170,15 +1633,6 @@ public abstract class Computer extends Player {
         System.out.println("\n\n");
 
 
-        System.out.print("Schachbrettkoordinaten: ");
-        for (int i = 0; i < validChessBoardPatternCoordinates.size(); i++){
-
-            System.out.print(validChessBoardPatternCoordinates.get(i) +" | ");
-        }
-        System.out.println("\n\n");
-
-
-
         System.out.print("Schiffsliste:\n");
         for (Map.Entry m: shipList.entrySet()){
 
@@ -2192,13 +1646,10 @@ public abstract class Computer extends Player {
 
 
 
-
-
-
-
     /**
      *
      * Extrahiert aus einem String die Y-Koordinate
+     *
      * @param stringCoord String von welchem extrahiert wird
      * @return Y-Koordinate
      */
@@ -2210,6 +1661,7 @@ public abstract class Computer extends Player {
     /**
      *
      * Extrahiert aus einem String die X-Koordinate
+     *
      * @param stringCoord String von welchem extrahiert wird
      * @return X-Koordinate
      */

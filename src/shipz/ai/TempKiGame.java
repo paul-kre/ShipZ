@@ -429,7 +429,7 @@ public class TempKiGame{
 
             //Vom Player die shootField methode aufrufen und
             //den Rückgabewert String in ein neues String speichern
-             ki.generateAICoordinates();
+             //ki.generateAICoordinates();
 
             //Eigene methoden aufrufen um aus dem String einmal ein
             // Y- und X-Koordinate rauszuholen und in neue int variablen speichern

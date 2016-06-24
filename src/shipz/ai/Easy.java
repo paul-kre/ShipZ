@@ -32,7 +32,9 @@ public class Easy extends Computer {
     public Easy (int newFieldSize,boolean placingAtEdge, List<Integer> newShipList) {
 
         super(newFieldSize,placingAtEdge, newShipList);
-       //generateAICoordinates();
+
+        //Beim instanziieren werden schon die ersten Koordinaten generiert
+       generateAICoordinates();
 
     }
 
@@ -114,7 +116,8 @@ public class Easy extends Computer {
 
         super.shootResult(yCoord, xCoord,hitState);
 
-       // generateAICoordinates();
+        //Nach der Auswertung der Ergebnisse wird die nächste Koordinate generiert
+       generateAICoordinates();
     }
 
 
