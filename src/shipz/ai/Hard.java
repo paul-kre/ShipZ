@@ -48,6 +48,7 @@ public class Hard extends Computer {
 	 * Alle Informationen bezüglich der schon beschossenen Feldern,
 	 * der geprüften Richtungen, der erkundeten Bereiche, verwendeteten Taktiken
 	 * und Treffern sind auf den Standardwert gesetzt.<br>
+     * Beim instanziieren wird direkt eine neue Koordinate generiert.
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
      * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
@@ -156,7 +157,7 @@ public class Hard extends Computer {
 
         /**
          * Die berechneten Trefferwahrscheinlichkeiten haben die geringsten Werte in den
-         * Ecken. Dies kann sich der Gegner als Vorteil verschaffen und seine Schiffe
+         * Ecken. Dies kann sich der Gegner als Vorteil zu nutze machen und seine Schiffe
          * dort platzieren. In dem wir künstlich die Wahrscheinlichkeiten der Ecken,
          * die noch frei sind, erhöhen, können wir die Schwachstelle aushebeln.
          */
@@ -465,7 +466,13 @@ public class Hard extends Computer {
     }
 
 
-
+    /**
+     * DEBUGGING-METHODE
+     *
+     * Zeigt das Wahrscheinlichkeitenfeld für
+     * die berechnung von treffbaren Koordinaten an
+     *
+     */
     public void displayProbabilityField() {
         //Ausgabe der oberen Feldbeschriftung
         System.out.println("  0  1  2  3  4  5  6  7  8  9");
@@ -495,7 +502,12 @@ public class Hard extends Computer {
         }
     }
 
-	@Override
+
+
+    /**
+     * Implementierung der Methode aus
+     * der Klasse Computer ohne Inhalt
+     */
 	public void run() {
 
 	}
