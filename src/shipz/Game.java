@@ -946,17 +946,24 @@ public class Game implements GameEventListener {
                 }
             case UNDO_EVENT:
             	try {
-                	if(player1active) undo(filestream.undoDraw(1));
-                	else undo(filestream.undoDraw(2));
+            		undo(filestream.undoDraw(activePlayer()));
             	} catch (NoDrawException x) {
             		x.printStackTrace();
             		// Dialog wird auf der GUI ausgegeben
             		// dass keine Züge mehr rückgängig gemacht werden können
             	}
             case REDO_EVENT:
-            	// ähnlich wie undo
+				try {
+					redo(filestream.redoDraw(activePlayer()));
+				} catch (NoDrawException x) {
+					x.printStackTrace();
+            		// Dialog wird auf der GUI ausgegeben
+            		// dass keine Züge mehr wiederholt werden können
+				}
             case SAVE_EVENT:
             	filestream.saveGame("testName", "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
+            case LOAD_EVENT:
+            	
         }
     }
 
@@ -974,6 +981,23 @@ public class Game implements GameEventListener {
     		playerIndex = draws[i].split("|")[0];
     		
     	}
+    }
+    
+    /**
+     * Wiederholt zurückgenommene Züge.
+     * @param str String, der die zu wiederholenden Züge speichert.
+     */
+    private void redo(String str) {
+    	String[] draws = str.split(";");
+    	String x, y, result, playerIndex;
+    	for(int i = 0; i < draws.length; i++) {
+    		x = draws[i].split("|")[1].split(",")[0];
+    		y = draws[i].split("|")[1].split(",")[1];
+//    		result = draws[i].split("|")[2];
+    		playerIndex = draws[i].split("|")[0];
+    		
+    	}
+    	
     }
     
     private String boardToString(int playerIndex) {

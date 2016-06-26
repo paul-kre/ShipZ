@@ -76,6 +76,7 @@ public class GUI2 extends GameEventSource {
         CheckBox cboxNetGame = new CheckBox("Create a Networkgame");
         Slider slFieldSize = new Slider();
         TableView tbHighscore = new TableView();
+        TableView tbLoad = new TableView();
 
 
         // Anpassen der Panes
@@ -178,7 +179,7 @@ public class GUI2 extends GameEventSource {
 
         tbHighscore.layoutXProperty().setValue(100);
         tbHighscore.layoutYProperty().setValue(100);
-        tbHighscore.setPrefWidth(480);
+        tbHighscore.setPrefWidth(680);
 
         //Positionsspalte
         TableColumn positionColumn = new TableColumn("Position");
@@ -203,7 +204,34 @@ public class GUI2 extends GameEventSource {
         // Hinzufügen der Spalten
         tbHighscore.getColumns().addAll(positionColumn, nameColumn, scoreColumn, dateColumn);
 
+        /*
+         * Load-Tabelle
+         * Hier werden alle Spielst�nde angezeigt
+         */
+        
+        // Name des Spielstands
+        TableColumn gameNameColumn = new TableColumn("Game Name");
+        gameNameColumn.setMinWidth(200);
+        gameNameColumn.setCellValueFactory(new PropertyValueFactory("gamename"));
+        
+        // Name des 1. Spielers
+        TableColumn playerColumn = new TableColumn("Player");
+        playerColumn.setMinWidth(200);
+        playerColumn.setCellValueFactory(new PropertyValueFactory("player"));
 
+        // Name des 2. Spielers
+        TableColumn opponentColumn = new TableColumn("Opponent");
+        opponentColumn.setMinWidth(200);
+        opponentColumn.setCellValueFactory(new PropertyValueFactory("opponent"));
+
+        // Zeit
+        TableColumn gameDateColumn = new TableColumn("Date");
+        gameDateColumn.setMinWidth(200);
+        gameDateColumn.setCellValueFactory(new PropertyValueFactory("gamedate"));
+        
+        tbLoad.getColumns().addAll(gameNameColumn, playerColumn, opponentColumn, gameDateColumn);
+
+        
         // HinzufÃ¼gen der Panes zur VBox
         root.getChildren().add(header);
         root.getChildren().add(game);
@@ -250,6 +278,8 @@ public class GUI2 extends GameEventSource {
             @Override
             public void handle(ActionEvent event) {
                 //new NewWindow();
+            	game.getChildren().clear();
+            	game.getChildren().addAll(hlLGame, tbLoad);
             }
         });
 

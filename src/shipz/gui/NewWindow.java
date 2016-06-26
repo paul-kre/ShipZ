@@ -29,7 +29,7 @@ public class NewWindow extends Stage{
         
         Button btn1 = new Button();
         
-        btn1.setText("Schlie√üen");
+        btn1.setText("Schlieﬂen");
         
         btn1.setOnAction(new EventHandler<ActionEvent>() {
             
