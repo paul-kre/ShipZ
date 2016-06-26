@@ -2,7 +2,8 @@ package shipz;
 
 import javafx.stage.Stage;
 import shipz.gui.GUI2;
-import shipz.util.Event;
+import shipz.io.FileStream;
+import shipz.network.Network;
 import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
 import java.util.ArrayList;
@@ -32,11 +33,11 @@ public class Game implements GameEventListener {
     /** gibt an, ob Spieler 1 aktiv ist */
     private boolean player1active;
     /** Netzwerkverbindung */
-    //private Network network;
+    private Network network;
     /** grafische Nutzeroberfläche */
     public GUI2 gui;
     /** Spielstandverwaltung */
-    //private FileStream filestream;
+    private FileStream filestream;
     /** Liste mit den zu verwendenden Schiffen */
     public List<Integer> shipList;
     /** aktive x-Koordinate */
@@ -67,6 +68,7 @@ public class Game implements GameEventListener {
         player1active = true;
         testCounter = 1;
         gamePaused = false;
+        filestream = new FileStream();
     }
 
     //Methoden

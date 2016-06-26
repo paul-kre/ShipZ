@@ -71,8 +71,8 @@ public class GUI2 extends GameEventSource {
         Button btnStart = new Button("Start");
         Button btnEGame = new Button("End game");
         RadioButton rbtnPvP = new RadioButton("Player vs Player");
-        RadioButton rbtnPvK = new RadioButton("Player vs KI");
-        RadioButton rbtnKvK = new RadioButton("KI vs KI");
+        RadioButton rbtnPvK = new RadioButton("Player vs AI");
+        RadioButton rbtnKvK = new RadioButton("AI vs AI");
         CheckBox cboxNetGame = new CheckBox("Create a Networkgame");
         Slider slFieldSize = new Slider();
         TableView tbHighscore = new TableView();
@@ -191,12 +191,17 @@ public class GUI2 extends GameEventSource {
         nameColumn.setCellValueFactory(new PropertyValueFactory("name"));
 
         // Punkte Spalte
-        TableColumn pointsColumn = new TableColumn("Points");
-        pointsColumn.setMinWidth(200);
-        pointsColumn.setCellValueFactory(new PropertyValueFactory("points"));
+        TableColumn scoreColumn = new TableColumn("Score");
+        scoreColumn.setMinWidth(200);
+        scoreColumn.setCellValueFactory(new PropertyValueFactory("score"));
+        
+        // Datums Spalte
+        TableColumn dateColumn = new TableColumn("Date");
+        dateColumn.setMinWidth(200);
+        dateColumn.setCellValueFactory(new PropertyValueFactory("date"));
 
         // Hinzufügen der Spalten
-        tbHighscore.getColumns().addAll(positionColumn, nameColumn, pointsColumn);
+        tbHighscore.getColumns().addAll(positionColumn, nameColumn, scoreColumn, dateColumn);
 
 
         // HinzufÃ¼gen der Panes zur VBox
