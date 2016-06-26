@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import shipz.Player;
+import shipz.util.NoDrawException;
 
 
 /**
@@ -113,6 +114,7 @@ public class TempKiGame{
 
        //board[3][2] = 'x';
         // board[4][1] = 'x';
+
 
 
     }
@@ -421,6 +423,7 @@ public class TempKiGame{
         this.displaySingleBoard(board1);
         System.out.println("\n");
 
+        String coordinates = "1|3,2|0;1|4,2|2";
 
         for (int i = 0; i < 100; i++){
 
@@ -429,21 +432,23 @@ public class TempKiGame{
 
             //Vom Player die shootField methode aufrufen und
             //den Rückgabewert String in ein neues String speichern
-             //ki.generateAICoordinates();
 
             //Eigene methoden aufrufen um aus dem String einmal ein
             // Y- und X-Koordinate rauszuholen und in neue int variablen speichern
+
             int yCoord = ki.getY();
             int xCoord = ki.getX();
 
+
             //Verwaltung übergibt dem Player das Ergebnis mit shootResult mit.//
             ki.shootResult(yCoord, xCoord, checkTile( xCoord, yCoord) );
+
 
             System.out.println("Treffer auf :" + yCoord + "|" + xCoord );
             System.out.println("Anzeige des Spiegelfeldes der Ki:");
 
             ki.displayMirrorField();
-            ki.printRowAndColumnItems();
+            ki.printShipList();
             System.out.println("\n");
 
 

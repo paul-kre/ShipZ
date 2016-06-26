@@ -3,6 +3,7 @@ package shipz.ai;
 import java.util.*;
 
 import shipz.Player;
+import shipz.util.NoDrawException;
 
 
 /**
@@ -1323,9 +1324,6 @@ public abstract class Computer extends Player {
 
                     for (i = 0; i < trappedFieldSize; i++){
 
-
-                        System.out.println("Eingeschlossene Koordinate entfernen -> " + (includedRows.get(r))+ "|"+ (includedColumns.get(c) + i) );
-
                         setCoordinateOccupied(includedRows.get(r), includedColumns.get(c) + i);
 
 
@@ -1337,7 +1335,6 @@ public abstract class Computer extends Player {
 
                    for (i = 0; i < trappedFieldSize; i++){
 
-                       System.out.println("Eingeschlossene Koordinate entfernen -> " + (includedRows.get(r) + i)+ "|"+ (includedColumns.get(c)) );
                        setCoordinateOccupied(includedRows.get(r) + i, includedColumns.get(c) );
 
 
@@ -1571,11 +1568,104 @@ public abstract class Computer extends Player {
 
 
 
+
     /**
-     * DEBUGGING METHODE FÜR MIRRORFIELD
+     * Extrahiert aus einem String die Y-Koordinate
      *
-     * Zeigt das SpiegelFeld als ein Spielfeld.
-     * Nichtbeschossene Felder sind leer, beschossene Felder enthalten ein 'O'
+     * @param stringCoord String von welchem extrahiert wird
+     * @return Y-Koordinate
+     */
+    protected int extractYCoord( String stringCoord){
+        return Integer.parseInt(stringCoord.split(",")[0]);
+    }
+
+
+    /**
+     * Extrahiert aus einem String die X-Koordinate
+     *
+     * @param stringCoord String von welchem extrahiert wird
+     * @return X-Koordinate
+     */
+    protected int extractXCoord( String stringCoord){
+        return Integer.parseInt(stringCoord.split(",")[1]);
+    }
+
+
+
+
+
+
+
+
+    /**
+     * Überschreiben der Methode aus Klasse Player<br><br>
+     *
+     * Zurückgenommene Koordinaten werden im mirrorField wieder
+     * als Frei angezeigt
+     *
+     * @param coordinateString Liste der zurückgenommen Koordinaten. Spieler muss für seinen Algorithmus passend die
+     *                        Koordinaten bearbeiten.
+     *
+     * @throws NoDrawException Wenn der String mit den Koordinaten falsch abgetrennt oder leer ist
+     */
+    public void undoHits(String coordinateString) throws NoDrawException {
+
+        super.undoHits(coordinateString);
+
+        //Y- und X-Koordinaten aus den Strings zwischenspeichern
+        int yCoord;
+        int xCoord;
+        //Züge zurücknehmen
+        for ( String draw : undoRedoCoordinates){
+
+            yCoord = extractYCoord(draw);
+            xCoord = extractXCoord(draw);
+
+            mirrorField[yCoord][xCoord] = 0;
+
+        }
+
+    }
+
+
+    /**
+     * Überschreiben der Methode aus Klasse Player<br><br>
+     *
+     * Wiederhergestellte Koordinaten werden im mirrorField wieder
+     * als besetzt angezeigt.
+     *
+     * @param coordinateString Liste der wiederhergsetellten Koordinaten. Spieler muss für seinen Algorithmus passend die
+     *                        Koordinaten neu setzen.
+     * @throws NoDrawException Wenn der String mit den Koordinaten falsch abgetrennt oder leer ist
+     */
+    public void redoHits(String coordinateString) throws NoDrawException {
+
+        super.redoHits(coordinateString);
+
+        //Y- und X-Koordinaten aus den Strings zwischenspeichern
+        int yCoord;
+        int xCoord;
+        //Züge wiederherstellen
+        for ( String draw : undoRedoCoordinates){
+
+            yCoord = extractYCoord(draw);
+            xCoord = extractXCoord(draw);
+
+            setCoordinateOccupied(yCoord, xCoord);
+
+        }
+
+    }
+
+
+
+
+    /**
+     * DEBUGGING-METHODE
+     *
+     * Zeigt das mirrorField als ein Spielfeld an.
+     * Nichtbeschossene Felder sind leer, besetzte Felder enthalten ein 'O',
+     * getroffene Schiffsteile enthalten ein 'X'
      */
     public void displayMirrorField() {
         //Ausgabe der oberen Feldbeschriftung
@@ -1614,24 +1704,12 @@ public abstract class Computer extends Player {
     }
 
 
-
-    public void printRowAndColumnItems(){
-
-        System.out.print("\nIncluded Rows: ");
-        for (int i = 0; i < includedRows.size(); i++){
-
-            System.out.print(includedRows.get(i) +",");
-        }
-        System.out.println();
-
-
-        System.out.print("Included Columns: ");
-        for (int i = 0; i < includedColumns.size(); i++){
-
-            System.out.print(includedColumns.get(i) +",");
-        }
-        System.out.println("\n\n");
-
+    /**
+     * DEBUGGING-METHODE
+     *
+     * Ausgabe der aktuellen Schiffsliste
+     */
+    public void printShipList(){
 
         System.out.print("Schiffsliste:\n");
         for (Map.Entry m: shipList.entrySet()){
@@ -1646,28 +1724,6 @@ public abstract class Computer extends Player {
 
 
 
-    /**
-     *
-     * Extrahiert aus einem String die Y-Koordinate
-     *
-     * @param stringCoord String von welchem extrahiert wird
-     * @return Y-Koordinate
-     */
-    protected int extractYCoord( String stringCoord){
-        return Integer.parseInt(stringCoord.split(",")[0]);
-    }
-
-
-    /**
-     *
-     * Extrahiert aus einem String die X-Koordinate
-     *
-     * @param stringCoord String von welchem extrahiert wird
-     * @return X-Koordinate
-     */
-    protected int extractXCoord( String stringCoord){
-        return Integer.parseInt(stringCoord.split(",")[1]);
-    }
 
 
 }//end class Computer

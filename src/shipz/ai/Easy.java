@@ -7,7 +7,7 @@ import java.util.List;
  *
  * Erstellte Koordinaten werden an die Verwaltung übergeben.<br>
  * KI speichert getroffene Felder, beschießt zufällige Felder, außer
- * es trifft ein Schiffsteil. In dem Fall wird die Gegend des Schiffes
+ * es trifft ein Schiffsteil. In diesem Fall wird die Gegend des Schiffes
  * untersucht und in die Richtung entlang beschossen.<br>
  *
  * @author Artur Hergert
@@ -24,6 +24,8 @@ public class Easy extends Computer {
      * Ein neues Easy-Objekt enthält eine leere Abschussliste.<br>
      * Alle Informationen bezüglich der schon beschossenen Feldern
      * und Treffern sind standardmäßig auf null.<br>
+     * Beim instanziieren wird direkt eine neue Koordinate generiert.
+     *
      *
      * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
      * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
@@ -78,23 +80,12 @@ public class Easy extends Computer {
                 if ( !isCoordinateOccupied (super.getY(), super.getX()) && !isCoordinateShipPart(super.getY(), super.getX()) ){
 
                     loopAgain = false;
-
-
                 }
-
 
             }while (loopAgain);
 
 
         }
-
-        /**
-         * Y- und X-Koordinaten wurden gespeichert und
-         * es wird jetzt der Main Klasse mitgeteilt, dass fertige
-         * Koordinaten bereitstehen
-         * */
-        //fireGameEvent(AI_SHOOT_EVENT);
-
 
     }
 
@@ -121,6 +112,12 @@ public class Easy extends Computer {
     }
 
 
+
+
+    /**
+     * Implementierung der Methode aus
+     * der Klasse Computer ohne Inhalt
+     */
      public void run() {
 
     }

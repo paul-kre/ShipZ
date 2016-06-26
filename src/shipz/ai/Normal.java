@@ -7,9 +7,9 @@ import java.util.List;
  * Normaler Schwierigkeitsgrad<br><br>
  *
  * Erstellte Koordinaten werden an die Verwaltung übergeben. <br>
- * KI berücksichtigt zalles was der einfache Schwierigkeitsgrad macht und
- * benutzt zusätzlich ein 3-Feld-Muster um alle Felder die mindestens drei
- * Felder groß sind mit so wenig Treffern wie möglich zu erwischen.<br>
+ * KI berücksichtigt alles was der einfache Schwierigkeitsgrad macht und
+ * benutzt zusätzlich ein 3-Feld-Muster um alle Felder, die mindestens drei
+ * Felder groß sind, mit so wenig Treffern wie möglich zu erwischen.<br>
  *
  * @author Artur Hergert
  *
@@ -67,12 +67,13 @@ public class Normal extends Computer {
 
 	//Constructor
 	/**
-	 * Constructor zur Initialisierung des
+	 * Konstruktor zur Initialisierung des
 	 * normalen Schwierigkeitsgrades. <br><br>
 	 *
 	 * Ein neues Normal-Objekt enthält eine leere Abschussliste.<br>
 	 * Alle Informationen bezüglich der schon beschossenen Feldern,
 	 * der geprüften Richtungen und Treffern sind auf den Standardwert gesetzt.<br>
+     * Beim instanziieren wird direkt eine neue Koordinate generiert.
 	 *
 	 * @param newFieldSize Die Feldgröße des aktuellen Spiels. Die zu erstellenden Zufallskoordinaten werden von 1 bis fieldSize generiert.
      * @param placingAtEdge Einstellung ob man Schiffe an der Kante von anderen Schiffen platzieren darf oder nicht
@@ -95,10 +96,14 @@ public class Normal extends Computer {
      * Koordinaten werden mithilfe des 3-Feld-Musters (<b>randomThreePointPatternInt</b>)
      * erstellt und an die Verwaltung übergeben. <br><br>
      *
-     * Sobald alle größeren Schiffe zerstört wurden, schwenkt das Muster auf das
-     * erweiterte Schachbrettmuster Algorithmus (<b>enhancedChessBoardPattern</b>)
-     * und es wird versucht mit so wenig Schüssen wie möglich die kleineren Schiffe
-     * zu entdecken
+     * Sobald mit dem 3-Feld-Muster keine weiteren Koordinaten mehr beschiebar sind,
+     * setzt das Schachbrettmuster ein (<b>chessBoardPattern</b>), welches die restlichen
+     * Koordinaten in Blöcke einteilt und Koordinaten zum Beschuss ermittelt, wo man am
+     * ehesten möglichst viele Schiffsteile treffen könnte.<br><br>
+     *
+     * Zusätzlich werden freie Felder, die zwischen anderen besetzten Feldern eingesperrt sind,
+     * von der KI ausgeschlossen, sobald es keine Schiffe dessen Größe mehr im Spiel
+     * vorhanden sein können.
 	 *
 	 */
 	protected void generateAICoordinates() {
@@ -333,7 +338,7 @@ public class Normal extends Computer {
 
 
     /**
-     * Prüft ob eine X-Koordinate, die nach dem 3-feld-Muster erstelt wurde, auch
+     * Prüft ob eine X-Koordinate, die nach dem 3-feld-Muster erstellt wurde, auch
      * in der entprechenden Ebene im gültigen Bereich liegt
      *
      * @param patternXCoord Die zu überprüfende X-Koordinate
@@ -438,8 +443,6 @@ public class Normal extends Computer {
 
         return false;
     }
-
-
 
 
 
@@ -685,7 +688,10 @@ public class Normal extends Computer {
 
 
 
-    @Override
+    /**
+     * Implementierung der Methode aus
+     * der Klasse Computer ohne Inhalt
+     */
 	public void run() {
 
 
