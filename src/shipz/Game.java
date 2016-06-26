@@ -904,8 +904,7 @@ public class Game implements GameEventListener {
      * Main-Methode
      * @param args
      */
-    public static void main(String[] args) {
-    }
+//    public static void main(String[] args) {}
 
     @Override
     public void eventReceived(GameEvent e) {
@@ -923,8 +922,7 @@ public class Game implements GameEventListener {
                 test();
                 break;
             case FINISHED_ROUND:
-            	if(player1active) filestream.newDraw(aX, aY, 1, aResult);
-            	else filestream.newDraw(aX, aY, 2, aResult);
+            	filestream.newDraw(aX, aY, activePlayer(), aResult);
             	
                 if(gameFinished() == 0) {
                     if(aResult == 0) {
@@ -941,9 +939,7 @@ public class Game implements GameEventListener {
                 if(gamePaused) {
                     nextRoundAI();
                 }
-                else {
-                    //nichts
-                }
+                break;
             case UNDO_EVENT:
             	try {
             		undo(filestream.undoDraw(activePlayer()));
@@ -952,6 +948,7 @@ public class Game implements GameEventListener {
             		// Dialog wird auf der GUI ausgegeben
             		// dass keine Züge mehr rückgängig gemacht werden können
             	}
+            	break;
             case REDO_EVENT:
 				try {
 					redo(filestream.redoDraw(activePlayer()));
@@ -960,10 +957,15 @@ public class Game implements GameEventListener {
             		// Dialog wird auf der GUI ausgegeben
             		// dass keine Züge mehr wiederholt werden können
 				}
+				break;
             case SAVE_EVENT:
             	filestream.saveGame("testName", "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
+            	// Name des Spielstands muss noch irgendwie übergeben werden
+            	// Spielernamen müssen noch korrekt zurückgegeben werden
+            	break;
             case LOAD_EVENT:
-            	
+            	loadGame(null);
+            	break;
         }
     }
 
@@ -973,12 +975,12 @@ public class Game implements GameEventListener {
      */
     private void undo(String str) {
     	String[] draws = str.split(";");
-    	String x, y, result, playerIndex;
+    	int x, y, result, playerIndex;
     	for(int i = 0; i < draws.length; i++) {
-    		x = draws[i].split("|")[1].split(",")[0];
-    		y = draws[i].split("|")[1].split(",")[1];
-//    		result = draws[i].split("|")[2];
-    		playerIndex = draws[i].split("|")[0];
+    		x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
+    		y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
+    		result = Integer.parseInt(draws[i].split("|")[2]);
+    		playerIndex = Integer.parseInt(draws[i].split("|")[0]);
     		
     	}
     }
@@ -989,12 +991,12 @@ public class Game implements GameEventListener {
      */
     private void redo(String str) {
     	String[] draws = str.split(";");
-    	String x, y, result, playerIndex;
+    	int x, y, result, playerIndex;
     	for(int i = 0; i < draws.length; i++) {
-    		x = draws[i].split("|")[1].split(",")[0];
-    		y = draws[i].split("|")[1].split(",")[1];
-//    		result = draws[i].split("|")[2];
-    		playerIndex = draws[i].split("|")[0];
+    		x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
+    		y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
+    		result = Integer.parseInt(draws[i].split("|")[2]);
+    		playerIndex = Integer.parseInt(draws[i].split("|")[0]);
     		
     	}
     	
@@ -1017,6 +1019,37 @@ public class Game implements GameEventListener {
             }
         }
         return str;
+    }
+    
+    /**
+     * Wenn der Name eines Spielstands angegeben wird,
+     * wird das Spiel geladen, in dem die IVs aktualisiert werden.
+     * @param gameName Name unter dem das Spiel abgespeichert ist
+     */
+    private void loadGame(String gameName) {
+    	filestream.loadDraws(gameName); // aktualisiert die IVs in den Klassen für Punkte und Züge
+    	char[] board1 = filestream.getBoardPlayerOne(gameName).toCharArray();
+    	char[] board2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
+    	int boardsize = filestream.getBoardsize(gameName);
+    	
+    	for(int i = 0; i < boardsize; i++) {
+    		for(int j = 0; j < boardsize; j++) {
+    			this.board1[j][i] = board1[i];
+    			/*
+    			 * Irgendwie sowas. Sollte noch mal gründlich
+    			 * gecodet werden, das hier ist nur der Ansatz.
+    			 */
+    		}
+    	}
+    	
+//     	player1 = new Player(filestream.getPlayerName(gameName));
+//    	player2 = new Player(filestream.getOpponentName(gameName)); // geht nicht, warum?
+    	
+    	if(filestream.getActivePlayer(gameName) == 1) {
+    		player1active = true;
+    	} else {
+    		player1active = false;
+    	}
     }
     
     private double boardSize() {

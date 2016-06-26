@@ -231,7 +231,6 @@ public class GUI2 extends GameEventSource {
         
         tbLoad.getColumns().addAll(gameNameColumn, playerColumn, opponentColumn, gameDateColumn);
 
-        
         // HinzufÃ¼gen der Panes zur VBox
         root.getChildren().add(header);
         root.getChildren().add(game);
