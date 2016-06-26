@@ -49,6 +49,8 @@ public class Game implements GameEventListener {
     public boolean waitForGUI;
     /** zählt die Spielzüge für Testzwecke */
     private int testCounter;
+    /** gibt an, ob das Spiel zurzeit pausiert ist */
+    private boolean gamePaused;
 
     //Constructor
     /**
@@ -64,6 +66,7 @@ public class Game implements GameEventListener {
         gui.setEventListener(this);
         player1active = true;
         testCounter = 1;
+        gamePaused = false;
     }
 
     //Methoden
@@ -797,7 +800,7 @@ public class Game implements GameEventListener {
                 aY = activePlayer.getY();
                 aResult = checkTile(aX, aY);
                 activePlayer.shootResult(aY, aX, aResult);
-                System.out.println("Zug" + testCounter + ": " + aY + "/" + aX + " => " + aResult);
+                System.out.println(aY + "/" + aX + " => " + aResult);
                 if(player1active) {
                     if (aResult == 0) {
                         gui.drawWater(aY, aX, 2);
@@ -813,7 +816,7 @@ public class Game implements GameEventListener {
                     }
                 }
             }
-        }, 250);
+        }, 1000);
     }
 
 
@@ -926,8 +929,16 @@ public class Game implements GameEventListener {
                 else {
                     System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
                 }
-            }
+                break;
+            case PAUSE_EVENT:
+                if(gamePaused) {
+                    nextRoundAI();
+                }
+                else {
+                    //nichts
+                }
         }
+    }
 
     /**
      * wechselt den aktiven Spieler

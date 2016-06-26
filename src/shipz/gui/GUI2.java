@@ -67,6 +67,7 @@ public class GUI2 extends GameEventSource {
         Button btnExit = new Button("Exit");
         Button btnRndm = new Button("Random Placement");
         Button btnRdy = new Button("Ready");
+        Button btnPause = new Button("Pause");
         Button btnStart = new Button("Start");
         Button btnEGame = new Button("End game");
         RadioButton rbtnPvP = new RadioButton("Player vs Player");
@@ -138,6 +139,10 @@ public class GUI2 extends GameEventSource {
         btnRdy.layoutXProperty().setValue(300);
         btnRdy.layoutYProperty().setValue(150);
         btnRdy.setPrefWidth(150);
+
+        btnPause.layoutXProperty().setValue(550);
+        btnPause.layoutYProperty().setValue(150);
+        btnPause.setPrefWidth(150);
 
         btnEGame.layoutXProperty().setValue(825);
         btnEGame.layoutYProperty().setValue(40);
@@ -260,7 +265,7 @@ public class GUI2 extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 game.getChildren().clear();
-                game.getChildren().addAll(btnUndo, btnRedo, btnSave, btnExit, btnRndm, btnRdy, hlGame);
+                game.getChildren().addAll(btnUndo, btnRedo, btnSave, btnExit, btnRndm, btnRdy, btnPause, hlGame);
                 createField(game);
 
             }
@@ -282,6 +287,16 @@ public class GUI2 extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 fireGameEvent(READY_EVENT);
+
+            }
+        });
+
+        btnPause.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                fireGameEvent(PAUSE_EVENT);
 
             }
         });
