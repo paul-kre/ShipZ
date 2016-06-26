@@ -1,4 +1,4 @@
-package shipz.gamemode;
+package shipz.ai;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +111,7 @@ public class TempKiGame{
         board[1][9] = 'x';
         board[2][9] = 'x';
 
-       board[3][2] = 'x';
+       //board[3][2] = 'x';
         // board[4][1] = 'x';
 
 
@@ -411,12 +411,12 @@ public class TempKiGame{
         shipList.add(3);
         shipList.add(3);
         shipList.add(2);
-        shipList.add(1);
+        //shipList.add(1);
 
 
 
 
-        Computer ki = new Normal(10, false, shipList);
+        Computer ki = new Hard(10, false, shipList);
         System.out.println("Game Spielfeld mit Schiff(en):");
         this.displaySingleBoard(board1);
         System.out.println("\n");
@@ -429,7 +429,7 @@ public class TempKiGame{
 
             //Vom Player die shootField methode aufrufen und
             //den Rückgabewert String in ein neues String speichern
-             ki.generateAICoordinates();
+             //ki.generateAICoordinates();
 
             //Eigene methoden aufrufen um aus dem String einmal ein
             // Y- und X-Koordinate rauszuholen und in neue int variablen speichern

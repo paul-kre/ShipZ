@@ -17,8 +17,10 @@ public class UndoRedo {
 	private Stack<String> redo;
 	/** SaveLoad-Objekt */
 	private SaveLoad saveload;
+	
+	// Konstanten
 	/** Der String, der einzelne Züge in der Datei trennt. */
-	private String drawSeparator = ";";
+	private final static String DRAW_SEPARATOR = ";";
 	
 	// Konstruktor
 	/**
@@ -43,7 +45,7 @@ public class UndoRedo {
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
 	protected void newDraw(int x, int y, int playerIndex, int result) {
-		game.push(playerIndex + "|" + x + "," + y + "|" + result);
+		game.push(playerIndex + "|" + x + "," + y + "|" + result); // Zug wird auf den Stack gelegt
 	}
 	
 	/**
@@ -62,7 +64,7 @@ public class UndoRedo {
 			if(!game.isEmpty()) {
 				draw = game.pop();
 				redo.push(draw);
-				result += draw + ";";
+				result += draw + DRAW_SEPARATOR;
 			} else {
 				throw new NoDrawException();
 			}
@@ -85,7 +87,7 @@ public class UndoRedo {
 			if(!redo.empty()) {
 				draw = redo.pop();
 				game.push(draw);
-				result += draw + ";";
+				result += draw + DRAW_SEPARATOR;
 			} else {
 				throw new NoDrawException();
 			}
@@ -115,7 +117,7 @@ public class UndoRedo {
 	 * @param gameName Name des Spiels zur Zuordnung
 	 */
 	protected void saveToFile(String gameName) {
-		saveload.setDraws(gameName, game.toString().replaceAll(", ", drawSeparator).replaceAll("]", "").substring(1));
+		saveload.setDraws(gameName, game.toString().replaceAll(", ", DRAW_SEPARATOR).replaceAll("]", "").substring(1));
 	}
 	
 	/**
@@ -127,7 +129,7 @@ public class UndoRedo {
 		game.clear();
 		redo.clear();
 		
-		String[] draws = saveload.getDraws(gameName).split(";");
+		String[] draws = saveload.getDraws(gameName).split(DRAW_SEPARATOR);
 		int x = 0, y = 0, playerIndex = 0;
 		byte result = 0;
 		for(int i = 0; i < draws.length; i++) {
