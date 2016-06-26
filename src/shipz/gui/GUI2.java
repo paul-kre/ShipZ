@@ -67,11 +67,12 @@ public class GUI2 extends GameEventSource {
         Button btnExit = new Button("Exit");
         Button btnRndm = new Button("Random Placement");
         Button btnRdy = new Button("Ready");
+        Button btnPause = new Button("Pause");
         Button btnStart = new Button("Start");
         Button btnEGame = new Button("End game");
         RadioButton rbtnPvP = new RadioButton("Player vs Player");
-        RadioButton rbtnPvK = new RadioButton("Player vs KI");
-        RadioButton rbtnKvK = new RadioButton("KI vs KI");
+        RadioButton rbtnPvK = new RadioButton("Player vs AI");
+        RadioButton rbtnKvK = new RadioButton("AI vs AI");
         CheckBox cboxNetGame = new CheckBox("Create a Networkgame");
         Slider slFieldSize = new Slider();
         TableView tbHighscore = new TableView();
@@ -139,6 +140,10 @@ public class GUI2 extends GameEventSource {
         btnRdy.layoutYProperty().setValue(150);
         btnRdy.setPrefWidth(150);
 
+        btnPause.layoutXProperty().setValue(550);
+        btnPause.layoutYProperty().setValue(150);
+        btnPause.setPrefWidth(150);
+
         btnEGame.layoutXProperty().setValue(825);
         btnEGame.layoutYProperty().setValue(40);
         btnEGame.setPrefWidth(150);
@@ -186,12 +191,17 @@ public class GUI2 extends GameEventSource {
         nameColumn.setCellValueFactory(new PropertyValueFactory("name"));
 
         // Punkte Spalte
-        TableColumn pointsColumn = new TableColumn("Points");
-        pointsColumn.setMinWidth(200);
-        pointsColumn.setCellValueFactory(new PropertyValueFactory("points"));
+        TableColumn scoreColumn = new TableColumn("Score");
+        scoreColumn.setMinWidth(200);
+        scoreColumn.setCellValueFactory(new PropertyValueFactory("score"));
+        
+        // Datums Spalte
+        TableColumn dateColumn = new TableColumn("Date");
+        dateColumn.setMinWidth(200);
+        dateColumn.setCellValueFactory(new PropertyValueFactory("date"));
 
         // Hinzufügen der Spalten
-        tbHighscore.getColumns().addAll(positionColumn, nameColumn, pointsColumn);
+        tbHighscore.getColumns().addAll(positionColumn, nameColumn, scoreColumn, dateColumn);
 
 
         // HinzufÃ¼gen der Panes zur VBox
@@ -260,7 +270,7 @@ public class GUI2 extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 game.getChildren().clear();
-                game.getChildren().addAll(btnUndo, btnRedo, btnSave, btnExit, btnRndm, btnRdy, hlGame);
+                game.getChildren().addAll(btnUndo, btnRedo, btnSave, btnExit, btnRndm, btnRdy, btnPause, hlGame);
                 createField(game);
 
             }
@@ -282,6 +292,16 @@ public class GUI2 extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 fireGameEvent(READY_EVENT);
+
+            }
+        });
+
+        btnPause.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                fireGameEvent(PAUSE_EVENT);
 
             }
         });

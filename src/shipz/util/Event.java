@@ -23,6 +23,7 @@ public interface Event {
 	byte FILL_EVENT = 51;
 	byte FINISHED_ROUND = 52;
 	byte READY_EVENT = 53;
+	byte PAUSE_EVENT = 54;
 
 	// IO
 	byte SAVE_EVENT = 110;

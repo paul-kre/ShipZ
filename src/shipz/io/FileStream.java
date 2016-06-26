@@ -18,6 +18,8 @@ public class FileStream {
 	private UndoRedo undoredo;
 	/** Referenz auf die Speichern-Laden-Klasse */
 	private SaveLoad saveload;
+	/** Referenz auf die Settings-Klasse, die die Einstellungen verwaltet. */
+	private Settings settings;
 	
 	// TODO
 	// SaveLoad Code säubern
@@ -31,6 +33,7 @@ public class FileStream {
 		score = new Score();
 		undoredo = new UndoRedo();
 		saveload = new SaveLoad();
+		settings = new Settings();
 	}
 	
 	/*
@@ -265,6 +268,30 @@ public class FileStream {
 	 */
 	public int getComboValue(int playerIndex) {
 		return score.getComboValue(playerIndex);
+	}
+	
+	/*
+	 * SETTINGS
+	 * CLASS
+	 */
+	
+	/**
+	 * Referenz auf die Methode in der Settings-Klasse.
+	 * Liest den Wert aus der Config und gibt zurück, wie viele Spieler
+	 * maximal in der Highscore-Liste angezeigt werden sollen.
+	 * @return Spieler-Maximum im Highscore
+	 */
+	public int getHighscoreMaximum() {
+		return settings.getHighscoreMaximum();
+	}
+	
+	/**
+	 * Referenz auf die Methode in der Settings-Klasse.
+	 * Ändert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
+	 * @param max Spieler-Maximum im Highscore
+	 */
+	public void setHighscoreMaximum(int max) {
+		settings.setHighscoreMaximum(max);
 	}
 	
 	/*
