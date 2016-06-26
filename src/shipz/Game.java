@@ -6,6 +6,8 @@ import shipz.io.FileStream;
 import shipz.network.Network;
 import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
+import shipz.util.NoDrawException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -818,7 +820,7 @@ public class Game implements GameEventListener {
                     }
                 }
             }
-        }, 1000);
+        }, 250);
     }
 
 
@@ -921,6 +923,9 @@ public class Game implements GameEventListener {
                 test();
                 break;
             case FINISHED_ROUND:
+            	if(player1active) filestream.newDraw(aX, aY, 1, aResult);
+            	else filestream.newDraw(aX, aY, 2, aResult);
+            	
                 if(gameFinished() == 0) {
                     if(aResult == 0) {
                         testCounter++;
@@ -939,9 +944,69 @@ public class Game implements GameEventListener {
                 else {
                     //nichts
                 }
+            case UNDO_EVENT:
+            	try {
+                	if(player1active) undo(filestream.undoDraw(1));
+                	else undo(filestream.undoDraw(2));
+            	} catch (NoDrawException x) {
+            		x.printStackTrace();
+            		// Dialog wird auf der GUI ausgegeben
+            		// dass keine Züge mehr rückgängig gemacht werden können
+            	}
+            case REDO_EVENT:
+            	// ähnlich wie undo
+            case SAVE_EVENT:
+            	filestream.saveGame("testName", "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
         }
     }
 
+    /**
+     * Macht die Züge rückgängig.
+     * @param str String, der die rückgängig gemachten Züge speichert.
+     */
+    private void undo(String str) {
+    	String[] draws = str.split(";");
+    	String x, y, result, playerIndex;
+    	for(int i = 0; i < draws.length; i++) {
+    		x = draws[i].split("|")[1].split(",")[0];
+    		y = draws[i].split("|")[1].split(",")[1];
+//    		result = draws[i].split("|")[2];
+    		playerIndex = draws[i].split("|")[0];
+    		
+    	}
+    }
+    
+    private String boardToString(int playerIndex) {
+    	String str = "";
+    	char[][] activeBoard;
+    	if(playerIndex == 1) {
+    		activeBoard = board1;
+    	} else if(playerIndex == 2) {
+    		activeBoard = board2;
+    	} else {
+    		throw new RuntimeException("Ungültiger PlayerIndex");
+    	}
+    	
+        for(int i = 0; i < activeBoard.length; i++) {
+            for(int j=0; j<activeBoard[i].length; j++) {
+                str += activeBoard[j][i];
+            }
+        }
+        return str;
+    }
+    
+    private double boardSize() {
+    	return Math.sqrt(boardToString(1).length());
+    }
+    
+    private int activePlayer() {
+    	if(player1active) {
+    		return 1;
+    	}else {
+    		return 2;
+    	}
+    }
+    
     /**
      * wechselt den aktiven Spieler
      */

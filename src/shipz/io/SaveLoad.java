@@ -72,7 +72,7 @@ public class SaveLoad {
 	 * @param activePlayer Spieler der gerade am Zug ist
 	 * @param preferences Einstellungen des Spiels, die am Anfang gesetzt wurden
 	 */
-	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String preferences) {
+	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences) {
 		boolean b = false;
 		
 		if(root.getChildren() != null) {
@@ -88,7 +88,7 @@ public class SaveLoad {
 			gameElement.addContent(new Element("opponentName").setText(opponentName));
 			gameElement.addContent(new Element("boardPlayerOne").setText(boardPlayerOne));
 			gameElement.addContent(new Element("boardPlayerTwo").setText(boardPlayerTwo));
-			gameElement.addContent(new Element("boardsize").setText(boardsize));
+			gameElement.addContent(new Element("boardsize").setText(boardsize+""));
 			gameElement.addContent(new Element("draws").setText("null"));
 			gameElement.addContent(new Element("activePlayer").setText(activePlayer+""));
 			gameElement.addContent(new Element("preferences").setText(preferences));
@@ -103,7 +103,7 @@ public class SaveLoad {
 			setNode(gameName, "boardPlayerTwo", boardPlayerTwo);
 			setNode(gameName, "playerName", playerName);
 			setNode(gameName, "opponentName", opponentName);
-			setNode(gameName, "boardsize", boardsize);
+			setNode(gameName, "boardsize", boardsize+"");
 			setNode(gameName, "preferences", preferences);
 		}
 	}
@@ -290,8 +290,8 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
 	 */
-	protected String getBoardsize(String gameName) {
-		return getNode(gameName, "boardsize");
+	protected int getBoardsize(String gameName) {
+		return Integer.parseInt(getNode(gameName, "boardsize"));
 	}
 	
 	/**

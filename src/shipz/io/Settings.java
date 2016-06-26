@@ -54,6 +54,9 @@ public class Settings {
 		return Integer.parseInt(saveload.searchLine(configFile, "highscoreMax" + CONFIG_SEPARATOR).split(CONFIG_SEPARATOR)[1]);
 	}
 	
+	// Idee für eine Einstellung
+		// Timer wie schnell die KI abläuft
+	
 	public static void main(String[] args) {
 		Settings s = new Settings();
 		s.setHighscoreMaximum(10);

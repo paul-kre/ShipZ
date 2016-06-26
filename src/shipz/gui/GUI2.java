@@ -275,6 +275,15 @@ public class GUI2 extends GameEventSource {
 
             }
         });
+        
+        btnSave.setOnAction(new EventHandler<ActionEvent>() {
+        	
+        	@Override
+        	public void handle(ActionEvent event) {
+        		fireGameEvent(SAVE_EVENT);
+        	}
+        	
+        });
 
         btnRndm.setOnAction(new EventHandler<ActionEvent>() {
 
