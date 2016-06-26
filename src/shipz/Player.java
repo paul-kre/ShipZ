@@ -99,33 +99,15 @@ public abstract class Player extends GameEventSource implements Runnable {
         //String in einzelne Züge unterteilen
         String singleDraws[] = coordinates.split(";");
 
-        for (String e: singleDraws){
-
-            System.out.println("Einzel Zuege: "+ e);
-        }
-
         /**
          * Der String wird durchiteriert und es werden immer alle Parts,
          * die Koordinaten enthalten, in die Liste gepackt
          */
-        /*
         for ( int i = 0; i < singleDraws.length; i++){
 
-            System.out.println(singleDraws[i].split("|")[1]);
-            extractedCoordinates.add(singleDraws[i].split("|")[1]);
-        }
-*/
-
-        for ( int i = 1; i < coordinates.split("|").length; i += 3){
-
-            System.out.println(coordinates.split("|")[i]);
-            extractedCoordinates.add(coordinates.split("|")[i]);
+            extractedCoordinates.add(singleDraws[i].split("\\|")[1]);
         }
 
-        for (String d: extractedCoordinates){
-
-            System.out.println("Einzel Koord: "+ d);
-        }
 
         return extractedCoordinates;
     }

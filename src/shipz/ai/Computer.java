@@ -1618,7 +1618,6 @@ public abstract class Computer extends Player {
         //Züge zurücknehmen
         for ( String draw : undoRedoCoordinates){
 
-            System.out.println("Zug ->" + draw);
             yCoord = extractYCoord(draw);
             xCoord = extractXCoord(draw);
 
@@ -1643,7 +1642,18 @@ public abstract class Computer extends Player {
 
         super.redoHits(coordinateString);
 
-        //
+        //Y- und X-Koordinaten aus den Strings zwischenspeichern
+        int yCoord;
+        int xCoord;
+        //Züge wiederherstellen
+        for ( String draw : undoRedoCoordinates){
+
+            yCoord = extractYCoord(draw);
+            xCoord = extractXCoord(draw);
+
+            setCoordinateOccupied(yCoord, xCoord);
+
+        }
 
     }
 

@@ -116,6 +116,7 @@ public class TempKiGame{
         // board[4][1] = 'x';
 
 
+
     }
 
     /**
@@ -422,7 +423,7 @@ public class TempKiGame{
         this.displaySingleBoard(board1);
         System.out.println("\n");
 
-        String coordinates = "1|5,7|0;1|5,8|2;3|5,9|9";
+        String coordinates = "1|3,2|0;1|4,2|2";
 
         for (int i = 0; i < 100; i++){
 
@@ -435,37 +436,14 @@ public class TempKiGame{
             //Eigene methoden aufrufen um aus dem String einmal ein
             // Y- und X-Koordinate rauszuholen und in neue int variablen speichern
 
-            int yCoord;
-            int xCoord;
-
-            if ( i > 0){
-
-                yCoord = ki.getY();
-                xCoord = ki.getX();
-
-            }else {
-
-                yCoord = 5;
-                xCoord = 6;
-
-            }
+            int yCoord = ki.getY();
+            int xCoord = ki.getX();
 
 
             //Verwaltung übergibt dem Player das Ergebnis mit shootResult mit.//
             ki.shootResult(yCoord, xCoord, checkTile( xCoord, yCoord) );
 
 
-            if ( i == 3 ){
-
-                try{
-                    ki.undoHits(coordinates);
-
-                }catch ( NoDrawException n){
-
-
-                }
-
-            }
             System.out.println("Treffer auf :" + yCoord + "|" + xCoord );
             System.out.println("Anzeige des Spiegelfeldes der Ki:");
 
