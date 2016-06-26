@@ -294,6 +294,27 @@ public class FileStream {
 		settings.setHighscoreMaximum(max);
 	}
 	
+	/**
+	 * Referenz auf die Methode in der Settings-Klasse.
+	 * Liest aus der Datei und gibt den Wert zurück,
+	 * der die Länge der Pausen zwischen den KI-Zügen
+	 * in Millisekunden speichert.
+	 * @return Pause zwischen KI-Zügen in ms
+	 */
+	public int getAiTimer() {
+		return settings.getAiTimer();
+	}
+	
+	/**
+	 * Referenz auf die Methode in der Settings-Klasse.
+	 * Ändert den Wert der Pausen zwischen den KI-Zügen
+	 * in der Config.
+	 * @param timer neuer Wert für Pausen zwischen KI-Zügen
+	 */
+	public void setAiTimer(int ms) {
+		settings.setAiTimer(ms);
+	}
+	
 	/*
 	 * MISCELLANEOUS
 	 */
