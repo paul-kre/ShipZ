@@ -206,7 +206,7 @@ public class GUI2 extends GameEventSource {
 
         /*
          * Load-Tabelle
-         * Hier werden alle Spielstände angezeigt
+         * Hier werden alle Spielstï¿½nde angezeigt
          */
         
         // Name des Spielstands
@@ -312,6 +312,15 @@ public class GUI2 extends GameEventSource {
         		fireGameEvent(SAVE_EVENT);
         	}
         	
+        });
+
+        btnUndo.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                fireGameEvent(UNDO_EVENT);
+            }
+
         });
 
         btnRndm.setOnAction(new EventHandler<ActionEvent>() {

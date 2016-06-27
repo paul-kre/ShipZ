@@ -31,7 +31,6 @@ public class Game implements GameEventListener {
     private Player player1;
     /** Verweis auf den 2. Spieler */
     private Player player2;
-
     /** gibt an, ob Spieler 1 aktiv ist */
     private boolean player1active;
     /** Netzwerkverbindung */
@@ -820,7 +819,7 @@ public class Game implements GameEventListener {
                     }
                 }
             }
-        }, 250);
+        }, 150);
     }
 
 
@@ -904,7 +903,7 @@ public class Game implements GameEventListener {
      * Main-Methode
      * @param args
      */
-//    public static void main(String[] args) {}
+   public static void main(String[] args) {}
 
     @Override
     public void eventReceived(GameEvent e) {
@@ -946,7 +945,7 @@ public class Game implements GameEventListener {
             	} catch (NoDrawException x) {
             		x.printStackTrace();
             		// Dialog wird auf der GUI ausgegeben
-            		// dass keine Züge mehr rückgängig gemacht werden können
+            		// dass keine Zï¿½ge mehr rï¿½ckgï¿½ngig gemacht werden kï¿½nnen
             	}
             	break;
             case REDO_EVENT:
@@ -955,13 +954,13 @@ public class Game implements GameEventListener {
 				} catch (NoDrawException x) {
 					x.printStackTrace();
             		// Dialog wird auf der GUI ausgegeben
-            		// dass keine Züge mehr wiederholt werden können
+            		// dass keine Zï¿½ge mehr wiederholt werden kï¿½nnen
 				}
 				break;
             case SAVE_EVENT:
             	filestream.saveGame("testName", "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
-            	// Name des Spielstands muss noch irgendwie übergeben werden
-            	// Spielernamen müssen noch korrekt zurückgegeben werden
+            	// Name des Spielstands muss noch irgendwie ï¿½bergeben werden
+            	// Spielernamen mï¿½ssen noch korrekt zurï¿½ckgegeben werden
             	break;
             case LOAD_EVENT:
             	loadGame(null);
@@ -970,8 +969,8 @@ public class Game implements GameEventListener {
     }
 
     /**
-     * Macht die Züge rückgängig.
-     * @param str String, der die rückgängig gemachten Züge speichert.
+     * Macht die Zï¿½ge rï¿½ckgï¿½ngig.
+     * @param str String, der die rï¿½ckgï¿½ngig gemachten Zï¿½ge speichert.
      */
     private void undo(String str) {
     	String[] draws = str.split(";");
@@ -1011,8 +1010,8 @@ public class Game implements GameEventListener {
     }
     
     /**
-     * Wiederholt zurückgenommene Züge.
-     * @param str String, der die zu wiederholenden Züge speichert.
+     * Wiederholt zurÃ¼ckgenommene ZÃ¼ge.
+     * @param str String, der die zu wiederholenden ZÃ¼ge speichert.
      */
     private void redo(String str) {
     	String[] draws = str.split(";");
@@ -1035,7 +1034,7 @@ public class Game implements GameEventListener {
     	} else if(playerIndex == 2) {
     		activeBoard = board2;
     	} else {
-    		throw new RuntimeException("Ungültiger PlayerIndex");
+    		throw new RuntimeException("UngÃ¼ltiger PlayerIndex");
     	}
     	
         for(int i = 0; i < activeBoard.length; i++) {
@@ -1052,7 +1051,7 @@ public class Game implements GameEventListener {
      * @param gameName Name unter dem das Spiel abgespeichert ist
      */
     private void loadGame(String gameName) {
-    	filestream.loadDraws(gameName); // aktualisiert die IVs in den Klassen für Punkte und Züge
+    	filestream.loadDraws(gameName); // aktualisiert die IVs in den Klassen fï¿½r Punkte und Zï¿½ge
     	char[] board1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] board2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
     	int boardsize = filestream.getBoardsize(gameName);
@@ -1061,7 +1060,7 @@ public class Game implements GameEventListener {
     		for(int j = 0; j < boardsize; j++) {
     			this.board1[j][i] = board1[i];
     			/*
-    			 * Irgendwie sowas. Sollte noch mal gründlich
+    			 * Irgendwie sowas. Sollte noch mal grï¿½ndlich
     			 * gecodet werden, das hier ist nur der Ansatz.
     			 */
     		}

@@ -5,28 +5,27 @@ import java.util.Stack;
 import shipz.util.NoDrawException;
 
 /**
- * Diese Klasse speichert alle Züge die getätigt werden und behandelt die Undo-Redo-Funktion.
+ * Diese Klasse speichert alle Zï¿½ge die getï¿½tigt werden und behandelt die Undo-Redo-Funktion.
  * @author Florian Osterberg
  */
 public class UndoRedo {
 
 	// IV
-	/** In diesem Stack werden alle Züge als Strings gespeichert. */
+	/** In diesem Stack werden alle Zï¿½ge als Strings gespeichert. */
 	private Stack<String> game;
-	/** In diesem Stack werden alle rückgängig gemachten Züge als Strings gespeichert. */
+	/** In diesem Stack werden alle rï¿½ckgï¿½ngig gemachten Zï¿½ge als Strings gespeichert. */
 	private Stack<String> redo;
 	/** SaveLoad-Objekt */
 	private SaveLoad saveload;
 	
 	// Konstanten
-	/** Der String, der einzelne Züge in der Datei trennt. */
+	/** Der String, der einzelne Zï¿½ge in der Datei trennt. */
 	private final static String DRAW_SEPARATOR = ";";
 	
 	// Konstruktor
 	/**
 	 * Initialisiert ein UndoRedo-Objekt.
 	 * Die Stacks werden initialisiert.
-	 * @param gameName 
 	 */
 	public UndoRedo() {
 		game = new Stack<String>();
@@ -36,12 +35,12 @@ public class UndoRedo {
 	
 	// IM
 	/**
-	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
+	 * Wenn ein neuer Zug getï¿½tigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
 	 * Format des fertigen Strings:
 	 * <b>playerIndex</b>|<b>x</b>,<b>y</b>|<b>result</b>
 	 * @param x x-Koordinate des Zugs
 	 * @param y y-Koordinate des Zugs
-	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
+	 * @param playerIndex 1 fï¿½r den ersten Spieler, 2 fï¿½r den zweiten Spieler
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
 	protected void newDraw(int x, int y, int playerIndex, int result) {
@@ -51,13 +50,13 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Der letzte Zug wird rückgängig gemacht.
-	 * Er wird dafür aus der Liste, die den Spielverlauf speichert gelöscht und in eine
-	 * separate Liste geschrieben, die die rückgangig gemachten Züge speichert.
-	 * Falls ein Redo ausgeführt wird, wird auf eben diese Liste zurückgegriffen.
-	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
-	 * @return Die letzten Züge der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
-	 * @throws NoDrawException tritt auf falls keine weiteren Züge auf dem Stack sind die rückgängig gemacht werden können.
+	 * Der letzte Zug wird rï¿½ckgï¿½ngig gemacht.
+	 * Er wird dafï¿½r aus der Liste, die den Spielverlauf speichert gelï¿½scht und in eine
+	 * separate Liste geschrieben, die die rï¿½ckgangig gemachten Zï¿½ge speichert.
+	 * Falls ein Redo ausgefï¿½hrt wird, wird auf eben diese Liste zurï¿½ckgegriffen.
+	 * @param playerIndex 1 fï¿½r den ersten Spieler, 2 fï¿½r den zweiten Spieler
+	 * @return Die letzten Zï¿½ge der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
+	 * @throws NoDrawException tritt auf falls keine weiteren Zï¿½ge auf dem Stack sind die rï¿½ckgï¿½ngig gemacht werden kï¿½nnen.
 	 */
 	protected String undoDraw(int playerIndex) throws NoDrawException {
 		String result = "";
@@ -75,12 +74,12 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Der letzte Eintrag aus der Redo-Liste wird gelöscht und wieder in die Liste geschrieben,
+	 * Der letzte Eintrag aus der Redo-Liste wird gelï¿½scht und wieder in die Liste geschrieben,
 	 * die den Spielverlauf speichert.
-	 * Der zuletzt rückgängig gemachte Zug wird also ausgeführt.
-	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
+	 * Der zuletzt rï¿½ckgï¿½ngig gemachte Zug wird also ausgefï¿½hrt.
+	 * @param playerIndex 1 fï¿½r den ersten Spieler, 2 fï¿½r den zweiten Spieler
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
-	 * @throws NoDrawException tritt auf, falls keine weiteren Züge auf dem Stack sind, die wiederholt werden können.
+	 * @throws NoDrawException tritt auf, falls keine weiteren Zï¿½ge auf dem Stack sind, die wiederholt werden kï¿½nnen.
 	 */
 	protected String redoDraw(int playerIndex) throws NoDrawException {
 		String result = "";
@@ -98,23 +97,23 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Gibt den Stack für die Züge des ersten Spielers als String zurück.
-	 * @return die ArrayList für die Züge als String
+	 * Gibt den Stack fï¿½r die Zï¿½ge des ersten Spielers als String zurï¿½ck.
+	 * @return die ArrayList fï¿½r die Zï¿½ge als String
 	 */
 	protected String getDraws() {
 		return game.toString();
 	}
 	
 	/**
-	 * Gibt den Stack für die rückgängig gemachten Züge des ersten Spielers zurück.
-	 * @return der Stack für die rückgängig gemachten Züge
+	 * Gibt den Stack fï¿½r die rï¿½ckgï¿½ngig gemachten Zï¿½ge des ersten Spielers zurï¿½ck.
+	 * @return der Stack fï¿½r die rï¿½ckgï¿½ngig gemachten Zï¿½ge
 	 */
 	protected String getRedoneDraws() {
 		return redo.toString();
 	}
 	
 	/**
-	 * Die Instanz-Variable, die die Züge der Spieler speichert,
+	 * Die Instanz-Variable, die die Zï¿½ge der Spieler speichert,
 	 * speichert hiermit ihren Inhalt in der Datei
 	 * @param gameName Name des Spiels zur Zuordnung
 	 */
@@ -123,7 +122,7 @@ public class UndoRedo {
 	}
 	
 	/**
-	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
+	 * Leert alle Stacks und lï¿½dt die Zï¿½ge aus einer Datei in die Instanz-Variablen.
 	 * Wird verwendet, wenn ein Spielstand geladen wird.
 	 * @param gameName Name des Spielstands
 	 */
