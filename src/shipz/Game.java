@@ -977,11 +977,11 @@ public class Game implements GameEventListener {
     	int x, y, result, playerIndex;
     	for(int i = 0; i < draws.length; i++) {
             System.out.println("test " + draws[i]);
-            System.out.println("TEST " + draws[i].split("|")[1].split(",")[0]);
-    		x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
-    		y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
-    		result = Integer.parseInt(draws[i].split("|")[2]);
-    		playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+            System.out.println("TEST " + draws[i].split("~")[1].split(",")[0]);
+    		x = Integer.parseInt(draws[i].split("~")[1].split(",")[0]);
+    		y = Integer.parseInt(draws[i].split("~")[1].split(",")[1]);
+    		result = Integer.parseInt(draws[i].split("~")[2]);
+    		playerIndex = Integer.parseInt(draws[i].split("~")[0]);
     		if(playerIndex == 1) {
                 //Wasser
                 if(result == 0){
@@ -1017,10 +1017,10 @@ public class Game implements GameEventListener {
     	String[] draws = str.split(";");
     	int x, y, result, playerIndex;
     	for(int i = 0; i < draws.length; i++) {
-    		x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
-    		y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
-    		result = Integer.parseInt(draws[i].split("|")[2]);
-    		playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+    		x = Integer.parseInt(draws[i].split("~")[1].split(",")[0]);
+    		y = Integer.parseInt(draws[i].split("~")[1].split(",")[1]);
+    		result = Integer.parseInt(draws[i].split("~")[2]);
+    		playerIndex = Integer.parseInt(draws[i].split("~")[0]);
     		
     	}
     	
