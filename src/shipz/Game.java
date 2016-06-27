@@ -39,6 +39,7 @@ public class Game implements GameEventListener {
     public GUI2 gui;
     /** Spielstandverwaltung */
     private FileStream filestream;
+
     /** Liste mit den zu verwendenden Schiffen */
     public List<Integer> shipList;
     /** aktive x-Koordinate */
@@ -99,11 +100,6 @@ public class Game implements GameEventListener {
         }//Ende xSchleife
     }
 
-    /**
-     * überprüft das Ende des Spiels und leitet eventuelle Benachrichtigungen ein
-     * @return gibt an, ob das Spiel beendet ist
-     */
-    private boolean checkGameOver() {return false;}
 
     /**
      * überprüft die übergebenen Koordinaten auf Schiffelemente und ruft eventuell sink() auf
@@ -1075,11 +1071,18 @@ public class Game implements GameEventListener {
     		player1active = false;
     	}
     }
-    
+
+    /**
+     * berechnet die Seitenlänge der Spielfelder
+     * @return Seitenlänge
+     */
     private double boardSize() {
     	return Math.sqrt(boardToString(1).length());
     }
-    
+
+    /**
+     * @return  gibt den aktive Spieler anhand eines int an
+     */
     private int activePlayer() {
     	if(player1active) {
     		return 1;
