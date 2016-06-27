@@ -45,7 +45,7 @@ public class UndoRedo {
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
 	protected void newDraw(int x, int y, int playerIndex, int result) {
-		game.push(playerIndex + "|" + x + "," + y + "|" + result); // Zug wird auf den Stack gelegt
+		game.push(playerIndex + "~" + x + "," + y + "~" + result); // Zug wird auf den Stack gelegt
 		
 		System.out.println(game.toString()); // nur zu Testzwecken
 	}
@@ -135,10 +135,10 @@ public class UndoRedo {
 		int x = 0, y = 0, playerIndex = 0;
 		byte result = 0;
 		for(int i = 0; i < draws.length; i++) {
-			x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
-			y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
-			result = Byte.parseByte(draws[i].split("|")[2]);
-			playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+			x = Integer.parseInt(draws[i].split("~")[1].split(",")[0]);
+			y = Integer.parseInt(draws[i].split("~")[1].split(",")[1]);
+			result = Byte.parseByte(draws[i].split("~")[2]);
+			playerIndex = Integer.parseInt(draws[i].split("~")[0]);
 			newDraw(x, y, playerIndex, result);
 		}
 	}
