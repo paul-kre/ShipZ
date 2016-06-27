@@ -1346,8 +1346,9 @@ public abstract class Computer extends Player {
 
         }
 
-
     }
+
+
 
 
     /**
@@ -1625,6 +1626,8 @@ public abstract class Computer extends Player {
 
         }
 
+        resetUndoRedoCoordinates();
+
     }
 
 
@@ -1654,6 +1657,8 @@ public abstract class Computer extends Player {
             setCoordinateOccupied(yCoord, xCoord);
 
         }
+
+        resetUndoRedoCoordinates ();
 
     }
 
@@ -1702,6 +1707,8 @@ public abstract class Computer extends Player {
             System.out.println();
         }
     }
+
+
 
 
     /**
