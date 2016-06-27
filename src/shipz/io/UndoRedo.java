@@ -46,6 +46,8 @@ public class UndoRedo {
 	 */
 	protected void newDraw(int x, int y, int playerIndex, int result) {
 		game.push(playerIndex + "|" + x + "," + y + "|" + result); // Zug wird auf den Stack gelegt
+		
+		System.out.println(game.toString()); // nur zu Testzwecken
 	}
 	
 	/**

@@ -55,7 +55,7 @@ public class FileStream {
 	 * @param activePlayer aktiver Spieler
 	 * @param preferences die Einstellungen des Spiels
 	 */
-	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, String boardsize, int activePlayer, String preferences) {
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences) {
 		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences);
 		undoredo.saveToFile(gameName);
 		score.saveScoreToFile(playerName, opponentName);
@@ -128,7 +128,7 @@ public class FileStream {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
 	 */
-	public String getBoardsize(String gameName) {
+	public int getBoardsize(String gameName) {
 		return saveload.getBoardsize(gameName);
 	}
 	
@@ -294,6 +294,27 @@ public class FileStream {
 		settings.setHighscoreMaximum(max);
 	}
 	
+	/**
+	 * Referenz auf die Methode in der Settings-Klasse.
+	 * Liest aus der Datei und gibt den Wert zurück,
+	 * der die Länge der Pausen zwischen den KI-Zügen
+	 * in Millisekunden speichert.
+	 * @return Pause zwischen KI-Zügen in ms
+	 */
+	public int getAiTimer() {
+		return settings.getAiTimer();
+	}
+	
+	/**
+	 * Referenz auf die Methode in der Settings-Klasse.
+	 * Ändert den Wert der Pausen zwischen den KI-Zügen
+	 * in der Config.
+	 * @param timer neuer Wert für Pausen zwischen KI-Zügen
+	 */
+	public void setAiTimer(int ms) {
+		settings.setAiTimer(ms);
+	}
+	
 	/*
 	 * MISCELLANEOUS
 	 */
@@ -322,7 +343,7 @@ public class FileStream {
 		fs.newDraw(0, 0, 2, 1);
 		System.out.println(fs.getScore(1));
 		System.out.println(fs.getComboValue(1));
-		fs.saveGame("testSpielxx", "Dieter", "Heinz", "WWWWWWW", "WWFFWWWWW", "8,8", 1, "a");
+		fs.saveGame("testSpielxx", "Dieter", "Heinz", "WWWWWWW", "WWFFWWWWW", 8, 1, "a");
 		
 	}
 	

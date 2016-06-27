@@ -6,6 +6,8 @@ import shipz.io.FileStream;
 import shipz.network.Network;
 import shipz.util.GameEvent;
 import shipz.util.GameEventListener;
+import shipz.util.NoDrawException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -818,7 +820,7 @@ public class Game implements GameEventListener {
                     }
                 }
             }
-        }, 1000);
+        }, 250);
     }
 
 
@@ -902,8 +904,7 @@ public class Game implements GameEventListener {
      * Main-Methode
      * @param args
      */
-    public static void main(String[] args) {
-    }
+//    public static void main(String[] args) {}
 
     @Override
     public void eventReceived(GameEvent e) {
@@ -921,6 +922,8 @@ public class Game implements GameEventListener {
                 test();
                 break;
             case FINISHED_ROUND:
+            	filestream.newDraw(aX, aY, activePlayer(), aResult);
+            	
                 if(gameFinished() == 0) {
                     if(aResult == 0) {
                         testCounter++;
@@ -936,12 +939,131 @@ public class Game implements GameEventListener {
                 if(gamePaused) {
                     nextRoundAI();
                 }
-                else {
-                    //nichts
-                }
+                break;
+            case UNDO_EVENT:
+            	try {
+            		undo(filestream.undoDraw(activePlayer()));
+            	} catch (NoDrawException x) {
+            		x.printStackTrace();
+            		// Dialog wird auf der GUI ausgegeben
+            		// dass keine Züge mehr rückgängig gemacht werden können
+            	}
+            	break;
+            case REDO_EVENT:
+				try {
+					redo(filestream.redoDraw(activePlayer()));
+				} catch (NoDrawException x) {
+					x.printStackTrace();
+            		// Dialog wird auf der GUI ausgegeben
+            		// dass keine Züge mehr wiederholt werden können
+				}
+				break;
+            case SAVE_EVENT:
+            	filestream.saveGame("testName", "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
+            	// Name des Spielstands muss noch irgendwie übergeben werden
+            	// Spielernamen müssen noch korrekt zurückgegeben werden
+            	break;
+            case LOAD_EVENT:
+            	loadGame(null);
+            	break;
         }
     }
 
+    /**
+     * Macht die Züge rückgängig.
+     * @param str String, der die rückgängig gemachten Züge speichert.
+     */
+    private void undo(String str) {
+    	String[] draws = str.split(";");
+    	int x, y, result, playerIndex;
+    	for(int i = 0; i < draws.length; i++) {
+    		x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
+    		y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
+    		result = Integer.parseInt(draws[i].split("|")[2]);
+    		playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+    		
+    	}
+    }
+    
+    /**
+     * Wiederholt zurückgenommene Züge.
+     * @param str String, der die zu wiederholenden Züge speichert.
+     */
+    private void redo(String str) {
+    	String[] draws = str.split(";");
+    	int x, y, result, playerIndex;
+    	for(int i = 0; i < draws.length; i++) {
+    		x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
+    		y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
+    		result = Integer.parseInt(draws[i].split("|")[2]);
+    		playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+    		
+    	}
+    	
+    }
+    
+    private String boardToString(int playerIndex) {
+    	String str = "";
+    	char[][] activeBoard;
+    	if(playerIndex == 1) {
+    		activeBoard = board1;
+    	} else if(playerIndex == 2) {
+    		activeBoard = board2;
+    	} else {
+    		throw new RuntimeException("Ungültiger PlayerIndex");
+    	}
+    	
+        for(int i = 0; i < activeBoard.length; i++) {
+            for(int j=0; j<activeBoard[i].length; j++) {
+                str += activeBoard[j][i];
+            }
+        }
+        return str;
+    }
+    
+    /**
+     * Wenn der Name eines Spielstands angegeben wird,
+     * wird das Spiel geladen, in dem die IVs aktualisiert werden.
+     * @param gameName Name unter dem das Spiel abgespeichert ist
+     */
+    private void loadGame(String gameName) {
+    	filestream.loadDraws(gameName); // aktualisiert die IVs in den Klassen für Punkte und Züge
+    	char[] board1 = filestream.getBoardPlayerOne(gameName).toCharArray();
+    	char[] board2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
+    	int boardsize = filestream.getBoardsize(gameName);
+    	
+    	for(int i = 0; i < boardsize; i++) {
+    		for(int j = 0; j < boardsize; j++) {
+    			this.board1[j][i] = board1[i];
+    			/*
+    			 * Irgendwie sowas. Sollte noch mal gründlich
+    			 * gecodet werden, das hier ist nur der Ansatz.
+    			 */
+    		}
+    	}
+    	
+//     	player1 = new Player(filestream.getPlayerName(gameName));
+//    	player2 = new Player(filestream.getOpponentName(gameName)); // geht nicht, warum?
+    	
+    	if(filestream.getActivePlayer(gameName) == 1) {
+    		player1active = true;
+    	} else {
+    		player1active = false;
+    	}
+    }
+    
+    private double boardSize() {
+    	return Math.sqrt(boardToString(1).length());
+    }
+    
+    private int activePlayer() {
+    	if(player1active) {
+    		return 1;
+    	}else {
+    		return 2;
+    	}
+    }
+    
     /**
      * wechselt den aktiven Spieler
      */
