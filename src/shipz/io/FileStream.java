@@ -22,8 +22,10 @@ public class FileStream {
 	private Settings settings;
 	
 	// TODO
-	// SaveLoad Code säubern
 	// Kommentare überarbeiten
+	// Punkte erst in den Highscore tragen wenn Spiel vorbei ist
+		// wenn Spiel geladen wird, wird durch alle Züge gegangen, die Züge in die
+		// Stacks gespeichert und die Score-IV aktualisiert.
 	
 	// Konstruktor
 	/**
