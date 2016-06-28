@@ -61,8 +61,8 @@ public class Score {
 		switch(result) {
 		case 1:
 			combo(playerIndex, result);
-			if(playerIndex == 1) scorePlayer1 += 50*comboPlayer1;
-			else if(playerIndex == 2) scorePlayer2 += 50*comboPlayer2;
+			if(playerIndex == 1) scorePlayer1 += 100*comboPlayer1;
+			else if(playerIndex == 2) scorePlayer2 += 100*comboPlayer2;
 			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		case 2:
@@ -72,8 +72,8 @@ public class Score {
 			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		case 3:
-			if(playerIndex == 1) scorePlayer1 -= 30;
-			else if(playerIndex == 2)scorePlayer2 -= 30;
+			if(playerIndex == 1) scorePlayer1 -= 50;
+			else if(playerIndex == 2)scorePlayer2 -= 50;
 			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		default: break;
@@ -151,18 +151,20 @@ public class Score {
 	 * Liest alle Punktzahlen aus dem Highscore-File
 	 * und erstellt eine absteigend sortierte Highscore-Liste.
 	 * Format: "spieler1=punkte1,spieler2=punkte2,spieler3=punkte3,..."
+	 * @param max Limit, wie viele Spieler im Highscore angezeigt werden (Standardwert 10). Kann vom Spieler
+	 * in den Einstellungen festgelegt werden.
 	 * @return Die Highscore-Liste als String
 	 */
-	protected String highscore() {
+	protected String highscore(int max) {
 		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
 		String[] a = str.split(",");
 		String result = "";
-		if(a.length < 10) { // wenn weniger als zehn Spieler im Highscore stehen
+		if(a.length < max) { // wenn weniger als zehn Spieler im Highscore stehen
 			for(int i = 0; i < a.length; i++) { // ... werden je nach dem wie viele es sind an den String angehangen
 				result += a[i] + ",";
 			}
 		} else { // wenn mehr als 10 Spieler im Highscore stehen
-			for(int i = 0; i < 10; i++) { // werden nur die ersten zehn an den String angehangen
+			for(int i = 0; i < max; i++) { // werden nur die ersten zehn an den String angehangen
 				result += a[i] + ",";
 			}
 		}
@@ -296,7 +298,7 @@ public class Score {
 	 */
 	private void test() {
 		System.out.println("RANK\tNAME\t\t\tSCORE\t\tDATE");
-		String[] highscoreArray = highscore().split(",");
+		String[] highscoreArray = highscore(10).split(",");
 		for(int i = 0; i < highscoreArray.length; i++) {
 			String score = highscoreArray[i].split("=")[1];
 			String name = highscoreArray[i].split("=")[0].split("#")[0];
@@ -319,7 +321,7 @@ public class Score {
 		s.setScore(2, 's');
 		s.setScore(2, 's');*/
 //		s.saveScoreToFile("TestSpieler1", "TestSpieler2");
-		System.out.println(s.highscore());
+		System.out.println(s.highscore(10));
 		s.test();
 		
 	}

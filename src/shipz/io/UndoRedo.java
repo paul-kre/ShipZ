@@ -37,7 +37,7 @@ public class UndoRedo {
 	/**
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
 	 * Format des fertigen Strings:
-	 * <b>playerIndex</b>|<b>x</b>,<b>y</b>|<b>result</b>
+	 * <b>playerIndex</b>~<b>x</b>,<b>y</b>~<b>result</b>
 	 * @param x x-Koordinate des Zugs
 	 * @param y y-Koordinate des Zugs
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler

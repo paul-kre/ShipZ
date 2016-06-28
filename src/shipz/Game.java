@@ -786,6 +786,7 @@ public class Game implements GameEventListener {
 
     private void nextRoundAI() {
         Player activePlayer;
+        int aiTimer = filestream.getAiTimer();
         if (player1active) {
             activePlayer = player1;
         }
@@ -815,7 +816,7 @@ public class Game implements GameEventListener {
                     }
                 }
             }
-        }, 150);
+        }, aiTimer);
     }
 
 
@@ -1047,7 +1048,7 @@ public class Game implements GameEventListener {
      * @param gameName Name unter dem das Spiel abgespeichert ist
      */
     private void loadGame(String gameName) {
-    	filestream.loadDraws(gameName); // aktualisiert die IVs in den Klassen fï¿½r Punkte und Zï¿½ge
+    	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen für Punkte und Züge
     	char[] board1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] board2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
     	int boardsize = filestream.getBoardsize(gameName);
