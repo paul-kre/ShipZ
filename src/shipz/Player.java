@@ -107,7 +107,7 @@ public abstract class Player extends GameEventSource implements Runnable {
          */
         for ( int i = 0; i < singleDraws.length; i++){
 
-            extractedCoordinates.add(singleDraws[i].split("\\|")[1]);
+            extractedCoordinates.add(singleDraws[i].split("/")[1]);
         }
 
 
