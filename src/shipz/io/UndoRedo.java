@@ -37,16 +37,14 @@ public class UndoRedo {
 	/**
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
 	 * Format des fertigen Strings:
-	 * <b>playerIndex</b>~<b>x</b>,<b>y</b>~<b>result</b>
+	 * <b>playerIndex</b>/<b>x</b>,<b>y</b>/<b>result</b>
 	 * @param x x-Koordinate des Zugs
 	 * @param y y-Koordinate des Zugs
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
 	protected void newDraw(int x, int y, int playerIndex, int result) {
-		game.push(playerIndex + "~" + x + "," + y + "~" + result); // Zug wird auf den Stack gelegt
-		
-		System.out.println(game.toString()); // nur zu Testzwecken
+		game.push(playerIndex + "/" + x + "," + y + "/" + result); // Zug wird auf den Stack gelegt
 	}
 	
 	/**
@@ -134,10 +132,10 @@ public class UndoRedo {
 		int x = 0, y = 0, playerIndex = 0;
 		byte result = 0;
 		for(int i = 0; i < draws.length; i++) {
-			x = Integer.parseInt(draws[i].split("~")[1].split(",")[0]);
-			y = Integer.parseInt(draws[i].split("~")[1].split(",")[1]);
-			result = Byte.parseByte(draws[i].split("~")[2]);
-			playerIndex = Integer.parseInt(draws[i].split("~")[0]);
+			x = Integer.parseInt(draws[i].split("/")[1].split(",")[0]);
+			y = Integer.parseInt(draws[i].split("/")[1].split(",")[1]);
+			result = Byte.parseByte(draws[i].split("/")[2]);
+			playerIndex = Integer.parseInt(draws[i].split("/")[0]);
 			newDraw(x, y, playerIndex, result);
 		}
 	}

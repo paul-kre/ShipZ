@@ -287,8 +287,8 @@ public class Score {
 		String[] draws = saveload.getDraws(gameName).split(";");
 		int playerIndex, result;
 		for(int i = 0; i < draws.length; i++) {
-			playerIndex = Integer.parseInt(draws[i].split("|")[0]);
-			result = Integer.parseInt(draws[i].split("|")[2]);
+			playerIndex = Integer.parseInt(draws[i].split("/")[0]);
+			result = Integer.parseInt(draws[i].split("/")[2]);
 			setScore(playerIndex, result);
 		}
 	}
