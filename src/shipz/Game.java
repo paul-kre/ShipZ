@@ -31,7 +31,6 @@ public class Game implements GameEventListener {
     private Player player1;
     /** Verweis auf den 2. Spieler */
     private Player player2;
-
     /** gibt an, ob Spieler 1 aktiv ist */
     private boolean player1active;
     /** Netzwerkverbindung */
@@ -40,6 +39,7 @@ public class Game implements GameEventListener {
     public GUI2 gui;
     /** Spielstandverwaltung */
     private FileStream filestream;
+
     /** Liste mit den zu verwendenden Schiffen */
     public List<Integer> shipList;
     /** aktive x-Koordinate */
@@ -100,11 +100,6 @@ public class Game implements GameEventListener {
         }//Ende xSchleife
     }
 
-    /**
-     * Ã¼berprÃ¼ft das Ende des Spiels und leitet eventuelle Benachrichtigungen ein
-     * @return gibt an, ob das Spiel beendet ist
-     */
-    private boolean checkGameOver() {return false;}
 
     /**
      * Ã¼berprÃ¼ft die Ã¼bergebenen Koordinaten auf Schiffelemente und ruft eventuell sink() auf
@@ -791,6 +786,7 @@ public class Game implements GameEventListener {
 
     private void nextRoundAI() {
         Player activePlayer;
+        int aiTimer = filestream.getAiTimer();
         if (player1active) {
             activePlayer = player1;
         }
@@ -820,7 +816,7 @@ public class Game implements GameEventListener {
                     }
                 }
             }
-        }, 250);
+        }, aiTimer);
     }
 
 
@@ -904,7 +900,7 @@ public class Game implements GameEventListener {
      * Main-Methode
      * @param args
      */
-//    public static void main(String[] args) {}
+   public static void main(String[] args) {}
 
     @Override
     public void eventReceived(GameEvent e) {
@@ -946,7 +942,7 @@ public class Game implements GameEventListener {
             	} catch (NoDrawException x) {
             		x.printStackTrace();
             		// Dialog wird auf der GUI ausgegeben
-            		// dass keine Züge mehr rückgängig gemacht werden können
+            		// dass keine Zï¿½ge mehr rï¿½ckgï¿½ngig gemacht werden kï¿½nnen
             	}
             	break;
             case REDO_EVENT:
@@ -955,13 +951,13 @@ public class Game implements GameEventListener {
 				} catch (NoDrawException x) {
 					x.printStackTrace();
             		// Dialog wird auf der GUI ausgegeben
-            		// dass keine Züge mehr wiederholt werden können
+            		// dass keine Zï¿½ge mehr wiederholt werden kï¿½nnen
 				}
 				break;
             case SAVE_EVENT:
             	filestream.saveGame("testName", "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
-            	// Name des Spielstands muss noch irgendwie übergeben werden
-            	// Spielernamen müssen noch korrekt zurückgegeben werden
+            	// Name des Spielstands muss noch irgendwie ï¿½bergeben werden
+            	// Spielernamen mï¿½ssen noch korrekt zurï¿½ckgegeben werden
             	break;
             case LOAD_EVENT:
             	loadGame(null);
@@ -970,33 +966,58 @@ public class Game implements GameEventListener {
     }
 
     /**
-     * Macht die Züge rückgängig.
-     * @param str String, der die rückgängig gemachten Züge speichert.
+     * Macht die Zï¿½ge rï¿½ckgï¿½ngig.
+     * @param str String, der die rï¿½ckgï¿½ngig gemachten Zï¿½ge speichert.
      */
     private void undo(String str) {
     	String[] draws = str.split(";");
     	int x, y, result, playerIndex;
     	for(int i = 0; i < draws.length; i++) {
-    		x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
-    		y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
-    		result = Integer.parseInt(draws[i].split("|")[2]);
-    		playerIndex = Integer.parseInt(draws[i].split("|")[0]);
-    		
+            System.out.println("test " + draws[i]);
+            System.out.println("TEST " + draws[i].split("/")[1].split(",")[0]);
+    		x = Integer.parseInt(draws[i].split("/")[1].split(",")[0]);
+    		y = Integer.parseInt(draws[i].split("/")[1].split(",")[1]);
+    		result = Integer.parseInt(draws[i].split("/")[2]);
+    		playerIndex = Integer.parseInt(draws[i].split("/")[0]);
+    		if(playerIndex == 1) {
+                //Wasser
+                if(result == 0){
+                    board2[y][x] = 'w';
+                    gui.drawWater(y, x, 2);
+                }
+                //Treffer/versenkt
+                else {
+                    board2[y][x] = 'x';
+                    gui.drawShip(y, x, 2);
+                }
+            }
+            else {
+                //Wasser
+                if(result == 0){
+                    board1[y][x] = 'w';
+                    gui.drawWater(y, x, 1);
+                }
+                //Treffer/versenkt
+                else {
+                    board1[y][x] = 'x';
+                    gui.drawShip(y, x, 1);
+                }
+            }
     	}
     }
     
     /**
-     * Wiederholt zurückgenommene Züge.
-     * @param str String, der die zu wiederholenden Züge speichert.
+     * Wiederholt zurÃ¼ckgenommene ZÃ¼ge.
+     * @param str String, der die zu wiederholenden ZÃ¼ge speichert.
      */
     private void redo(String str) {
     	String[] draws = str.split(";");
     	int x, y, result, playerIndex;
     	for(int i = 0; i < draws.length; i++) {
-    		x = Integer.parseInt(draws[i].split("|")[1].split(",")[0]);
-    		y = Integer.parseInt(draws[i].split("|")[1].split(",")[1]);
-    		result = Integer.parseInt(draws[i].split("|")[2]);
-    		playerIndex = Integer.parseInt(draws[i].split("|")[0]);
+    		x = Integer.parseInt(draws[i].split("/")[1].split(",")[0]);
+    		y = Integer.parseInt(draws[i].split("/")[1].split(",")[1]);
+    		result = Integer.parseInt(draws[i].split("/")[2]);
+    		playerIndex = Integer.parseInt(draws[i].split("/")[0]);
     		
     	}
     	
@@ -1010,7 +1031,7 @@ public class Game implements GameEventListener {
     	} else if(playerIndex == 2) {
     		activeBoard = board2;
     	} else {
-    		throw new RuntimeException("Ungültiger PlayerIndex");
+    		throw new RuntimeException("UngÃ¼ltiger PlayerIndex");
     	}
     	
         for(int i = 0; i < activeBoard.length; i++) {
@@ -1027,7 +1048,7 @@ public class Game implements GameEventListener {
      * @param gameName Name unter dem das Spiel abgespeichert ist
      */
     private void loadGame(String gameName) {
-    	filestream.loadDraws(gameName); // aktualisiert die IVs in den Klassen für Punkte und Züge
+    	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen für Punkte und Züge
     	char[] board1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] board2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
     	int boardsize = filestream.getBoardsize(gameName);
@@ -1036,7 +1057,7 @@ public class Game implements GameEventListener {
     		for(int j = 0; j < boardsize; j++) {
     			this.board1[j][i] = board1[i];
     			/*
-    			 * Irgendwie sowas. Sollte noch mal gründlich
+    			 * Irgendwie sowas. Sollte noch mal grï¿½ndlich
     			 * gecodet werden, das hier ist nur der Ansatz.
     			 */
     		}
@@ -1051,11 +1072,18 @@ public class Game implements GameEventListener {
     		player1active = false;
     	}
     }
-    
+
+    /**
+     * berechnet die SeitenlÃ¤nge der Spielfelder
+     * @return SeitenlÃ¤nge
+     */
     private double boardSize() {
     	return Math.sqrt(boardToString(1).length());
     }
-    
+
+    /**
+     * @return  gibt den aktive Spieler anhand eines int an
+     */
     private int activePlayer() {
     	if(player1active) {
     		return 1;

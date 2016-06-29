@@ -22,8 +22,10 @@ public class FileStream {
 	private Settings settings;
 	
 	// TODO
-	// SaveLoad Code säubern
 	// Kommentare überarbeiten
+	// Punkte erst in den Highscore tragen wenn Spiel vorbei ist
+		// wenn Spiel geladen wird, wird durch alle Züge gegangen, die Züge in die
+		// Stacks gespeichert und die Score-IV aktualisiert.
 	
 	// Konstruktor
 	/**
@@ -58,7 +60,6 @@ public class FileStream {
 	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences) {
 		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences);
 		undoredo.saveToFile(gameName);
-		score.saveScoreToFile(playerName, opponentName);
 	}
 	
 	/**
@@ -228,7 +229,7 @@ public class FileStream {
 	 * Wird verwendet, wenn ein Spielstand geladen wird.
 	 * @param gameName Name des Spielstands
 	 */
-	public void loadDraws(String gameName) {
+	public void loadDrawsAndScore(String gameName) {
 		undoredo.loadDraws(gameName);
 		score.loadScore(gameName);
 	}
@@ -256,7 +257,7 @@ public class FileStream {
 	 * @return Die Highscore-Liste als String
 	 */
 	public String highscore() {
-		return score.highscore();
+		return score.highscore(settings.getHighscoreMaximum());
 	}
 	
 	/**
@@ -270,20 +271,21 @@ public class FileStream {
 		return score.getComboValue(playerIndex);
 	}
 	
+	/**
+	 * Referenz auf die Methode in der Score-Klasse.
+	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
+	 * damit die Punkte in der Datei abgespeichert werden.
+	 * @param playerName
+	 * @param opponentName
+	 */
+	public void saveScoreToFile(String playerName, String opponentName) {
+		score.saveScoreToFile(playerName, opponentName);
+	}
+	
 	/*
 	 * SETTINGS
 	 * CLASS
 	 */
-	
-	/**
-	 * Referenz auf die Methode in der Settings-Klasse.
-	 * Liest den Wert aus der Config und gibt zurück, wie viele Spieler
-	 * maximal in der Highscore-Liste angezeigt werden sollen.
-	 * @return Spieler-Maximum im Highscore
-	 */
-	public int getHighscoreMaximum() {
-		return settings.getHighscoreMaximum();
-	}
 	
 	/**
 	 * Referenz auf die Methode in der Settings-Klasse.
@@ -327,7 +329,7 @@ public class FileStream {
 	 * @return die verbotenen Zeichen als String
 	 */
 	public String forbiddenCharacters() {
-		return "=,{}<>;#";
+		return "=,{}<>;#~";
 	}
 	
 	/**
