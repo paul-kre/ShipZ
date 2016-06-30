@@ -122,7 +122,8 @@ public class Normal extends Computer {
             super.setY(tempReturn[0]);
             super.setX(tempReturn[1]);
 
-        } else { //Falls noch kein Schiff getroffen wurde, werden zufällige erstellt und zurückgegeben.
+        } else {
+            //Falls noch kein Schiff getroffen wurde, werden die Koordinaten nach den Mustern erstellt und zurückgegeben.
 
 
 
@@ -246,9 +247,8 @@ public class Normal extends Computer {
     protected int randomThreePointPatternInt( int yCoord ){
 
 
-        // loopHoleVar = 0;
         /** Die EbenenStufe wird als 'level' gespeichert, damit berechnet werden kann, wie der
-         * Abstand zwischen den X-Koordinaten immer sein müssen
+         * Abstand zwischen den X-Koordinaten sein muss
          */
 
         int level = yCoord + 1;
@@ -382,7 +382,7 @@ public class Normal extends Computer {
          * alle entsprechenden Koordinaten des Musters überprüfen.
          * (Beispiel: Ebene1 hat für dessen Muster die X-Koordinate 2, 4 und 8)
          * Die jeweiligen Koordinaten werden überprüft ob diese noch frei sind. Wenn dem so ist,
-         * beendet dieMEthode in dem sie TRUE zurückgibt und die KI weiss, dass
+         * beendet die Methode in dem sie TRUE zurückgibt und die KI weiss, dass
          * sie noch Koordinaten mit diesem Muster erstellen kann.
          * Andernfalls weiss die KI, dass alle Koordinaten für dieses Muster besetzt sind und kann
          * dementsprechend auf ein anderes Muster umsteigen.

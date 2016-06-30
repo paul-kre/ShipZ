@@ -157,6 +157,7 @@ public class Hard extends Computer {
          * dort platzieren. In dem wir künstlich die Wahrscheinlichkeiten der Ecken,
          * die noch frei sind, erhöhen, können wir die Schwachstelle aushebeln.
          */
+
         int increaseEdge = 18;
         increaseOneCoordProbability(0,0,increaseEdge);  // Linke-Obere Ecke
         increaseOneCoordProbability(0, fieldSize -1, increaseEdge); //Rechte-Obere Ecke
@@ -373,6 +374,7 @@ public class Hard extends Computer {
 	protected void generateAICoordinates() {
 
 
+
         //Beim Treffer eines Schiffes werden die herumliegenden Koordinaten nach weiteren
         //Schiffsteilen abgesucht
         if (isShipTileHit()){
@@ -465,7 +467,7 @@ public class Hard extends Computer {
      * die berechnung von treffbaren Koordinaten an
      *
      */
-    public void displayProbabilityField() {
+    private void displayProbabilityField() {
         //Ausgabe der oberen Feldbeschriftung
         System.out.println("  0  1  2  3  4  5  6  7  8  9");
         //1. Zähler
