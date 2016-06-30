@@ -88,9 +88,11 @@ public abstract class Player extends GameEventSource implements Runnable {
 
 
     /**
+     * Extrahiert alle notwendigen Koordinaten eines
+     * Undo/Redo-Strings für die Benutzung der Spieler
      *
-     * @param coordinates
-     * @return
+     * @param coordinates Rohdaten der Koordinaten
+     * @return Liste mit den notwendigen Koordinaten ohne die restlichen Informationen
      */
     private ArrayList<String> extractValidCoordinates ( String coordinates){
 
@@ -105,7 +107,7 @@ public abstract class Player extends GameEventSource implements Runnable {
          */
         for ( int i = 0; i < singleDraws.length; i++){
 
-            extractedCoordinates.add(singleDraws[i].split("\\|")[1]);
+            extractedCoordinates.add(singleDraws[i].split("/")[1]);
         }
 
 
