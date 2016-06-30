@@ -275,8 +275,8 @@ public class FileStream {
 	 * Referenz auf die Methode in der Score-Klasse.
 	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
 	 * damit die Punkte in der Datei abgespeichert werden.
-	 * @param playerName
-	 * @param opponentName
+	 * @param playerName Name des ersten Spielers
+	 * @param opponentName Name des zweiten Spielers
 	 */
 	public void saveScoreToFile(String playerName, String opponentName) {
 		score.saveScoreToFile(playerName, opponentName);
@@ -311,7 +311,7 @@ public class FileStream {
 	 * Referenz auf die Methode in der Settings-Klasse.
 	 * Ändert den Wert der Pausen zwischen den KI-Zügen
 	 * in der Config.
-	 * @param timer neuer Wert für Pausen zwischen KI-Zügen
+	 * @param ms neuer Wert für Pausen zwischen KI-Zügen
 	 */
 	public void setAiTimer(int ms) {
 		settings.setAiTimer(ms);
@@ -332,10 +332,6 @@ public class FileStream {
 		return "=,{}<>;#~";
 	}
 	
-	/**
-	 * Main-Methode zum Testen
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		FileStream fs = new FileStream();
 		fs.newDraw(0, 0, 1, 1);
