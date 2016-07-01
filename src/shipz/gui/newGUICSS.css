@@ -1,0 +1,9 @@
+.root {
+    display: block;
+    -fx-background-color: white;
+
+}
+
+#body {
+    -fx-background-color: black;
+}

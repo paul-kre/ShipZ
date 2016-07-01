@@ -861,8 +861,8 @@ public class Game implements GameEventListener {
 
     protected void test() {
 
-        player1 = new Easy(10, false, shipList);
-        player2 = new Easy(10, false, shipList);
+        player1 = new Hard(10, false, shipList);
+        player2 = new Hard(10, false, shipList);
         nextRoundAI();
 
         //Schleife zum Test der KI
@@ -921,7 +921,6 @@ public class Game implements GameEventListener {
             	
                 if(gameFinished() == 0) {
                     if(aResult == 0) {
-                        testCounter++;
                         changeActivePlayer();
                     }
                     nextRoundAI();
