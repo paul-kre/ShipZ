@@ -7,15 +7,11 @@ import java.util.Map;
 /**
  * Schwerer Schwierigkeitsgrad<br><br>
  *
- * Erstellte Koordinaten werden an die Verwaltung übergeben.
- * KI berücksichtigt zuletzt getroffene Felder und prüft
- * dementsprechend das herumliegende Gebiet.<br><br>
- *
- * Zusätzlich werden Koordinaten die alleine stehen bzw. keine Nachbarkoordinaten
- * haben nicht berücksichtigt. <br><br>
- *
- * Für die Generierung der Koordinaten scannt das Feld ab und wählt dementsprechend
- * eine Taktik.<br>
+ * Berücksichtigt alles was in der Klasse Computer implementiert
+ * ist.<br>
+ * Im Gegensatz zur normalen und einfachen KI, beschießt es keine Koordinaten per
+ * Zufall oder Muster, sonder berechnte diese mithilfe von
+ * möglichen Trefferpunkten.<br>
  *
  * @author Artur Hergert
  *
@@ -161,6 +157,7 @@ public class Hard extends Computer {
          * dort platzieren. In dem wir künstlich die Wahrscheinlichkeiten der Ecken,
          * die noch frei sind, erhöhen, können wir die Schwachstelle aushebeln.
          */
+
         int increaseEdge = 18;
         increaseOneCoordProbability(0,0,increaseEdge);  // Linke-Obere Ecke
         increaseOneCoordProbability(0, fieldSize -1, increaseEdge); //Rechte-Obere Ecke
@@ -329,19 +326,19 @@ public class Hard extends Computer {
 
 
         /**
-         * Da man nicht durch eine Liste iterieren kann und gleichzeitig die Werte löschen kann,
-         * die eine geringere Wahrscheinlichkeit als <b>highestProbability</b> haben, müss
+         * Da man nicht durch eine Liste iterieren und gleichzeitig die Werte löschen kann,
+         * die eine geringere Wahrscheinlichkeit als <b>highestProbability</b> haben, muss
          * man daher alle Koordinaten mit der höchsten Wahrscheinlichkeit in eine extra
-         * liste übernehmen
+         * Liste übernehmen
          */
         for (String coord : tempProbabilityCoords){
 
 
-            //Der aktuellen Koordinate wird die Wahrscheinlichkeit
-            //extrahiert, damit man sie vergleichbar ist mit der höchsten Wahrscheinlichkeit
+            //Aus der aktuellen Koordinate wird die Wahrscheinlichkeit
+            //extrahiert, damit sie vergleichbar ist mit der höchsten Wahrscheinlichkeit
             tempProbability = Integer.parseInt(coord.split(",")[0]);
 
-            //Wenn die Wahrscheinlichkeit der betrachteten mit derf Höchstwahrscheinlichkeit übereinstimmt,
+            //Wenn die Wahrscheinlichkeit der betrachteten mit der Höchstwahrscheinlichkeit übereinstimmt,
             //wird diese übernommen
             if ( tempProbability == highestProbability){
 
@@ -359,27 +356,23 @@ public class Hard extends Computer {
 
 
 	/**
-	 * Erstellt zufällige Koordinaten auf die geschossen werden
+	 * Erstellt Koordinaten auf die geschossen werden
 	 * sollen.<br><br>
 	 *
-	 * Implementierung der Methode aus der Abstrakten Superklasse Computer.<br>
-	 * Koordinaten werden jede Runde neu nach einem Muster erstellt und übergeben.<br><br>
-	 *
-	 * Bei dem schweren Schwierigkeitsgrad wird die zuletzt getroffene Koordinate
-	 * berücksichtigt und die direkte Umgebung wird nach weiteren möglichen
-	 * Treffern untersucht.<br><br>
-	 *
-	 * Ebenso wird das Spielfeld in verschieden Bereiche unterteilt die je nach
-	 * Warscheinlichkeit eines Treffers eher oder zuletzt berücksichtigt werden.<br><br>
-	 *
-	 * Sobald ein Richtungsmuster erkennbar ist, wird in die jeweilige Richtung
-	 * geschossen bis ein Schiff zerstört wird oder ins Wasser getroffen wurde.<br><br>
-	 *
-	 * Auch hier werden alle beschossenen Koordinaten und die Umgebung eines Schiffes
-	 * berücksichtigt bei der Erstellung der Zufallskoordinaten.<br>
+	 * Implementierung der Methode aus der abstrakten Superklasse Computer.<br>
+     * Jede Runde werden alle möglichen Schiffsgrößen, die noch im Spiel sein
+     * können, auf jeder Koordinate vertikal und horizontal platziert. Sobald
+     * ein Schiff an den Koordinaten voll platziert werden kann, werden die
+     * Trefferwahrscheinlichkeiten an den entsprechenden Stellen erhöht.<br>
+     * Aus der Sammlung der Koordinaten mit den höchsten Trefferwahrscheinlichkeiten
+     * wird dann immer eine zurückgegeben, die dann als Koordinate beschossen wird. <br><br>
+     *
+     * Zusätzlich wird nach jedem Beschuss geprüft, ob eingeschlossene Felder
+     * vorhanden sind, die von der KI ausgeschlossen werden können.
 	 *
 	 */
 	protected void generateAICoordinates() {
+
 
 
         //Beim Treffer eines Schiffes werden die herumliegenden Koordinaten nach weiteren
@@ -392,12 +385,15 @@ public class Hard extends Computer {
 
         } else {
 
-            //Im Normalfall, wenn kein Schiff getroffen wurde, werden die
-            //Wahrscheinlichkeiten für den nächsten Zug berechnet
+            /**
+             * Im Normalfall, wenn kein Schiff getroffen wurde, werden die
+             * Wahrscheinlichkeiten für den nächsten Zug berechnet
+             */
             generateHitProbabilities();
 
             displayProbabilityField();
-            //Flag welches den Durchlauf der Schleifen bestimmt
+
+            //Flagvariable, welche dafür sorgt, dass eine ungültige Koordinate neu generiert wird
             boolean loopAgain = true;
 
             do{
@@ -413,8 +409,6 @@ public class Hard extends Computer {
                 if ( !isCoordinateOccupied (super.getY(), super.getX()) && !isCoordinateShipPart(super.getY(), super.getX()) ){
 
                     loopAgain = false;
-
-
                 }
 
 
@@ -473,7 +467,7 @@ public class Hard extends Computer {
      * die berechnung von treffbaren Koordinaten an
      *
      */
-    public void displayProbabilityField() {
+    private void displayProbabilityField() {
         //Ausgabe der oberen Feldbeschriftung
         System.out.println("  0  1  2  3  4  5  6  7  8  9");
         //1. Zähler

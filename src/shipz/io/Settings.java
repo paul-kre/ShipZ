@@ -26,7 +26,6 @@ public class Settings {
 	public Settings() {
 		saveload = new SaveLoad();
 		configFile = new File(saveload.fileDirectory() + File.separator + "config.shipz");
-		saveload.makeDirectory(configFile);
 		initFile();
 	}
 	
@@ -34,10 +33,13 @@ public class Settings {
 	 * Erstellt die Struktur des config-Files mit den default-Werten.
 	 */
 	private void initFile() {
-		saveload.writeFile(
-				configFile, 
-				"highscoreMax" + CONFIG_SEPARATOR + "10\n"+
-				"aiTimer" + CONFIG_SEPARATOR + "250\n");
+		if(!configFile.exists()) {
+			saveload.makeDirectory(configFile);
+			saveload.writeFile( // Standardwerte
+					configFile, 
+					"highscoreMax" + CONFIG_SEPARATOR + "10\n"+
+					"aiTimer" + CONFIG_SEPARATOR + "250\n");
+		}
 	}
 	
 	/**

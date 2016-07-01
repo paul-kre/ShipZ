@@ -63,13 +63,16 @@ public class Easy extends Computer {
             super.setY(tempReturn[0]);
             super.setX(tempReturn[1]);
 
-        } else { //Falls noch kein Schiff getroffen wurde, werden zufällige erstellt und zurückgegeben.
+        } else {
 
-            //Zufallskoordinaten solange erstellen und speichern bis sie gültig und beschießbar sind
+            //Falls noch kein Schiff getroffen wurde, werden zufällige erstellt und zurückgegeben.
+
+
 
             //Flag welches den Durchlauf der Schleifen bestimmt
             boolean loopAgain = true;
 
+            //Zufallskoordinaten solange erstellen und speichern bis sie gültig und beschießbar sind
             do{
 
                 super.setY(super.randomRowInt());

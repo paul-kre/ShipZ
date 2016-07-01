@@ -448,7 +448,7 @@ public class TempKiGame{
             System.out.println("Anzeige des Spiegelfeldes der Ki:");
 
             ki.displayMirrorField();
-            ki.printShipList();
+            //ki.printShipList();
             System.out.println("\n");
 
 

@@ -323,7 +323,7 @@ public abstract class Computer extends Player {
      * @param xCoord X-Koordinate der Zelle
      *
      */
-    protected void setCoordinateOccupied(int yCoord, int xCoord) {
+    private void setCoordinateOccupied(int yCoord, int xCoord) {
 
         this.mirrorField[yCoord][xCoord] = 1;
 
@@ -466,7 +466,7 @@ public abstract class Computer extends Player {
 
             //Obere Kante wird nicht abgespeichert
 
-        } else { //Bei allen anderen Fällen wird die untere Kante abgespeichert
+        } else { //Bei allen anderen Fällen wird die obere Kante abgespeichert
 
             //Nord-Westlich von current speichern
             if ( isCoordinateInField(currentY-1, currentX-1) ){
@@ -482,31 +482,10 @@ public abstract class Computer extends Player {
 
         }
 
-        /**
-         * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
-         * wird die untere Reihe nicht als Schiffsumgebung
-         * mitgespeichert */
-        if (placingShipsAtEdgePossible && (yDirection == 1 && xDirection ==0)){
-
-            //Untere Kante wird nicht abgespeichert
-
-        } else{ //Bei allen anderen Fällen wird die untere Kante abgespeichert
-
-            //Süd-Westlich von current speichern
-            if ( isCoordinateInField(currentY+1, currentX-1) ){
-                setCoordinateOccupied(currentY+1, currentX-1);
-            }
-
-            //Süd-Östlich von current speichern
-            if ( isCoordinateInField(currentY+1, currentX+1) ){
-                setCoordinateOccupied(currentY+1, currentX+1);
-            }
-
-        }
 
 
 
-        /*Nachdem das vertikal platzierte Schiff mit samt Umgebung in mirrorField gespeichert wurde,
+        /*Nachdem das vertikal platzierte Schiff mit samt Umgebung ins mirrorField gespeichert wurde,
         wird geprüft, ob in dessen Reihen noch freie Plätze sind oder ob die Reihe ausgeschlossen
         werden kann bei der Generierung der Zufallszahlen */
         excludeFullRows(currentY);
@@ -579,30 +558,6 @@ public abstract class Computer extends Player {
 
 
 
-        /**
-         * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
-         * wird die letzte Reihe östlich nicht als Schiffsumgebung
-         * mitgespeichert */
-        if (placingShipsAtEdgePossible && (yDirection == 0 && xDirection == 1)){
-
-            //Östliche Reihe wird nicht abgespeichert
-
-        } else{ //Bei allen anderen Fällen wird die östliche Kante abgespeichert
-
-            //Süd-Östlich von current speichern
-            if ( isCoordinateInField(currentY+1, currentX+1) ){
-                setCoordinateOccupied(currentY+1, currentX+1);
-            }
-
-
-            //Nord-Östlich von current speichern
-            if ( isCoordinateInField(currentY-1, currentX+1) ){
-                setCoordinateOccupied(currentY-1, currentX+1);
-            }
-
-
-        }
-
 
         /*Nachdem das horizontal platzierte Schiff mit samt Umgebung in mirrorField gespeichert wurde,
         wird geprüft, ob in dessen Reihen noch freie Plätze sind oder ob die Spalte ausgeschlossen
@@ -643,6 +598,7 @@ public abstract class Computer extends Player {
          * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
          * werden die oberen und unteren Nachbarn der aktuellen Variable nicht
          * mitgespeichert */
+
         if (!placingShipsAtEdgePossible){
 
             //Linker und Rechter Nachbar von current speichern
@@ -660,6 +616,7 @@ public abstract class Computer extends Player {
             excludeFullColumns(currentX-1);
             excludeFullColumns(currentX+1);
         }
+
     }
 
 
@@ -685,10 +642,13 @@ public abstract class Computer extends Player {
         excludeFullRows(currentY);
 
 
+
         /**
          * Wenn die Option "Schiffe an der Kante platzieren" aktiviert wurde,
          * werden die linken und rechten Nachbarn der aktuellen Variable nicht
          * mitgespeichert */
+
+
         if (!placingShipsAtEdgePossible){
 
             //Oberer und Unterer Nachbar von current speichern
@@ -707,6 +667,7 @@ public abstract class Computer extends Player {
             excludeFullRows(currentY-1);
 
         }
+
     }
 
 
@@ -725,9 +686,9 @@ public abstract class Computer extends Player {
     }
 
     /**
-     * Durchläuft eine Richtung um eine getroffene
+     * Durchläuft eine Richtung rund um eine getroffene
      * Koordinate die ein Schiff zum Versenken gebracht hat
-     * und speichert alle Umgebungskoordinaten des Schiffes
+     * und speichert alle Umgebungskoordinaten des Schiffes ab
      *
      * @param yCoord Y-Koordinate der Zelle
      * @param xCoord X-Koordinate der Zelle
@@ -742,7 +703,7 @@ public abstract class Computer extends Player {
         int currentY = yCoord;
         int currentX = xCoord;
 
-        //Flag-Variable zum Durchlaufen der While-Schleifen. Prüfen immer ob die Richtung weitergeprüft werden soll.
+        //Flag-Variable zum Durchlaufen der Do - While-Schleife. Prüfen immer ob die Richtung weitergeprüft werden soll.
         boolean directionCheck;
 
 
@@ -882,71 +843,9 @@ public abstract class Computer extends Player {
      */
         private void excludeFullRows( int row){
 
-            //Zu allererst wird geprüft ob die angegebene Reihe sich innerhalb des Spielfeldes befinden kann ( zwischen 0 und fieldSize)
-            if ( row >= 0 && row < this.fieldSize){
-
-                //Variablen die beim Schleifendurchlauf die Koordinaten der entsprechenden Spielfeldhälften prüfen
-                int fieldCenter = this.fieldSize / 2;
-                int leftSide = fieldCenter -1;
-                int rightSide = fieldCenter +1;
-
-                //Flag zum Abbrechen der Schleife falls ein leeres Feld gefunden wurde, da man in dem Fall weiss, dass die Reihe nicht voll ist
-                boolean emptySlotFound = false;
-
-                //Überprüfung ob überhaupt die Mitte des Feldes frei ist. Wenn sie es ist, kann die Reihe schonmal nicht ausgeschlossen werden
-                if ( !isCoordinateOccupied (row, fieldCenter) && !isCoordinateShipPart (row, fieldCenter ) ){
-
-
-                    // Die Mitte des Spielfeldes ist frei, deshalb kann die Reihe noch nicht gelöscht werden. Die Methode endet hier.
-
-                } else{
-
-
-                    do{
-
-                        //Linke Spielfeldhälfte überprüfen
-
-                        if (isCoordinateInField(row, leftSide )){
-
-                            if ( !isCoordinateOccupied (row, leftSide) && !isCoordinateShipPart (row, leftSide ) ){
-
-                                emptySlotFound = true;
-                            }
-                        }
-
-                        //Rechte Spielfeldhälfte überprüfen
-                        if (isCoordinateInField(row, rightSide )){
-
-                            if ( !isCoordinateOccupied (row, rightSide) && !isCoordinateShipPart (row, rightSide ) ){
-
-                                emptySlotFound = true;
-                            }
-                        }
-
-
-                        //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die linke und rechte
-                        //Spielfeldhälfte zu prüfen
-                        leftSide--;
-                        rightSide++;
-
-                    }while ( (leftSide >= 0  || rightSide < this.fieldSize) && !emptySlotFound); //end while
-
-
-                    //Nachdem die Schleife durchgelaufen ist und kein freien Platz gefunden hat weiss man, dass die Reihe voll ist.
-                    //Die Reihe wird in de Fall ausgeschlossen
-                    if (!emptySlotFound){
-
-                        deleteRowFromList(row);
-                    }
-
-                }
-
-
-            }
+            excludeFullLine (row, 0);
 
         }
-
-
 
 
     /**
@@ -958,62 +857,135 @@ public abstract class Computer extends Player {
      */
     private void excludeFullColumns( int column){
 
+        excludeFullLine (column, 1);
+
+    }
+
+
+    /**
+     * Allgemeine Methode die eine Reihe oder Spalte auf
+     * Vollständigkeit überprüft
+     *
+     * @param line Angegebene Reihe oder Spalte
+     * @param orientation Angabe ob es sich um eine Reihe (Wert "0")
+     *                    oder um eine Spalte (Wert "1") handelt
+     */
+    private void excludeFullLine (int line,  int orientation){
+
         //Zu allererst wird geprüft ob die angegebene Reihe sich innerhalb des Spielfeldes befinden kann ( zwischen 0 und fieldSize)
-        if ( column >= 0 && column < this.fieldSize){
+        if ( line >= 0 && line < this.fieldSize){
 
             //Variablen die beim Schleifendurchlauf die Koordinaten der entsprechenden Spielfeldhälften prüfen
             int fieldCenter = this.fieldSize / 2;
-            int upperSide = fieldCenter -1;
-            int lowerSide = fieldCenter +1;
+            int decrementSide = fieldCenter -1;
+            int incrementSide = fieldCenter +1;
 
             //Flag zum Abbrechen der Schleife falls ein leeres Feld gefunden wurde, da man in dem Fall weiss, dass die Reihe nicht voll ist
             boolean emptySlotFound = false;
 
+
+            boolean fieldCenterIsFree;
+
+            //Je nachdem ob eine Reihe oder Spalte angegeben wird, wird dessen Mittelpunkt überprüft ob es frei ist
+            if (orientation == 0){
+
+                fieldCenterIsFree = !isCoordinateOccupied (line, fieldCenter) && !isCoordinateShipPart (line, fieldCenter );
+            }else{
+
+                fieldCenterIsFree = !isCoordinateOccupied ( fieldCenter, line ) && !isCoordinateShipPart (fieldCenter, line );
+
+            }
+
+
+
             //Überprüfung ob überhaupt die Mitte des Feldes frei ist. Wenn sie es ist, kann die Reihe schonmal nicht ausgeschlossen werden
+            if ( fieldCenterIsFree){
 
-            if ( !isCoordinateOccupied ( fieldCenter, column ) && !isCoordinateShipPart (fieldCenter, column ) ){
 
-
-                // Die Mitte des Spielfeldes ist frei, deshalb kann die Spalte noch nicht gelöscht werden. Die Methode endet hier.
+                // Die Mitte der Reihe ist frei, deshalb kann diese noch nicht gelöscht werden. Die Methode endet hier.
 
             } else{
 
 
                 do{
 
-                    //Linke Spielfeldhälfte überprüfen
+                    //Reihe überprüfen
+                    if (orientation == 0){
 
-                    if (isCoordinateInField( upperSide, column)){
 
-                        if ( !isCoordinateOccupied (upperSide, column) && !isCoordinateShipPart (upperSide, column ) ){
+                        //Like Spielfeldhälfte überprüfen
 
-                            emptySlotFound = true;
+                        if (isCoordinateInField(line, decrementSide )){
+
+                            if ( !isCoordinateOccupied (line, decrementSide) && !isCoordinateShipPart (line, decrementSide ) ){
+
+                                emptySlotFound = true;
+                            }
                         }
+
+                        //Rechte Spielfeldhälfte überprüfen
+                        if (isCoordinateInField(line, incrementSide )){
+
+                            if ( !isCoordinateOccupied (line, incrementSide) && !isCoordinateShipPart (line, incrementSide ) ){
+
+                                emptySlotFound = true;
+                            }
+                        }
+
+
+                        //Spalte überprüfen
+                    }else {
+
+                        //Obere Spielfeldhälfte überprüfen
+
+                        if (isCoordinateInField( decrementSide, line)){
+
+                            if ( !isCoordinateOccupied (decrementSide, line) && !isCoordinateShipPart (decrementSide, line ) ){
+
+                                emptySlotFound = true;
+                            }
+                        }
+
+                        //Untere Spielfeldhälfte überprüfen
+                        if (isCoordinateInField(incrementSide, line)){
+
+                            if ( !isCoordinateOccupied (incrementSide, line) && !isCoordinateShipPart (incrementSide, line ) ){
+
+                                emptySlotFound = true;
+                            }
+                        }
+
                     }
 
-                    //Rechte Spielfeldhälfte überprüfen
-                    if (isCoordinateInField(lowerSide, column )){
-
-                        if ( !isCoordinateOccupied (lowerSide, column) && !isCoordinateShipPart (lowerSide, column ) ){
-
-                            emptySlotFound = true;
-                        }
-                    }
 
 
-                    //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die obere und untere
+
+
+                    //Zählervariablen entsprechend in/decrementieren um von der Mitte aus pro Durchlauf in die erste und zweite
                     //Spielfeldhälfte zu prüfen
-                    upperSide--;
-                    lowerSide++;
+                    decrementSide--;
+                    incrementSide++;
 
-                }while ( (upperSide >= 0  || lowerSide < this.fieldSize) && !emptySlotFound); //end while
+                }while ( (decrementSide >= 0  || incrementSide< this.fieldSize) && !emptySlotFound); //end while
 
 
                 //Nachdem die Schleife durchgelaufen ist und kein freien Platz gefunden hat weiss man, dass die Reihe voll ist.
                 //Die Reihe wird in de Fall ausgeschlossen
-                if (!emptySlotFound){
+                if (orientation == 0){
 
-                    deleteColumnFromList(column);
+                    if (!emptySlotFound){
+
+                        deleteRowFromList(line);
+                    }
+
+                }else{
+
+
+                    if (!emptySlotFound){
+
+                        deleteColumnFromList(line);
+                    }
+
                 }
 
             }
@@ -1021,7 +993,10 @@ public abstract class Computer extends Player {
 
         }
 
+
     }
+
+
 
 
 
@@ -1707,28 +1682,6 @@ public abstract class Computer extends Player {
             System.out.println();
         }
     }
-
-
-
-
-    /**
-     * DEBUGGING-METHODE
-     *
-     * Ausgabe der aktuellen Schiffsliste
-     */
-    public void printShipList(){
-
-        System.out.print("Schiffsliste:\n");
-        for (Map.Entry m: shipList.entrySet()){
-
-            System.out.print( m.getKey()  + ": " + m.getValue() + ", ");
-        }
-        System.out.println("\n\n");
-
-
-    }
-
-
 
 
 
