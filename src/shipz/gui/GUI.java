@@ -1,3 +1,5 @@
+package shipz.gui;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
