@@ -29,7 +29,7 @@ public class FileStream {
 	
 	// Konstruktor
 	/**
-	 * Konstruktor der Klasse.
+	 * Konstruktor der Klasse, die die Objekte der anderen Klassen initialisiert.
 	 */
 	public FileStream() {
 		score = new Score();
@@ -45,7 +45,6 @@ public class FileStream {
 	
 	// IM
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Speichert die Informationen eines bestimmten Spiels.
 	 * Wird von {@link shipz.Game} genutzt, um ein Spiel abzuspeichern.
 	 * @param gameName Name des Spielstands
@@ -63,7 +62,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Gibt die Namen aller Spielstände als {@link String} zurück.
 	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
@@ -77,7 +75,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Wird zum Laden eines Spielstands benötigt.
 	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
 	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
@@ -89,9 +86,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Wird zum Laden eines Spielstands benötigt.
 	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
@@ -101,9 +97,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Wird zum Laden eines Spielstands benötigt.
 	 * Gibt den Spielernamen eines Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName der gewünschte Spielstand
 	 * @return Spielername eines Spielstand
 	 */
@@ -112,9 +107,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Wird zum Laden eines Spielstands benötigt.
 	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName der gewünschte Spielstand
 	 * @return Namen des Gegners eines bestimmten Spielstands
 	 */
@@ -123,9 +117,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Wird zum Laden eines Spielstands benötigt.
 	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName der gewünschte Spielstand
 	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
 	 */
@@ -134,9 +127,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Wird zum Laden eines Spielstands benötigt.
 	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName Name des Spielstands
 	 * @return der aktive Spieler
 	 */
@@ -145,9 +137,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Wird zum Laden eines Spielstands benötigt.
 	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName der gewünschte Spielstand
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
@@ -156,9 +147,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
-	 * Wird zum Laden eines Spielstands benötigt.
 	 * Gibt die Einstellungen eines Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName Name des Spielstands
 	 * @return Einstellungen als String
 	 */
@@ -167,7 +157,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der SaveLoad-Klasse.
 	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
@@ -181,7 +170,6 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Referenz auf die Methode in der UndoRedo-Klasse.
 	 * Die rückgängig zu machenden Züge werden vom Stack genommen, der die im Spiel getätigten
 	 * Züge speichert, und auf den Stack gelegt, der die rückgängig gemachten Züge speichert.
 	 * Alle rückgängig gemachten Züge werden als String zurückgegeben.
@@ -195,7 +183,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der UndoRedo-Klasse.
 	 * Die Züge, die wiederhergestellt werden, werdem vom Redo-Stack genommen und wieder oben
 	 * auf den Stack gelegt, der die Züge des Spiels gespeichert, gelegt.
 	 * Alle wiederhergestellten Züge werden als String zurückgegeben.
@@ -208,7 +195,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der UndoRedo-Klasse.
 	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
 	 * Außerdem wird anhand der Variable <b>result</b> die Punktzahl des Spielers aktualisiert.
 	 * @param x x-Koordinate des Zugs
@@ -222,7 +208,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der UndoRedo-Klasse.
 	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
 	 * Außerdem werden die Instanz-Variablen, die die Punkte- und Combo-Werte speichern,
 	 * in der Score-Klasse aktualisiert.
@@ -240,7 +225,6 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Referenz auf die Methode in der Score-Klasse.
 	 * Gibt die Punktzahl eines Spielers zurück.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
 	 * @return Punktzahl des Spielers
@@ -250,7 +234,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der Score-Klasse.
 	 * Liest alle Punktzahlen aus dem Highscore-File
 	 * und erstellt eine absteigend sortierte Highscore-Liste.
 	 * Es werden maximal die zehn besten Spieler angezeigt.
@@ -261,9 +244,7 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der Score-Klasse.
-	 * Der Wert der Combo wird zurückgegeben, damit die GUI darstellen kann, 
-	 * welche Combo der Spieler aktuell erreicht hat.
+	 * Der Wert der Combo wird zurückgegeben, damit die GUI darstellen kann, welche Combo der Spieler aktuell erreicht hat.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
 	 * @return aktueller Combowert des Spielers
 	 */
@@ -272,7 +253,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der Score-Klasse.
 	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
 	 * damit die Punkte in der Datei abgespeichert werden.
 	 * @param playerName Name des ersten Spielers
@@ -288,7 +268,6 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Referenz auf die Methode in der Settings-Klasse.
 	 * Ändert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
 	 * @param max Spieler-Maximum im Highscore
 	 */
@@ -297,7 +276,6 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der Settings-Klasse.
 	 * Liest aus der Datei und gibt den Wert zurück,
 	 * der die Länge der Pausen zwischen den KI-Zügen
 	 * in Millisekunden speichert.
@@ -308,9 +286,7 @@ public class FileStream {
 	}
 	
 	/**
-	 * Referenz auf die Methode in der Settings-Klasse.
-	 * Ändert den Wert der Pausen zwischen den KI-Zügen
-	 * in der Config.
+	 * Ändert den Wert der Pausen zwischen den KI-Zügen in der Config.
 	 * @param ms neuer Wert für Pausen zwischen KI-Zügen
 	 */
 	public void setAiTimer(int ms) {
@@ -330,19 +306,6 @@ public class FileStream {
 	 */
 	public String forbiddenCharacters() {
 		return "=,{}<>;#~";
-	}
-	
-	public static void main(String[] args) {
-		FileStream fs = new FileStream();
-		fs.newDraw(0, 0, 1, 1);
-		fs.newDraw(0, 0, 1, 1);
-		fs.newDraw(0, 0, 1, 2);
-		fs.newDraw(0, 0, 1, 0);
-		fs.newDraw(0, 0, 2, 1);
-		System.out.println(fs.getScore(1));
-		System.out.println(fs.getComboValue(1));
-		fs.saveGame("testSpielxx", "Dieter", "Heinz", "WWWWWWW", "WWFFWWWWW", 8, 1, "a");
-		
 	}
 	
 }
