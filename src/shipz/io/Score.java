@@ -22,19 +22,19 @@ public class Score {
 	private File highscoreFile;
 	/** Scanner, der aus einer Datei liest. */
 	private Scanner scanner;
-	/** Zählt die Combos des ersten Spielers */
+	/** Speichert die Combos des ersten Spielers */
 	private int comboPlayer1;
-	/** Zählt die Combos des zweiten Spielers */
+	/** Speichert die Combos des zweiten Spielers */
 	private int comboPlayer2;
-	/** Punktestand des ersten Spielers */
+	/** Speichert den Punktestand des ersten Spielers */
 	private int scorePlayer1;
-	/** Punktestand des zweiten Spielers */
+	/** Speichert den Punktestand des zweiten Spielers */
 	private int scorePlayer2;
 	
 	// Konstanten
 	/** Trennzeichen zwischen Namen und Punkten.
 	 * Format: <i>spielername=punkte</i> */
-	private final static String SCORE_SEPARATOR = "=";
+	private static final String SCORE_SEPARATOR = "=";
 	
 	// Konstruktor
 	/**
@@ -53,7 +53,9 @@ public class Score {
 	
 	// IM
 	/**
-	 * Setzt die Punktzahl eines bestimmten Spielers zu einem bestimmten Event.
+	 * Setzt die Punktzahl eines bestimmten Spielers.
+	 * Der Parameter result beschreibt dabei die Aktion,
+	 * anhand dessen wird entschieden, wie sich die Punktzahl verändert.
 	 * @param playerName Name des Spielers
 	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
 	 */
@@ -81,9 +83,10 @@ public class Score {
 	}
 	
 	/**
-	 * Methode, die die Combos verwaltet und den Combo-Counter hochzählt.
-	 * @param playerName Spielername
-	 * @param result 0 für wasser, 1 für treffer, 2 für versenkt, 3 für undo
+	 * Methode, die die Combos verwaltet und anhand des getätigten Zugs
+	 * den Combo-Wert aktualisiert.
+	 * @param playerName Name des Spielers
+	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
 	 */
 	private void combo(int playerIndex, int result) {
 		if(playerIndex == 1) {
@@ -112,7 +115,13 @@ public class Score {
 	}
 	
 	/**
-	 * Ein bestimmter Spieler wird in die Highscore-Liste eingefügt.
+	 * Ein bestimmter Spieler wird in die Highscore-Datei eingefügt.
+	 * Es wird mit dem Spielernamen das Datum und die Uhrzeit abgespeichert,
+	 * damit auch mehrfache Einträge möglich sind.
+	 * Falls der Spieler mit der aktuellen Uhrzeit schon im Highscore existiert
+	 * (sehr unwahrscheinlicher aber theoretisch möglicher Fall) wird die Methode
+	 * rekursiv aufgerufen und so lange ein Sonderzeichen angehangen,
+	 * bis der Name eingetragen werden kann.
 	 * @param playerName Der Spieler, der eingefügt werden soll.
 	 * @param score Punktzahl, die gesetzt werden soll.
 	 */
@@ -176,7 +185,7 @@ public class Score {
 	 * Diese werden dann sortiert und in eine TreeMap geschrieben.
  	 * Dies ist notwendig, um einen String zu generieren,
 	 * der den Highscore wiedergibt.
-	 * @return die TreeMap mit den sortierten Einträgen
+	 * @return die Map für String und Integer mit den sortierten Einträgen
 	 */
 	private Map<String, Integer> highscoreToSortedMap() {
 		// Scanner-Objekt zum Lesen der Highscore-Datei
@@ -240,9 +249,8 @@ public class Score {
 	/**
 	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt,
 	 * damit die Punkte in der Datei abgespeichert werden.
-	 * @param gameName 
-	 * @param playerName
-	 * @param opponentName
+	 * @param playerName Name des ersten Spielers
+	 * @param opponentName Name des zweiten Spielers
 	 */
 	protected void saveScoreToFile(String playerName, String opponentName) {
 		addPlayerIntoHighscore(playerName, scorePlayer1);
@@ -296,6 +304,7 @@ public class Score {
 	/**
 	 * So ähnlich wird der Highscore in der Game-Klasse für die GUI dargestellt.
 	 */
+	@Deprecated
 	private void test() {
 		System.out.println("RANK\tNAME\t\t\tSCORE\t\tDATE");
 		String[] highscoreArray = highscore(10).split(",");
@@ -305,25 +314,6 @@ public class Score {
 			String date = highscoreArray[i].split("=")[0].split("#")[1].replaceAll("_", " ").replaceAll("-", ":");
 			System.out.println(i+1 + "\t" + name + "\t\t" + score + "\t\t" + date);
 		}
-	}
-	
-	/**
-	 * main method
-	 * @param args arguments
-	 */
-	public static void main(String[] args) {
-		Score s = new Score();
-/*		s.setScore(1, 's');
-		s.setScore(1, 's');
-		s.setScore(1, 's');
-		s.setScore(1, 's');
-		s.setScore(2, 's');
-		s.setScore(2, 's');
-		s.setScore(2, 's');*/
-//		s.saveScoreToFile("TestSpieler1", "TestSpieler2");
-		System.out.println(s.highscore(10));
-		s.test();
-		
 	}
 
 }
