@@ -48,18 +48,15 @@ public class Game implements GameEventListener {
     private int aY;
     /** letztberechnetes Ergebnis */
     private byte aResult;
-    /** gibt an, ob auf die GUI gewartet werden muss */
-    public boolean waitForGUI;
-    /** zählt die Spielzüge für Testzwecke */
-    private int testCounter;
     /** gibt an, ob das Spiel zurzeit pausiert ist */
     private boolean gamePaused;
 
     //Constructor
     /**
      * erstellt ein neues Spiel mit leeren Feldern
-     * @param width		Feldbreite
-     * @param height	Feldhöhe
+     * @param width		    Feldbreite
+     * @param height	    Feldhöhe
+     * @param primaryStage  wird für das Erstellen der GUI verwendet
      */
     public Game(int width, int height, Stage primaryStage) {
         board1 = new char[width][height];
@@ -68,16 +65,11 @@ public class Game implements GameEventListener {
         gui = new GUI2(primaryStage);
         gui.setEventListener(this);
         player1active = true;
-        testCounter = 1;
         gamePaused = false;
         filestream = new FileStream();
     }
 
     //Methoden
-    /**
-     * startet ein neues oder geladenes Spiel mit den ausgewählten Optionen
-     */
-    private void startGame(){};
 
     /**
      * setzt alle Zellen eines Felds auf Wasser
@@ -105,9 +97,7 @@ public class Game implements GameEventListener {
      * überprüft die übergebenen Koordinaten auf Schiffelemente und ruft eventuell sink() auf
      * @param x 	Koordinate
      * @param y 	Koordinate
-     * @return 0	Wasser getroffen
-     * @return 1	Schiff getroffen
-     * @return 2	Schiff versenkt
+     * @return      0 Wasser getroffen, 1 Schiff getroffen, 2 Schiff versenkt
      */
     private byte checkTile(int x, int y) {
         byte r = 0;
@@ -299,12 +289,6 @@ public class Game implements GameEventListener {
             return true;
         }
     }
-
-    /**
-     * zählt die Anzahl der Schiffe auf einem Feld
-     * @return		Anzahl der Schiffe
-     */
-    private int shipCount() {return 0;}
 
     /**
      * gibt beide Felder hintereinander auf der Konsole aus (für Testzwecke)
@@ -741,6 +725,7 @@ public class Game implements GameEventListener {
     }
 
     /**
+     * generiert eine zufällige Zahl
      * @param min	kleinstmögliche gewünschte Zahl
      * @param max	größtmögliche gewünschte Zahl
      * @return		zufällige Zahl zwischen min und max
@@ -784,6 +769,9 @@ public class Game implements GameEventListener {
         }
     }
 
+    /**
+     * führt die nächste Runde eine KI-Spielers aus
+     */
     private void nextRoundAI() {
         Player activePlayer;
         int aiTimer = filestream.getAiTimer();
@@ -821,6 +809,7 @@ public class Game implements GameEventListener {
 
 
     /**
+     * Überprüft den aktuellen Spielstand
      * @return gibt an, ob das Spiel beendet wurde und wer gewonnen hat
      */
     private byte gameFinished() {
@@ -860,6 +849,9 @@ public class Game implements GameEventListener {
         }
     }
 
+    /**
+     * Ersatz der Main-Methode (für Testzwecke)
+     */
     protected void test() {
 
         player1 = new Hard(10, false, shipList);
@@ -903,6 +895,10 @@ public class Game implements GameEventListener {
    public static void main(String[] args) {}
 
     @Override
+    /**
+     * verwaltet die eingehenden Events
+     * @param e zu bearbeitendes Event
+     */
     public void eventReceived(GameEvent e) {
         int id = e.getId();
 
@@ -965,8 +961,8 @@ public class Game implements GameEventListener {
     }
 
     /**
-     * Macht die Z�ge r�ckg�ngig.
-     * @param str String, der die r�ckg�ngig gemachten Z�ge speichert.
+     * Macht die ZÜge rückgängig.
+     * @param str String, der die rückgängig gemachten Züge speichert.
      */
     private void undo(String str) {
     	String[] draws = str.split(";");
@@ -1021,7 +1017,12 @@ public class Game implements GameEventListener {
     	}
     	
     }
-    
+
+    /**
+     * Erstellt aus einem Spielfeld einen String
+     * @param playerIndex   Spieler, dessen  Spielfeld bearbeitet werden soll
+     * @return              Spielfeld des Spielers als String
+     */
     private String boardToString(int playerIndex) {
     	String str = "";
     	char[][] activeBoard;
@@ -1047,7 +1048,7 @@ public class Game implements GameEventListener {
      * @param gameName Name unter dem das Spiel abgespeichert ist
      */
     private void loadGame(String gameName) {
-    	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen f�r Punkte und Z�ge
+    	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen f�r Punkte und Z�ge
     	char[] board1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] board2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
     	int boardsize = filestream.getBoardsize(gameName);
