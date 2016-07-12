@@ -2,7 +2,6 @@ package shipz.gui;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import shipz.gui.newGUI;
 
 public class Test extends Application {
 
@@ -12,10 +11,10 @@ public class Test extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		Stage pStage = new Stage();
 		newGUI newG = new newGUI(pStage);
-		
+
 	}
 
 }

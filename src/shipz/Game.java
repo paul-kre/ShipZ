@@ -2,6 +2,7 @@ package shipz;
 
 import javafx.stage.Stage;
 import shipz.gui.GUI2;
+import shipz.gui.newGUI;
 import shipz.io.FileStream;
 import shipz.network.Network;
 import shipz.util.GameEvent;
@@ -36,7 +37,7 @@ public class Game implements GameEventListener {
     /** Netzwerkverbindung */
     private Network network;
     /** grafische Nutzeroberfläche */
-    public GUI2 gui;
+    private newGUI gui;
     /** Spielstandverwaltung */
     private FileStream filestream;
 
@@ -50,6 +51,12 @@ public class Game implements GameEventListener {
     private byte aResult;
     /** gibt an, ob das Spiel zurzeit pausiert ist */
     private boolean gamePaused;
+    /** Gibt an, in welchem Spielmodus das Spiel abläuft
+     *  1   PvP
+     *  2   PvK
+     *  3   KvK
+     */
+    private byte mode = 0;
 
     //Constructor
     /**
@@ -62,13 +69,13 @@ public class Game implements GameEventListener {
         board1 = new char[width][height];
         board2 = new char[width][height];
         initiateBoards();
-        gui = new GUI2(primaryStage);
+        gui = new newGUI(primaryStage);
         gui.setEventListener(this);
         player1active = true;
         gamePaused = false;
         filestream = new FileStream();
     }
-
+/*
     //Methoden
 
     /**
@@ -756,14 +763,14 @@ public class Game implements GameEventListener {
         for(y=0; y<board1.length; y++) {
             for (x = 0; x < board1[y].length; x++) {
                 if(board1[y][x] == 'x') {
-                    gui.drawShip(y, x, 1);
+                    gui.draw(y, x, 1, 1);
                 }
             }
         }
         for(y=0; y<board2.length; y++) {
             for (x = 0; x < board2[y].length; x++) {
                 if(board2[y][x] == 'x') {
-                    gui.drawShip(y, x, 2);
+                    gui.draw(y, x, 2, 1);
                 }
             }
         }
@@ -791,20 +798,41 @@ public class Game implements GameEventListener {
                 System.out.println(aY + "/" + aX + " => " + aResult);
                 if(player1active) {
                     if (aResult == 0) {
-                        gui.drawWater(aY, aX, 2);
+                        gui.draw(aY, aX, 2, 0);
                     } else {
-                        gui.drawExplosion(aY, aX, 2);
+                        gui.draw(aY, aX, 2, 2);
                     }
                 }
                 else {
                     if (aResult == 0) {
-                        gui.drawWater(aY, aX, 1);
+                        gui.draw(aY, aX, 1, 0);
                     } else {
-                        gui.drawExplosion(aY, aX, 1);
+                        gui.draw(aY, aX, 1, 2);
                     }
                 }
             }
-        }, aiTimer);
+    }, 1000);
+    }
+
+    private void nextRoundHuman() {
+        aX = gui.getX();
+        aY = gui.getY();
+        aResult = checkTile(aX, aY);
+        System.out.println(aY + "/" + aX + " => " + aResult);
+        if(player1active) {
+            if (aResult == 0) {
+                gui.draw(aY, aX, 2, 0);
+            } else {
+                gui.draw(aY, aX, 2, 2);
+            }
+        }
+        else {
+            if (aResult == 0) {
+                gui.draw(aY, aX, 1, 0);
+            } else {
+                gui.draw(aY, aX, 1, 2);
+            }
+        }
     }
 
 
@@ -854,37 +882,17 @@ public class Game implements GameEventListener {
      */
     protected void test() {
 
-        player1 = new Hard(10, false, shipList);
+        /*player1 = new Hard(10, false, shipList);
         player2 = new Hard(10, false, shipList);
-        nextRoundAI();
+        nextRoundHuman();
+        System.out.println("Mode = " + mode);*/
 
-        //Schleife zum Test der KI
-        /*int x;
-        int y;
-        byte result;
-        for(int i = 0; i<20; i++) {
-            if(player1active) {
-                x = player1.getX();
-                y = player1.getY();
-                result = checkTile(x, y);
-                player1.shootResult(y, x, result);
-                gui.drawExplosion(x, y, 2);
-            }
-            else {
-                x = player2.getX();
-                y = player2.getY();
-                result = checkTile(x, y);
-                player2.shootResult(y, x, result);
-                gui.drawExplosion(x, y, 1);
-            }
-            if(player1active) {
-                player1active = false;
-            }
-            else {
-                player1active = true;
+    }
 
-            }
-        }*/
+    private void cycle() {
+        if(mode == 3) {
+            nextRoundAI();
+        }
     }
 
 
@@ -903,24 +911,35 @@ public class Game implements GameEventListener {
         int id = e.getId();
 
         switch(id) {
+            case GUI_SHOOT_EVENT:
+                gui.setEnableField(0);
+                cycle();
+                break;
             case FILL_EVENT:
                 shipList = createShipList("5443332");
                 placeShips(1);
                 placeShips(2);
                 displayBoards();
-                drawShipOnGUI();
+                //drawShipOnGUI();
+                if(mode == 2 || mode == 3) {
+                    player2 = new Hard(10, true, shipList);
+                }
+                if(mode == 3) {
+                    player1 = new Hard(10, true, shipList);
+                }
+
+                cycle();
                 break;
             case READY_EVENT:
                 test();
                 break;
             case FINISHED_ROUND:
             	filestream.newDraw(aX, aY, activePlayer(), aResult);
-            	
                 if(gameFinished() == 0) {
                     if(aResult == 0) {
                         changeActivePlayer();
                     }
-                    nextRoundAI();
+                    cycle();
                 }
                 else {
                     System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
@@ -957,6 +976,18 @@ public class Game implements GameEventListener {
             case LOAD_EVENT:
             	loadGame(null);
             	break;
+            case PVP_EVENT:
+                mode = 1;
+                System.out.println("Mode = " + mode);   //Test
+                break;
+            case PVK_EVENT:
+                mode = 2;
+                System.out.println("Mode = " + mode);   //Test
+                break;
+            case KVK_EVENT:
+                mode = 3;
+                System.out.println("Mode = " + mode);   //Test
+                break;
         }
     }
 
@@ -978,24 +1009,24 @@ public class Game implements GameEventListener {
                 //Wasser
                 if(result == 0){
                     board2[y][x] = 'w';
-                    gui.drawWater(y, x, 2);
+                    //gui.draw(y, x, 2, 0);
                 }
                 //Treffer/versenkt
                 else {
                     board2[y][x] = 'x';
-                    gui.drawShip(y, x, 2);
+                    //gui.draw(y, x, 2, 1);
                 }
             }
             else {
                 //Wasser
                 if(result == 0){
                     board1[y][x] = 'w';
-                    gui.drawWater(y, x, 1);
+                    //gui.draw(y, x, 1, 0);
                 }
                 //Treffer/versenkt
                 else {
                     board1[y][x] = 'x';
-                    gui.drawShip(y, x, 1);
+                    //gui.draw(y, x, 1, 1);
                 }
             }
     	}
