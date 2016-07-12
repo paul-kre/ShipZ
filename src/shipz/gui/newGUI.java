@@ -222,7 +222,6 @@ public class newGUI extends GameEventSource {
                             //Auf Rückmeldung
                             setCoordinates(y, x);
                             fireGameEvent(GUI_SHOOT_EVENT);
-                            System.out.print("test");
                         }
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {
@@ -391,6 +390,7 @@ public class newGUI extends GameEventSource {
                     field2[x][y].setImage(ship);
                     break;
                 case 2:
+                    field2[x][y].setImage(explosion);
                     fireGameEvent(FINISHED_ROUND);
                     break;
                 default:

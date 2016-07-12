@@ -781,7 +781,7 @@ public class Game implements GameEventListener {
      */
     private void nextRoundAI() {
         Player activePlayer;
-        int aiTimer = filestream.getAiTimer();
+        //int aiTimer = filestream.getAiTimer();
         if (player1active) {
             activePlayer = player1;
         }
@@ -795,7 +795,7 @@ public class Game implements GameEventListener {
                 aY = activePlayer.getY();
                 aResult = checkTile(aX, aY);
                 activePlayer.shootResult(aY, aX, aResult);
-                System.out.println(aY + "/" + aX + " => " + aResult);
+                System.out.println("Spieler " + activePlayer() + ": " + aY + "/" + aX + " => " + aResult);
                 if(player1active) {
                     if (aResult == 0) {
                         gui.draw(aY, aX, 2, 0);
@@ -818,7 +818,7 @@ public class Game implements GameEventListener {
         aX = gui.getX();
         aY = gui.getY();
         aResult = checkTile(aX, aY);
-        System.out.println(aY + "/" + aX + " => " + aResult);
+        System.out.println("Spieler " + activePlayer() + ": " + aY + "/" + aX + " => " + aResult);
         if(player1active) {
             if (aResult == 0) {
                 gui.draw(aY, aX, 2, 0);
@@ -890,6 +890,22 @@ public class Game implements GameEventListener {
     }
 
     private void cycle() {
+        if(mode == 1) {
+            if(player1active) {
+                gui.setEnableField(2);
+            }
+            else {
+                gui.setEnableField(1);
+            }
+        }
+        if(mode == 2) {
+            if(player1active) {
+                gui.setEnableField(2);
+            }
+            else {
+                nextRoundAI();
+            }
+        }
         if(mode == 3) {
             nextRoundAI();
         }
@@ -913,6 +929,7 @@ public class Game implements GameEventListener {
         switch(id) {
             case GUI_SHOOT_EVENT:
                 gui.setEnableField(0);
+                nextRoundHuman();
                 cycle();
                 break;
             case FILL_EVENT:
@@ -922,10 +939,10 @@ public class Game implements GameEventListener {
                 displayBoards();
                 //drawShipOnGUI();
                 if(mode == 2 || mode == 3) {
-                    player2 = new Hard(10, true, shipList);
+                    player2 = new Easy(10, false, shipList);
                 }
                 if(mode == 3) {
-                    player1 = new Hard(10, true, shipList);
+                    player1 = new Easy(10, false, shipList);
                 }
 
                 cycle();
@@ -1044,9 +1061,9 @@ public class Game implements GameEventListener {
     		y = Integer.parseInt(draws[i].split("/")[1].split(",")[1]);
     		result = Integer.parseInt(draws[i].split("/")[2]);
     		playerIndex = Integer.parseInt(draws[i].split("/")[0]);
-    		
+
     	}
-    	
+
     }
 
     /**
@@ -1064,7 +1081,7 @@ public class Game implements GameEventListener {
     	} else {
     		throw new RuntimeException("Ungültiger PlayerIndex");
     	}
-    	
+
         for(int i = 0; i < activeBoard.length; i++) {
             for(int j=0; j<activeBoard[i].length; j++) {
                 str += activeBoard[j][i];
@@ -1072,7 +1089,7 @@ public class Game implements GameEventListener {
         }
         return str;
     }
-    
+
     /**
      * Wenn der Name eines Spielstands angegeben wird,
      * wird das Spiel geladen, in dem die IVs aktualisiert werden.
@@ -1083,7 +1100,7 @@ public class Game implements GameEventListener {
     	char[] board1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] board2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
     	int boardsize = filestream.getBoardsize(gameName);
-    	
+
     	for(int i = 0; i < boardsize; i++) {
     		for(int j = 0; j < boardsize; j++) {
     			this.board1[j][i] = board1[i];
@@ -1093,10 +1110,10 @@ public class Game implements GameEventListener {
     			 */
     		}
     	}
-    	
+
 //     	player1 = new Player(filestream.getPlayerName(gameName));
 //    	player2 = new Player(filestream.getOpponentName(gameName)); // geht nicht, warum?
-    	
+
     	if(filestream.getActivePlayer(gameName) == 1) {
     		player1active = true;
     	} else {
