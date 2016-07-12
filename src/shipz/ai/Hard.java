@@ -391,7 +391,7 @@ public class Hard extends Computer {
              */
             generateHitProbabilities();
 
-            displayProbabilityField();
+            //displayProbabilityField();
 
             //Flagvariable, welche dafür sorgt, dass eine ungültige Koordinate neu generiert wird
             boolean loopAgain = true;

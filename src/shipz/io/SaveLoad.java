@@ -6,6 +6,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -19,6 +22,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.xml.sax.InputSource;
 
 /**
  * Diese Klasse verwaltet die Speicherprozesse der anderen Klassen.
@@ -29,25 +33,22 @@ public class SaveLoad {
 	// IV
 	/** Datei, in der die einzelnen Spielstände gespeichert werden. */
 	private File file;
-	/** Writer, der in eine Datei schreibt. */
+	/** BufferedWriter, mit dem in die Dateien geschrieben wird. */
 	private BufferedWriter writer;
 	/** Scanner, der eine Datei liest. */
 	private Scanner scanner;
 	/** Writer, der in die XML-Datei schreibt. */
 	private XMLOutputter xmlOutput;
-	/** das XML-Dokument */
+	/** Objekt, welches das XML-Dokument speichert */
 	private Document document;
 	/** Wurzelelement des XML-Dokuments */
 	private Element root;
-	/** SAXBuilder, der das ausgelesene XML in das Document-Objekt schreibt. */
+	/** SAXBuilder-Objekt, der das ausgelesene XML in das Document-Objekt schreibt. */
 	private SAXBuilder builder;
-	/** Filewriter-Objekt, mit dem in die XML-Datei geschrieben wird */
-	private FileWriter filewriter;
 	
-	//Konstruktor
+	// Konstruktor
 	/**
-	 * Konstruktor der Klasse, der das File-Objekt initialisiert 
-	 * und diesem einen Dateipfad zuordnet.
+	 * Konstruktor der Klasse, der das File-Objekt initialisiert und diesem einen Dateipfad zuordnet.
 	 * Außerdem wird die Grundstruktur des XML-Dokuments erstellt.
 	 */
 	public SaveLoad() {
@@ -73,14 +74,8 @@ public class SaveLoad {
 	 * @param preferences Einstellungen des Spiels, die am Anfang gesetzt wurden
 	 */
 	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences) {
-		boolean b = false;
-		
-		if(root.getChildren() != null) {
-			updateXML();
-			b = doesGameExist(gameName);
-		}
-		
-		if(b == false) {
+		updateXML();
+		if(!doesGameExist(gameName)) {
 			Element gameElement = new Element("game");
 			gameElement.addContent(new Element("gameName").setText(gameName));
 			gameElement.addContent(new Element("time").setText(timestamp()));
@@ -175,10 +170,12 @@ public class SaveLoad {
 	private void updateXML() {
 		if(root.getChildren() != new Element("saves").getChildren()) {
 			try {
-				FileInputStream fileinput = new FileInputStream(file);
-				document = builder.build(fileinput);
+				InputStream inputStream = new FileInputStream(file);
+				Reader reader = new InputStreamReader(inputStream, "UTF-8");
+				InputSource is = new InputSource(reader);
+				document = builder.build(is);
 				root = document.detachRootElement();
-				fileinput.close();
+				reader.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (JDOMException | IOException e) {
@@ -195,8 +192,10 @@ public class SaveLoad {
 	 */
 	private void writeXML() {
 		try {
-			filewriter = new FileWriter(file);
-			xmlOutput.setFormat(Format.getPrettyFormat());
+			FileWriter filewriter = new FileWriter(file);
+			Format format = Format.getPrettyFormat();
+			format.setEncoding("UTF-8");
+			xmlOutput.setFormat(format);
 			xmlOutput.output(document, filewriter);
 			filewriter.close();
 		} catch(IOException e) {
@@ -340,7 +339,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * überprüft ob ein Spielstand mit bestimmtem Namen vorhanden ist.
+	 * Überprüft ob ein Spielstand mit bestimmtem Namen vorhanden ist.
 	 * @param gameName der gewünschte Spielstand
 	 * @return Ist der Spielstand vorhanden?
 	 */
@@ -401,7 +400,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * überschreibt eine Datei komplett mit einem String.
+	 * Überschreibt eine Datei komplett mit einem String.
 	 * @param file die zu überschreibende Datei.
 	 * @param str der {@link String}, der in die Datei geschrieben werden soll.
 	 */
@@ -417,7 +416,9 @@ public class SaveLoad {
 	
 	/**
 	 * Gibt den Dateipfad zurück, in dem Dateien des Spiels gespeichert werden.
-	 * @return Pfad
+	 * Der Dateipfad ist auf Windows in der Regel:
+	 * C:\Users\<i>"Benutzer"</i>\Documents\shipZ
+	 * @return Pfad, in dem die Dateien gespeichert werden
 	 */
 	protected String fileDirectory() {
 		JFileChooser jf = new JFileChooser();
@@ -425,8 +426,10 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Methode, die immer die aktuelle Zeit berechnet.
-	 * @return Gibt die aktuelle Zeit zurück.
+	 * Methode, die die aktuelle Zeit berechnet und als String zurückgibt. <br>
+	 * Format: <b>dd.MM.y_HH:mm:ss</b> <br>
+	 * Beispiel: <i>05.07.2016_18:12:23</i>
+	 * @return die aktuelle Zeit als String
 	 */
 	protected String timestamp() {
 		Calendar c = Calendar.getInstance();

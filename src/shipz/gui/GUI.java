@@ -57,10 +57,10 @@ public class GUI {
     //Constructor
     public GUI(Stage primaryStage) {
 
-        // HinzufÃ¼gen einer VBox zum layouten
+        // Hinzufügen einer VBox zum layouten
         VBox root = new VBox();
 
-        //HinzufÃ¼gen von Panes
+        //Hinzufügen von Panes
         AnchorPane header = new AnchorPane();
         AnchorPane game = new AnchorPane();
         AnchorPane foot = new AnchorPane();
@@ -217,17 +217,17 @@ public class GUI {
         pointsColumn.setMinWidth(200);
         pointsColumn.setCellValueFactory(new PropertyValueFactory("points"));
 
-        // Hinzufügen der Spalten
+        // Hinzuf�gen der Spalten
         tbHighscore.getColumns().addAll(positionColumn, nameColumn, pointsColumn);
 
 
-        // HinzufÃ¼gen der Panes zur VBox
+        // Hinzufügen der Panes zur VBox
         root.getChildren().add(header);
         root.getChildren().add(game);
         root.getChildren().add(foot);
 
 
-        // HinzufÃ¼gen der Controlelemente
+        // Hinzufügen der Controlelemente
         header.getChildren().addAll(btnNGame, btnLGame, btnHighscore, hlOverall);
         foot.getChildren().addAll(btnEGame);
 
@@ -495,7 +495,7 @@ public class GUI {
     }
 
     /**
-     * Methode zum löschen eines Images an der angegebene Position
+     * Methode zum l�schen eines Images an der angegebene Position
      * @param x X-Koordinate
      * @param y Y-Koordinate
      * @param nr Spielfeldnummer

@@ -20,7 +20,7 @@ public class UndoRedo {
 	
 	// Konstanten
 	/** Der String, der einzelne Züge in der Datei trennt. */
-	private final static String DRAW_SEPARATOR = ";";
+	private static final String DRAW_SEPARATOR = ";";
 	
 	// Konstruktor
 	/**
@@ -138,37 +138,6 @@ public class UndoRedo {
 			playerIndex = Integer.parseInt(draws[i].split("/")[0]);
 			newDraw(x, y, playerIndex, result);
 		}
-	}
-	
-	/**
-	 * main method
-	 * @param args arguments
-	 */
-	public static void main(String[] args) {
-		UndoRedo ur = new UndoRedo();
-		ur.newDraw(8, 8, 1, 1);
-		ur.newDraw(4, 5, 1, 1);
-		ur.newDraw(1, 1, 1, 0);
-		ur.newDraw(7, 6, 2, 1);
-		ur.newDraw(2, 2, 2, 0);
-		ur.newDraw(9, 9, 1, 1);
-		ur.newDraw(1, 3, 1, 0);
-		ur.newDraw(2, 7, 2, 0);
-		try {
-			System.out.println(ur.getDraws());
-			System.out.println(ur.undoDraw(1));
-			System.out.println(ur.getDraws());
-			System.out.println(ur.getRedoneDraws());
-			System.out.println(ur.redoDraw(1));
-			System.out.println(ur.getDraws());
-			System.out.println(ur.getRedoneDraws());
-			System.out.println(ur.redoDraw(2));
-			System.out.println(ur.getDraws());
-			System.out.println(ur.getRedoneDraws());
-		} catch(NoDrawException e) {
-			e.printStackTrace();
-		}
-
 	}
 	
 }

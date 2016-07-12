@@ -10,6 +10,11 @@ import javafx.stage.Stage;
 
 public class AlertBox {
 
+    /**
+     *
+     * @param title Title
+     * @param message Message
+     */
 	public static void display(String title, String message) {
 		Stage window = new Stage();
 		

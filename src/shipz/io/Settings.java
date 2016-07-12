@@ -9,14 +9,16 @@ import java.io.File;
 public class Settings {
 
 	// IV
-	/** Referenz auf die SaveLoad-Klasse. */
+	/** Objekt der SaveLoad-Klasse.
+	 * Hiermit werden Methoden zum Speichern und Laden aufgerufen,
+	 * wenn sie benötigt werden. */
 	private SaveLoad saveload;
 	/** Die Config-Datei. */
 	private File configFile;
 	
 	// Konstanten
 	/** Trennzeichen zwischen einem bestimmten Parameter in der Config und dem dazugehörigen Wert. */
-	private final static String CONFIG_SEPARATOR = "=";
+	private static final String CONFIG_SEPARATOR = "=";
 	
 	// Konstruktor
 	/**
@@ -60,8 +62,7 @@ public class Settings {
 	}
 	
 	/**
-	 * Ändert den Wert der Pausen zwischen den KI-Zügen
-	 * in der Config.
+	 * Ändert den Wert der Pausen zwischen den KI-Zügen in der Config.
 	 * @param timer neuer Wert für Pausen zwischen KI-Zügen
 	 */
 	protected void setAiTimer(int ms) {
@@ -76,12 +77,6 @@ public class Settings {
 	 */
 	protected int getAiTimer() {
 		return Integer.parseInt(saveload.searchLine(configFile, "aiTimer" + CONFIG_SEPARATOR).split(CONFIG_SEPARATOR)[1].replaceAll("\n", ""));
-	}
-	
-	public static void main(String[] args) {
-		Settings s = new Settings();
-		s.setHighscoreMaximum(10);
-		System.out.println(s.getHighscoreMaximum());
 	}
 	
 }
