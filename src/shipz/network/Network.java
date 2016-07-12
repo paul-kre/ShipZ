@@ -49,6 +49,8 @@ public class Network extends Player {
     private String _ip;
     private int _port;
 
+    private String _msg;
+
     /**
      * Initializes a newly created {@code Network} object, so that it can esablish a new connection.
      *
@@ -171,7 +173,11 @@ public class Network extends Player {
                 s = _in.readLine();
                 if(s != null && !s.isEmpty()) { // Message received
                     timer.reset();
-                    evaluateString(s);
+                    if(s.charAt(0) != pingAction) {
+                        _msg = s;
+                        fireGameEvent(SEND_EVENT);
+                    }
+                     //evaluateString(s);
                 }
             } catch (Exception e) { }
         }
@@ -182,6 +188,10 @@ public class Network extends Player {
         }
 
         close();
+    }
+
+    public String getMessage() {
+        return _msg;
     }
 
     private void connectionError() {

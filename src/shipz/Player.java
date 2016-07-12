@@ -12,7 +12,6 @@ public abstract class Player extends GameEventSource implements Runnable {
     private int _x;
     private int _y;
     private byte _result;
-    private boolean _turn;
 
     private boolean _end;
 
@@ -25,7 +24,6 @@ public abstract class Player extends GameEventSource implements Runnable {
     public Player(String name) {
         _name = name;
         _end = false;
-        _turn = false;
     }
 
     public String name() {
@@ -162,17 +160,6 @@ public abstract class Player extends GameEventSource implements Runnable {
 
 
     public void shootField(int x, int y, byte result) {}
-
-    public void turn() {
-        _turn = true;
-    }
-
-    public boolean isMyTurn() {
-        if(_turn) {
-            _turn = false;
-            return true;
-        } else return false;
-    }
 
 	public void end() {
         _end = true;

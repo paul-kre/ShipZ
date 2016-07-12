@@ -20,14 +20,15 @@ public class GameTest implements GameEventListener {
     private Network network;
     private boolean isHost;
 
+    private boolean gameOver;
+
     private Scanner in;
 
     public GameTest() {
-        player1 = null;
-        player2 = null;
         network = null;
         in = new Scanner(System.in);
         isHost = true;
+        gameOver = false;
     }
 
     public static void main(String[] args) {
@@ -43,7 +44,6 @@ public class GameTest implements GameEventListener {
     }
 
     private void initPlayers() {
-        player1 = new Keyboard(in);
 
         String horj = ask("Host or join game? (h/j)", "(h|j)");
         if(horj.charAt(0) == 'h')
@@ -52,15 +52,19 @@ public class GameTest implements GameEventListener {
             isHost = false;
         network = createNetwork();
 
-        player2 = network;
+        network.setEventListener(this);
 
-        player1.setEventListener(this);
-        player2.setEventListener(this);
+        (new Thread(network)).start();
 
-        (new Thread(player1)).start();
-        (new Thread(player2)).start();
+        if(isHost) network.send("hi");
 
-        if(isHost) player1.turn();
+        while(!gameOver) {
+            network.send(in.nextLine());
+        }
+
+        network.end();
+
+        System.out.println("Game Over");
     }
 
     private void gameOver() {
@@ -167,14 +171,10 @@ public class GameTest implements GameEventListener {
         else op = player1;
 
         switch(id) {
-            case SHOOT_EVENT:
-            case NET_SHOOT_EVENT:
-                int x = p.getX();
-                int y = p.getY();
-                byte res = 1;
-                p.shootResult(y, x, res);
-                op.shootField(y, x, res);
-                op.turn();
+            case SEND_EVENT:
+                String msg = network.getMessage();
+                System.out.println("Message received: " + msg);
+                if(msg.equals("close")) gameOver = true;
                 break;
             case DISCONNECT_EVENT:
                 Network nw = (Network) p;

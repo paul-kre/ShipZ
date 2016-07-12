@@ -11,9 +11,10 @@ public interface Event {
 	byte CLOSE_EVENT = 20;
 
 	// Network
-	byte NET_SHOOT_EVENT = 30;
-	byte DISCONNECT_EVENT = 31;
-	byte SHOOT_RESULT = 32;
+	byte SEND_EVENT = 30;
+	byte NET_SHOOT_EVENT = 31;
+	byte DISCONNECT_EVENT = 32;
+	byte SHOOT_RESULT = 33;
 
 	// AI
 	byte AI_SHOOT_EVENT = 40;
