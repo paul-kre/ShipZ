@@ -788,6 +788,16 @@ public class Game implements GameEventListener {
         }
     }
 
+    private void clearGUI() {
+        int x, y;
+        for(y=0; y<board1.length; y++) {
+            for (x = 0; x < board1[y].length; x++) {
+                gui.draw(y, x, 1, 3);
+                gui.draw(y, x, 2, 3);
+            }
+        }
+    }
+
     /**
      * führt die nächste Runde eine KI-Spielers aus
      */
@@ -1137,6 +1147,8 @@ public class Game implements GameEventListener {
     	char[] lb1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] lb2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
     	int boardsize = filestream.getBoardsize(gameName);
+
+        clearGUI();
 
         int i = 0;
         for(int y=0; y<board1.length; y++) {
