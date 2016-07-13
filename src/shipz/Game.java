@@ -118,6 +118,7 @@ public class Game implements GameEventListener {
                 return r;
             } else {
                 //System.out.println("Es wurde kein Schiffelement zerstört");
+                board2[y][x] = 'W';
                 return r;
             }
         }
@@ -131,6 +132,7 @@ public class Game implements GameEventListener {
                 return r;
             } else {
                 //System.out.println("Es wurde kein Schiffelement zerstört");
+                board1[y][x] = 'W';
                 return r;
             }
         }

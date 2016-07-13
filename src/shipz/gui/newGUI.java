@@ -883,6 +883,22 @@ public class newGUI extends GameEventSource {
             }
         });
 
+
+        /**
+         * Event beim Betätigen des Save Buttons
+         */
+        btnSave.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                //Event zur zufalls Platzierung
+                fireGameEvent(SAVE_EVENT);
+
+
+            }
+        });
+
         /**
          * Event beim Betätigen des Undo Buttons
          */
