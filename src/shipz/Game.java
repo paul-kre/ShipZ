@@ -11,6 +11,7 @@ import shipz.util.NoDrawException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -57,6 +58,8 @@ public class Game implements GameEventListener {
      *  3   KvK
      */
     private byte mode = 0;
+    
+    private Random random;
 
     //Constructor
     /**
@@ -74,6 +77,7 @@ public class Game implements GameEventListener {
         player1active = true;
         gamePaused = false;
         filestream = new FileStream();
+        random = new Random();
     }
 /*
     //Methoden
@@ -994,12 +998,14 @@ public class Game implements GameEventListener {
 				}
 				break;
             case SAVE_EVENT:
-            	filestream.saveGame("testName", "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
+            	filestream.saveGame("test" + random.nextInt(1000), "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
             	// Name des Spielstands muss noch irgendwie �bergeben werden
             	// Spielernamen m�ssen noch korrekt zur�ckgegeben werden
             	break;
             case LOAD_EVENT:
-            	loadGame(null);
+            	String gameName = filestream.getAllGameNames().split(",")[0];
+            	loadGame(gameName);
+            	System.out.println("Der Spielstand " + gameName + " wurde geladen!");
             	break;
             case PVP_EVENT:
                 mode = 1;
