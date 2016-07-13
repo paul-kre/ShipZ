@@ -899,6 +899,21 @@ public class newGUI extends GameEventSource {
         });
 
         /**
+         * Event beim Betätigen des Redo Buttons
+         */
+        btnRedo.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                //Event zur zufalls Platzierung
+                fireGameEvent(REDO_EVENT);
+
+
+            }
+        });
+
+        /**
          * Event zum anpassen der Scene size
          */
         /*

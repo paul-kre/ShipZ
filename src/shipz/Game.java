@@ -1061,7 +1061,30 @@ public class Game implements GameEventListener {
     		y = Integer.parseInt(draws[i].split("/")[1].split(",")[1]);
     		result = Integer.parseInt(draws[i].split("/")[2]);
     		playerIndex = Integer.parseInt(draws[i].split("/")[0]);
-
+            if(playerIndex == 1) {
+                //Wasser
+                if(result == 0){
+                    board2[y][x] = 'w';
+                    gui.draw(y, x, 2, 0);
+                }
+                //Treffer/versenkt
+                else {
+                    board2[y][x] = 'x';
+                    gui.draw(y, x, 2, 2);
+                }
+            }
+            else {
+                //Wasser
+                if (result == 0) {
+                    board1[y][x] = 'w';
+                    gui.draw(y, x, 1, 0);
+                }
+                //Treffer/versenkt
+                else {
+                    board1[y][x] = 'x';
+                    gui.draw(y, x, 1, 2);
+                }
+            }
     	}
 
     }
