@@ -764,15 +764,21 @@ public class Game implements GameEventListener {
         int x, y;
         for(y=0; y<board1.length; y++) {
             for (x = 0; x < board1[y].length; x++) {
-                if(board1[y][x] == 'x') {
-                    gui.draw(y, x, 1, 1);
+                if(board1[y][x] == 'W') {
+                    gui.draw(y, x, 1, 0);
+                }
+                if(board1[y][x] == 'z') {
+                    gui.draw(y, x, 1, 2);
                 }
             }
         }
         for(y=0; y<board2.length; y++) {
             for (x = 0; x < board2[y].length; x++) {
-                if(board2[y][x] == 'x') {
-                    gui.draw(y, x, 2, 1);
+                if(board2[y][x] == 'W') {
+                    gui.draw(y, x, 2, 0);
+                }
+                if(board2[y][x] == 'z') {
+                    gui.draw(y, x, 2, 2);
                 }
             }
         }
@@ -1109,7 +1115,7 @@ public class Game implements GameEventListener {
 
         for(int i = 0; i < activeBoard.length; i++) {
             for(int j=0; j<activeBoard[i].length; j++) {
-                str += activeBoard[j][i];
+                str += activeBoard[i][j];
             }
         }
         return str;
@@ -1122,19 +1128,19 @@ public class Game implements GameEventListener {
      */
     private void loadGame(String gameName) {
     	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen f�r Punkte und Z�ge
-    	char[] board1 = filestream.getBoardPlayerOne(gameName).toCharArray();
-    	char[] board2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
+    	char[] lb1 = filestream.getBoardPlayerOne(gameName).toCharArray();
+    	char[] lb2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
     	int boardsize = filestream.getBoardsize(gameName);
 
-    	for(int i = 0; i < boardsize; i++) {
-    		for(int j = 0; j < boardsize; j++) {
-    			this.board1[j][i] = board1[i];
-    			/*
-    			 * Irgendwie sowas. Sollte noch mal gr�ndlich
-    			 * gecodet werden, das hier ist nur der Ansatz.
-    			 */
-    		}
-    	}
+        int i = 0;
+        for(int y=0; y<board1.length; y++) {
+            for(int x=0; x<board1[y].length; x++) {
+                board1[y][x] = lb1[i];
+                board2[y][x] = lb2[i];
+                i++;
+            }//Ende ySchleife
+        }//Ende xSchleife
+        drawShipOnGUI();
 
 //     	player1 = new Player(filestream.getPlayerName(gameName));
 //    	player2 = new Player(filestream.getOpponentName(gameName)); // geht nicht, warum?
