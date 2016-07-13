@@ -939,7 +939,7 @@ public class Game implements GameEventListener {
                 displayBoards();
                 //drawShipOnGUI();
                 if(mode == 2 || mode == 3) {
-                    player2 = new Easy(10, false, shipList);
+                    player2 = new Hard(10, false, shipList);
                 }
                 if(mode == 3) {
                     player1 = new Easy(10, false, shipList);
@@ -1026,24 +1026,24 @@ public class Game implements GameEventListener {
                 //Wasser
                 if(result == 0){
                     board2[y][x] = 'w';
-                    //gui.draw(y, x, 2, 0);
+                    gui.draw(y, x, 2, 3);
                 }
                 //Treffer/versenkt
                 else {
                     board2[y][x] = 'x';
-                    //gui.draw(y, x, 2, 1);
+                    gui.draw(y, x, 2, 3);
                 }
             }
             else {
                 //Wasser
                 if(result == 0){
                     board1[y][x] = 'w';
-                    //gui.draw(y, x, 1, 0);
+                    gui.draw(y, x, 1, 3);
                 }
                 //Treffer/versenkt
                 else {
                     board1[y][x] = 'x';
-                    //gui.draw(y, x, 1, 1);
+                    gui.draw(y, x, 1, 3);
                 }
             }
     	}

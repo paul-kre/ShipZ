@@ -884,6 +884,21 @@ public class newGUI extends GameEventSource {
         });
 
         /**
+         * Event beim Betätigen des Undo Buttons
+         */
+        btnUndo.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                //Event zur zufalls Platzierung
+                fireGameEvent(UNDO_EVENT);
+
+
+            }
+        });
+
+        /**
          * Event zum anpassen der Scene size
          */
         /*
