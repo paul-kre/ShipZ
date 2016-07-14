@@ -1647,6 +1647,55 @@ public abstract class Computer extends Player {
 
 
 
+
+    /**
+     * Aus einem vorherigen Spiel wird das <b>mirrorField</b>
+     * geladen und weiterverwendet
+     *
+     * @param prevField Das geladene Mirrorfield
+     */
+    public void loadPreviousGame (String prevField){
+
+        //Position der aktuellen Stelle im String
+        int stringPointer = 0;
+        for ( int row = 0; row < this.fieldSize; row ++){ //Äußere Schleife für Reihen
+            for (int col = 0; col < this.fieldSize; col++){ //Innere Schleife für Spalten
+
+                this.mirrorField[row][col] = (byte) prevField.charAt(stringPointer);
+                stringPointer++;
+
+            }
+
+        }
+
+    }
+
+
+    /**
+     * Speichert das aktuelle Spielfeld der KI und gibt diese
+     * für die Speicherung zurück
+     *
+     * @return Das aktuelle Spielfeld der KI
+     */
+    public String saveCurrentGame (){
+
+        String savedField = "";
+
+        for ( int row = 0; row < this.fieldSize; row ++){ //Äußere Schleife für Reihen
+            for (int col = 0; col < this.fieldSize; col++){ //Innere Schleife für Spalten
+
+                savedField += "" + this.mirrorField[row][col];
+
+            }
+
+        }
+
+        return savedField;
+    }
+
+
+
+
     /**
      * DEBUGGING-METHODE
      *
