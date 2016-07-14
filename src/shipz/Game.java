@@ -1006,13 +1006,12 @@ public class Game implements GameEventListener {
 				try {
 					redo(filestream.redoDraw(activePlayer()));
 				} catch (NoDrawException x) {
-					x.printStackTrace();
-            		// Dialog wird auf der GUI ausgegeben
-            		// dass keine Z�ge mehr wiederholt werden k�nnen
+					System.out.println("Es sind keine Züge mehr vorhanden, die wiederholt werden können!"); // muss noch als Dialog umgesetzt werden
+//					x.printStackTrace();
 				}
 				break;
             case SAVE_EVENT:
-            	filestream.saveGame(gui.getFilename(), "spieler1", "spieler2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
+            	filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
             	break;
             case LOAD_EVENT:
             	String gameName = filestream.getAllGameNames().split(",")[0];
@@ -1164,6 +1163,8 @@ public class Game implements GameEventListener {
 
 //     	player1 = new Player(filestream.getPlayerName(gameName));
 //    	player2 = new Player(filestream.getOpponentName(gameName)); // geht nicht, warum?
+        
+        gui.setPlayernames(filestream.getPlayerName(gameName), filestream.getOpponentName(gameName));
 
     	if(filestream.getActivePlayer(gameName) == 1) {
     		player1active = true;
