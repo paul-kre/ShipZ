@@ -1014,7 +1014,8 @@ public class Game implements GameEventListener {
             	filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
             	break;
             case LOAD_EVENT:
-            	String gameName = filestream.getAllGameNames().split(",")[0];
+            	String[] saves = filestream.getAllGameNames().split(",");
+            	String gameName = saves[saves.length-1];
             	loadGame(gameName);
             	System.out.println("Der Spielstand " + gameName + " wurde geladen!");
             	break;
@@ -1147,7 +1148,7 @@ public class Game implements GameEventListener {
     	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen f�r Punkte und Z�ge
     	char[] lb1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] lb2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
-    	int boardsize = filestream.getBoardsize(gameName);
+//    	int boardsize = filestream.getBoardsize(gameName);
 
         clearGUI();
 
@@ -1160,11 +1161,12 @@ public class Game implements GameEventListener {
             }//Ende ySchleife
         }//Ende xSchleife
         drawShipOnGUI();
-
-//     	player1 = new Player(filestream.getPlayerName(gameName));
-//    	player2 = new Player(filestream.getOpponentName(gameName)); // geht nicht, warum?
         
         gui.setPlayernames(filestream.getPlayerName(gameName), filestream.getOpponentName(gameName));
+        gui.setComboLabel(filestream.getComboValue(1), 1);
+        gui.setScoreLabel(filestream.getScore(1), 1);
+        gui.setComboLabel(filestream.getComboValue(2), 2);
+        gui.setScoreLabel(filestream.getScore(2), 2);
 
     	if(filestream.getActivePlayer(gameName) == 1) {
     		player1active = true;
