@@ -43,46 +43,103 @@ public class newGUI extends GameEventSource {
     AnchorPane body = new AnchorPane();
     AnchorPane foot = new AnchorPane();
 
+    //ScenegrÃ¶ÃŸen
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     //double width = screenSize.getWidth();
     //double height = screenSize.getHeight();
     double width = 1200;
     double height = 800;
 
+    //Spielfelder
     int fieldSize = 10;
     ImageView[][] field1 = new ImageView[fieldSize][fieldSize];
     ImageView[][] field2 = new ImageView[fieldSize][fieldSize];
 
+    //Images
     Image white = new Image(newGUI.class.getResource("White.png").toExternalForm());
     Image water = new Image(newGUI.class.getResource("BG.png").toExternalForm());
     Image ship = new Image(newGUI.class.getResource("Raumschiff1.png").toExternalForm());
     Image explosion = new Image(newGUI.class.getResource("Explosion.png").toExternalForm());
 
+    //Spielfeld sperren
     int enableField = 2;
 
     //Koordinaten
     int xC;
-    int yC;    
-    
+    int yC;
+
+    //Alertbox
     AlertBox alertbox = new AlertBox(this);
     String filename = "";
-    
+
+    //Score und Combo Texte
     Text txtPoints1 = new Text("Score P1 : "+0);
     Text txtPoints2 = new Text("Score P2 : "+0);
     Text txtCombo1 = new Text("Combo P1 : "+1);
     Text txtCombo2 = new Text("Combo P2 : "+1);
-    
+
+    //Spielernamen
+    String playername1 = "Spieler 1";
+    String playername2 = "Spieler 2";
+
+    //KI Schwierigkeitsstufen
+    int ki1Mode;
+    int ki2Mode;
+
+
     //IM
-    
+    public void setPlayernames (String player1, String player2) {
+
+        playername1 = player1;
+        playername2 = player2;
+
+    }
+
+
+    public String getPlayername1 () {
+
+        return playername1;
+
+    }
+
+    public String getPlayername2 () {
+
+        return playername2;
+
+    }
+
+    public int getKi1Mode () {
+
+        return ki1Mode;
+
+    }
+
+    public int getKi2Mode () {
+
+        return ki2Mode;
+
+    }
+
+
+    /**
+     * Methode zum setzen des Filenamens
+     * @param str Filename
+     */
     public void setFilename(String str) {
-    	this.filename = str;
-    	fireGameEvent(SAVE_EVENT);
+        this.filename = str;
+        fireGameEvent(SAVE_EVENT);
     }
-    
+
+
+    /**
+     * Methode zum zurÃ¼ckgeben des Filenamens
+     * @return String Filename
+     */
     public String getFilename() {
-    	return filename;
+        return filename;
     }
-    
+
+
     /**
      * Methode zum erstellen der Spielfelder
      * @param body  Pane zur Anzeige
@@ -101,7 +158,7 @@ public class newGUI extends GameEventSource {
                 border.setFill(null);
                 border.setStroke(Color.BLACK);
 
-                //ImageView erstellen und hinzufügen
+                //ImageView erstellen und hinzufï¿½gen
                 ImageView oneField = new ImageView();
                 Image oneFieldImg = new Image(newGUI.class.getResource("White.png").toExternalForm());
                 oneField.setImage(oneFieldImg);
@@ -129,8 +186,8 @@ public class newGUI extends GameEventSource {
 
                     if(event.getButton() == MouseButton.PRIMARY) {
                         if(enableField==1) {
-                            //Event zum übergeben der Koordinaten
-                            //Auf Rückmeldung
+                            //Event zum ï¿½bergeben der Koordinaten
+                            //Auf Rï¿½ckmeldung
                             setCoordinates(y, x);
                             fireGameEvent(GUI_SHOOT_EVENT);
                         }
@@ -213,7 +270,7 @@ public class newGUI extends GameEventSource {
                 border.setFill(null);
                 border.setStroke(Color.BLACK);
 
-                //ImageView erstellen und hinzufügen
+                //ImageView erstellen und hinzufï¿½gen
                 ImageView oneField = new ImageView();
                 Image oneFieldImg = new Image(newGUI.class.getResource("White.png").toExternalForm());
                 oneField.setImage(oneFieldImg);
@@ -241,8 +298,8 @@ public class newGUI extends GameEventSource {
 
                     if(event.getButton() == MouseButton.PRIMARY) {
                         if(enableField==2) {
-                            //Event zum übergeben der Koordinaten
-                            //Auf Rückmeldung
+                            //Event zum ï¿½bergeben der Koordinaten
+                            //Auf Rï¿½ckmeldung
                             setCoordinates(y, x);
                             fireGameEvent(GUI_SHOOT_EVENT);
                             System.out.print("test");
@@ -426,7 +483,7 @@ public class newGUI extends GameEventSource {
 
 
     /**
-     * Methode zum Ändern des Zustandes der GUI (enable/disable)
+     * Methode zum ï¿½ndern des Zustandes der GUI (enable/disable)
      * @param v Wert 0 = disabled, 1 = enabled
      */
     public void setEnableField (int v) {
@@ -461,7 +518,7 @@ public class newGUI extends GameEventSource {
      */
     public void drawName (int player, AnchorPane body) {
 
-        Text playername = new Text("Player "+player+" it´s your turn!");
+        Text playername = new Text("Player "+player+" itï¿½s your turn!");
         playername.layoutXProperty().setValue(width*0.3);
         playername.layoutYProperty().setValue(height*0.65);
         playername.setStroke(Color.WHITE);
@@ -485,11 +542,11 @@ public class newGUI extends GameEventSource {
      */
     public void setScoreLabel (int score, int playerIndex) {
         if(playerIndex == 1) {
-        	txtPoints1.setText("Score P1: "  + score);
+            txtPoints1.setText("Score P1: "  + score);
         } else if(playerIndex == 2) {
-        	txtPoints2.setText("Score P2: " + score);
+            txtPoints2.setText("Score P2: " + score);
         } else {
-        	throw new RuntimeException("Ungültiger Playerindex!");
+            throw new RuntimeException("Ungï¿½ltiger Playerindex!");
         }
     }
 
@@ -499,11 +556,11 @@ public class newGUI extends GameEventSource {
      */
     public void setComboLabel (int combo, int playerIndex) {
         if(playerIndex == 1) {
-        	txtCombo1.setText("Combo P1: " + combo);
+            txtCombo1.setText("Combo P1: " + combo);
         } else if(playerIndex == 2) {
-        	txtCombo2.setText("Combo P2: " + combo);
+            txtCombo2.setText("Combo P2: " + combo);
         } else {
-        	throw new RuntimeException("Ungültiger Playerindex!");
+            throw new RuntimeException("Ungï¿½ltiger Playerindex!");
         }
     }
 
@@ -526,7 +583,7 @@ public class newGUI extends GameEventSource {
         root.getChildren().add(foot);
 
 
-        //Hauptüberschrift
+        //Hauptï¿½berschrift
         Text hlOverall = new Text("Project: shipZ");
         hlOverall.layoutXProperty().setValue(width*0.03);
         hlOverall.layoutYProperty().setValue(height*0.14);
@@ -550,7 +607,7 @@ public class newGUI extends GameEventSource {
         explosionStart.setImage(explosion);
 
 
-        //Menübutton
+        //Menï¿½button
         ImageView btnMenu = new ImageView();
         Image menu = new Image(newGUI.class.getResource("btnMenu.png").toExternalForm());
         btnMenu.setImage(menu);
@@ -560,7 +617,7 @@ public class newGUI extends GameEventSource {
         btnMenu.setTranslateY(height*0.05);
 
 
-        //Hauptmenü
+        //Hauptmenï¿½
         ImageView mainMenu = new ImageView();
         Image imgMainMenu = new Image(newGUI.class.getResource("Menu.png").toExternalForm());
         mainMenu.setImage(imgMainMenu);
@@ -635,10 +692,79 @@ public class newGUI extends GameEventSource {
         btnKvK.setPrefWidth(width*0.181);
         btnKvK.setPrefHeight(height*0.07);
 
+
+        //Spieler1 Textfeld
+        TextField txtfPlayer1 = new TextField("Player 1");
+        txtfPlayer1.layoutXProperty().setValue(width*0.1);
+        txtfPlayer1.layoutYProperty().setValue(height*0.1);
+
+
+        //Spieler2 Textfeld
+        TextField txtfPlayer2 = new TextField("Player 2");
+        txtfPlayer2.layoutXProperty().setValue(width*0.6);
+        txtfPlayer2.layoutYProperty().setValue(height*0.1);
+
+
         //Netzwerk Checkbox
         CheckBox cboxNetGame = new CheckBox("Networkgame");
-        cboxNetGame.layoutXProperty().setValue(100);
-        cboxNetGame.layoutYProperty().setValue(200);
+        cboxNetGame.layoutXProperty().setValue(width*0.1);
+        cboxNetGame.layoutYProperty().setValue(height*0.2);
+
+
+        //Togglegruppe
+        final ToggleGroup group1 = new ToggleGroup();
+
+
+        //Easy Computer2 Checkbox
+        RadioButton rbEasy1 = new RadioButton("Easy");
+        rbEasy1.layoutXProperty().setValue(width*0.1);
+        rbEasy1.layoutYProperty().setValue(height*0.4);
+        rbEasy1.setToggleGroup(group1);
+        rbEasy1.setSelected(true);
+
+
+        //Normal Computer2 Checkbox
+        RadioButton rbNormal1 = new RadioButton("Normal");
+        rbNormal1.layoutXProperty().setValue(width*0.2);
+        rbNormal1.layoutYProperty().setValue(height*0.4);
+        rbNormal1.setToggleGroup(group1);
+        rbNormal1.setSelected(true);
+
+
+        //Hard Computer2 Checkbox
+        RadioButton rbHard1 = new RadioButton("Hard");
+        rbHard1.layoutXProperty().setValue(width*0.3);
+        rbHard1.layoutYProperty().setValue(height*0.4);
+        rbHard1.setToggleGroup(group1);
+        rbHard1.setSelected(true);
+
+
+        //Togglegruppe
+        final ToggleGroup group2 = new ToggleGroup();
+
+
+        //Easy Computer2 Checkbox
+        RadioButton rbEasy2 = new RadioButton("Easy");
+        rbEasy2.layoutXProperty().setValue(width*0.6);
+        rbEasy2.layoutYProperty().setValue(height*0.4);
+        rbEasy2.setToggleGroup(group2);
+        rbEasy2.setSelected(true);
+
+
+        //Normal Computer2 Checkbox
+        RadioButton rbNormal2 = new RadioButton("Normal");
+        rbNormal2.layoutXProperty().setValue(width*0.7);
+        rbNormal2.layoutYProperty().setValue(height*0.4);
+        rbNormal2.setToggleGroup(group2);
+        rbNormal2.setSelected(true);
+
+
+        //Hard Computer2 Checkbox
+        RadioButton rbHard2 = new RadioButton("Hard");
+        rbHard2.layoutXProperty().setValue(width*0.8);
+        rbHard2.layoutYProperty().setValue(height*0.4);
+        rbHard2.setToggleGroup(group2);
+        rbHard2.setSelected(true);
 
 
         //Go Button
@@ -763,28 +889,24 @@ public class newGUI extends GameEventSource {
 
 
         //Spieler1 Punkte Text
-        
         txtPoints1.layoutXProperty().setValue(width*0.15);
         txtPoints1.layoutYProperty().setValue(height*0.12);
         txtPoints1.setStroke(Color.WHITE);
 
 
         //Spieler2 Punkte Text
-        
         txtPoints2.layoutXProperty().setValue(width*0.55);
         txtPoints2.layoutYProperty().setValue(height*0.12);
         txtPoints2.setStroke(Color.WHITE);
 
 
         //Spieler1 Combo Text
-        
         txtCombo1.layoutXProperty().setValue(width*0.35);
         txtCombo1.layoutYProperty().setValue(height*0.12);
         txtCombo1.setStroke(Color.WHITE);
 
 
         //Spieler2 Combo Text
-        
         txtCombo2.layoutXProperty().setValue(width*0.75);
         txtCombo2.layoutYProperty().setValue(height*0.12);
         txtCombo2.setStroke(Color.WHITE);
@@ -820,7 +942,7 @@ public class newGUI extends GameEventSource {
         dateColumn.setMinWidth(width*0.15);
         dateColumn.setCellValueFactory(new PropertyValueFactory("date"));
 
-        // Hinzufügen der Spalten
+        // Hinzufï¿½gen der Spalten
         tbHighscore.getColumns().addAll(positionColumn, nameColumn, pointsColumn, comboColumn, dateColumn);
 
 
@@ -832,7 +954,7 @@ public class newGUI extends GameEventSource {
         btnEGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
 
 
-        //Hinzufügen der Elemente zu den Panes
+        //Hinzufï¿½gen der Elemente zu den Panes
         header.getChildren().addAll(hlOverall, btnMenu);
         //body.getChildren().add(startbildschirm);
         //foot.getChildren().addAll(btnEGame);
@@ -855,7 +977,7 @@ public class newGUI extends GameEventSource {
 
         // ActionEvents
         /**
-         * Event beim Betätigen des Menü Buttons
+         * Event beim Betï¿½tigen des Menï¿½ Buttons
          */
         btnMenu.setOnMouseClicked(event -> {
 
@@ -874,7 +996,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des Play Buttons
+         * Event beim Betï¿½tigen des Play Buttons
          */
         btnPlay.setOnMouseClicked(event -> {
 
@@ -889,7 +1011,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des Highscore Buttons
+         * Event beim Betï¿½tigen des Highscore Buttons
          */
         btnHighscore.setOnMouseClicked(event -> {
 
@@ -904,7 +1026,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des New Game Buttons
+         * Event beim Betï¿½tigen des New Game Buttons
          */
         btnNGame.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -922,7 +1044,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des PvP Buttons
+         * Event beim Betï¿½tigen des PvP Buttons
          */
         btnPvP.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -930,7 +1052,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().clear();
-                body.getChildren().addAll(cboxNetGame, btnGo);
+                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame, btnGo);
                 body.setOnMouseClicked(eventbody -> {
                 });
                 fireGameEvent(PVP_EVENT);
@@ -941,7 +1063,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des PvK Buttons
+         * Event beim Betï¿½tigen des PvK Buttons
          */
         btnPvK.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -949,7 +1071,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().clear();
-                body.getChildren().addAll(cboxNetGame, btnGo);
+                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame, rbEasy2, rbNormal2, rbHard2, btnGo);
                 body.setOnMouseClicked(eventbody -> {
                 });
                 fireGameEvent(PVK_EVENT);
@@ -960,7 +1082,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des KvK Buttons
+         * Event beim Betï¿½tigen des KvK Buttons
          */
         btnKvK.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -968,7 +1090,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().clear();
-                body.getChildren().addAll(cboxNetGame, btnGo);
+                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame, rbEasy1, rbNormal1, rbHard1, rbEasy2, rbNormal2, rbHard2, btnGo);
                 body.setOnMouseClicked(eventbody -> {
                 });
                 fireGameEvent(KVK_EVENT);
@@ -976,7 +1098,7 @@ public class newGUI extends GameEventSource {
             }
 
         });
-        
+
         btnUndo.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -986,20 +1108,20 @@ public class newGUI extends GameEventSource {
 
             }
         });
-        
+
         btnRedo.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
 
-            	fireGameEvent(REDO_EVENT);
+                fireGameEvent(REDO_EVENT);
 
             }
         });
 
 
         /**
-         * Event beim Betätigen des Go Buttons
+         * Event beim Betï¿½tigen des Go Buttons
          */
         btnGo.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -1011,11 +1133,55 @@ public class newGUI extends GameEventSource {
                 });
 
                 if(cboxNetGame.isSelected()==false) {
+
+                    setPlayernames(txtfPlayer1.getText(), txtfPlayer2.getText());
+
+                    if (rbEasy1.isSelected())
+                        ki1Mode = 1;
+                        else if (rbNormal1.isSelected())
+                            ki1Mode = 2;
+                            else if (rbHard1.isSelected())
+                                ki1Mode = 3;
+                                else
+                                    ki1Mode = 4;
+
+                    if (rbEasy2.isSelected())
+                        ki2Mode = 1;
+                        else if (rbNormal2.isSelected())
+                            ki2Mode = 2;
+                            else if (rbHard2.isSelected())
+                                ki2Mode = 3;
+                                else
+                                    ki2Mode = 4;
+
+
                     drawName(1, body);
                     createField(body, ivSrc1);
                     body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
                 }
                 else {
+
+                    setPlayernames(txtfPlayer1.getText(), txtfPlayer2.getText());
+
+                    if (rbEasy1.isSelected())
+                        ki1Mode = 1;
+                        else if (rbNormal1.isSelected())
+                            ki1Mode = 2;
+                            else if (rbHard1.isSelected())
+                                ki1Mode = 3;
+                                else
+                                    ki1Mode = 4;
+
+                    if (rbEasy2.isSelected())
+                        ki2Mode = 1;
+                        else if (rbNormal2.isSelected())
+                            ki2Mode = 2;
+                            else if (rbHard2.isSelected())
+                                ki2Mode = 3;
+                                else
+                                    ki2Mode = 4;
+
+
                     body.getChildren().addAll(btnHost, btnClient);
                 }
 
@@ -1025,7 +1191,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des Random Buttons
+         * Event beim Betï¿½tigen des Random Buttons
          */
         btnHost.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -1040,7 +1206,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des Random Buttons
+         * Event beim Betï¿½tigen des Random Buttons
          */
         btnClient.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -1055,7 +1221,7 @@ public class newGUI extends GameEventSource {
 
 
         /**
-         * Event beim Betätigen des Random Buttons
+         * Event beim Betï¿½tigen des Random Buttons
          */
         btnRndm.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -1068,7 +1234,7 @@ public class newGUI extends GameEventSource {
 
             }
         });
-        
+
         btnLoad.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -1080,7 +1246,7 @@ public class newGUI extends GameEventSource {
         });
 
         /**
-         * Event beim Betätigen des Save Buttons
+         * Event beim Betï¿½tigen des Save Buttons
          */
         btnSave.setOnAction(e -> alertbox.display("Save", "Enter a filename!"));
 
@@ -1278,3 +1444,4 @@ public class newGUI extends GameEventSource {
     }//Ende Constructor
 
 }//Ende newGUI
+
