@@ -90,21 +90,15 @@ public class Score {
 	 */
 	private void combo(int playerIndex, int result) {
 		if(playerIndex == 1) {
-			if(result == 1) {
+			if(result == 1 || result == 2) {
 				comboPlayer1 += 1;
-				comboPlayer2 = 1;
-			} else if (result == 2){
-				comboPlayer1 = comboPlayer1*2;
 				comboPlayer2 = 1;
 			} else if(result == 0 || result == 3) {
 				comboPlayer1 = 1;
 			}
 		} else if(playerIndex == 2) {
-			if(result == 1) {
+			if(result == 1 || result == 2) {
 				comboPlayer2 += 1;
-				comboPlayer1 = 1;
-			} else if (result == 2) {
-				comboPlayer2 = comboPlayer2*2;
 				comboPlayer1 = 1;
 			} else if(result == 0 || result == 3) {
 				comboPlayer2 = 1;

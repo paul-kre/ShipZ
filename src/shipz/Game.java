@@ -974,6 +974,10 @@ public class Game implements GameEventListener {
                 break;
             case FINISHED_ROUND:
             	filestream.newDraw(aX, aY, activePlayer(), aResult);
+            	gui.setComboLabel(filestream.getComboValue(1), 1);
+            	gui.setComboLabel(filestream.getComboValue(2), 2);
+            	gui.setScoreLabel(filestream.getScore(1), 1);
+            	gui.setScoreLabel(filestream.getScore(2), 2);
                 if(gameFinished() == 0) {
                     if(aResult == 0) {
                         changeActivePlayer();
@@ -1008,9 +1012,7 @@ public class Game implements GameEventListener {
 				}
 				break;
             case SAVE_EVENT:
-            	filestream.saveGame("test" + random.nextInt(1000), "test1", "test2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
-            	// Name des Spielstands muss noch irgendwie �bergeben werden
-            	// Spielernamen m�ssen noch korrekt zur�ckgegeben werden
+            	filestream.saveGame(gui.getFilename(), "spieler1", "spieler2", boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
             	break;
             case LOAD_EVENT:
             	String gameName = filestream.getAllGameNames().split(",")[0];
