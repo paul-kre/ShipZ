@@ -217,7 +217,7 @@ public class GUI {
         pointsColumn.setMinWidth(200);
         pointsColumn.setCellValueFactory(new PropertyValueFactory("points"));
 
-        // Hinzufügen der Spalten
+        // Hinzufï¿½gen der Spalten
         tbHighscore.getColumns().addAll(positionColumn, nameColumn, pointsColumn);
 
 
@@ -269,7 +269,7 @@ public class GUI {
             @Override
             public void handle(ActionEvent event) {
 
-                AlertBox.display("Network Connection", "Choose:");
+//                AlertBox.display("Network Connection", "Choose:");
 
             }
         });
@@ -495,7 +495,7 @@ public class GUI {
     }
 
     /**
-     * Methode zum löschen eines Images an der angegebene Position
+     * Methode zum lï¿½schen eines Images an der angegebene Position
      * @param x X-Koordinate
      * @param y Y-Koordinate
      * @param nr Spielfeldnummer

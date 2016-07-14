@@ -5,8 +5,8 @@ import shipz.util.NoDrawException;
 /**
  * Diese Klasse verwaltet die anderen drei Klassen.
  * Es werden alle wichtigen Methoden, die die Verwaltung-Klasse des Spiels {@link shipz.Game}
- * zum Speichern, Laden, Undo/ Redo und für die Punkte- und Highscore-Verwaltung
- * benötigt, redefiniert und bilden somit eine Referenz zu den anderen Klassen.
+ * zum Speichern, Laden, Undo/ Redo und fï¿½r die Punkte- und Highscore-Verwaltung
+ * benï¿½tigt, redefiniert und bilden somit eine Referenz zu den anderen Klassen.
  * @author Florian Osterberg
  */
 public class FileStream {
@@ -46,32 +46,67 @@ public class FileStream {
 	 * @param opponentName Name des Gegners / zweiten Spielers
 	 * @param boardPlayerOne Spielbrett des ersten Spielers als {@link String}
 	 * @param boardPlayerTwo Spielbrett des zweiten Spielers als {@link String}
-	 * @param boardsize Größe des Spielfelds
+	 * @param boardsize GrÃ¶ÃŸe des Spielfelds
 	 * @param activePlayer aktiver Spieler
 	 * @param preferences die Einstellungen des Spiels
+	 * @param mirrorFieldOne Spielfeld der 1. KI
+	 * @param mirrorFieldTwo Spielfeld der 2. KI
 	 */
-	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences) {
-		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences);
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String mirrorFieldOne, String mirrorFieldTwo) {
+		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, mirrorFieldOne, mirrorFieldTwo);
 		undoredo.saveToFile(gameName);
 	}
 	
 	/**
-	 * Gibt die Namen aller Spielstände als {@link String} zurück.
-	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
+	 * Speichert die Informationen eines bestimmten Spiels.
+	 * Wird von {@link shipz.Game} genutzt, um ein Spiel abzuspeichern.
+	 * @param gameName Name des Spielstands
+	 * @param playerName Name des ersten Spielers
+	 * @param opponentName Name des Gegners / zweiten Spielers
+	 * @param boardPlayerOne Spielbrett des ersten Spielers als {@link String}
+	 * @param boardPlayerTwo Spielbrett des zweiten Spielers als {@link String}
+	 * @param boardsize GrÃ¶ÃŸe des Spielfelds
+	 * @param activePlayer aktiver Spieler
+	 * @param preferences die Einstellungen des Spiels
+	 * @param mirrorFieldOne Spielfeld der 1. KI
+	 */
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String mirrorFieldOne) {
+		saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, mirrorFieldOne, null);
+	}
+	
+	/**
+	 * Speichert die Informationen eines bestimmten Spiels.
+	 * Wird von {@link shipz.Game} genutzt, um ein Spiel abzuspeichern.
+	 * @param gameName Name des Spielstands
+	 * @param playerName Name des ersten Spielers
+	 * @param opponentName Name des Gegners / zweiten Spielers
+	 * @param boardPlayerOne Spielbrett des ersten Spielers als {@link String}
+	 * @param boardPlayerTwo Spielbrett des zweiten Spielers als {@link String}
+	 * @param boardsize GrÃ¶ÃŸe des Spielfelds
+	 * @param activePlayer aktiver Spieler
+	 * @param preferences die Einstellungen des Spiels
+	 */
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences) {
+		saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, null, null);
+	}
+	
+	/**
+	 * Gibt die Namen aller Spielstï¿½nde als {@link String} zurï¿½ck.
+	 * Dies wird fï¿½r die Auflistung aller Spielstï¿½nde wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
 	 * Dies geht ganz einfach mit 
 	 * <i>getAllGameNames().split(",")</i>
-	 * @return Die Namen aller Spielstände als {@link String}
+	 * @return Die Namen aller Spielstï¿½nde als {@link String}
 	 */
 	public String getAllGameNames() {
 		return saveload.getAllGameNames();
 	}
 	
 	/**
-	 * Wird zum Laden eines Spielstands benötigt.
-	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
-	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * Wird zum Laden eines Spielstands benï¿½tigt.
+	 * Diese Methode lï¿½dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurï¿½ckgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -80,9 +115,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
-	 * Wird zum Laden eines Spielstands benötigt.
-	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
+	 * Diese Methode lï¿½dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
+	 * Wird zum Laden eines Spielstands benï¿½tigt.
+	 * Dieses Spielfeld wird dann als {@link String} zurï¿½ckgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -91,9 +126,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt den Spielernamen eines Spielstands zurück.
-	 * Wird zum Laden eines Spielstands benötigt.
-	 * @param gameName der gewünschte Spielstand
+	 * Gibt den Spielernamen eines Spielstands zurï¿½ck.
+	 * Wird zum Laden eines Spielstands benï¿½tigt.
+	 * @param gameName der gewï¿½nschte Spielstand
 	 * @return Spielername eines Spielstand
 	 */
 	public String getPlayerName(String gameName) {
@@ -101,9 +136,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
-	 * Wird zum Laden eines Spielstands benötigt.
-	 * @param gameName der gewünschte Spielstand
+	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurï¿½ck.
+	 * Wird zum Laden eines Spielstands benï¿½tigt.
+	 * @param gameName der gewï¿½nschte Spielstand
 	 * @return Namen des Gegners eines bestimmten Spielstands
 	 */
 	public String getOpponentName(String gameName) {
@@ -111,18 +146,18 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
-	 * Wird zum Laden eines Spielstands benötigt.
-	 * @param gameName der gewünschte Spielstand
-	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
+	 * Gibt die Feldgrï¿½ï¿½e eines bestimmten Spielstands zurï¿½ck.
+	 * Wird zum Laden eines Spielstands benï¿½tigt.
+	 * @param gameName der gewï¿½nschte Spielstand
+	 * @return Feldgrï¿½ï¿½e eines bestimmten Spielstands als {@link String}
 	 */
 	public int getBoardsize(String gameName) {
 		return saveload.getBoardsize(gameName);
 	}
 	
 	/**
-	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurück.
-	 * Wird zum Laden eines Spielstands benötigt.
+	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurï¿½ck.
+	 * Wird zum Laden eines Spielstands benï¿½tigt.
 	 * @param gameName Name des Spielstands
 	 * @return der aktive Spieler
 	 */
@@ -131,9 +166,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
-	 * Wird zum Laden eines Spielstands benötigt.
-	 * @param gameName der gewünschte Spielstand
+	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurï¿½ck.
+	 * Wird zum Laden eines Spielstands benï¿½tigt.
+	 * @param gameName der gewï¿½nschte Spielstand
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
 	public String getTime(String gameName) {
@@ -141,8 +176,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt die Einstellungen eines Spielstands zurück.
-	 * Wird zum Laden eines Spielstands benötigt.
+	 * Gibt die Einstellungen eines Spielstands zurï¿½ck.
+	 * Wird zum Laden eines Spielstands benï¿½tigt.
 	 * @param gameName Name des Spielstands
 	 * @return Einstellungen als String
 	 */
@@ -151,7 +186,7 @@ public class FileStream {
 	}
 	
 	/**
-	 * Löscht einen bestimmten Spielstand aus der Datei.
+	 * Lï¿½scht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
 	public void deleteGame(String gameName) {
@@ -164,12 +199,12 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Die rückgängig zu machenden Züge werden vom Stack genommen, der die im Spiel getätigten
-	 * Züge speichert, und auf den Stack gelegt, der die rückgängig gemachten Züge speichert.
-	 * Alle rückgängig gemachten Züge werden als String zurückgegeben.
-	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
-	 * @return Die Züge die rückgängig gemacht werden als {@link String}
-	 * @throws NoDrawException tritt auf, falls keine weiteren Züge rückgängig gemacht werden können
+	 * Die rï¿½ckgï¿½ngig zu machenden Zï¿½ge werden vom Stack genommen, der die im Spiel getï¿½tigten
+	 * Zï¿½ge speichert, und auf den Stack gelegt, der die rï¿½ckgï¿½ngig gemachten Zï¿½ge speichert.
+	 * Alle rï¿½ckgï¿½ngig gemachten Zï¿½ge werden als String zurï¿½ckgegeben.
+	 * @param playerIndex 1 fï¿½r den ersten Spieler, 2 fï¿½r den zweiten Spieler
+	 * @return Die Zï¿½ge die rï¿½ckgï¿½ngig gemacht werden als {@link String}
+	 * @throws NoDrawException tritt auf, falls keine weiteren Zï¿½ge rï¿½ckgï¿½ngig gemacht werden kï¿½nnen
 	 */
 	public String undoDraw(int playerIndex) throws NoDrawException {
 		score.setScore(playerIndex, 3);
@@ -177,24 +212,24 @@ public class FileStream {
 	}
 	
 	/**
-	 * Die Züge, die wiederhergestellt werden, werdem vom Redo-Stack genommen und wieder oben
-	 * auf den Stack gelegt, der die Züge des Spiels gespeichert, gelegt.
-	 * Alle wiederhergestellten Züge werden als String zurückgegeben.
-	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
-	 * @return Die wiederhergestellten Züge als {@link String}
-	 * @throws NoDrawException tritt auf, falls keine weiteren Züge wiederholt werden können
+	 * Die Zï¿½ge, die wiederhergestellt werden, werdem vom Redo-Stack genommen und wieder oben
+	 * auf den Stack gelegt, der die Zï¿½ge des Spiels gespeichert, gelegt.
+	 * Alle wiederhergestellten Zï¿½ge werden als String zurï¿½ckgegeben.
+	 * @param playerIndex 1 fï¿½r den ersten Spieler, 2 fï¿½r den zweiten Spieler
+	 * @return Die wiederhergestellten Zï¿½ge als {@link String}
+	 * @throws NoDrawException tritt auf, falls keine weiteren Zï¿½ge wiederholt werden kï¿½nnen
 	 */
 	public String redoDraw(int playerIndex) throws NoDrawException {
 		return undoredo.redoDraw(playerIndex);
 	}
 	
 	/**
-	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
-	 * Außerdem wird anhand der Variable <b>result</b> die Punktzahl des Spielers aktualisiert.
+	 * Wenn ein neuer Zug getï¿½tigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
+	 * Auï¿½erdem wird anhand der Variable <b>result</b> die Punktzahl des Spielers aktualisiert.
 	 * @param x x-Koordinate des Zugs
 	 * @param y y-Koordinate des Zugs
-	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
-	 * @param result <b>0</b> = kein Treffer, <b>1</b> = Treffer, <b>2</b> = Schiff versenkt, <b>3</b> = Zug rückgängig gemacht
+	 * @param playerIndex 1 fï¿½r den ersten Spieler, 2 fï¿½r den zweiten Spieler
+	 * @param result <b>0</b> = kein Treffer, <b>1</b> = Treffer, <b>2</b> = Schiff versenkt, <b>3</b> = Zug rï¿½ckgï¿½ngig gemacht
 	 */
 	public void newDraw(int x, int y, int playerIndex, int result) {
 		undoredo.newDraw(x, y, playerIndex, result);
@@ -202,8 +237,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
-	 * Außerdem werden die Instanz-Variablen, die die Punkte- und Combo-Werte speichern,
+	 * Leert alle Stacks und lï¿½dt die Zï¿½ge aus einer Datei in die Instanz-Variablen.
+	 * Auï¿½erdem werden die Instanz-Variablen, die die Punkte- und Combo-Werte speichern,
 	 * in der Score-Klasse aktualisiert.
 	 * Wird verwendet, wenn ein Spielstand geladen wird.
 	 * @param gameName Name des Spielstands
@@ -219,7 +254,7 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Gibt die Punktzahl eines Spielers zurück.
+	 * Gibt die Punktzahl eines Spielers zurï¿½ck.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
 	 * @return Punktzahl des Spielers
 	 */
@@ -238,7 +273,7 @@ public class FileStream {
 	}
 	
 	/**
-	 * Der Wert der Combo wird zurückgegeben, damit die GUI darstellen kann, welche Combo der Spieler aktuell erreicht hat.
+	 * Der Wert der Combo wird zurï¿½ckgegeben, damit die GUI darstellen kann, welche Combo der Spieler aktuell erreicht hat.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
 	 * @return aktueller Combowert des Spielers
 	 */
@@ -247,7 +282,7 @@ public class FileStream {
 	}
 	
 	/**
-	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
+	 * Wenn das Spiel vorbei ist, wird diese Methode ausgefï¿½hrt, 
 	 * damit die Punkte in der Datei abgespeichert werden.
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers
@@ -262,7 +297,7 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Ändert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
+	 * ï¿½ndert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
 	 * @param max Spieler-Maximum im Highscore
 	 */
 	public void setHighscoreMaximum(int max) {
@@ -270,18 +305,18 @@ public class FileStream {
 	}
 	
 	/**
-	 * Liest aus der Datei und gibt den Wert zurück,
-	 * der die Länge der Pausen zwischen den KI-Zügen
+	 * Liest aus der Datei und gibt den Wert zurï¿½ck,
+	 * der die Lï¿½nge der Pausen zwischen den KI-Zï¿½gen
 	 * in Millisekunden speichert.
-	 * @return Pause zwischen KI-Zügen in ms
+	 * @return Pause zwischen KI-Zï¿½gen in ms
 	 */
 	public int getAiTimer() {
 		return settings.getAiTimer();
 	}
 	
 	/**
-	 * Ändert den Wert der Pausen zwischen den KI-Zügen in der Config.
-	 * @param ms neuer Wert für Pausen zwischen KI-Zügen
+	 * ï¿½ndert den Wert der Pausen zwischen den KI-Zï¿½gen in der Config.
+	 * @param ms neuer Wert fï¿½r Pausen zwischen KI-Zï¿½gen
 	 */
 	public void setAiTimer(int ms) {
 		settings.setAiTimer(ms);
@@ -292,8 +327,8 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Gibt alle Buchstaben und Sonderzeichen zurück,
-	 * die in einem Namen nicht verwendet werden dürfen.
+	 * Gibt alle Buchstaben und Sonderzeichen zurï¿½ck,
+	 * die in einem Namen nicht verwendet werden dï¿½rfen.
 	 * Um diesen String in ein Char-Array umzuwandeln:
 	 * <i>forbiddenCharacters().toCharArray()</i>
 	 * @return die verbotenen Zeichen als String
