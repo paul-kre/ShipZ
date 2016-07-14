@@ -1161,6 +1161,13 @@ public abstract class Computer extends Player {
     private void setNextDirection(){
 
         this.currentDirection++;
+
+        //Im Falle eines Redos, wird die
+        //Richtung zurück auf nördlich gewechselt um die Schiffsteile erneut zu beschießen
+        if( this.currentDirection > 3){
+
+            this.currentDirection = 0;
+        }
     }
 
 
