@@ -86,7 +86,6 @@ public class newGUI extends GameEventSource {
     int ki1Mode;
     int ki2Mode;
 
-
     //IM
     public void setPlayernames (String player1, String player2) {
 
@@ -1249,15 +1248,18 @@ public class newGUI extends GameEventSource {
          * Event beim Bet�tigen des Save Buttons
          */
         btnSave.setOnAction(e -> alertbox.display("Save", "Enter a filename!"));
-
+        
         /**
          * Event zum anpassen der Scene size
          */
 
-        scene.setOnMouseClicked(event -> {
+        double height = 0;
+        double width = 0;
+        
+/*        scene.setOnMouseClicked(event -> {
 
-            height = scene.getHeight();
-            width = scene.getWidth();
+//            height = scene.getHeight();
+//            width = scene.getWidth();
 
             System.out.println(width);
             System.out.println(height);
@@ -1436,8 +1438,256 @@ public class newGUI extends GameEventSource {
 
             dateColumn.setMinWidth(width*0.1);
 
+        });
+*/
+        
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+//                System.out.println("Width: " + newSceneWidth);
+            	double width = (double) newSceneWidth;
+
+                hlOverall.layoutXProperty().setValue(width*0.03);
+                //hlOverall.setFont(javafx.scene.text.Font.font("Rockwell", height*0.12));
+//                hlOverall.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.12));
+
+                startbildschirm.setFitWidth(body.getWidth());
+                startbildschirm.setFitHeight(body.getHeight());
+                startbildschirm.setTranslateX(width*0.15);
+
+                btnMenu.setTranslateX(width*0.9);
+
+                mainMenu.setFitWidth(width*0.239);
+                mainMenu.setTranslateX(width*0.35);
+
+                btnPlay.layoutXProperty().setValue(width*0.378);
+                btnPlay.setPrefWidth(width*0.181);
+                //btnPlay.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnHighscore.layoutXProperty().setValue(width*0.378);
+                btnHighscore.setPrefWidth(width*0.181);
+                //btnHighscore.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnSettings.layoutXProperty().setValue(width*0.378);
+                btnSettings.setPrefWidth(width*0.181);
+                //btnSettings.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnNGame.layoutXProperty().setValue(width*0.20);
+                btnNGame.setPrefWidth(width*0.181);
+                //btnNGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnLGame.layoutXProperty().setValue(width*0.60);
+                btnLGame.setPrefWidth(width*0.181);
+                //btnLGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
 
+                btnPvP.layoutXProperty().setValue(width*0.10);
+                btnPvP.setPrefWidth(width*0.181);
+
+                btnPvK.layoutXProperty().setValue(width*0.40);
+                btnPvK.setPrefWidth(width*0.181);
+
+                btnKvK.layoutXProperty().setValue(width*0.70);
+                btnKvK.setPrefWidth(width*0.181);
+
+                cboxNetGame.layoutXProperty().setValue(100);
+                cboxNetGame.layoutYProperty().setValue(200);
+
+                btnGo.layoutXProperty().setValue(width*0.025);
+                btnGo.setPrefWidth(width*0.12);
+                //btnGo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnHost.layoutXProperty().setValue(width*0.20);
+                btnHost.setPrefWidth(width*0.181);
+                //btnHost.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnClient.layoutXProperty().setValue(width*0.60);
+                btnClient.setPrefWidth(width*0.181);
+                //btnClient.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                txtfIp.layoutXProperty().setValue(width*0.3);
+
+                txtfPort.layoutXProperty().setValue(width*0.5);
+
+                btnConnect.layoutXProperty().setValue(width*0.378);
+                btnConnect.setPrefWidth(width*0.12);
+
+                btnUndo.layoutXProperty().setValue(width*0.1);
+                btnUndo.setPrefWidth(width*0.16);
+                //btnUndo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnRedo.layoutXProperty().setValue(width*0.3);
+                btnRedo.setPrefWidth(width*0.16);
+                //btnRedo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnSave.layoutXProperty().setValue(width*0.5);
+                btnSave.setPrefWidth(width*0.16);
+                //btnSave.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnLoad.layoutXProperty().setValue(width*0.7);
+                btnLoad.setPrefWidth(width*0.16);
+                //btnLoad.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnRndm.layoutXProperty().setValue(width*0.025);
+                btnRndm.setPrefWidth(width*0.12);
+                //btnRndm.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                dragBox.layoutXProperty().setValue(width*0.025);
+                dragBox.setWidth(200);
+                dragBox.setHeight(350);
+                dragBox.setStroke(Color.WHITE);
+
+                ivSrc1.setTranslateX(width*0.026);
+
+                btnEGame.layoutXProperty().setValue(width*0.8);
+                btnEGame.setPrefWidth(150);
+//                btnEGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
+
+                btnLock.layoutXProperty().setValue(width*0.36);
+                btnLock.setPrefWidth(width*0.12);
+                //btnLock.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
+
+                txtPoints1.layoutXProperty().setValue(width*0.15);
+
+                txtPoints2.layoutXProperty().setValue(width*0.55);
+
+                txtCombo1.layoutXProperty().setValue(width*0.35);
+
+                txtCombo2.layoutXProperty().setValue(width*0.75);
+
+                tbHighscore.setPrefWidth(width);
+
+                positionColumn.setMinWidth(width*0.05);
+
+                nameColumn.setMinWidth(width*0.2);
+
+                pointsColumn.setMinWidth(width*0.14);
+
+                comboColumn.setMinWidth(width*0.14);
+
+                dateColumn.setMinWidth(width*0.1);
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+//                System.out.println("Height: " + newSceneHeight);
+
+            	double height = (double) newSceneHeight;
+            	
+                header.setPrefHeight(height*0.25);
+                body.setPrefHeight(height*0.8);
+                foot.setPrefHeight(height*0.05);
+
+                hlOverall.layoutYProperty().setValue(height*0.14);
+                //hlOverall.setFont(javafx.scene.text.Font.font("Rockwell", height*0.12));
+//                hlOverall.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.12));
+
+                startbildschirm.setFitWidth(body.getWidth());
+                startbildschirm.setFitHeight(body.getHeight());
+
+                btnMenu.setTranslateY(height*0.05);
+
+                mainMenu.setFitHeight(height*0.385);
+                mainMenu.setTranslateY(height*0.15);
+
+                btnPlay.layoutYProperty().setValue(height*0.195);
+                btnPlay.setPrefHeight(height*0.07);
+                //btnPlay.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnHighscore.layoutYProperty().setValue(height*0.305);
+                btnHighscore.setPrefHeight(height*0.07);
+                //btnHighscore.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnSettings.layoutYProperty().setValue(height*0.415);
+                btnSettings.setPrefHeight(height*0.07);
+                //btnSettings.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnNGame.layoutYProperty().setValue(height*0.25);
+                btnNGame.setPrefHeight(height*0.07);
+                //btnNGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnLGame.layoutYProperty().setValue(height*0.25);
+                btnLGame.setPrefHeight(height*0.07);
+                //btnLGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+
+                btnPvP.layoutYProperty().setValue(height*0.25);
+                btnPvP.setPrefHeight(height*0.07);
+
+                btnPvK.layoutYProperty().setValue(height*0.25);
+                btnPvK.setPrefHeight(height*0.07);;
+
+                btnKvK.layoutYProperty().setValue(height*0.25);
+                btnKvK.setPrefHeight(height*0.07);
+
+                cboxNetGame.layoutXProperty().setValue(100);
+                cboxNetGame.layoutYProperty().setValue(200);
+
+                btnGo.layoutYProperty().setValue(height*0.55);
+                btnGo.setPrefHeight(height*0.05);
+                //btnGo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnHost.layoutYProperty().setValue(height*0.25);
+                btnHost.setPrefHeight(height*0.07);
+                //btnHost.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnClient.layoutYProperty().setValue(height*0.25);
+                btnClient.setPrefHeight(height*0.07);
+                //btnClient.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                txtfIp.layoutYProperty().setValue(height*0.25);
+
+                txtfPort.layoutYProperty().setValue(height*0.25);
+
+                btnConnect.layoutYProperty().setValue(height*0.415);
+                btnConnect.setPrefHeight(height*0.05);
+
+                btnUndo.layoutYProperty().setValue(height*0.025);
+                btnUndo.setPrefHeight(height*0.07);
+                //btnUndo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnRedo.layoutYProperty().setValue(height*0.025);
+                btnRedo.setPrefHeight(height*0.07);
+                //btnRedo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnSave.layoutYProperty().setValue(height*0.025);
+                btnSave.setPrefHeight(height*0.07);
+                //btnSave.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnLoad.layoutYProperty().setValue(height*0.025);
+                btnLoad.setPrefHeight(height*0.07);
+                //btnLoad.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                btnRndm.layoutYProperty().setValue(height*0.55);
+                btnRndm.setPrefHeight(height*0.05);
+                //btnRndm.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+
+                dragBox.layoutYProperty().setValue(height*0.18);
+                dragBox.setWidth(200);
+                dragBox.setHeight(350);
+                dragBox.setStroke(Color.WHITE);
+
+                ivSrc1.setTranslateY(height*0.18);
+
+                btnEGame.layoutYProperty().setValue(height*0.4);
+                btnEGame.setPrefWidth(150);
+//                btnEGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
+
+                btnLock.layoutYProperty().setValue(height*0.7);
+                btnLock.setPrefHeight(height*0.05);
+                //btnLock.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
+
+                txtPoints1.layoutYProperty().setValue(height*0.12);
+
+                txtPoints2.layoutYProperty().setValue(height*0.12);
+
+                txtCombo1.layoutYProperty().setValue(height*0.12);
+
+                txtCombo2.layoutYProperty().setValue(height*0.12);
+
+                tbHighscore.setPrefHeight(height);
+
+
+            }
         });
 
 
