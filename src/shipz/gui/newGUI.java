@@ -62,7 +62,7 @@ public class newGUI extends GameEventSource {
     Image white = new Image(newGUI.class.getResource("White.png").toExternalForm());
     Image water = new Image(newGUI.class.getResource("shipZ_spielfeld.png").toExternalForm());
     Image ship = new Image(newGUI.class.getResource("shipZ_1ershipIntact.png").toExternalForm());
-    Image explosion = new Image(newGUI.class.getResource("shipZ_explosion.gif").toExternalForm());
+    Image explosion = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
 
     //Spielfeld sperren
     int enableField = 2;
