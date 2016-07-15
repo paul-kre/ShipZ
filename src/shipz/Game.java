@@ -1006,6 +1006,7 @@ public class Game implements GameEventListener {
                 }
                 else {
                     System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
+                    //gui.setNewRow(filestream.get)
                 }
                 break;
             case PAUSE_EVENT:

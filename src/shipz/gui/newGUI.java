@@ -589,14 +589,14 @@ public class newGUI extends GameEventSource {
     }
 
 
-    private ObservableList setNewRow(String data) {
+    public ObservableList setNewRow(String pos, String name, String score, String date) {
 
 
 
-        String s1 = "6";
-        String s2 = "Unknown";
-        String s3 = "1";
-        String s4 = "22.05.06";
+        String s1 = pos;
+        String s2 = name;
+        String s3 = score;
+        String s4 = date;
 
         list.add(new Highscore(s1, s2, s3, s4));
 
@@ -989,7 +989,7 @@ public class newGUI extends GameEventSource {
         tbHighscore.getSelectionModel().selectedIndexProperty().addListener(new RowSelectChangeListener());
 
         //test
-        setNewRow("hi");
+        //setNewRow("hi");
 
 
         //Ende Button
