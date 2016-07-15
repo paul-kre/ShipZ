@@ -1,49 +1,62 @@
+package shipz.gui;
+
 import javafx.beans.property.SimpleStringProperty;
 
 public class SavedGames {
 
-    private SimpleStringProperty position;
-    private SimpleStringProperty name;
-    private SimpleStringProperty points;
+    private SimpleStringProperty gamename;
+    private SimpleStringProperty name1;
+    private SimpleStringProperty name2;
+    private SimpleStringProperty mode;
     private SimpleStringProperty date;
 
 
     public SavedGames () {
     }
 
-    public SavedGames (String s1, String s2, String s3, String s4) {
+    public SavedGames (String s1, String s2, String s3, String s4, String s5) {
 
-        position = new SimpleStringProperty(s1);
-        name = new SimpleStringProperty(s2);
-        points = new SimpleStringProperty(s3);
-        date = new SimpleStringProperty(s4);
+        gamename = new SimpleStringProperty(s1);
+        name1 = new SimpleStringProperty(s2);
+        name2 = new SimpleStringProperty(s3);
+        mode = new SimpleStringProperty(s4);
+        date = new SimpleStringProperty(s5);
     }
 
-    public String getPosition() {
+    public String getGamename() {
 
-        return position.get();
+        return gamename.get();
     }
-    public void setPosition(String s) {
+    public void setGamename(String s) {
 
-        position.set(s);
-    }
-
-    public String getName() {
-
-        return name.get();
-    }
-    public void setName(String s) {
-
-        name.set(s);
+        gamename.set(s);
     }
 
-    public String getPoints() {
+    public String getName1() {
 
-        return points.get();
+        return name1.get();
     }
-    public void setPoints(String s) {
+    public void setName1(String s) {
 
-        points.set(s);
+        name1.set(s);
+    }
+
+    public String getName2() {
+
+        return name2.get();
+    }
+    public void setName2(String s) {
+
+        name2.set(s);
+    }
+
+    public String getMode() {
+
+        return mode.get();
+    }
+    public void setMode(String s) {
+
+        mode.set(s);
     }
 
     public String getDate() {

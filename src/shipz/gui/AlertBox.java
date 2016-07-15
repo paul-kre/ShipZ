@@ -12,7 +12,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import shipz.util.GameEventSource;
 
-
 public class AlertBox extends GameEventSource {
 
 	Stage window = new Stage();

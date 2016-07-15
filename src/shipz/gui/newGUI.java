@@ -103,9 +103,17 @@ public class newGUI extends GameEventSource {
     private ObservableList data;
     ArrayList list = new ArrayList();
 
+    TableView tbSavedGames;
+    private ObservableList data2;
+    ArrayList list2 = new ArrayList();
+    String gamename;
+
     //Network
     private boolean isHost;
 
+    Text txtConnected = new Text("Unknown");
+    Button btnContinue = new Button("Continue");
+    Button btnTryAgain = new Button("Try again");
 
 
     //IM
@@ -162,6 +170,10 @@ public class newGUI extends GameEventSource {
 
         return ip;
 
+    }
+
+    public String getGamename() {
+        return gamename;
     }
 
 
@@ -645,6 +657,13 @@ public class newGUI extends GameEventSource {
 
     }
 
+    public ObservableList setSavedGame(String gamename, String name1, String name2, String mode, String date) {
+
+        list.add(new SavedGames(gamename, name1, name2, mode, date));
+        return FXCollections.observableList(list2);
+
+    }
+
     public void clearHighscore() {
         list.clear();
     }
@@ -901,6 +920,20 @@ public class newGUI extends GameEventSource {
         btnConnect.setPrefWidth(width*0.12);
         btnConnect.setPrefHeight(height*0.05);
 
+        //Connected Text
+        txtConnected.layoutXProperty().setValue(width*0.378);
+        txtConnected.layoutYProperty().setValue(height*0.195);
+        txtConnected.setStroke(Color.WHITE);
+
+
+        //Continue Button
+        btnContinue.layoutXProperty().setValue(width*0.378);
+        btnContinue.layoutYProperty().setValue(height*0.305);
+
+
+        // TryAgain Button
+        btnTryAgain.layoutXProperty().setValue(width*0.378);
+        btnTryAgain.layoutYProperty().setValue(height*0.305);
 
         //Undo Button
         Button btnUndo = new Button("Undo");
@@ -1034,8 +1067,46 @@ public class newGUI extends GameEventSource {
 
         tbHighscore.getSelectionModel().selectedIndexProperty().addListener(new RowSelectChangeListener());
 
-        //test
-        //setNewRow("hi");
+                //SavedGames
+        tbSavedGames = new TableView();
+        data2 = getInitialTableData();
+        tbSavedGames.setItems(data2);
+
+
+        //SavedGames Tabelle
+        tbSavedGames.setPrefWidth(width);
+        tbSavedGames.setPrefHeight(height);
+
+        //Spielname
+        TableColumn gamenameColumn = new TableColumn("Gamename");
+        gamenameColumn.setMinWidth(width*0.2);
+        gamenameColumn.setCellValueFactory(new PropertyValueFactory("gamename"));
+
+        //Spieler1 Namens Spalte
+        TableColumn name1Column = new TableColumn("Player 1");
+        name1Column.setMinWidth(width*0.24);
+        name1Column.setCellValueFactory(new PropertyValueFactory("name1"));
+
+        //Spieler2 Namens Spalte
+        TableColumn name2Column = new TableColumn("Player 2");
+        name2Column.setMinWidth(width*0.24);
+        name2Column.setCellValueFactory(new PropertyValueFactory("name2"));
+
+        //Modus Spalte
+        TableColumn modeColumn = new TableColumn("Mode");
+        modeColumn.setMinWidth(width*0.15);
+        modeColumn.setCellValueFactory(new PropertyValueFactory("mode"));
+
+        // Datums Spalte
+        TableColumn datesColumn = new TableColumn("Date");
+        datesColumn.setMinWidth(width*0.15);
+        datesColumn.setCellValueFactory(new PropertyValueFactory("date"));
+
+        // Hinzuf�gen der Spalten
+        tbSavedGames.getColumns().addAll(gamenameColumn, name1Column, name2Column, modeColumn, dateColumn);
+
+        tbSavedGames.getSelectionModel().selectedIndexProperty().addListener(new RowSelectChangeListener());
+
 
 
         //Ende Button
@@ -1132,6 +1203,49 @@ public class newGUI extends GameEventSource {
 
 
             }
+        });
+
+                btnLGame.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                body.getChildren().clear();
+                body.getChildren().addAll(tbSavedGames);
+                body.setOnMouseClicked(eventbody -> {
+                });
+
+
+            }
+        });
+
+/*
+        tbSavedGames.setOnMousePressed(new EventHandler<MouseEvent>() {
+            TableRow row;
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.isPrimaryButtonDown() && event.getClickCount() == 2 && (! row.isEmpty()) ) {
+
+                    Node node = ((Node) event.getTarget()).getParent();
+                    row = (TableRow) node.getParent();
+                    System.out.println(row.getItem());
+
+                }
+                else
+                    System.out.println("fail");
+            }
+        });
+*/
+
+        tbSavedGames.setRowFactory( tv -> {
+            TableRow<SavedGames> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    String rowData = row.getItem().getGamename();
+                    gamename = rowData;
+                }
+            });
+            return row;
         });
 
         /**
@@ -1325,6 +1439,41 @@ public class newGUI extends GameEventSource {
             }
         });
 
+
+        /**
+         * Event beim Bet�tigen des TryAgain Buttons
+         */
+        btnTryAgain.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                if(isHost){
+                    body.getChildren().clear();
+                    body.getChildren().addAll(txtfPort, btnConnect);
+                } else {
+                    body.getChildren().clear();
+                    body.getChildren().addAll(txtfIp, txtfPort, btnConnect);
+                }
+
+            }
+        });
+
+
+        /**
+         * Event beim Bet�tigen des Continue Buttons
+         */
+        btnContinue.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                drawName(1, body);
+                createField(body, ivSrc1);
+                body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+
+            }
+        });
 
         /**
          * Event beim Bet�tigen des Random Buttons
