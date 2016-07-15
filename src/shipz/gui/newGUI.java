@@ -110,6 +110,10 @@ public class newGUI extends GameEventSource {
 
     //IM
 
+    private void go() {
+
+    }
+
     public boolean isHost() {
         return isHost;
     }
@@ -228,8 +232,13 @@ public class newGUI extends GameEventSource {
                         if(enableField==1) {
                             //Event zum �bergeben der Koordinaten
                             //Auf R�ckmeldung
-                            setCoordinates(y, x);
-                            fireGameEvent(GUI_SHOOT_EVENT);
+                            if(isHost) {
+                                setCoordinates(y, x);
+                                fireGameEvent(GUI_SHOOT_EVENT);
+                            }
+                            else {
+
+                            }
                         }
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {
@@ -490,14 +499,14 @@ public class newGUI extends GameEventSource {
             switch (v) {
                 case 0:
                     field1[x][y].setImage(water);
-                    fireGameEvent(FINISHED_ROUND);
+                    if(isHost) fireGameEvent(FINISHED_ROUND);
                     break;
                 case 1:
                     field1[x][y].setImage(ship);
                     break;
                 case 2:
                     field1[x][y].setImage(explosion);
-                    fireGameEvent(FINISHED_ROUND);
+                    if(isHost) fireGameEvent(FINISHED_ROUND);
                     break;
                 default:
                     field1[x][y].setImage(white);
@@ -508,14 +517,14 @@ public class newGUI extends GameEventSource {
             switch (v) {
                 case 0:
                     field2[x][y].setImage(water);
-                    fireGameEvent(FINISHED_ROUND);
+                    if(isHost) fireGameEvent(FINISHED_ROUND);
                     break;
                 case 1:
                     field2[x][y].setImage(ship);
                     break;
                 case 2:
                     field2[x][y].setImage(explosion);
-                    fireGameEvent(FINISHED_ROUND);
+                    if(isHost) fireGameEvent(FINISHED_ROUND);
                     break;
                 default:
                     field2[x][y].setImage(white);
@@ -858,6 +867,7 @@ public class newGUI extends GameEventSource {
         //btnGo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
 
+
         //Host Button
         Button btnHost = new Button("Host");
         btnHost.layoutXProperty().setValue(width*0.20);
@@ -877,13 +887,13 @@ public class newGUI extends GameEventSource {
 
 
         //IP Textfeld
-        TextField txtfIp = new TextField("IP");
+        TextField txtfIp = new TextField("127.0.0.1");
         txtfIp.layoutXProperty().setValue(width*0.3);
         txtfIp.layoutYProperty().setValue(height*0.25);
 
 
         //Port Textfeld
-        TextField txtfPort = new TextField("Port");
+        TextField txtfPort = new TextField("5555");
         txtfPort.layoutXProperty().setValue(width*0.5);
         txtfPort.layoutYProperty().setValue(height*0.25);
 
@@ -1232,62 +1242,42 @@ public class newGUI extends GameEventSource {
                 body.setOnMouseClicked(eventbody -> {
                 });
 
-                if(cboxNetGame.isSelected()==false) {
+                setPlayernames(txtfPlayer1.getText(), txtfPlayer2.getText());
 
-                    setPlayernames(txtfPlayer1.getText(), txtfPlayer2.getText());
+                if (rbEasy1.isSelected())
+                    ki1Mode = 1;
+                else if (rbNormal1.isSelected())
+                    ki1Mode = 2;
+                else if (rbHard1.isSelected())
+                    ki1Mode = 3;
+                else
+                    ki1Mode = 4;
 
-                    if (rbEasy1.isSelected())
-                        ki1Mode = 1;
-                    else if (rbNormal1.isSelected())
-                        ki1Mode = 2;
-                    else if (rbHard1.isSelected())
-                        ki1Mode = 3;
-                    else
-                        ki1Mode = 4;
-
-                    if (rbEasy2.isSelected())
-                        ki2Mode = 1;
-                    else if (rbNormal2.isSelected())
-                        ki2Mode = 2;
-                    else if (rbHard2.isSelected())
-                        ki2Mode = 3;
-                    else
-                        ki2Mode = 4;
+                if (rbEasy2.isSelected())
+                    ki2Mode = 1;
+                else if (rbNormal2.isSelected())
+                    ki2Mode = 2;
+                else if (rbHard2.isSelected())
+                    ki2Mode = 3;
+                else
+                    ki2Mode = 4;
 
 
+
+                if(!cboxNetGame.isSelected()) {
                     drawName(1, body);
                     createField(body, ivSrc1);
                     body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
                 }
                 else {
-
-                    setPlayernames(txtfPlayer1.getText(), txtfPlayer2.getText());
-
-                    if (rbEasy1.isSelected())
-                        ki1Mode = 1;
-                    else if (rbNormal1.isSelected())
-                        ki1Mode = 2;
-                    else if (rbHard1.isSelected())
-                        ki1Mode = 3;
-                    else
-                        ki1Mode = 4;
-
-                    if (rbEasy2.isSelected())
-                        ki2Mode = 1;
-                    else if (rbNormal2.isSelected())
-                        ki2Mode = 2;
-                    else if (rbHard2.isSelected())
-                        ki2Mode = 3;
-                    else
-                        ki2Mode = 4;
-
-
                     body.getChildren().addAll(btnHost, btnClient);
                 }
 
             }
 
         });
+
+
 
 
         /**
@@ -1316,6 +1306,10 @@ public class newGUI extends GameEventSource {
                 ip = txtfIp.getText();
                 port = txtfPort.getText();
                 fireGameEvent(CONNECT_EVENT);
+
+                drawName(1, body);
+                createField(body, ivSrc1);
+                body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
 
             }
         });

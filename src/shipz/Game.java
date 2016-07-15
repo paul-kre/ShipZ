@@ -81,6 +81,7 @@ public class Game implements GameEventListener {
         gamePaused = false;
         filestream = new FileStream();
         random = new Random();
+
     }
 /*
     //Methoden
@@ -840,23 +841,28 @@ public class Game implements GameEventListener {
     }
 
     private void nextRoundHuman() {
-        aX = gui.getX();
-        aY = gui.getY();
-        aResult = checkTile(aX, aY);
-        System.out.println("Spieler " + activePlayer() + ": " + aY + "/" + aX + " => " + aResult);
-        if(player1active) {
-            if (aResult == 0) {
-                gui.draw(aY, aX, 2, 0);
-            } else {
-                gui.draw(aY, aX, 2, 2);
-            }
+        if(isHost) {
+            aX = gui.getX();
+            aY = gui.getY();
         }
         else {
-            if (aResult == 0) {
-                gui.draw(aY, aX, 1, 0);
-            } else {
-                gui.draw(aY, aX, 1, 2);
+            aX = network.getX();
+            aY = network.getY();
+        }
+        aResult = checkTile(aX, aY);
+        System.out.println("Spieler " + activePlayer() + ": " + aY + "/" + aX + " => " + aResult);
+
+        if(aResult == 0) {
+            if(isHost) {
+                network.send(NET_SHOOT_EVENT + ":" + aY + "," + aX + "," + reverseActivePlayer() + "," + 0);
             }
+            gui.draw(aY, aX, reverseActivePlayer(), 0);
+        }
+        else {
+            if(isHost) {
+                network.send(NET_SHOOT_EVENT + ":" + aY + "," + aX + "," + reverseActivePlayer() + "," + 2);
+            }
+            gui.draw(aY, aX, reverseActivePlayer(), 2);
         }
     }
 
@@ -902,25 +908,23 @@ public class Game implements GameEventListener {
         }
     }
 
-    /**
-     * Ersatz der Main-Methode (für Testzwecke)
-     */
-    protected void test() {
 
-        /*player1 = new Hard(10, false, shipList);
-        player2 = new Hard(10, false, shipList);
-        nextRoundHuman();
-        System.out.println("Mode = " + mode);*/
-
-    }
 
     private void cycle() {
         if(mode == 1) {
             if(player1active) {
                 gui.setEnableField(2);
+                if(isHost) {
+                    network.send(NET_ENABLE_GUI + ":" + 0);
+                }
             }
             else {
                 gui.setEnableField(1);
+                if(isHost) {
+                    gui.setEnableField(0);
+                    network.send(NET_ENABLE_GUI + ":" + 1);
+                }
+
             }
         }
         if(mode == 2) {
@@ -953,9 +957,21 @@ public class Game implements GameEventListener {
 
         switch(id) {
             case GUI_SHOOT_EVENT:
-                gui.setEnableField(0);
-                nextRoundHuman();
-                cycle();
+                if(isHost) {
+                    gui.setEnableField(0);
+                    nextRoundHuman();
+                    cycle();
+                }
+
+                break;
+            case NET_SHOOT_REQUEST:
+                if(isHost) {
+                    gui.setEnableField(0);
+                    network.send(NET_ENABLE_GUI + ":" + 0);
+                    nextRoundHuman();
+                    cycle();
+                }
+
                 break;
             case FILL_EVENT:
                 shipList = createShipList("5443332");
@@ -991,9 +1007,6 @@ public class Game implements GameEventListener {
                 }
 
                 cycle();
-                break;
-            case READY_EVENT:
-                test();
                 break;
             case FINISHED_ROUND:
             	filestream.newDraw(aX, aY, activePlayer(), aResult);
@@ -1072,8 +1085,34 @@ public class Game implements GameEventListener {
                 try {
                     if(isHost) network.connect(port);
                     else network.connect(ip, port);
+
+                    network.setEventListener(this);
+                    (new Thread(network)).start();
+
+                    //if(isHost) st
                 } catch(Exception ex) {
                     System.out.println(ex.getMessage());
+                }
+                break;
+            case SEND_EVENT:
+                String msg = network.getMessage();
+                System.out.println(msg);
+                byte action = Byte.parseByte(msg.split(":")[0]);
+
+                switch(action) {
+                    case NET_SHOOT_EVENT:
+                        String zug = msg.split(":")[1];
+                        String[] values = zug.split(",");
+                        int y = Integer.parseInt(values[0]);
+                        int x = Integer.parseInt(values[1]);
+                        int board = Integer.parseInt(values[2]);
+                        int result = Integer.parseInt(values[3]);
+                        gui.draw(y, x, board, result);
+                        break;
+                    case NET_ENABLE_GUI:
+                        int i = Integer.parseInt(msg.split(":")[1]);
+                        gui.setEnableField(i);
+                        break;
                 }
         }
     }
@@ -1246,6 +1285,14 @@ public class Game implements GameEventListener {
     	}else {
     		return 2;
     	}
+    }
+
+    private int reverseActivePlayer() {
+        if(player1active) {
+            return 2;
+        }else {
+            return 1;
+        }
     }
     
     /**

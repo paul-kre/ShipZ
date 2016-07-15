@@ -186,8 +186,8 @@ public class Network extends Player {
                     if(s.charAt(0) != pingAction) {
                         _msg = s;
                         fireGameEvent(SEND_EVENT);
+                        evaluateString(s);
                     }
-                     //evaluateString(s);
                 }
             } catch (Exception e) { }
         }
@@ -212,30 +212,37 @@ public class Network extends Player {
     }
 
     private void evaluateString(String s) {
-        if(validMessage(s))  {
-            byte action = getAction(s);
+        byte action = Byte.parseByte(s.split(":")[0]);
 
-            switch (action) {
-                case SHOOT_EVENT:
-                    convertShot(s);
+        switch (action) {
+            case NET_SHOOT_REQUEST:
+                String[] values = s.split(":")[1].split(",");
+                setY(Integer.parseInt(values[0]));
+                setX(Integer.parseInt(values[1]));
+                fireGameEvent(NET_SHOOT_REQUEST);
+                break;
+            case SHOOT_EVENT:
+                convertShot(s);
 
-                    fireGameEvent(SHOOT_EVENT);
-                    break;
-                case SHOOT_RESULT:
-                    convertShot(s);
+                fireGameEvent(SHOOT_EVENT);
+                break;
+            case SHOOT_RESULT:
+                convertShot(s);
 
-                    fireGameEvent(SHOOT_RESULT);
-                    break;
-                case CLOSE_EVENT:
-                    close();
-                    end();
-                    fireGameEvent(CLOSE_EVENT);
-                    break;
-                default:
-                    break;
-            }
-
+                fireGameEvent(SHOOT_RESULT);
+                break;
+            case CLOSE_EVENT:
+                close();
+                end();
+                fireGameEvent(CLOSE_EVENT);
+                break;
+            default:
+                break;
         }
+    }
+
+    public void shootRequest(int y, int x) {
+        send(NET_SHOOT_REQUEST + ":" + y + "," + x);
     }
 
     private boolean validMessage(String s) {
@@ -247,7 +254,8 @@ public class Network extends Player {
             String values = s.split("//")[1];
             int x = Integer.parseInt( values.split(":")[0] );
             int y = Integer.parseInt( values.split(":")[1] );
-            byte res = (byte) Integer.parseInt( values.split(":")[2] );
+            byte res = Byte.parseByte( values.split(":")[2] );
+
             setX(x);
             setY(y);
             setResult(res);

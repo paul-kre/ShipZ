@@ -15,6 +15,8 @@ public interface Event {
 	byte NET_SHOOT_EVENT = 31;
 	byte DISCONNECT_EVENT = 32;
 	byte SHOOT_RESULT = 33;
+	byte NET_ENABLE_GUI = 34;
+	byte NET_SHOOT_REQUEST = 35;
 
 	// AI
 	byte AI_SHOOT_EVENT = 40;
