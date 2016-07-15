@@ -578,7 +578,7 @@ public class newGUI extends GameEventSource {
      */
     public void drawName (int player, AnchorPane body) {
 
-        Text playername = new Text("Player "+player+" it�s your turn!");
+        Text playername = new Text("Player "+player+" it's your turn!");
         playername.layoutXProperty().setValue(width*0.3);
         playername.layoutYProperty().setValue(height*0.65);
         playername.setStroke(Color.WHITE);
@@ -1211,6 +1211,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().clear();
+                fireGameEvent(LOAD_EVENT);
                 body.getChildren().addAll(tbSavedGames);
                 body.setOnMouseClicked(eventbody -> {
                 });
@@ -1243,6 +1244,11 @@ public class newGUI extends GameEventSource {
                 if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
                     String rowData = row.getItem().getGamename();
                     gamename = rowData;
+                    body.getChildren().clear();
+                    drawName(1, body);
+                    createField(body, ivSrc1);
+                    body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+                    fireGameEvent(LOAD_TABLE_EVENT);
                 }
             });
             return row;
@@ -1495,15 +1501,17 @@ public class newGUI extends GameEventSource {
             @Override
             public void handle(ActionEvent event) {
 
-                fireGameEvent(LOAD_EVENT);
-
+            	boolean b = alertbox.displayLoad();
+            	if(b) {
+            		fireGameEvent(LOAD_EVENT);
+            	}
             }
         });
 
         /**
          * Event beim Bet�tigen des Save Buttons
          */
-        btnSave.setOnAction(e -> alertbox.display("Save", "Enter a filename!"));
+        btnSave.setOnAction(e -> alertbox.displaySave());
 
         /**
          * Event zum anpassen der Scene size

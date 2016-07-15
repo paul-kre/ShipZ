@@ -1062,10 +1062,17 @@ public class Game implements GameEventListener {
             	break;
             case LOAD_EVENT:
             	String[] saves = filestream.getAllGameNames().split(",");
-            	String gameName = saves[saves.length-1];
-            	loadGame(gameName);
-            	System.out.println("Der Spielstand " + gameName + " wurde geladen!");
+//            	String gameName = saves[saves.length-1];
+//            	loadGame(gameName);
+//            	System.out.println("Der Spielstand " + gameName + " wurde geladen!");
+            	for(int i = 0; i < saves.length; i++) {
+            		gui.setSavedGame(saves[i], filestream.getPlayerName(saves[i]), filestream.getOpponentName(saves[i]), filestream.getGamemode(saves[i]), filestream.getTime(saves[i]).replaceAll("_", " "));
+            	}
             	break;
+            case LOAD_TABLE_EVENT:
+            	System.out.println("Loading Game " + gui.getGamename() + "...");
+            	loadGame(gui.getGamename());
+            	System.out.println("Game " + gui.getGamename() + " successfully loaded!");
             case PVP_EVENT:
                 mode = 1;
                 System.out.println("Mode = " + mode);   //Test

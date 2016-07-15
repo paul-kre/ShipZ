@@ -31,8 +31,7 @@ public interface Event {
 	byte PVK_EVENT = 56;
 	byte KVK_EVENT = 57;
 	byte CONNECT_EVENT = 58;
-
-
+	byte LOAD_TABLE_EVENT = 120;
 
 	// IO
 	byte SAVE_EVENT = 110;
@@ -40,7 +39,5 @@ public interface Event {
 	byte UNDO_EVENT = 112;
 	byte REDO_EVENT = 113;
 	byte HIGHSCORE_EVENT = 114;
-
-	// IDs von 110-120 reserviert
-    
+	
 }

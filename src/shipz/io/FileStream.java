@@ -300,7 +300,7 @@ public class FileStream {
 	 * @param opponentName Name des zweiten Spielers
 	 */
 	public void saveScoreToFile(String playerName, String opponentName) {
-		score.saveScoreToFile(playerName, opponentName);
+		score.saveScoreToFile(playerName, opponentName, settings.getHighscoreMaximum());
 	}
 	
 	/*

@@ -8,15 +8,15 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 /**
- * Diese Klasse ist für die Punktevergabe zuständig,
- * außerdem für das Speichern der Punkte in der Datei
- * und zusätzlich für das Verwalten und Generieren der Highscore-Liste.
+ * Diese Klasse ist fï¿½r die Punktevergabe zustï¿½ndig,
+ * auï¿½erdem fï¿½r das Speichern der Punkte in der Datei
+ * und zusï¿½tzlich fï¿½r das Verwalten und Generieren der Highscore-Liste.
  * @author Florian Osterberg
  */
 public class Score {
 
 	// IV
-	/** SaveLoad-Objekt, das benötigt wird, um einige Methoden auszuführen. */
+	/** SaveLoad-Objekt, das benï¿½tigt wird, um einige Methoden auszufï¿½hren. */
 	private SaveLoad saveload;
 	/** Highscore-File */
 	private File highscoreFile;
@@ -55,9 +55,9 @@ public class Score {
 	/**
 	 * Setzt die Punktzahl eines bestimmten Spielers.
 	 * Der Parameter result beschreibt dabei die Aktion,
-	 * anhand dessen wird entschieden, wie sich die Punktzahl verändert.
+	 * anhand dessen wird entschieden, wie sich die Punktzahl verï¿½ndert.
 	 * @param playerName Name des Spielers
-	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
+	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> fï¿½r einen Treffer, <b>2</b> fï¿½r ein versenktes Schiff, <b>3</b> fï¿½r Undo
 	 */
 	protected void setScore(int playerIndex, int result) {
 		switch(result) {
@@ -65,28 +65,28 @@ public class Score {
 			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 100*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 100*comboPlayer2;
-			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
+			else throw new RuntimeException("Unzulï¿½ssiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		case 2:
 			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 300*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 300*comboPlayer2;
-			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
+			else throw new RuntimeException("Unzulï¿½ssiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		case 3:
 			if(playerIndex == 1) scorePlayer1 -= 50;
 			else if(playerIndex == 2)scorePlayer2 -= 50;
-			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
+			else throw new RuntimeException("Unzulï¿½ssiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		default: break;
 		}
 	}
 	
 	/**
-	 * Methode, die die Combos verwaltet und anhand des getätigten Zugs
+	 * Methode, die die Combos verwaltet und anhand des getï¿½tigten Zugs
 	 * den Combo-Wert aktualisiert.
 	 * @param playerName Name des Spielers
-	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
+	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> fï¿½r einen Treffer, <b>2</b> fï¿½r ein versenktes Schiff, <b>3</b> fï¿½r Undo
 	 */
 	private void combo(int playerIndex, int result) {
 		if(playerIndex == 1) {
@@ -104,19 +104,19 @@ public class Score {
 				comboPlayer2 = 1;
 			}
 		} else {
-			throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
+			throw new RuntimeException("Unzulï¿½ssiger playerIndex, erlaubt ist 1 oder 2.");
 		}
 	}
 	
 	/**
-	 * Ein bestimmter Spieler wird in die Highscore-Datei eingefügt.
+	 * Ein bestimmter Spieler wird in die Highscore-Datei eingefï¿½gt.
 	 * Es wird mit dem Spielernamen das Datum und die Uhrzeit abgespeichert,
-	 * damit auch mehrfache Einträge möglich sind.
+	 * damit auch mehrfache Eintrï¿½ge mï¿½glich sind.
 	 * Falls der Spieler mit der aktuellen Uhrzeit schon im Highscore existiert
-	 * (sehr unwahrscheinlicher aber theoretisch möglicher Fall) wird die Methode
+	 * (sehr unwahrscheinlicher aber theoretisch mï¿½glicher Fall) wird die Methode
 	 * rekursiv aufgerufen und so lange ein Sonderzeichen angehangen,
 	 * bis der Name eingetragen werden kann.
-	 * @param playerName Der Spieler, der eingefügt werden soll.
+	 * @param playerName Der Spieler, der eingefï¿½gt werden soll.
 	 * @param score Punktzahl, die gesetzt werden soll.
 	 */
 	private void addPlayerIntoHighscore(String playerName, int score) {
@@ -128,7 +128,7 @@ public class Score {
 	}
 	
 	/**
-	 * Überprüft, ob ein Spieler bereits in der Score-Datei steht.
+	 * ï¿½berprï¿½ft, ob ein Spieler bereits in der Score-Datei steht.
 	 * @param playerName Der Spieler nach dem gesucht wird
 	 * @return Steht der Spieler bereits in der Score-Datei?
 	 */
@@ -175,11 +175,11 @@ public class Score {
 	}
 
 	/**
-	 * Diese Methode lädt alle Einträge aus der Highscore-Datei.
+	 * Diese Methode lï¿½dt alle Eintrï¿½ge aus der Highscore-Datei.
 	 * Diese werden dann sortiert und in eine TreeMap geschrieben.
  	 * Dies ist notwendig, um einen String zu generieren,
 	 * der den Highscore wiedergibt.
-	 * @return die Map für String und Integer mit den sortierten Einträgen
+	 * @return die Map fï¿½r String und Integer mit den sortierten Eintrï¿½gen
 	 */
 	private Map<String, Integer> highscoreToSortedMap() {
 		// Scanner-Objekt zum Lesen der Highscore-Datei
@@ -190,7 +190,7 @@ public class Score {
 		}
 		
 		String line = "";
-		TreeMap<String, Integer> map = new TreeMap<>(); // TreeMap, die die Highscore-Einträge als KeyValue-Paare speichert
+		TreeMap<String, Integer> map = new TreeMap<>(); // TreeMap, die die Highscore-Eintrï¿½ge als KeyValue-Paare speichert
 		
 		while(scanner.hasNextLine()) {
 			line = scanner.nextLine();
@@ -198,7 +198,7 @@ public class Score {
 			map.put(s[0], Integer.parseInt(s[1]));
 		}
 		
-		// Comparator, vergleicht die Punktzahlen und ordnet die Einträge nach Punktzahlen
+		// Comparator, vergleicht die Punktzahlen und ordnet die Eintrï¿½ge nach Punktzahlen
 		Comparator<String> comp = new Comparator<String>() { // anonymer Funktionsaufruf, Redefinierung einer Methode eines Interfaces
 			/**
 			 * Vergleicht die Values (Punkte) zweier Keys (Spielernamen)
@@ -216,19 +216,19 @@ public class Score {
 		};
 		
 		Map<String, Integer> sortedMap = new TreeMap<>(comp); // neue TreeMap, die mit dem oben definierten Comparator arbeitet
-		sortedMap.putAll(map); // Einträge des Highscores werden durch das Einfügen sofort sortiert, da der Comparator im Konstruktor übergeben wurde
+		sortedMap.putAll(map); // Eintrï¿½ge des Highscores werden durch das Einfï¿½gen sofort sortiert, da der Comparator im Konstruktor ï¿½bergeben wurde
 		return sortedMap;
 	}
 	
 	/**
-	 * Löscht alle Daten, die nicht im Highscore stehen,
-	 * und somit nicht mehr benötigt werden.
+	 * Lï¿½scht alle Daten, die nicht im Highscore stehen,
+	 * und somit nicht mehr benï¿½tigt werden.
 	 */
-	private void cleanHighscoreFile() {
+	private void cleanHighscoreFile(int max) {
 		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
 		String[] a = str.split(",");
 		String result = "";
-		if(a.length < 10) {
+		if(a.length < max) {
 			for(int i = 0; i < a.length; i++) {
 				result += a[i] + ",";
 			}
@@ -241,19 +241,19 @@ public class Score {
 	}
 	
 	/**
-	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt,
+	 * Wenn das Spiel vorbei ist, wird diese Methode ausgefï¿½hrt,
 	 * damit die Punkte in der Datei abgespeichert werden.
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers
 	 */
-	protected void saveScoreToFile(String playerName, String opponentName) {
+	protected void saveScoreToFile(String playerName, String opponentName, int max) {
 		addPlayerIntoHighscore(playerName, scorePlayer1);
 		addPlayerIntoHighscore(opponentName, scorePlayer2);
-		cleanHighscoreFile();
+		cleanHighscoreFile(max);
 	}
 	
 	/**
-	 * Gibt die Punktzahl eines Spielers zurück.
+	 * Gibt die Punktzahl eines Spielers zurï¿½ck.
 	 * @param 1 = Spieler1, 2 = Spieler2
 	 * @return Punktzahl des Spielers
 	 */
@@ -261,12 +261,12 @@ public class Score {
 		switch(playerIndex) {
 		case 1: return scorePlayer1;
 		case 2: return scorePlayer2;
-		default: throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
+		default: throw new RuntimeException("Unzulï¿½ssiger playerIndex, erlaubt ist 1 oder 2.");
 		}
 	}
 	
 	/**
-	 * Der Wert der Combo wird zurückgegeben,
+	 * Der Wert der Combo wird zurï¿½ckgegeben,
 	 * damit die GUI darstellen kann, welche Combo der Spieler
 	 * aktuell erreicht hat.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
@@ -276,13 +276,13 @@ public class Score {
 		switch(playerIndex) {
 		case 1: return comboPlayer1;
 		case 2: return comboPlayer2;
-		default: throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
+		default: throw new RuntimeException("Unzulï¿½ssiger playerIndex, erlaubt ist 1 oder 2.");
 		}
 	}
 	
 	/**
-	 * Lädt die Züge aus einer Datei und aktualisiert damit die Punkte-
-	 * und Combo-Werte. Diese Methode wird für das Laden von Spielständen benötigt.
+	 * Lï¿½dt die Zï¿½ge aus einer Datei und aktualisiert damit die Punkte-
+	 * und Combo-Werte. Diese Methode wird fï¿½r das Laden von Spielstï¿½nden benï¿½tigt.
 	 * @param gameName Name des Spielstands
 	 */
 	protected void loadScore(String gameName) {
@@ -296,7 +296,7 @@ public class Score {
 	}
 	
 	/**
-	 * So ähnlich wird der Highscore in der Game-Klasse für die GUI dargestellt.
+	 * So ï¿½hnlich wird der Highscore in der Game-Klasse fï¿½r die GUI dargestellt.
 	 */
 	@Deprecated
 	private void test() {
