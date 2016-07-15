@@ -3,6 +3,8 @@ package shipz.gui;
 import javafx.animation.FadeTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -24,8 +26,9 @@ import javafx.stage.*;
 import javafx.util.Duration;
 import shipz.util.GameEventSource;
 
+
 import java.awt.*;
-import java.awt.Dialog;
+import java.util.ArrayList;
 
 
 /**
@@ -57,9 +60,9 @@ public class newGUI extends GameEventSource {
 
     //Images
     Image white = new Image(newGUI.class.getResource("White.png").toExternalForm());
-    Image water = new Image(newGUI.class.getResource("BG.png").toExternalForm());
-    Image ship = new Image(newGUI.class.getResource("Raumschiff1.png").toExternalForm());
-    Image explosion = new Image(newGUI.class.getResource("Explosion.png").toExternalForm());
+    Image water = new Image(newGUI.class.getResource("shipZ_spielfeld.png").toExternalForm());
+    Image ship = new Image(newGUI.class.getResource("shipZ_1ershipIntact.png").toExternalForm());
+    Image explosion = new Image(newGUI.class.getResource("shipZ_explosion.gif").toExternalForm());
 
     //Spielfeld sperren
     int enableField = 2;
@@ -85,6 +88,13 @@ public class newGUI extends GameEventSource {
     //KI Schwierigkeitsstufen
     int ki1Mode;
     int ki2Mode;
+
+
+    TableView tbHighscore;
+    private ObservableList data;
+    ArrayList list = new ArrayList();
+
+
 
     //IM
     public void setPlayernames (String player1, String player2) {
@@ -192,7 +202,7 @@ public class newGUI extends GameEventSource {
                         }
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {
-                        oneField.setImage(oneFieldImg);
+                        oneField.setImage(explosion);
                     }
                 });
 
@@ -305,7 +315,7 @@ public class newGUI extends GameEventSource {
                         }
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {
-                        oneField.setImage(oneFieldImg);
+                        oneField.setImage(water);
                     }
                 });
 
@@ -537,7 +547,7 @@ public class newGUI extends GameEventSource {
 
     /**
      * Methode zum setzen der Punkte von Spieler 1
-     * @param points Punkte
+     * @param score Punkte
      */
     public void setScoreLabel (int score, int playerIndex) {
         if(playerIndex == 1) {
@@ -562,6 +572,39 @@ public class newGUI extends GameEventSource {
             throw new RuntimeException("Ung�ltiger Playerindex!");
         }
     }
+
+
+    private ObservableList getInitialTableData() {
+
+
+        list.add(new Highscore("1", "Paul", "2000", "30.09.09"));
+        list.add(new Highscore("2", "Flo", "1000", "31.09.09"));
+        list.add(new Highscore("3", "Sonnenschein", "900", "32.09.09"));
+        list.add(new Highscore("4", "Max", "700", "33.09.09"));
+        list.add(new Highscore("5", "Arthur", "500", "34.09.09"));
+
+        ObservableList data = FXCollections.observableList(list);
+
+        return data;
+    }
+
+
+    private ObservableList setNewRow(String data) {
+
+
+
+        String s1 = "6";
+        String s2 = "Unknown";
+        String s3 = "1";
+        String s4 = "22.05.06";
+
+        list.add(new Highscore(s1, s2, s3, s4));
+
+        return FXCollections.observableList(list);
+
+    }
+
+
 
     //Constructor
     public newGUI (Stage primaryStage) {
@@ -862,8 +905,8 @@ public class newGUI extends GameEventSource {
         Rectangle dragBox = new Rectangle();
         ImageView ivSrc1 = new ImageView();
         ImageView ivT = new ImageView();
-        Image img1 = new Image(GUI.class.getResource("Raumschiff1.png").toExternalForm());
-        Image img2 = new Image(GUI.class.getResource("BG.png").toExternalForm());
+        Image img1 = new Image(newGUI.class.getResource("shipZ_1ershipIntact.png").toExternalForm());
+        Image img2 = new Image(newGUI.class.getResource("shipZ_spielfeld.png").toExternalForm());
 
         dragBox.layoutXProperty().setValue(width*0.025);
         dragBox.layoutYProperty().setValue(height*0.18);
@@ -911,8 +954,12 @@ public class newGUI extends GameEventSource {
         txtCombo2.setStroke(Color.WHITE);
 
 
+        tbHighscore = new TableView();
+        data = getInitialTableData();
+        tbHighscore.setItems(data);
+
+
         //Highscore Tabelle
-        TableView tbHighscore = new TableView();
         tbHighscore.setPrefWidth(width);
         tbHighscore.setPrefHeight(height);
 
@@ -931,18 +978,18 @@ public class newGUI extends GameEventSource {
         pointsColumn.setMinWidth(width*0.24);
         pointsColumn.setCellValueFactory(new PropertyValueFactory("points"));
 
-        // Combo Spalte
-        TableColumn comboColumn = new TableColumn("Combo");
-        comboColumn.setMinWidth(width*0.24);
-        comboColumn.setCellValueFactory(new PropertyValueFactory("combo"));
-
         // Datums Spalte
         TableColumn dateColumn = new TableColumn("Date");
         dateColumn.setMinWidth(width*0.15);
         dateColumn.setCellValueFactory(new PropertyValueFactory("date"));
 
         // Hinzuf�gen der Spalten
-        tbHighscore.getColumns().addAll(positionColumn, nameColumn, pointsColumn, comboColumn, dateColumn);
+        tbHighscore.getColumns().addAll(positionColumn, nameColumn, pointsColumn, dateColumn);
+
+        tbHighscore.getSelectionModel().selectedIndexProperty().addListener(new RowSelectChangeListener());
+
+        //test
+        setNewRow("hi");
 
 
         //Ende Button
@@ -970,7 +1017,7 @@ public class newGUI extends GameEventSource {
         primaryStage.setMinWidth(900);
         primaryStage.setMinHeight(700);
         primaryStage.sizeToScene();
-        scene.getStylesheets().add(GUI.class.getResource("newGUICSS.css").toExternalForm());
+        scene.getStylesheets().add(newGUI.class.getResource("newGUICSS.css").toExternalForm());
         primaryStage.show();
 
 
@@ -1137,21 +1184,21 @@ public class newGUI extends GameEventSource {
 
                     if (rbEasy1.isSelected())
                         ki1Mode = 1;
-                        else if (rbNormal1.isSelected())
-                            ki1Mode = 2;
-                            else if (rbHard1.isSelected())
-                                ki1Mode = 3;
-                                else
-                                    ki1Mode = 4;
+                    else if (rbNormal1.isSelected())
+                        ki1Mode = 2;
+                    else if (rbHard1.isSelected())
+                        ki1Mode = 3;
+                    else
+                        ki1Mode = 4;
 
                     if (rbEasy2.isSelected())
                         ki2Mode = 1;
-                        else if (rbNormal2.isSelected())
-                            ki2Mode = 2;
-                            else if (rbHard2.isSelected())
-                                ki2Mode = 3;
-                                else
-                                    ki2Mode = 4;
+                    else if (rbNormal2.isSelected())
+                        ki2Mode = 2;
+                    else if (rbHard2.isSelected())
+                        ki2Mode = 3;
+                    else
+                        ki2Mode = 4;
 
 
                     drawName(1, body);
@@ -1164,21 +1211,21 @@ public class newGUI extends GameEventSource {
 
                     if (rbEasy1.isSelected())
                         ki1Mode = 1;
-                        else if (rbNormal1.isSelected())
-                            ki1Mode = 2;
-                            else if (rbHard1.isSelected())
-                                ki1Mode = 3;
-                                else
-                                    ki1Mode = 4;
+                    else if (rbNormal1.isSelected())
+                        ki1Mode = 2;
+                    else if (rbHard1.isSelected())
+                        ki1Mode = 3;
+                    else
+                        ki1Mode = 4;
 
                     if (rbEasy2.isSelected())
                         ki2Mode = 1;
-                        else if (rbNormal2.isSelected())
-                            ki2Mode = 2;
-                            else if (rbHard2.isSelected())
-                                ki2Mode = 3;
-                                else
-                                    ki2Mode = 4;
+                    else if (rbNormal2.isSelected())
+                        ki2Mode = 2;
+                    else if (rbHard2.isSelected())
+                        ki2Mode = 3;
+                    else
+                        ki2Mode = 4;
 
 
                     body.getChildren().addAll(btnHost, btnClient);
@@ -1248,14 +1295,14 @@ public class newGUI extends GameEventSource {
          * Event beim Bet�tigen des Save Buttons
          */
         btnSave.setOnAction(e -> alertbox.display("Save", "Enter a filename!"));
-        
+
         /**
          * Event zum anpassen der Scene size
          */
 
         double height = 0;
         double width = 0;
-        
+
 /*        scene.setOnMouseClicked(event -> {
 
 //            height = scene.getHeight();
@@ -1440,11 +1487,11 @@ public class newGUI extends GameEventSource {
 
         });
 */
-        
+
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
 //                System.out.println("Width: " + newSceneWidth);
-            	double width = (double) newSceneWidth;
+                double width = (double) newSceneWidth;
 
                 hlOverall.layoutXProperty().setValue(width*0.03);
                 //hlOverall.setFont(javafx.scene.text.Font.font("Rockwell", height*0.12));
@@ -1562,8 +1609,6 @@ public class newGUI extends GameEventSource {
 
                 pointsColumn.setMinWidth(width*0.14);
 
-                comboColumn.setMinWidth(width*0.14);
-
                 dateColumn.setMinWidth(width*0.1);
             }
         });
@@ -1571,8 +1616,8 @@ public class newGUI extends GameEventSource {
             @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 //                System.out.println("Height: " + newSceneHeight);
 
-            	double height = (double) newSceneHeight;
-            	
+                double height = (double) newSceneHeight;
+
                 header.setPrefHeight(height*0.25);
                 body.setPrefHeight(height*0.8);
                 foot.setPrefHeight(height*0.05);
@@ -1670,7 +1715,7 @@ public class newGUI extends GameEventSource {
 
                 btnEGame.layoutYProperty().setValue(height*0.4);
                 btnEGame.setPrefWidth(150);
-//                btnEGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
+//              btnEGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
 
                 btnLock.layoutYProperty().setValue(height*0.7);
                 btnLock.setPrefHeight(height*0.05);
@@ -1693,5 +1738,26 @@ public class newGUI extends GameEventSource {
 
     }//Ende Constructor
 
-}//Ende newGUI
+
+    private class RowSelectChangeListener implements ChangeListener {
+
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+/**
+            int ix = newValue.intValue();
+
+            if ((ix = data.size())) {
+
+                return; // invalid data
+            }
+
+            Book book = data.get(ix);
+            actionStatus.setText(book.toString());
+**/
+        }
+    }
+
+
+    }//Ende newGUI
+
 

@@ -1,5 +1,3 @@
-package shipz.gui;
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
@@ -57,10 +55,10 @@ public class GUI {
     //Constructor
     public GUI(Stage primaryStage) {
 
-        // Hinzufügen einer VBox zum layouten
+        // HinzufÃ¼gen einer VBox zum layouten
         VBox root = new VBox();
 
-        //Hinzufügen von Panes
+        //HinzufÃ¼gen von Panes
         AnchorPane header = new AnchorPane();
         AnchorPane game = new AnchorPane();
         AnchorPane foot = new AnchorPane();
@@ -217,17 +215,17 @@ public class GUI {
         pointsColumn.setMinWidth(200);
         pointsColumn.setCellValueFactory(new PropertyValueFactory("points"));
 
-        // Hinzuf�gen der Spalten
+        // Hinzufügen der Spalten
         tbHighscore.getColumns().addAll(positionColumn, nameColumn, pointsColumn);
 
 
-        // Hinzufügen der Panes zur VBox
+        // HinzufÃ¼gen der Panes zur VBox
         root.getChildren().add(header);
         root.getChildren().add(game);
         root.getChildren().add(foot);
 
 
-        // Hinzufügen der Controlelemente
+        // HinzufÃ¼gen der Controlelemente
         header.getChildren().addAll(btnNGame, btnLGame, btnHighscore, hlOverall);
         foot.getChildren().addAll(btnEGame);
 
@@ -269,7 +267,7 @@ public class GUI {
             @Override
             public void handle(ActionEvent event) {
 
-//                AlertBox.display("Network Connection", "Choose:");
+                //AlertBox.display("Network Connection", "Choose:");
 
             }
         });
@@ -495,7 +493,7 @@ public class GUI {
     }
 
     /**
-     * Methode zum l�schen eines Images an der angegebene Position
+     * Methode zum löschen eines Images an der angegebene Position
      * @param x X-Koordinate
      * @param y Y-Koordinate
      * @param nr Spielfeldnummer

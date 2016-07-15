@@ -961,10 +961,30 @@ public class Game implements GameEventListener {
                 displayBoards();
                 //drawShipOnGUI();
                 if(mode == 2 || mode == 3) {
-                    player2 = new Hard(10, false, shipList);
+                    int ki2mode = gui.getKi2Mode();
+                    if(ki2mode == 1) {
+                        player2 = new Easy(10, false, shipList);
+                    }
+                    else if(ki2mode == 2) {
+                        player2 = new Normal(10, false, shipList);
+                    }
+                    else {
+                        player2 = new Hard(10, false, shipList);
+                    }
+                    System.out.println("Player 2: " + ki2mode);
                 }
                 if(mode == 3) {
-                    player1 = new Easy(10, false, shipList);
+                    int ki1mode = gui.getKi1Mode();
+                    if(ki1mode == 1) {
+                        player1 = new Easy(10, false, shipList);
+                    }
+                    else if(ki1mode == 2) {
+                        player1 = new Normal(10, false, shipList);
+                    }
+                    else {
+                        player1 = new Hard(10, false, shipList);
+                    }
+                    System.out.println("Player 1: " + ki1mode);
                 }
 
                 cycle();
