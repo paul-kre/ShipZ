@@ -1245,7 +1245,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().clear();
-                body.getChildren().addAll(txtfIp, btnConnect);
+                body.getChildren().addAll(txtfPort, btnConnect);
 
             }
         });
