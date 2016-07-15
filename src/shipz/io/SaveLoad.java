@@ -74,7 +74,7 @@ public class SaveLoad {
 	 * @param preferences Einstellungen des Spiels, die am Anfang gesetzt wurden
 	 * @param mirrorField Spielfeld der KI
 	 */
-	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String mirrorFieldOne, String mirrorFieldTwo) {
+	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode, String mirrorFieldOne, String mirrorFieldTwo) {
 		updateXML();
 		if(!doesGameExist(gameName)) {
 			Element gameElement = new Element("game");
@@ -90,6 +90,7 @@ public class SaveLoad {
 			gameElement.addContent(new Element("preferences").setText(preferences));
 			gameElement.addContent(new Element("mirrorFieldOne").setText(mirrorFieldOne));
 			gameElement.addContent(new Element("mirrorFieldTwo").setText(mirrorFieldTwo));
+			gameElement.addContent(new Element("gamemode").setText(gamemode));
 			
 			root.addContent(gameElement);
 			document.setContent(root);
@@ -103,6 +104,7 @@ public class SaveLoad {
 			setNode(gameName, "opponentName", opponentName);
 			setNode(gameName, "boardsize", boardsize+"");
 			setNode(gameName, "preferences", preferences);
+			setNode(gameName, "gamemode", gamemode);
 			setNode(gameName, "mirrorFieldOne", mirrorFieldOne);
 			setNode(gameName, "mirrorFieldTwo", mirrorFieldTwo);
 		}
@@ -350,6 +352,10 @@ public class SaveLoad {
 	 */
 	protected String getMirrorFieldTwo(String gameName) {
 		return getNode(gameName, "mirrorFieldTwo");
+	}
+	
+	protected String getGamemode(String gameName) {
+		return getNode(gameName, "gamemode");
 	}
 	
 	/**

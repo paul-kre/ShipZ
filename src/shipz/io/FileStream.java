@@ -52,8 +52,8 @@ public class FileStream {
 	 * @param mirrorFieldOne Spielfeld der 1. KI
 	 * @param mirrorFieldTwo Spielfeld der 2. KI
 	 */
-	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String mirrorFieldOne, String mirrorFieldTwo) {
-		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, mirrorFieldOne, mirrorFieldTwo);
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode, String mirrorFieldOne, String mirrorFieldTwo) {
+		saveload.saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, gamemode, mirrorFieldOne, mirrorFieldTwo);
 		undoredo.saveToFile(gameName);
 	}
 	
@@ -70,8 +70,8 @@ public class FileStream {
 	 * @param preferences die Einstellungen des Spiels
 	 * @param mirrorFieldOne Spielfeld der 1. KI
 	 */
-	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String mirrorFieldOne) {
-		saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, mirrorFieldOne, null);
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode, String mirrorFieldOne) {
+		saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, gamemode, mirrorFieldOne, null);
 	}
 	
 	/**
@@ -86,8 +86,8 @@ public class FileStream {
 	 * @param activePlayer aktiver Spieler
 	 * @param preferences die Einstellungen des Spiels
 	 */
-	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences) {
-		saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, null, null);
+	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode) {
+		saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, gamemode, null, null);
 	}
 	
 	/**
@@ -183,6 +183,18 @@ public class FileStream {
 	 */
 	public String getPreferences(String gameName) {
 		return saveload.getPreferences(gameName);
+	}
+	
+	public String getMirrorFieldOne(String gameName) {
+		return saveload.getMirrorFieldOne(gameName);
+	}
+	
+	public String getMirrorFieldTwo(String gameName) {
+		return saveload.getMirrorFieldTwo(gameName);
+	}
+	
+	public String getGamemode(String gameName) {
+		return saveload.getGamemode(gameName);
 	}
 	
 	/**
