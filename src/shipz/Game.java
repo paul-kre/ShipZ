@@ -1049,7 +1049,13 @@ public class Game implements GameEventListener {
 				}
 				break;
             case SAVE_EVENT:
-            	filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null);
+                if(mode == 1) {
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "Player vs. Player");
+                } else if(mode == 2) {
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", "mirrorfield");
+                } else if(mode == 3) {
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, "AI vs. AI", "mirrorfield1", "mirrorfield2");
+                }
             	break;
             case LOAD_EVENT:
             	String[] saves = filestream.getAllGameNames().split(",");
