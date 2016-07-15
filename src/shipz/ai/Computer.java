@@ -37,7 +37,7 @@ public abstract class Computer extends Player {
      * Zweidimensionales Byte-Array, welches als Kopie des zu beschießenen Feldes dient.<br>
      * Speichert die Felder die man schon getroffen hat und die man nicht mehr
      * beschießen darf.<br>
-     *
+     * h
      * Die Indices können folgende Zustände aufweisen:<br>
      * 0: Noch nicht beschossen<br>
      * 1: Nicht mehr beschießbar (Wasser getroffen bzw. Umgebung eines Schiffes)<br>
