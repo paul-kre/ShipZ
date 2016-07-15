@@ -25,6 +25,7 @@ import javafx.scene.text.*;
 import javafx.stage.*;
 import javafx.util.Duration;
 import shipz.util.GameEventSource;
+import java.util.Random;
 
 
 import java.awt.*;
@@ -63,6 +64,10 @@ public class newGUI extends GameEventSource {
     Image water = new Image(newGUI.class.getResource("shipZ_spielfeld.png").toExternalForm());
     Image ship = new Image(newGUI.class.getResource("shipZ_1ershipIntact.png").toExternalForm());
     Image explosion = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
+    Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion3.gif").toExternalForm());
+    Image explosion3 = new Image(newGUI.class.getResource("shipZ_explosion4.gif").toExternalForm());
+
+    private Random random = new Random();
 
     //Spielfeld sperren
     int enableField = 2;
@@ -202,7 +207,19 @@ public class newGUI extends GameEventSource {
                         }
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {
-                        oneField.setImage(explosion);
+
+
+                    int randomNumber = random.nextInt(2);
+
+                        if (randomNumber == 0){
+
+                            oneField.setImage(explosion);
+                        } else if ( randomNumber == 1){
+                            oneField.setImage(explosion2);
+                        } else {
+                            oneField.setImage(explosion3);
+                        }
+
                     }
                 });
 
