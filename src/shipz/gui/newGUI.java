@@ -232,13 +232,9 @@ public class newGUI extends GameEventSource {
                         if(enableField==1) {
                             //Event zum �bergeben der Koordinaten
                             //Auf R�ckmeldung
-                            if(isHost) {
-                                setCoordinates(y, x);
-                                fireGameEvent(GUI_SHOOT_EVENT);
-                            }
-                            else {
+                            setCoordinates(y, x);
+                            fireGameEvent(GUI_SHOOT_EVENT);
 
-                            }
                         }
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {

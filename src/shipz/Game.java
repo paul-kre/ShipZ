@@ -962,6 +962,9 @@ public class Game implements GameEventListener {
                     nextRoundHuman();
                     cycle();
                 }
+                else {
+                    network.shootRequest(gui.getX(), gui.getY());
+                }
 
                 break;
             case NET_SHOOT_REQUEST:
