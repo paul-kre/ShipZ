@@ -58,9 +58,11 @@ public class GameTest implements GameEventListener {
 
         if(isHost) network.send("hi");
 
+        /*
         while(!gameOver) {
             network.send(in.nextLine());
         }
+        */
 
         network.end();
 

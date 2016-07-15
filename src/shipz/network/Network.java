@@ -78,6 +78,14 @@ public class Network extends Player {
         _ip = null;
     }
 
+    private boolean isValidIP(String ip) {
+        return Pattern.matches("((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\\.){3}((25[0-5])|(2[0-4][0-9])|(1?[0-9][0-9]?))", ip);
+    }
+
+    private boolean isValidPort(int port) {
+        return Pattern.matches("[0-9]{1,8}", port + "");
+    }
+
     /**
      * Connects to the given ip and port.
      *
@@ -87,6 +95,9 @@ public class Network extends Player {
      */
 
     public void connect(String ip, int port) throws Exception {
+        if (!isValidIP(ip)) throw new Exception("Please enter a correct ip-adress.");
+        if (!isValidPort(port)) throw new Exception("Please enter a correct ip-adress.");
+
         _port = port;
         _ip = ip;
 
@@ -163,16 +174,15 @@ public class Network extends Player {
 
     @Override
     public void run() {
-        Timer timer = new Timer(500);
+        //Timer timer = new Timer(500);
 
         send(pingAction + "");
 
         String s;
-        while(!isEnd() && timer.hasTime()) {
+        while(!isEnd()) {
             try {
                 s = _in.readLine();
-                if(s != null && !s.isEmpty()) { // Message received
-                    timer.reset();
+                if(s != null) { // Message received
                     if(s.charAt(0) != pingAction) {
                         _msg = s;
                         fireGameEvent(SEND_EVENT);
@@ -182,10 +192,12 @@ public class Network extends Player {
             } catch (Exception e) { }
         }
 
+        /*
         if(!timer.hasTime() && !isEnd()) {
             System.out.println("Connection error.");
             connectionError();
         }
+        */
 
         close();
     }
