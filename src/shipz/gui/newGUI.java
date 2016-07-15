@@ -64,8 +64,8 @@ public class newGUI extends GameEventSource {
     Image water = new Image(newGUI.class.getResource("shipZ_spielfeld.png").toExternalForm());
     Image ship = new Image(newGUI.class.getResource("shipZ_1ershipIntact.png").toExternalForm());
     Image explosion = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
-    Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion3.gif").toExternalForm());
-    Image explosion3 = new Image(newGUI.class.getResource("shipZ_explosion4.gif").toExternalForm());
+    //Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion3.gif").toExternalForm());
+    //Image explosion3 = new Image(newGUI.class.getResource("shipZ_explosion4.gif").toExternalForm());
 
     private Random random = new Random();
 
@@ -94,14 +94,26 @@ public class newGUI extends GameEventSource {
     int ki1Mode;
     int ki2Mode;
 
+    //IP und Port
+    String ip;
+    String port;
+
 
     TableView tbHighscore;
     private ObservableList data;
     ArrayList list = new ArrayList();
 
+    //Network
+    private boolean isHost;
+
 
 
     //IM
+
+    public boolean isHost() {
+        return isHost;
+    }
+
     public void setPlayernames (String player1, String player2) {
 
         playername1 = player1;
@@ -122,6 +134,7 @@ public class newGUI extends GameEventSource {
 
     }
 
+
     public int getKi1Mode () {
 
         return ki1Mode;
@@ -131,6 +144,19 @@ public class newGUI extends GameEventSource {
     public int getKi2Mode () {
 
         return ki2Mode;
+
+    }
+
+
+    public String getPort () {
+
+        return port;
+
+    }
+
+    public String getIp () {
+
+        return ip;
 
     }
 
@@ -208,17 +234,8 @@ public class newGUI extends GameEventSource {
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {
 
-
-                    int randomNumber = random.nextInt(2);
-
-                        if (randomNumber == 0){
-
                             oneField.setImage(explosion);
-                        } else if ( randomNumber == 1){
-                            oneField.setImage(explosion2);
-                        } else {
-                            oneField.setImage(explosion3);
-                        }
+
 
                     }
                 });
@@ -594,11 +611,13 @@ public class newGUI extends GameEventSource {
     private ObservableList getInitialTableData() {
 
 
+        /** Test
         list.add(new Highscore("1", "Paul", "2000", "30.09.09"));
         list.add(new Highscore("2", "Flo", "1000", "31.09.09"));
         list.add(new Highscore("3", "Sonnenschein", "900", "32.09.09"));
         list.add(new Highscore("4", "Max", "700", "33.09.09"));
         list.add(new Highscore("5", "Arthur", "500", "34.09.09"));
+         */
 
         ObservableList data = FXCollections.observableList(list);
 
@@ -619,6 +638,10 @@ public class newGUI extends GameEventSource {
 
         return FXCollections.observableList(list);
 
+    }
+
+    public void clearHighscore() {
+        list.clear();
     }
 
 
@@ -1105,6 +1128,20 @@ public class newGUI extends GameEventSource {
             }
         });
 
+        /**
+         * Event beim Bet�tigen des Highscore Buttons
+         */
+        btnHighscore.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                fireGameEvent(HIGHSCORE_EVENT);
+
+
+            }
+        });
+
 
         /**
          * Event beim Bet�tigen des PvP Buttons
@@ -1263,10 +1300,25 @@ public class newGUI extends GameEventSource {
 
                 body.getChildren().clear();
                 body.getChildren().addAll(txtfPort, btnConnect);
+                isHost = true;
 
             }
         });
 
+        /**
+         * Event beim Bet�tigen des Connect Buttons
+         */
+        btnConnect.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                ip = txtfIp.getText();
+                port = txtfPort.getText();
+                fireGameEvent(CONNECT_EVENT);
+
+            }
+        });
 
         /**
          * Event beim Bet�tigen des Random Buttons
@@ -1278,6 +1330,7 @@ public class newGUI extends GameEventSource {
 
                 body.getChildren().clear();
                 body.getChildren().addAll(txtfIp, txtfPort, btnConnect);
+                isHost = false;
 
             }
         });

@@ -28,6 +28,8 @@ public interface Event {
 	byte PVP_EVENT = 55;
 	byte PVK_EVENT = 56;
 	byte KVK_EVENT = 57;
+	byte CONNECT_EVENT = 58;
+
 
 
 	// IO

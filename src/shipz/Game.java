@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 import shipz.ai.*;
 
@@ -58,6 +59,8 @@ public class Game implements GameEventListener {
      *  3   KvK
      */
     private byte mode = 0;
+
+    boolean isHost;
     
     private Random random;
 
@@ -1007,6 +1010,7 @@ public class Game implements GameEventListener {
                 else {
                     System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
                     //gui.setNewRow(filestream.get)
+                    filestream.saveScoreToFile(gui.getPlayername1(), gui.getPlayername2());
                 }
                 break;
             case PAUSE_EVENT:
@@ -1052,7 +1056,36 @@ public class Game implements GameEventListener {
                 mode = 3;
                 System.out.println("Mode = " + mode);   //Test
                 break;
+            case HIGHSCORE_EVENT:
+                highscore();
+                break;
+            case CONNECT_EVENT:
+                isHost = gui.isHost();
+
+                int port;
+                if(Pattern.matches("[0-9]*", gui.getPort())) port = Integer.parseInt(gui.getPort());
+                else port = -1;
+
+                String ip = gui.getIp();
+
+                network = new Network(isHost);
+                try {
+                    if(isHost) network.connect(port);
+                    else network.connect(ip, port);
+                } catch(Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
         }
+    }
+
+    private void highscore() {
+        gui.clearHighscore();
+        String s = filestream.highscore();
+        String [] eintraege = s.split(",");
+        for(int i = 0; i < eintraege.length; i++) {
+            gui.setNewRow(i+1 + "", eintraege[i].split("=")[0].split("#")[0], eintraege[i].split("=")[1], eintraege[i].split("=")[0].split("#")[1].replaceAll("_"," "));
+        }
+        System.out.print(s);
     }
 
     /**
