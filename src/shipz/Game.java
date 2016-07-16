@@ -1053,9 +1053,13 @@ public class Game implements GameEventListener {
                 if(mode == 1) {
                     filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "Player vs. Player");
                 } else if(mode == 2) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", "mirrorfield");
+                	if(player1 instanceof Computer) {
+                		filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player1.saveCurrentGame());
+                	} else if(player2 instanceof Computer){
+                		filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player2.saveCurrentGame());
+                	}
                 } else if(mode == 3) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, "AI vs. AI", "mirrorfield1", "mirrorfield2");
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, "AI vs. AI", player1.saveCurrentGame(), player2.saveCurrentGame());
                 }
             	break;
             case LOAD_EVENT:
