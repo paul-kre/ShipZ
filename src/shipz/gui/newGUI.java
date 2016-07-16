@@ -176,6 +176,10 @@ public class newGUI extends GameEventSource {
 
     //IM
 
+    public void setConnected(boolean b) {
+        connected = b;
+    }
+
     public void setIsNetwork(boolean b) {
         isNetwork = b;
     }

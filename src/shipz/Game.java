@@ -843,7 +843,7 @@ public class Game implements GameEventListener {
             aX = gui.getX();
             aY = gui.getY();
         }
-        else {
+        if(network != null && !player1active) {
             aX = network.getY();
             aY = network.getX();
         }
@@ -1104,6 +1104,7 @@ public class Game implements GameEventListener {
                     network.setEventListener(this);
                     (new Thread(network)).start();
 
+                    gui.setConnected(true);
                     //if(isHost) st
                 } catch(Exception ex) {
                     System.out.println(ex.getMessage());
