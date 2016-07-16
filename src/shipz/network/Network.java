@@ -351,4 +351,8 @@ public class Network extends Player {
         if(_connected) send( CLOSE_EVENT + "");
         super.end();
     }
+
+
+    public String saveCurrentGame() { return null;}
+    public void loadPreviousGame (String prevField) {};
 }

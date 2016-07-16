@@ -169,6 +169,9 @@ public abstract class Player extends GameEventSource implements Runnable {
         return _end;
     }
 
+    public abstract String saveCurrentGame();
+    public abstract void loadPreviousGame (String prevField);
+
     @Override
     public String toString() {
         return _name;
