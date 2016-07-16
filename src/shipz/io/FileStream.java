@@ -257,6 +257,7 @@ public class FileStream {
 	 */
 	public void loadDrawsAndScore(String gameName) {
 		undoredo.loadDraws(gameName);
+		undoredo.loadRedoneDraws(gameName);
 		score.loadScore(gameName);
 	}
 	

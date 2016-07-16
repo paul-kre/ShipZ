@@ -86,6 +86,7 @@ public class SaveLoad {
 			gameElement.addContent(new Element("boardPlayerTwo").setText(boardPlayerTwo));
 			gameElement.addContent(new Element("boardsize").setText(boardsize+""));
 			gameElement.addContent(new Element("draws").setText("null"));
+			gameElement.addContent(new Element("redoneDraws").setText("null"));
 			gameElement.addContent(new Element("activePlayer").setText(activePlayer+""));
 			gameElement.addContent(new Element("preferences").setText(preferences));
 			gameElement.addContent(new Element("mirrorFieldOne").setText(mirrorFieldOne));
@@ -310,6 +311,15 @@ public class SaveLoad {
 	}
 	
 	/**
+	 * Gibt den String aus einem Spielstand zurück, der die rückgängig gemachten Spielzüge speichert.
+	 * @param gameName der gewünschte Spielstand
+	 * @return die rückgängig gemachten Züge als String
+	 */
+	protected String getRedoneDraws(String gameName) {
+		return getNode(gameName, "redoneDraws");
+	}
+	
+	/**
 	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurück.
 	 * @param gameName Name des Spielstands
 	 * @return der aktive Spieler
@@ -365,6 +375,15 @@ public class SaveLoad {
 	 */
 	protected void setDraws(String gameName, String draws) {
 		setNode(gameName, "draws", draws);
+	}
+	
+	/**
+	 * Speichert die rückgängig gemachten Züge in einem Spielstand.
+	 * @param gameName Name des Spielstands 
+	 * @param redoneDraws die rückgängig gemachten Züge
+	 */
+	protected void setRedoneDraws(String gameName, String redoneDraws) {
+		setNode(gameName, "redoneDraws", redoneDraws);
 	}
 	
 	/**

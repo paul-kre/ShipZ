@@ -12,9 +12,9 @@ public class UndoRedo {
 
 	// IV
 	/** In diesem Stack werden alle Züge als Strings gespeichert. */
-	private Stack<String> game;
+	private Stack<String> draws;
 	/** In diesem Stack werden alle rückgängig gemachten Züge als Strings gespeichert. */
-	private Stack<String> redo;
+	private Stack<String> redoneDraws;
 	/** SaveLoad-Objekt */
 	private SaveLoad saveload;
 	
@@ -28,8 +28,8 @@ public class UndoRedo {
 	 * Die Stacks werden initialisiert.
 	 */
 	public UndoRedo() {
-		game = new Stack<String>();
-		redo = new Stack<String>();
+		draws = new Stack<String>();
+		redoneDraws = new Stack<String>();
 		saveload = new SaveLoad();
 	}
 	
@@ -44,7 +44,7 @@ public class UndoRedo {
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
 	protected void newDraw(int x, int y, int playerIndex, int result) {
-		game.push(playerIndex + "/" + x + "," + y + "/" + result); // Zug wird auf den Stack gelegt
+		draws.push(playerIndex + "/" + x + "," + y + "/" + result); // Zug wird auf den Stack gelegt
 	}
 	
 	/**
@@ -60,9 +60,9 @@ public class UndoRedo {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
-			if(!game.isEmpty()) {
-				draw = game.pop();
-				redo.push(draw);
+			if(!draws.isEmpty()) {
+				draw = draws.pop();
+				redoneDraws.push(draw);
 				result += draw + DRAW_SEPARATOR;
 			} else {
 				throw new NoDrawException();
@@ -83,9 +83,9 @@ public class UndoRedo {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
-			if(!redo.empty()) {
-				draw = redo.pop();
-				game.push(draw);
+			if(!redoneDraws.empty()) {
+				draw = redoneDraws.pop();
+				draws.push(draw);
 				result += draw + DRAW_SEPARATOR;
 			} else {
 				throw new NoDrawException();
@@ -99,7 +99,7 @@ public class UndoRedo {
 	 * @return die ArrayList für die Züge als String
 	 */
 	protected String getDraws() {
-		return game.toString();
+		return draws.toString();
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class UndoRedo {
 	 * @return der Stack für die rückgängig gemachten Züge
 	 */
 	protected String getRedoneDraws() {
-		return redo.toString();
+		return redoneDraws.toString();
 	}
 	
 	/**
@@ -116,27 +116,53 @@ public class UndoRedo {
 	 * @param gameName Name des Spiels zur Zuordnung
 	 */
 	protected void saveToFile(String gameName) {
-		saveload.setDraws(gameName, game.toString().replaceAll(", ", DRAW_SEPARATOR).replaceAll("]", "").substring(1));
+		saveload.setDraws(gameName, draws.toString().replaceAll(", ", DRAW_SEPARATOR).replaceAll("]", "").substring(1));
+		saveload.setRedoneDraws(gameName, redoneDraws.toString().replaceAll(", ", DRAW_SEPARATOR).replaceAll("]", "").substring(1));
 	}
 	
 	/**
-	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
+	 * Leert den Stack, der die getätigten Züge speichert und lädt die Züge aus einem Spielstand in die Instanz-Variable.
 	 * Wird verwendet, wenn ein Spielstand geladen wird.
 	 * @param gameName Name des Spielstands
 	 */
 	protected void loadDraws(String gameName) {
-		game.clear();
-		redo.clear();
+		draws.clear();
 		
-		String[] draws = saveload.getDraws(gameName).split(DRAW_SEPARATOR);
-		int x = 0, y = 0, playerIndex = 0;
-		byte result = 0;
-		for(int i = 0; i < draws.length; i++) {
-			x = Integer.parseInt(draws[i].split("/")[1].split(",")[0]);
-			y = Integer.parseInt(draws[i].split("/")[1].split(",")[1]);
-			result = Byte.parseByte(draws[i].split("/")[2]);
-			playerIndex = Integer.parseInt(draws[i].split("/")[0]);
-			newDraw(x, y, playerIndex, result);
+		if(saveload.getDraws(gameName) != "") {
+			String[] draws = saveload.getDraws(gameName).split(DRAW_SEPARATOR);
+			int x = 0, y = 0, playerIndex = 0;
+			byte result = 0;
+			for(int i = 0; i < draws.length; i++) {
+				x = Integer.parseInt(draws[i].split("/")[1].split(",")[0]);
+				y = Integer.parseInt(draws[i].split("/")[1].split(",")[1]);
+				result = Byte.parseByte(draws[i].split("/")[2]);
+				playerIndex = Integer.parseInt(draws[i].split("/")[0]);
+				newDraw(x, y, playerIndex, result);
+			}
+		}
+		
+	}
+	
+	/**
+	 * Leert den Stack, der die rückgängig gemachten Züge speichert und lädt die Züge aus einem Spielstand in die Instanz-Variable.
+	 * Wird verwendet, wenn ein Spielstand geladen wird.
+	 * @param gameName Name des Spielstands
+	 */
+	protected void loadRedoneDraws(String gameName) {
+		redoneDraws.clear();
+		
+		if(saveload.getRedoneDraws(gameName) != "") {
+			String[] redoneDraws = saveload.getRedoneDraws(gameName).split(DRAW_SEPARATOR);
+			int x = 0, y = 0, playerIndex = 0;
+			byte result = 0;
+			
+			for(int i = 0; i < redoneDraws.length; i++) {
+				x = Integer.parseInt(redoneDraws[i].split("/")[1].split(",")[0]);
+				y = Integer.parseInt(redoneDraws[i].split("/")[1].split(",")[1]);
+				result = Byte.parseByte(redoneDraws[i].split("/")[2]);
+				playerIndex = Integer.parseInt(redoneDraws[i].split("/")[0]);
+				this.redoneDraws.push(playerIndex + "/" + x + "," + y + "/" + result);
+			}
 		}
 	}
 	
