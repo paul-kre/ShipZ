@@ -1015,6 +1015,16 @@ public class Game implements GameEventListener {
             	gui.setComboLabel(filestream.getComboValue(2), 2);
             	gui.setScoreLabel(filestream.getScore(1), 1);
             	gui.setScoreLabel(filestream.getScore(2), 2);
+                if(network != null && isHost) {
+                    network.send(
+                        NET_HIGHSCORE + ":"
+                        + filestream.getComboValue(1) + ","
+                        + filestream.getComboValue(2) + ","
+                        + filestream.getScore(1) + ","
+                        + filestream.getScore(2)
+                    );
+
+                }
                 if(gameFinished() == 0) {
                     if(aResult == 0) {
                         changeActivePlayer();
@@ -1114,11 +1124,11 @@ public class Game implements GameEventListener {
                 String msg = network.getMessage();
                 System.out.println(msg);
                 byte action = Byte.parseByte(msg.split(":")[0]);
+                String data = msg.split(":")[1];
 
                 switch(action) {
                     case NET_SHOOT_EVENT:
-                        String zug = msg.split(":")[1];
-                        String[] values = zug.split(",");
+                        String[] values = data.split(",");
                         int y = Integer.parseInt(values[0]);
                         int x = Integer.parseInt(values[1]);
                         int board = Integer.parseInt(values[2]);
@@ -1126,8 +1136,19 @@ public class Game implements GameEventListener {
                         gui.draw(y, x, board, result);
                         break;
                     case NET_ENABLE_GUI:
-                        int i = Integer.parseInt(msg.split(":")[1]);
+                        int i = Integer.parseInt(data);
                         gui.setEnableField(i);
+                        break;
+                    case NET_HIGHSCORE:
+                        String[] score = data.split(",");
+                        int comboValue1 = Integer.parseInt(score[0]);
+                        int comboValue2 = Integer.parseInt(score[1]);
+                        int score1 = Integer.parseInt(score[2]);
+                        int score2 = Integer.parseInt(score[3]);
+                        gui.setComboLabel(comboValue1, 1);
+                        gui.setComboLabel(comboValue2, 2);
+                        gui.setScoreLabel(score1, 1);
+                        gui.setScoreLabel(score1, 2);
                         break;
                 }
         }
