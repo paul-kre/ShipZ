@@ -1154,9 +1154,6 @@ public class Game implements GameEventListener {
                         gui.setScoreLabel(score1, 1);
                         gui.setScoreLabel(score1, 2);
                         break;
-                    case NET_GAMEOVER:
-                        gameOver();
-                        break;
                 }
         }
     }
@@ -1351,35 +1348,8 @@ public class Game implements GameEventListener {
         }
     }
 
-    /**
-     * Beendet das Spiel.
-     */
-
-    private void gameOver() {
-        disableNetwork();
-
-
-    }
-
-    private void disableNetwork() {
-        if(network != null) { // Wenn eine Verbindung über das Netzwerk existiert...
-            // Sage dem Client Bescheid, dass das Spiel zuende ist.
-            if(isHost) network.send(NET_GAMEOVER + ":");
-            // Kappe die Verbindung und beende den Network Thread.
-            network.end();
-            network = null;
-            isHost = false;
-            gui.isHost(false);
-            gui.setIsNetwork(false);
-            gui.setIsNetwork(false);
-            gui.setConnected(false);
-        }
-    }
-
 
 }
-
-
 
 
 /*    @Override
