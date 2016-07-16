@@ -188,6 +188,10 @@ public class newGUI extends GameEventSource {
         return isHost;
     }
 
+    public void isHost(boolean b) {
+        isHost = b;
+    }
+
     public void setPlayernames (String player1, String player2) {
 
         playername1 = player1;
