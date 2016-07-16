@@ -34,6 +34,9 @@ public class Game implements GameEventListener {
     private Player player1;
     /** Verweis auf den 2. Spieler */
     private Player player2;
+    private int player1diff;
+    private int player2diff;
+    
     /** gibt an, ob Spieler 1 aktiv ist */
     private boolean player1active;
     /** Netzwerkverbindung */
@@ -61,7 +64,7 @@ public class Game implements GameEventListener {
     private byte mode = 0;
 
     boolean isHost = false;
-
+    
 
     //Constructor
     /**
@@ -972,7 +975,6 @@ public class Game implements GameEventListener {
                     nextRoundHuman();
                     cycle();
                 }
-
                 break;
             case FILL_EVENT:
                 shipList = createShipList("5443332");
@@ -984,12 +986,15 @@ public class Game implements GameEventListener {
                     int ki2mode = gui.getKi2Mode();
                     if(ki2mode == 1) {
                         player2 = new Easy(10, false, shipList);
+                        player2diff = 1;
                     }
                     else if(ki2mode == 2) {
                         player2 = new Normal(10, false, shipList);
+                        player2diff = 2;
                     }
                     else {
                         player2 = new Hard(10, false, shipList);
+                        player2diff = 3;
                     }
                     System.out.println("Player 2: " + ki2mode);
                 }
@@ -997,12 +1002,15 @@ public class Game implements GameEventListener {
                     int ki1mode = gui.getKi1Mode();
                     if(ki1mode == 1) {
                         player1 = new Easy(10, false, shipList);
+                        player1diff = 1;
                     }
                     else if(ki1mode == 2) {
                         player1 = new Normal(10, false, shipList);
+                        player1diff = 2;
                     }
                     else {
                         player1 = new Hard(10, false, shipList);
+                        player1diff = 3;
                     }
                     System.out.println("Player 1: " + ki1mode);
                 }
@@ -1025,6 +1033,7 @@ public class Game implements GameEventListener {
                     );
 
                 }
+
                 if(gameFinished() == 0) {
                     if(aResult == 0) {
                         changeActivePlayer();
@@ -1060,16 +1069,12 @@ public class Game implements GameEventListener {
 				}
 				break;
             case SAVE_EVENT:
-                if(mode == 1) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "Player vs. Player");
+            	if(mode == 1) {
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,0");
                 } else if(mode == 2) {
-                	if(player1 instanceof Computer) {
-                		filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player1.saveCurrentGame());
-                	} else if(player2 instanceof Computer){
-                		filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player2.saveCurrentGame());
-                	}
+                	filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,"+player2diff, player2.saveCurrentGame());
                 } else if(mode == 3) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, "AI vs. AI", player1.saveCurrentGame(), player2.saveCurrentGame());
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, mode+","+player1diff+","+player2diff, player1.saveCurrentGame(), player2.saveCurrentGame());
                 }
             	break;
             case LOAD_EVENT:
@@ -1131,30 +1136,30 @@ public class Game implements GameEventListener {
                 String data = msg.split(":")[1];
 
                 switch(action) {
-                    case NET_SHOOT_EVENT:
-                        String[] values = data.split(",");
-                        int y = Integer.parseInt(values[0]);
-                        int x = Integer.parseInt(values[1]);
-                        int board = Integer.parseInt(values[2]);
-                        int result = Integer.parseInt(values[3]);
-                        gui.draw(y, x, board, result);
-                        break;
-                    case NET_ENABLE_GUI:
-                        int i = Integer.parseInt(data);
-                        gui.setEnableField(i);
-                        break;
-                    case NET_HIGHSCORE:
-                        String[] score = data.split(",");
-                        int comboValue1 = Integer.parseInt(score[0]);
-                        int comboValue2 = Integer.parseInt(score[1]);
-                        int score1 = Integer.parseInt(score[2]);
-                        int score2 = Integer.parseInt(score[3]);
-                        gui.setComboLabel(comboValue1, 1);
-                        gui.setComboLabel(comboValue2, 2);
-                        gui.setScoreLabel(score1, 1);
-                        gui.setScoreLabel(score1, 2);
-                        break;
-                }
+                case NET_SHOOT_EVENT:
+                    String[] values = data.split(",");
+                    int y = Integer.parseInt(values[0]);
+                    int x = Integer.parseInt(values[1]);
+                    int board = Integer.parseInt(values[2]);
+                    int result = Integer.parseInt(values[3]);
+                    gui.draw(y, x, board, result);
+                    break;
+                case NET_ENABLE_GUI:
+                    int i = Integer.parseInt(data);
+                    gui.setEnableField(i);
+                    break;
+                case NET_HIGHSCORE:
+                    String[] score = data.split(",");
+                    int comboValue1 = Integer.parseInt(score[0]);
+                    int comboValue2 = Integer.parseInt(score[1]);
+                    int score1 = Integer.parseInt(score[2]);
+                    int score2 = Integer.parseInt(score[3]);
+                    gui.setComboLabel(comboValue1, 1);
+                    gui.setComboLabel(comboValue2, 2);
+                    gui.setScoreLabel(score1, 1);
+                    gui.setScoreLabel(score1, 2);
+                    break;
+            }
         }
     }
 
@@ -1285,6 +1290,37 @@ public class Game implements GameEventListener {
 //    	int boardsize = filestream.getBoardsize(gameName);
 
         clearGUI();
+        String g = filestream.getGamemode(gameName);
+        
+        if(g.charAt(0) == '2') {
+        	if(g.split(",")[2].equals("1")) {
+        		player2 = new Easy(10,false,shipList);
+        	} else if(g.split(",")[2].equals("2")) {
+        		player2 = new Normal(10,false,shipList);
+        	} else if(g.split(",")[2].equals("3")) {
+        		player2 = new Hard(10,false,shipList);
+        	}
+        } else if(g.charAt(0) == '3') {
+        	if(g.split(",")[1].equals("1")) {
+        		player1 = new Easy(10,false,shipList);
+        	} else if(g.split(",")[1].equals("2")) {
+        		player1 = new Normal(10,false,shipList);
+        	} else if(g.split(",")[1].equals("3")) {
+        		player1 = new Hard(10,false,shipList);
+        	} else if(g.split(",")[2].equals("1")) {
+        		player2 = new Easy(10,false,shipList);
+        	} else if(g.split(",")[2].equals("2")) {
+        		player2 = new Normal(10,false,shipList);
+        	} else if(g.split(",")[2].equals("3")) {
+        		player2 = new Hard(10,false,shipList);
+        	}
+        }
+        
+        if(player1 instanceof Computer) {
+        	player1.loadPreviousGame(filestream.getMirrorFieldOne(gameName));
+        } else if(player2 instanceof Computer) {
+        	player2.loadPreviousGame(filestream.getMirrorFieldTwo(gameName));
+        }
 
         int i = 0;
         for(int y=0; y<board1.length; y++) {
