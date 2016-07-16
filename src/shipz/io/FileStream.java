@@ -5,8 +5,8 @@ import shipz.util.NoDrawException;
 /**
  * Diese Klasse verwaltet die anderen drei Klassen.
  * Es werden alle wichtigen Methoden, die die Verwaltung-Klasse des Spiels {@link shipz.Game}
- * zum Speichern, Laden, Undo/ Redo und f�r die Punkte- und Highscore-Verwaltung
- * ben�tigt, redefiniert und bilden somit eine Referenz zu den anderen Klassen.
+ * zum Speichern, Laden, Undo/ Redo und für die Punkte- und Highscore-Verwaltung
+ * benötigt, redefiniert und bilden somit eine Referenz zu den anderen Klassen.
  * @author Florian Osterberg
  */
 public class FileStream {
@@ -91,22 +91,22 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt die Namen aller Spielst�nde als {@link String} zur�ck.
-	 * Dies wird f�r die Auflistung aller Spielst�nde wichtig sein.
+	 * Gibt die Namen aller Spielstände als {@link String} zurück.
+	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
 	 * Dies geht ganz einfach mit 
 	 * <i>getAllGameNames().split(",")</i>
-	 * @return Die Namen aller Spielst�nde als {@link String}
+	 * @return Die Namen aller Spielstände als {@link String}
 	 */
 	public String getAllGameNames() {
 		return saveload.getAllGameNames();
 	}
 	
 	/**
-	 * Wird zum Laden eines Spielstands ben�tigt.
-	 * Diese Methode l�dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
-	 * Dieses Spielfeld wird dann als {@link String} zur�ckgegeben.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -115,9 +115,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Diese Methode l�dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
-	 * Wird zum Laden eines Spielstands ben�tigt.
-	 * Dieses Spielfeld wird dann als {@link String} zur�ckgegeben.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -126,9 +126,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt den Spielernamen eines Spielstands zur�ck.
-	 * Wird zum Laden eines Spielstands ben�tigt.
-	 * @param gameName der gew�nschte Spielstand
+	 * Gibt den Spielernamen eines Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * @param gameName der gewünschte Spielstand
 	 * @return Spielername eines Spielstand
 	 */
 	public String getPlayerName(String gameName) {
@@ -136,9 +136,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt den Namen des Gegners eines bestimmten Spielstands zur�ck.
-	 * Wird zum Laden eines Spielstands ben�tigt.
-	 * @param gameName der gew�nschte Spielstand
+	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * @param gameName der gewünschte Spielstand
 	 * @return Namen des Gegners eines bestimmten Spielstands
 	 */
 	public String getOpponentName(String gameName) {
@@ -146,9 +146,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt die Feldgr��e eines bestimmten Spielstands zur�ck.
-	 * Wird zum Laden eines Spielstands ben�tigt.
-	 * @param gameName der gew�nschte Spielstand
+	 * Gibt die Feldgr��e eines bestimmten Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * @param gameName der gewünschte Spielstand
 	 * @return Feldgr��e eines bestimmten Spielstands als {@link String}
 	 */
 	public int getBoardsize(String gameName) {
@@ -156,8 +156,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zur�ck.
-	 * Wird zum Laden eines Spielstands ben�tigt.
+	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName Name des Spielstands
 	 * @return der aktive Spieler
 	 */
@@ -166,9 +166,9 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt die gespeicherte Uhrzeit eines Spielstands zur�ck.
-	 * Wird zum Laden eines Spielstands ben�tigt.
-	 * @param gameName der gew�nschte Spielstand
+	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
+	 * @param gameName der gewünschte Spielstand
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
 	public String getTime(String gameName) {
@@ -176,8 +176,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt die Einstellungen eines Spielstands zur�ck.
-	 * Wird zum Laden eines Spielstands ben�tigt.
+	 * Gibt die Einstellungen eines Spielstands zurück.
+	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName Name des Spielstands
 	 * @return Einstellungen als String
 	 */
@@ -198,7 +198,7 @@ public class FileStream {
 	}
 	
 	/**
-	 * L�scht einen bestimmten Spielstand aus der Datei.
+	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
 	public void deleteGame(String gameName) {
@@ -211,12 +211,12 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Die r�ckg�ngig zu machenden Z�ge werden vom Stack genommen, der die im Spiel get�tigten
-	 * Z�ge speichert, und auf den Stack gelegt, der die r�ckg�ngig gemachten Z�ge speichert.
-	 * Alle r�ckg�ngig gemachten Z�ge werden als String zur�ckgegeben.
-	 * @param playerIndex 1 f�r den ersten Spieler, 2 f�r den zweiten Spieler
-	 * @return Die Z�ge die r�ckg�ngig gemacht werden als {@link String}
-	 * @throws NoDrawException tritt auf, falls keine weiteren Z�ge r�ckg�ngig gemacht werden k�nnen
+	 * Die rückgängig zu machenden Züge werden vom Stack genommen, der die im Spiel getätigten
+	 * Züge speichert, und auf den Stack gelegt, der die rückgängig gemachten Züge speichert.
+	 * Alle rückgängig gemachten Züge werden als String zurückgegeben.
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
+	 * @return Die Züge die rückgängig gemacht werden als {@link String}
+	 * @throws NoDrawException tritt auf, falls keine weiteren Züge rückgängig gemacht werden k�nnen
 	 */
 	public String undoDraw(int playerIndex) throws NoDrawException {
 		score.setScore(playerIndex, 3);
@@ -224,24 +224,24 @@ public class FileStream {
 	}
 	
 	/**
-	 * Die Z�ge, die wiederhergestellt werden, werdem vom Redo-Stack genommen und wieder oben
-	 * auf den Stack gelegt, der die Z�ge des Spiels gespeichert, gelegt.
-	 * Alle wiederhergestellten Z�ge werden als String zur�ckgegeben.
-	 * @param playerIndex 1 f�r den ersten Spieler, 2 f�r den zweiten Spieler
-	 * @return Die wiederhergestellten Z�ge als {@link String}
-	 * @throws NoDrawException tritt auf, falls keine weiteren Z�ge wiederholt werden k�nnen
+	 * Die Züge, die wiederhergestellt werden, werdem vom Redo-Stack genommen und wieder oben
+	 * auf den Stack gelegt, der die Züge des Spiels gespeichert, gelegt.
+	 * Alle wiederhergestellten Züge werden als String zurückgegeben.
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
+	 * @return Die wiederhergestellten Züge als {@link String}
+	 * @throws NoDrawException tritt auf, falls keine weiteren Züge wiederholt werden k�nnen
 	 */
 	public String redoDraw(int playerIndex) throws NoDrawException {
 		return undoredo.redoDraw(playerIndex);
 	}
 	
 	/**
-	 * Wenn ein neuer Zug get�tigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
-	 * Au�erdem wird anhand der Variable <b>result</b> die Punktzahl des Spielers aktualisiert.
+	 * Wenn ein neuer Zug getätigt wird, wird dieser in den String, der den Spielverlauf speichert, geschrieben.
+	 * Außerdem wird anhand der Variable <b>result</b> die Punktzahl des Spielers aktualisiert.
 	 * @param x x-Koordinate des Zugs
 	 * @param y y-Koordinate des Zugs
-	 * @param playerIndex 1 f�r den ersten Spieler, 2 f�r den zweiten Spieler
-	 * @param result <b>0</b> = kein Treffer, <b>1</b> = Treffer, <b>2</b> = Schiff versenkt, <b>3</b> = Zug r�ckg�ngig gemacht
+	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
+	 * @param result <b>0</b> = kein Treffer, <b>1</b> = Treffer, <b>2</b> = Schiff versenkt, <b>3</b> = Zug rückgängig gemacht
 	 */
 	public void newDraw(int x, int y, int playerIndex, int result) {
 		undoredo.newDraw(x, y, playerIndex, result);
@@ -249,8 +249,8 @@ public class FileStream {
 	}
 	
 	/**
-	 * Leert alle Stacks und l�dt die Z�ge aus einer Datei in die Instanz-Variablen.
-	 * Au�erdem werden die Instanz-Variablen, die die Punkte- und Combo-Werte speichern,
+	 * Leert alle Stacks und lädt die Züge aus einer Datei in die Instanz-Variablen.
+	 * Außerdem werden die Instanz-Variablen, die die Punkte- und Combo-Werte speichern,
 	 * in der Score-Klasse aktualisiert.
 	 * Wird verwendet, wenn ein Spielstand geladen wird.
 	 * @param gameName Name des Spielstands
@@ -266,7 +266,7 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Gibt die Punktzahl eines Spielers zur�ck.
+	 * Gibt die Punktzahl eines Spielers zurück.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
 	 * @return Punktzahl des Spielers
 	 */
@@ -285,7 +285,7 @@ public class FileStream {
 	}
 	
 	/**
-	 * Der Wert der Combo wird zur�ckgegeben, damit die GUI darstellen kann, welche Combo der Spieler aktuell erreicht hat.
+	 * Der Wert der Combo wird zurückgegeben, damit die GUI darstellen kann, welche Combo der Spieler aktuell erreicht hat.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
 	 * @return aktueller Combowert des Spielers
 	 */
@@ -294,7 +294,7 @@ public class FileStream {
 	}
 	
 	/**
-	 * Wenn das Spiel vorbei ist, wird diese Methode ausgef�hrt, 
+	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt, 
 	 * damit die Punkte in der Datei abgespeichert werden.
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers
@@ -309,7 +309,7 @@ public class FileStream {
 	 */
 	
 	/**
-	 * �ndert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
+	 * Ändert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
 	 * @param max Spieler-Maximum im Highscore
 	 */
 	public void setHighscoreMaximum(int max) {
@@ -317,18 +317,18 @@ public class FileStream {
 	}
 	
 	/**
-	 * Liest aus der Datei und gibt den Wert zur�ck,
-	 * der die L�nge der Pausen zwischen den KI-Z�gen
+	 * Liest aus der Datei und gibt den Wert zurück,
+	 * der die Länge der Pausen zwischen den KI-Zügen
 	 * in Millisekunden speichert.
-	 * @return Pause zwischen KI-Z�gen in ms
+	 * @return Pause zwischen KI-Zügen in ms
 	 */
 	public int getAiTimer() {
 		return settings.getAiTimer();
 	}
 	
 	/**
-	 * �ndert den Wert der Pausen zwischen den KI-Z�gen in der Config.
-	 * @param ms neuer Wert f�r Pausen zwischen KI-Z�gen
+	 * Ändert den Wert der Pausen zwischen den KI-Zügen in der Config.
+	 * @param ms neuer Wert für Pausen zwischen KI-Zügen
 	 */
 	public void setAiTimer(int ms) {
 		settings.setAiTimer(ms);
@@ -339,7 +339,7 @@ public class FileStream {
 	 */
 	
 	/**
-	 * Gibt alle Buchstaben und Sonderzeichen zur�ck,
+	 * Gibt alle Buchstaben und Sonderzeichen zurück,
 	 * die in einem Namen nicht verwendet werden d�rfen.
 	 * Um diesen String in ein Char-Array umzuwandeln:
 	 * <i>forbiddenCharacters().toCharArray()</i>

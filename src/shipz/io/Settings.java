@@ -11,13 +11,13 @@ public class Settings {
 	// IV
 	/** Objekt der SaveLoad-Klasse.
 	 * Hiermit werden Methoden zum Speichern und Laden aufgerufen,
-	 * wenn sie benötigt werden. */
+	 * wenn sie benÃ¶tigt werden. */
 	private SaveLoad saveload;
 	/** Die Config-Datei. */
 	private File configFile;
 	
 	// Konstanten
-	/** Trennzeichen zwischen einem bestimmten Parameter in der Config und dem dazugehörigen Wert. */
+	/** Trennzeichen zwischen einem bestimmten Parameter in der Config und dem dazugehÃ¶rigen Wert. */
 	private static final String CONFIG_SEPARATOR = "=";
 	
 	// Konstruktor
@@ -45,7 +45,7 @@ public class Settings {
 	}
 	
 	/**
-	 * Ändert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
+	 * Ã„ndert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
 	 * @param max Wie viele Spieler maximal im Highscore angezeigt werden sollen
 	 */
 	protected void setHighscoreMaximum(int max) {
@@ -53,7 +53,7 @@ public class Settings {
 	}
 
 	/**
-	 * Gibt den Wert zurück, wie viele Spieler
+	 * Gibt den Wert zurÃ¼ck, wie viele Spieler
 	 * maximal in der Highscore-Liste angezeigt werden sollen.
 	 * @return Spieler-Maximum der Highscore-Liste
 	 */
@@ -62,18 +62,18 @@ public class Settings {
 	}
 	
 	/**
-	 * Ändert den Wert der Pausen zwischen den KI-Zügen in der Config.
-	 * @param timer neuer Wert für Pausen zwischen KI-Zügen
+	 * Ã„ndert den Wert der Pausen zwischen den KI-ZÃ¼gen in der Config.
+	 * @param timer neuer Wert fÃ¼r Pausen zwischen KI-ZÃ¼gen
 	 */
 	protected void setAiTimer(int ms) {
 		saveload.writeFile(configFile, saveload.readFile(configFile).replaceAll("aiTimer"+CONFIG_SEPARATOR+getAiTimer(), "aiTimer"+CONFIG_SEPARATOR+ms));
 	}
 	
 	/**
-	 * Liest aus der Datei und gibt den Wert zurück,
-	 * der die Länge der Pausen zwischen den KI-Zügen
+	 * Liest aus der Datei und gibt den Wert zurÃ¼ck,
+	 * der die LÃ¤nge der Pausen zwischen den KI-ZÃ¼gen
 	 * in Millisekunden speichert.
-	 * @return Pause zwischen KI-Zügen in ms
+	 * @return Pause zwischen KI-ZÃ¼gen in ms
 	 */
 	protected int getAiTimer() {
 		return Integer.parseInt(saveload.searchLine(configFile, "aiTimer" + CONFIG_SEPARATOR).split(CONFIG_SEPARATOR)[1].replaceAll("\n", ""));

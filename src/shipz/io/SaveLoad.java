@@ -49,7 +49,7 @@ public class SaveLoad {
 	// Konstruktor
 	/**
 	 * Konstruktor der Klasse, der das File-Objekt initialisiert und diesem einen Dateipfad zuordnet.
-	 * Au�erdem wird die Grundstruktur des XML-Dokuments erstellt.
+	 * Außerdem wird die Grundstruktur des XML-Dokuments erstellt.
 	 */
 	public SaveLoad() {
 		file = new File(fileDirectory() + File.separator + "saves.xml");
@@ -63,13 +63,13 @@ public class SaveLoad {
 	
 	// IM
 	/**
-	 * Methode, die mit allen ben�tigten Informationen ein neues Spiel im XML erstellt.
-	 * @param gameName Dateiname f�r den Spielstand
+	 * Methode, die mit allen benötigten Informationen ein neues Spiel im XML erstellt.
+	 * @param gameName Dateiname für den Spielstand
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
-	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Au�erdem wird die Feldgr��e gespeichert.
-	 * @param boardPlayer2 Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Au�erdem wird die Feldgr��e gespeichert.
-	 * @param boardsize Gr��e des Feldes. Format: "H�he,Breite"
+	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
+	 * @param boardPlayer2 Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
+	 * @param boardsize Größe des Feldes.
 	 * @param activePlayer Spieler der gerade am Zug ist
 	 * @param preferences Einstellungen des Spiels, die am Anfang gesetzt wurden
 	 * @param mirrorField Spielfeld der KI
@@ -132,9 +132,9 @@ public class SaveLoad {
 	
 	/**
 	 * Diese Methode gibt den Inhalt eines Knotens eines Spielstands
-	 * als String zur�ck.
+	 * als String zurück.
 	 * @param gameName Name des Spiels
-	 * @param node Knoten dessen Text zur�ckgegeben werden soll
+	 * @param node Knoten dessen Text zurückgegeben werden soll
 	 * @return Inhalt des Knotens als String
 	 */
 	private String getNode(String gameName, String node) {
@@ -152,10 +152,10 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Mit dieser Methode l�sst sich ein einzelner Knoten eines Spielstands bearbeiten.
+	 * Mit dieser Methode lässt sich ein einzelner Knoten eines Spielstands bearbeiten.
 	 * @param gameName Name des Spielstands
 	 * @param node zu bearbeitender Knoten
-	 * @param text Text, der im Knoten eingef�gt werden soll
+	 * @param text Text, der im Knoten eingefügt werden soll
 	 */
 	private void setNode(String gameName, String node, String text) {
 		updateXML();
@@ -211,7 +211,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * L�scht einen bestimmten Spielstand aus der Datei.
+	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
 	protected void deleteGame(String gameName) {
@@ -233,8 +233,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt die Namen aller Spielst�nde als {@link String} zur�ck.
-	 * Dies wird f�r die Auflistung aller Spielst�nde wichtig sein.
+	 * Gibt die Namen aller Spielst�nde als {@link String} zurück.
+	 * Dies wird für die Auflistung aller Spielst�nde wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
 	 * Dies geht ganz einfach mit 
@@ -254,8 +254,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode l�dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
-	 * Dieses Spielfeld wird dann als {@link String} zur�ckgegeben.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -264,8 +264,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Diese Methode l�dt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
-	 * Dieses Spielfeld wird dann als {@link String} zur�ckgegeben.
+	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
+	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
@@ -274,8 +274,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den Spielernamen eines Spielstands zur�ck.
-	 * @param gameName der gew�nschte Spielstand
+	 * Gibt den Spielernamen eines Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
 	 * @return Spielername eines Spielstand
 	 */
 	protected String getPlayerName(String gameName) {
@@ -283,8 +283,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den Namen des Gegners eines bestimmten Spielstands zur�ck.
-	 * @param gameName der gew�nschte Spielstand
+	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
 	 * @return Namen des Gegners eines bestimmten Spielstands
 	 */
 	protected String getOpponentName(String gameName) {
@@ -292,25 +292,25 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt die Feldgr��e eines bestimmten Spielstands zur�ck.
-	 * @param gameName der gew�nschte Spielstand
-	 * @return Feldgr��e eines bestimmten Spielstands als {@link String}
+	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
 	 */
 	protected int getBoardsize(String gameName) {
 		return Integer.parseInt(getNode(gameName, "boardsize"));
 	}
 	
 	/**
-	 * Gibt den String aus einem Spielstand zur�ck, der die Spielz�ge speichert.
-	 * @param gameName der gew�nschte Spielstand
-	 * @return Die Spielz�ge als {@link String}
+	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge speichert.
+	 * @param gameName der gewünschte Spielstand
+	 * @return Die Spielzüge als {@link String}
 	 */
 	protected String getDraws(String gameName) {
 		return getNode(gameName, "draws");
 	}
 	
 	/**
-	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zur�ck.
+	 * Liest den aktuellen Spieler eines Spiels aus der Datei aus und gibt ihn zurück.
 	 * @param gameName Name des Spielstands
 	 * @return der aktive Spieler
 	 */
@@ -319,8 +319,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt die gespeicherte Uhrzeit eines Spielstands zur�ck.
-	 * @param gameName der gew�nschte Spielstand
+	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
+	 * @param gameName der gewünschte Spielstand
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
 	protected String getTime(String gameName) {
@@ -328,7 +328,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt die Einstellungen eines Spielstands zur�ck.
+	 * Gibt die Einstellungen eines Spielstands zurück.
 	 * @param gameName Name des Spielstands
 	 * @return Einstellungen als String
 	 */
@@ -369,7 +369,7 @@ public class SaveLoad {
 	
 	/**
 	 * Überprüft, ob ein Spielstand mit bestimmtem Namen vorhanden ist.
-	 * @param gameName der gew�nschte Spielstand
+	 * @param gameName der gewünschte Spielstand
 	 * @return Ist der Spielstand vorhanden?
 	 */
 	private boolean doesGameExist(String gameName) {
@@ -389,7 +389,7 @@ public class SaveLoad {
 	/**
 	 * Sucht in einer Datei nach einer bestimmten Zeile.
 	 * Es wird mit nach einem Prefix gesucht.
-	 * Wenn die Zeile gefunden wurde, wird sie als String zur�ckgegeben.
+	 * Wenn die Zeile gefunden wurde, wird sie als String zurückgegeben.
 	 * @param file Die Datei, in der gesucht werden soll.
 	 * @param prefix Prefix der Zeile, nach der gesucht werden soll.
 	 * @return Die gefundene Zeile
@@ -411,8 +411,8 @@ public class SaveLoad {
 	
 	/**
 	 * Liest aus einer Datei den gesamten Inhalt aus
-	 * und gibt ihn als {@link String} zur�ck.
-	 * @param file Die gew�nschte Datei.
+	 * und gibt ihn als {@link String} zurück.
+	 * @param file Die gewünschte Datei.
 	 * @return Inhalt der Datei als {@link String}.
 	 */
 	protected String readFile(File file) {
@@ -429,8 +429,8 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * �berschreibt eine Datei komplett mit einem String.
-	 * @param file die zu �berschreibende Datei.
+	 * Überschreibt eine Datei komplett mit einem String.
+	 * @param file die zu überschreibende Datei.
 	 * @param str der {@link String}, der in die Datei geschrieben werden soll.
 	 */
 	protected void writeFile(File file, String str) {
@@ -444,7 +444,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Gibt den Dateipfad zur�ck, in dem Dateien des Spiels gespeichert werden.
+	 * Gibt den Dateipfad zurück, in dem Dateien des Spiels gespeichert werden.
 	 * Der Dateipfad ist auf Windows in der Regel:
 	 * C:\Users\<i>"Benutzer"</i>\Documents\shipZ
 	 * @return Pfad, in dem die Dateien gespeichert werden
@@ -455,7 +455,7 @@ public class SaveLoad {
 	}
 	
 	/**
-	 * Methode, die die aktuelle Zeit berechnet und als String zur�ckgibt. <br>
+	 * Methode, die die aktuelle Zeit berechnet und als String zurückgibt. <br>
 	 * Format: <b>dd.MM.y_HH:mm:ss</b> <br>
 	 * Beispiel: <i>05.07.2016_18:12:23</i>
 	 * @return die aktuelle Zeit als String

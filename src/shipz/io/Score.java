@@ -8,15 +8,15 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 /**
- * Diese Klasse ist f�r die Punktevergabe zust�ndig,
- * au�erdem f�r das Speichern der Punkte in der Datei
- * und zus�tzlich f�r das Verwalten und Generieren der Highscore-Liste.
+ * Diese Klasse ist für die Punktevergabe zuständig,
+ * außerdem für das Speichern der Punkte in der Datei
+ * und zusätzlich für das Verwalten und Generieren der Highscore-Liste.
  * @author Florian Osterberg
  */
 public class Score {
 
 	// IV
-	/** SaveLoad-Objekt, das ben�tigt wird, um einige Methoden auszuf�hren. */
+	/** SaveLoad-Objekt, das benötigt wird, um einige Methoden auszuführen. */
 	private SaveLoad saveload;
 	/** Highscore-File */
 	private File highscoreFile;
@@ -55,9 +55,9 @@ public class Score {
 	/**
 	 * Setzt die Punktzahl eines bestimmten Spielers.
 	 * Der Parameter result beschreibt dabei die Aktion,
-	 * anhand dessen wird entschieden, wie sich die Punktzahl ver�ndert.
+	 * anhand dessen wird entschieden, wie sich die Punktzahl verändert.
 	 * @param playerName Name des Spielers
-	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> f�r einen Treffer, <b>2</b> f�r ein versenktes Schiff, <b>3</b> f�r Undo
+	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
 	 */
 	protected void setScore(int playerIndex, int result) {
 		switch(result) {
@@ -83,10 +83,10 @@ public class Score {
 	}
 	
 	/**
-	 * Methode, die die Combos verwaltet und anhand des get�tigten Zugs
+	 * Methode, die die Combos verwaltet und anhand des getätigten Zugs
 	 * den Combo-Wert aktualisiert.
 	 * @param playerName Name des Spielers
-	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> f�r einen Treffer, <b>2</b> f�r ein versenktes Schiff, <b>3</b> f�r Undo
+	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
 	 */
 	private void combo(int playerIndex, int result) {
 		if(playerIndex == 1) {
@@ -104,19 +104,19 @@ public class Score {
 				comboPlayer2 = 1;
 			}
 		} else {
-			throw new RuntimeException("Unzul�ssiger playerIndex, erlaubt ist 1 oder 2.");
+			throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 		}
 	}
 	
 	/**
-	 * Ein bestimmter Spieler wird in die Highscore-Datei eingef�gt.
+	 * Ein bestimmter Spieler wird in die Highscore-Datei eingefügt.
 	 * Es wird mit dem Spielernamen das Datum und die Uhrzeit abgespeichert,
-	 * damit auch mehrfache Eintr�ge m�glich sind.
+	 * damit auch mehrfache Einträge möglich sind.
 	 * Falls der Spieler mit der aktuellen Uhrzeit schon im Highscore existiert
-	 * (sehr unwahrscheinlicher aber theoretisch m�glicher Fall) wird die Methode
+	 * (sehr unwahrscheinlicher aber theoretisch möglicher Fall) wird die Methode
 	 * rekursiv aufgerufen und so lange ein Sonderzeichen angehangen,
 	 * bis der Name eingetragen werden kann.
-	 * @param playerName Der Spieler, der eingef�gt werden soll.
+	 * @param playerName Der Spieler, der eingefügt werden soll.
 	 * @param score Punktzahl, die gesetzt werden soll.
 	 */
 	private void addPlayerIntoHighscore(String playerName, int score) {
@@ -128,7 +128,7 @@ public class Score {
 	}
 	
 	/**
-	 * �berpr�ft, ob ein Spieler bereits in der Score-Datei steht.
+	 * Überprüft, ob ein Spieler bereits in der Score-Datei steht.
 	 * @param playerName Der Spieler nach dem gesucht wird
 	 * @return Steht der Spieler bereits in der Score-Datei?
 	 */
@@ -175,11 +175,11 @@ public class Score {
 	}
 
 	/**
-	 * Diese Methode l�dt alle Eintr�ge aus der Highscore-Datei.
+	 * Diese Methode lädt alle Einträge aus der Highscore-Datei.
 	 * Diese werden dann sortiert und in eine TreeMap geschrieben.
  	 * Dies ist notwendig, um einen String zu generieren,
 	 * der den Highscore wiedergibt.
-	 * @return die Map f�r String und Integer mit den sortierten Eintr�gen
+	 * @return die Map für String und Integer mit den sortierten Einträgen
 	 */
 	private Map<String, Integer> highscoreToSortedMap() {
 		// Scanner-Objekt zum Lesen der Highscore-Datei
@@ -221,8 +221,8 @@ public class Score {
 	}
 	
 	/**
-	 * L�scht alle Daten, die nicht im Highscore stehen,
-	 * und somit nicht mehr ben�tigt werden.
+	 * Löscht alle Daten, die nicht im Highscore stehen
+	 * und somit nicht mehr benötigt werden.
 	 */
 	private void cleanHighscoreFile(int max) {
 		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
@@ -241,7 +241,7 @@ public class Score {
 	}
 	
 	/**
-	 * Wenn das Spiel vorbei ist, wird diese Methode ausgef�hrt,
+	 * Wenn das Spiel vorbei ist, wird diese Methode ausgeführt,
 	 * damit die Punkte in der Datei abgespeichert werden.
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers
@@ -253,7 +253,7 @@ public class Score {
 	}
 	
 	/**
-	 * Gibt die Punktzahl eines Spielers zur�ck.
+	 * Gibt die Punktzahl eines Spielers zurück.
 	 * @param 1 = Spieler1, 2 = Spieler2
 	 * @return Punktzahl des Spielers
 	 */
@@ -266,7 +266,7 @@ public class Score {
 	}
 	
 	/**
-	 * Der Wert der Combo wird zur�ckgegeben,
+	 * Der Wert der Combo wird zurückgegeben,
 	 * damit die GUI darstellen kann, welche Combo der Spieler
 	 * aktuell erreicht hat.
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
@@ -281,8 +281,8 @@ public class Score {
 	}
 	
 	/**
-	 * L�dt die Z�ge aus einer Datei und aktualisiert damit die Punkte-
-	 * und Combo-Werte. Diese Methode wird f�r das Laden von Spielst�nden ben�tigt.
+	 * Lädt die Züge aus einer Datei und aktualisiert damit die Punkte- und Combowerte.
+	 * Diese Methode wird für das Laden von Spielständen benötigt.
 	 * @param gameName Name des Spielstands
 	 */
 	protected void loadScore(String gameName) {
@@ -296,7 +296,7 @@ public class Score {
 	}
 	
 	/**
-	 * So �hnlich wird der Highscore in der Game-Klasse f�r die GUI dargestellt.
+	 * So ähnlich wird der Highscore in der Game-Klasse für die GUI dargestellt.
 	 */
 	@Deprecated
 	private void test() {
