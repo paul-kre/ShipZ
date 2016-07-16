@@ -841,7 +841,7 @@ public class Game implements GameEventListener {
     }
 
     private void nextRoundHuman() {
-        if(isHost) {
+        if(isHost || network == null) {
             aX = gui.getX();
             aY = gui.getY();
         }
@@ -957,7 +957,7 @@ public class Game implements GameEventListener {
 
         switch(id) {
             case GUI_SHOOT_EVENT:
-                if(isHost) {
+                if(isHost || network == null) {
                     gui.setEnableField(0);
                     nextRoundHuman();
                     cycle();

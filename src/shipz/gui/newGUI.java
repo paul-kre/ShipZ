@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -25,6 +26,7 @@ import javafx.scene.text.*;
 import javafx.stage.*;
 import javafx.util.Duration;
 import shipz.util.GameEventSource;
+
 import java.util.Random;
 
 
@@ -59,10 +61,63 @@ public class newGUI extends GameEventSource {
     ImageView[][] field1 = new ImageView[fieldSize][fieldSize];
     ImageView[][] field2 = new ImageView[fieldSize][fieldSize];
 
+    //Elemente
+    Text hlOverall = new Text("Project: shipZ");
+    ImageView startbildschirm = new ImageView();
+    Image startbild = new Image(newGUI.class.getResource("Startbildschirm.png").toExternalForm());
+    ImageView explosionStart = new ImageView();
+    ImageView btnMenu = new ImageView();
+    Image menu = new Image(newGUI.class.getResource("btnMenu.png").toExternalForm());
+    ImageView mainMenu = new ImageView();
+    Image imgMainMenu = new Image(newGUI.class.getResource("Menu.png").toExternalForm());
+    Button btnPlay = new Button("Play");
+    Button btnHighscore = new Button("Highscore");
+    Button btnSettings = new Button("Settings");
+    Button btnNGame = new Button("New Game");
+    Button btnLGame = new Button("Load Game");
+    Button btnPvP = new Button("Player vs Player");
+    Button btnPvK = new Button("Player vs Ki");
+    Button btnKvK = new Button("Ki vs Ki");
+    TextField txtfPlayer1 = new TextField("Player 1");
+    TextField txtfPlayer2 = new TextField("Player 2");
+    CheckBox cboxNetGame = new CheckBox("Networkgame");
+    final ToggleGroup group1 = new ToggleGroup();
+    RadioButton rbEasy1 = new RadioButton("Easy");
+    RadioButton rbNormal1 = new RadioButton("Normal");
+    RadioButton rbHard1 = new RadioButton("Hard");
+    final ToggleGroup group2 = new ToggleGroup();
+    RadioButton rbEasy2 = new RadioButton("Easy");
+    RadioButton rbNormal2 = new RadioButton("Normal");
+    RadioButton rbHard2 = new RadioButton("Hard");
+    Button btnGo = new Button("Go!");
+    Button btnHost = new Button("Host");
+    Button btnClient = new Button("Client");
+    TextField txtfIp = new TextField("IP");
+    TextField txtfPort = new TextField("Port");
+    Button btnConnect = new Button("Connect");
+    Button btnUndo = new Button("Undo");
+    Button btnRedo = new Button("Redo");
+    Button btnSave = new Button("Save");
+    Button btnLoad = new Button("Load");
+    Button btnRndm = new Button("Random");
+    Rectangle dragBox = new Rectangle();
+    ImageView[] ivSrcGes = new ImageView[5];
+    ImageView ivSrc1 = new ImageView();
+    ImageView ivSrc2 = new ImageView();
+    ImageView ivSrc3 = new ImageView();
+    ImageView ivSrc4 = new ImageView();
+    ImageView ivSrc5 = new ImageView();
+    Button btnLock = new Button("Lock");
+    Button btnEGame = new Button("End game");
+
     //Images
     Image white = new Image(newGUI.class.getResource("White.png").toExternalForm());
+    Image black = new Image(newGUI.class.getResource("Blackout.png").toExternalForm());
     Image water = new Image(newGUI.class.getResource("shipZ_spielfeld.png").toExternalForm());
     Image ship = new Image(newGUI.class.getResource("shipZ_1ershipIntact.png").toExternalForm());
+    Image ship2 = new Image(newGUI.class.getResource("shipZ_2erShipWhole.png").toExternalForm());
+    Image ship21 = new Image(newGUI.class.getResource("shipZ_2erShip_Part1.png").toExternalForm());
+    Image ship22 = new Image(newGUI.class.getResource("shipZ_2erShip_Part2.png").toExternalForm());
     Image explosion = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
     //Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion3.gif").toExternalForm());
     //Image explosion3 = new Image(newGUI.class.getResource("shipZ_explosion4.gif").toExternalForm());
@@ -98,11 +153,12 @@ public class newGUI extends GameEventSource {
     String ip;
     String port;
 
-
+    //Highscore Tabelle
     TableView tbHighscore;
     private ObservableList data;
     ArrayList list = new ArrayList();
 
+    //SavedGames Tabelle
     TableView tbSavedGames;
     private ObservableList data2;
     ArrayList list2 = new ArrayList();
@@ -110,6 +166,7 @@ public class newGUI extends GameEventSource {
 
     //Network
     private boolean isHost;
+    private boolean connected = false;
 
     Text txtConnected = new Text("Unknown");
     Button btnContinue = new Button("Continue");
@@ -251,13 +308,44 @@ public class newGUI extends GameEventSource {
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {
 
-                            oneField.setImage(explosion);
+                        oneField.setImage(explosion);
 
 
                     }
                 });
 
-                //DropTargets
+                //DargandDropTargets
+                field1[i][j].setOnDragDetected(new EventHandler <javafx.scene.input.MouseEvent>() {
+                    public void handle(javafx.scene.input.MouseEvent event) {
+                        /* drag was detected, start drag-and-drop gesture*/
+                        System.out.println("onDragDetected");
+
+                        /* allow any transfer mode */
+                        Dragboard db = oneField.startDragAndDrop(TransferMode.MOVE);
+
+                        /* put a string on dragboard */
+                        ClipboardContent content = new ClipboardContent();
+                        content.putImage(ship);
+                        db.setContent(content);
+
+                        event.consume();
+                    }
+                });
+
+                field1[i][j].setOnDragDone(new EventHandler <DragEvent>() {
+                    public void handle(DragEvent event) {
+                        /* the drag-and-drop gesture ended */
+                        System.out.println("onDragDone");
+                        /* if the data was successfully moved, clear it */
+                        if (event.getTransferMode() == TransferMode.MOVE) {
+
+                            oneField.setImage(white);
+
+                        }
+
+                        event.consume();
+                    }
+                });
 
                 field1[i][j].setOnDragOver(new EventHandler <DragEvent>() {public void handle(DragEvent event) {
                         /* data is dragged over the target */
@@ -370,7 +458,54 @@ public class newGUI extends GameEventSource {
                     }
                 });
 
-                //DropTargets
+                //DragandDropTargets
+                field2[i][j].setOnDragDetected(new EventHandler <javafx.scene.input.MouseEvent>() {
+                    public void handle(javafx.scene.input.MouseEvent event) {
+                        /* drag was detected, start drag-and-drop gesture*/
+                        System.out.println("onDragDetected");
+
+                        /* allow any transfer mode */
+                        Dragboard db = oneField.startDragAndDrop(TransferMode.MOVE);
+
+                        /* put a string on dragboard */
+                        if(oneField.getImage()==ship) {
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString("s1");
+                            content.putImage(ship);
+                            db.setContent(content);
+                        }else if(oneField.getImage()==ship21) {
+                            field2[x][y+1].setImage(white);
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString("s2");
+                            content.putImage(ship2);
+                            db.setContent(content);
+                        }else if(oneField.getImage()==ship22) {
+                            field2[x][y-1].setImage(white);
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString("s2");
+                            content.putImage(ship2);
+                            db.setContent(content);
+                        }
+
+
+                        event.consume();
+                    }
+                });
+
+                field2[i][j].setOnDragDone(new EventHandler <DragEvent>() {
+                    public void handle(DragEvent event) {
+                        /* the drag-and-drop gesture ended */
+                        System.out.println("onDragDone");
+                        /* if the data was successfully moved, clear it */
+                        if (event.getTransferMode() == TransferMode.MOVE) {
+
+                            oneField.setImage(white);
+
+                        }
+
+                        event.consume();
+                    }
+                });
 
                 field2[i][j].setOnDragOver(new EventHandler <DragEvent>() {public void handle(DragEvent event) {
                         /* data is dragged over the target */
@@ -380,7 +515,7 @@ public class newGUI extends GameEventSource {
                          * and if it has a string data */
                     if (event.getGestureSource() != oneField) {
                             /* allow for both copying and moving, whatever user chooses */
-                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                        event.acceptTransferModes(TransferMode.MOVE);
                     }
 
                     event.consume();
@@ -416,8 +551,13 @@ public class newGUI extends GameEventSource {
                         /* if there is a string data on dragboard, read it and use it */
                         Dragboard db = event.getDragboard();
                         boolean success = false;
-                        if (db.hasImage()) {
-                            oneField.setImage(db.getImage());
+                        if(db.getString() == "s1") {
+                            oneField.setImage(ship);
+                            success = true;
+                        }
+                        if (db.getString() == "s2") {
+                            oneField.setImage(ship21);
+                            field2[x][y+1].setImage(ship22);
                             success = true;
                         }
                         /* let the source know whether the string was successfully
@@ -428,71 +568,170 @@ public class newGUI extends GameEventSource {
                     }
                 });
 
-                // Drag and Drop
-                field2[i][j].setOnDragDetected(new EventHandler <javafx.scene.input.MouseEvent>() {
-                    public void handle(javafx.scene.input.MouseEvent event) {
-                        /* drag was detected, start drag-and-drop gesture*/
-                        System.out.println("onDragDetected");
-
-                        /* allow any transfer mode */
-                        Dragboard db = ivSrc1.startDragAndDrop(TransferMode.MOVE);
-
-                        /* put a string on dragboard */
-                        ClipboardContent content = new ClipboardContent();
-                        content.putImage(ship);
-                        db.setContent(content);
-
-                        event.consume();
-                    }
-                });
-
-                field2[i][j].setOnDragDone(new EventHandler <DragEvent>() {
-                    public void handle(DragEvent event) {
-                        /* the drag-and-drop gesture ended */
-                        System.out.println("onDragDone");
-                        /* if the data was successfully moved, clear it */
-                        if (event.getTransferMode() == TransferMode.MOVE) {
-                            oneField.setImage(oneFieldImg);
-                        }
-
-                        event.consume();
-                    }
-                });
-
             }
 
         }
 
         //Dragzone
-        ivSrc1.setOnDragDetected(new EventHandler <javafx.scene.input.MouseEvent>() {
-            public void handle(javafx.scene.input.MouseEvent event) {
+        for(int n = 0; n < 5; n++) {
+            int number = n;
+            switch (n) {
+                case 0:
+                    ivSrcGes[number] = ivSrc1;
+                    break;
+                case 1:
+                    ivSrcGes[number] = ivSrc2;
+                    break;
+                case 2:
+                    ivSrcGes[number] = ivSrc3;
+                    break;
+                case 3:
+                    ivSrcGes[number] = ivSrc4;
+                    break;
+                case 4:
+                    ivSrcGes[number] = ivSrc5;
+                    break;
+            }
+
+
+        ivSrcGes[number].setOnDragDetected(new EventHandler <javafx.scene.input.MouseEvent>() {
+                public void handle(javafx.scene.input.MouseEvent event) {
                         /* drag was detected, start drag-and-drop gesture*/
-                System.out.println("onDragDetected");
+                    System.out.println("onDragDetected");
 
                         /* allow any transfer mode */
-                Dragboard db = ivSrc1.startDragAndDrop(TransferMode.MOVE);
+                    Dragboard db = ivSrcGes[number].startDragAndDrop(TransferMode.MOVE);
 
                         /* put a string on dragboard */
-                ClipboardContent content = new ClipboardContent();
-                content.putImage(ship);
-                db.setContent(content);
+                    ClipboardContent content = new ClipboardContent();
+                    if(ivSrcGes[number].getImage()!=white) {
+                        switch (number) {
+                            case 0:
+                                content.putString("s1");
+                                content.putImage(ship);
+                                break;
+                            case 1:
+                                content.putString("s2");
+                                content.putImage(ship2);
+                                break;
+                            case 2:
+                                content.putString("s3");
+                                content.putImage(ship);
+                                break;
+                            case 3:
+                                content.putString("s4");
+                                content.putImage(ship);
+                                break;
+                            case 4:
+                                content.putString("s5");
+                                content.putImage(ship);
+                                break;
+                        }
+                    }
+                    db.setContent(content);
 
-                event.consume();
-            }
-        });
+                    event.consume();
+                }
+            });
 
-        ivSrc1.setOnDragDone(new EventHandler <DragEvent>() {
-            public void handle(DragEvent event) {
+            ivSrcGes[number].setOnDragDone(new EventHandler <DragEvent>() {
+                public void handle(DragEvent event) {
                         /* the drag-and-drop gesture ended */
-                System.out.println("onDragDone");
+                    System.out.println("onDragDone");
                         /* if the data was successfully moved, clear it */
-                if (event.getTransferMode() == TransferMode.MOVE) {
+                    if (event.getTransferMode() == TransferMode.MOVE) {
 
+                        ivSrcGes[number].setImage(white);
+
+                    }
+
+                    event.consume();
+                }
+            });
+
+            ivSrcGes[number].setOnDragOver(new EventHandler <DragEvent>() {public void handle(DragEvent event) {
+                        /* data is dragged over the target */
+                System.out.println("onDragOver");
+
+                        /* accept it only if it is  not dragged from the same node
+                         * and if it has a string data */
+                if (event.getGestureSource() != ivSrcGes[number]) {
+                            /* allow for both copying and moving, whatever user chooses */
+                    event.acceptTransferModes(TransferMode.MOVE);
                 }
 
                 event.consume();
             }
-        });
+            });
+
+            ivSrcGes[number].setOnDragEntered(new EventHandler <DragEvent>() {
+                public void handle(DragEvent event) {
+                        /* the drag-and-drop gesture entered the target */
+                    System.out.println("onDragEntered");
+                        /* show to the user that it is an actual gesture target */
+                    if (event.getGestureSource() != ivSrcGes[number]) {
+
+                    }
+
+                    event.consume();
+                }
+            });
+
+            ivSrcGes[number].setOnDragExited(new EventHandler <DragEvent>() {
+                public void handle(DragEvent event) {
+                        /* mouse moved away, remove the graphical cues */
+
+
+                    event.consume();
+                }
+            });
+
+            ivSrcGes[number].setOnDragDropped(new EventHandler <DragEvent>() {
+                public void handle(DragEvent event) {
+                        /* data dropped */
+                    System.out.println("onDragDropped");
+                        /* if there is a string data on dragboard, read it and use it */
+                    Dragboard db = event.getDragboard();
+                    boolean success = false;
+                    if (db.hasImage()) {
+                        switch(number){
+                            case 0:
+                                ivSrc1.setImage(db.getImage());
+                                success = true;
+                                break;
+                            case 1:
+                                ivSrc2.setImage(db.getImage());
+                                success = true;
+                                break;
+                            case 2:
+                                ivSrc3.setImage(db.getImage());
+                                success = true;
+                                break;
+                            case 3:
+                                ivSrc4.setImage(db.getImage());
+                                success = true;
+                                break;
+                            case 4:
+                                ivSrc5.setImage(db.getImage());
+                                success = true;;
+                                break;
+                        }
+
+                    }
+                        /* let the source know whether the string was successfully
+                         * transferred and used */
+                    event.setDropCompleted(success);
+
+                    event.consume();
+                }
+            });
+
+        }
+
+
+
+
+
     } // Ende create Field
 
     /**
@@ -629,11 +868,11 @@ public class newGUI extends GameEventSource {
 
 
         /** Test
-        list.add(new Highscore("1", "Paul", "2000", "30.09.09"));
-        list.add(new Highscore("2", "Flo", "1000", "31.09.09"));
-        list.add(new Highscore("3", "Sonnenschein", "900", "32.09.09"));
-        list.add(new Highscore("4", "Max", "700", "33.09.09"));
-        list.add(new Highscore("5", "Arthur", "500", "34.09.09"));
+         list.add(new Highscore("1", "Paul", "2000", "30.09.09"));
+         list.add(new Highscore("2", "Flo", "1000", "31.09.09"));
+         list.add(new Highscore("3", "Sonnenschein", "900", "32.09.09"));
+         list.add(new Highscore("4", "Max", "700", "33.09.09"));
+         list.add(new Highscore("5", "Arthur", "500", "34.09.09"));
          */
 
         ObservableList data = FXCollections.observableList(list);
@@ -984,8 +1223,6 @@ public class newGUI extends GameEventSource {
         Rectangle dragBox = new Rectangle();
         ImageView ivSrc1 = new ImageView();
         ImageView ivT = new ImageView();
-        Image img1 = new Image(newGUI.class.getResource("shipZ_1ershipIntact.png").toExternalForm());
-        Image img2 = new Image(newGUI.class.getResource("shipZ_spielfeld.png").toExternalForm());
 
         dragBox.layoutXProperty().setValue(width*0.025);
         dragBox.layoutYProperty().setValue(height*0.18);
@@ -993,11 +1230,17 @@ public class newGUI extends GameEventSource {
         dragBox.setHeight(350);
         dragBox.setStroke(Color.WHITE);
 
-        ivSrc1.setImage(img1);
+        ivSrc1.setImage(ship);
         ivSrc1.setFitWidth(35);
         ivSrc1.setFitHeight(35);
         ivSrc1.setTranslateX(width*0.026);
         ivSrc1.setTranslateY(height*0.18);
+
+        ivSrc2.setImage(ship2);
+        ivSrc2.setFitWidth(70);
+        ivSrc2.setFitHeight(35);
+        ivSrc2.setTranslateX(width*0.026);
+        ivSrc2.setTranslateY(height*0.28);
 
 
         //Lock Button
@@ -1067,7 +1310,7 @@ public class newGUI extends GameEventSource {
 
         tbHighscore.getSelectionModel().selectedIndexProperty().addListener(new RowSelectChangeListener());
 
-                //SavedGames
+        //SavedGames
         tbSavedGames = new TableView();
         data2 = getInitialTableData();
         tbSavedGames.setItems(data2);
@@ -1205,7 +1448,7 @@ public class newGUI extends GameEventSource {
             }
         });
 
-                btnLGame.setOnAction(new EventHandler<ActionEvent>() {
+        btnLGame.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
@@ -1383,7 +1626,7 @@ public class newGUI extends GameEventSource {
                 if(!cboxNetGame.isSelected()) {
                     drawName(1, body);
                     createField(body, ivSrc1);
-                    body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+                    body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
                 }
                 else {
                     body.getChildren().addAll(btnHost, btnClient);
@@ -1423,9 +1666,15 @@ public class newGUI extends GameEventSource {
                 port = txtfPort.getText();
                 fireGameEvent(CONNECT_EVENT);
 
-                drawName(1, body);
-                createField(body, ivSrc1);
-                body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+                if(connected){
+                	txtConnected.setText("Connection successful!");
+                	body.getChildren().clear();
+                	body.getChildren().addAll(txtConnected, btnContinue);
+                } else {
+                	txtConnected.setText("Connection failed!");
+                	body.getChildren().clear();
+                	body.getChildren().addAll(txtConnected, btnTryAgain);
+                }
 
             }
         });
@@ -1501,10 +1750,10 @@ public class newGUI extends GameEventSource {
             @Override
             public void handle(ActionEvent event) {
 
-            	boolean b = alertbox.displayLoad();
-            	if(b) {
-            		fireGameEvent(LOAD_EVENT);
-            	}
+                boolean b = alertbox.displayLoad();
+                if(b) {
+                    fireGameEvent(LOAD_EVENT);
+                }
             }
         });
 
@@ -1961,20 +2210,20 @@ public class newGUI extends GameEventSource {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
 /**
-            int ix = newValue.intValue();
+ int ix = newValue.intValue();
 
-            if ((ix = data.size())) {
+ if ((ix = data.size())) {
 
-                return; // invalid data
-            }
+ return; // invalid data
+ }
 
-            Book book = data.get(ix);
-            actionStatus.setText(book.toString());
-**/
+ Book book = data.get(ix);
+ actionStatus.setText(book.toString());
+ **/
         }
     }
 
 
-    }//Ende newGUI
+}//Ende newGUI
 
 
