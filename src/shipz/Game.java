@@ -1011,10 +1011,10 @@ public class Game implements GameEventListener {
                 break;
             case FINISHED_ROUND:
             	filestream.newDraw(aX, aY, activePlayer(), aResult);
-            	gui.setComboLabel(filestream.getComboValue(1), 1);
-            	gui.setComboLabel(filestream.getComboValue(2), 2);
-            	gui.setScoreLabel(filestream.getScore(1), 1);
-            	gui.setScoreLabel(filestream.getScore(2), 2);
+            	gui.setComboLabel(gui.getPlayername(1), filestream.getComboValue(1), 1);
+            	gui.setComboLabel(gui.getPlayername(2), filestream.getComboValue(2), 2);
+            	gui.setScoreLabel(gui.getPlayername(1), filestream.getScore(1), 1);
+            	gui.setScoreLabel(gui.getPlayername(2), filestream.getScore(2), 2);
                 if(network != null && isHost) {
                     network.send(
                         NET_HIGHSCORE + ":"
@@ -1034,7 +1034,7 @@ public class Game implements GameEventListener {
                 else {
                     System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
                     //gui.setNewRow(filestream.get)
-                    filestream.saveScoreToFile(gui.getPlayername1(), gui.getPlayername2());
+                    filestream.saveScoreToFile(gui.getPlayername(1), gui.getPlayername(2));
                 }
                 break;
             case PAUSE_EVENT:
@@ -1061,15 +1061,15 @@ public class Game implements GameEventListener {
 				break;
             case SAVE_EVENT:
                 if(mode == 1) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "Player vs. Player");
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "Player vs. Player");
                 } else if(mode == 2) {
                 	if(player1 instanceof Computer) {
-                		filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player1.saveCurrentGame());
+                		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player1.saveCurrentGame());
                 	} else if(player2 instanceof Computer){
-                		filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player2.saveCurrentGame());
+                		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player2.saveCurrentGame());
                 	}
                 } else if(mode == 3) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername1(), gui.getPlayername2(), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, "AI vs. AI", player1.saveCurrentGame(), player2.saveCurrentGame());
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, "AI vs. AI", player1.saveCurrentGame(), player2.saveCurrentGame());
                 }
             	break;
             case LOAD_EVENT:
@@ -1149,10 +1149,10 @@ public class Game implements GameEventListener {
                         int comboValue2 = Integer.parseInt(score[1]);
                         int score1 = Integer.parseInt(score[2]);
                         int score2 = Integer.parseInt(score[3]);
-                        gui.setComboLabel(comboValue1, 1);
-                        gui.setComboLabel(comboValue2, 2);
-                        gui.setScoreLabel(score1, 1);
-                        gui.setScoreLabel(score1, 2);
+                        gui.setComboLabel(gui.getPlayername(1), comboValue1, 1);
+                        gui.setComboLabel(gui.getPlayername(2), comboValue2, 2);
+                        gui.setScoreLabel(gui.getPlayername(1), score1, 1);
+                        gui.setScoreLabel(gui.getPlayername(2), score1, 2);
                         break;
                 }
         }
@@ -1297,10 +1297,10 @@ public class Game implements GameEventListener {
         drawShipOnGUI();
 
         gui.setPlayernames(filestream.getPlayerName(gameName), filestream.getOpponentName(gameName));
-        gui.setComboLabel(filestream.getComboValue(1), 1);
-        gui.setScoreLabel(filestream.getScore(1), 1);
-        gui.setComboLabel(filestream.getComboValue(2), 2);
-        gui.setScoreLabel(filestream.getScore(2), 2);
+        gui.setComboLabel(filestream.getPlayerName(gameName), filestream.getComboValue(1), 1);
+        gui.setScoreLabel(filestream.getPlayerName(gameName), filestream.getScore(1), 1);
+        gui.setComboLabel(filestream.getOpponentName(gameName), filestream.getComboValue(2), 2);
+        gui.setScoreLabel(filestream.getOpponentName(gameName), filestream.getScore(2), 2);
 
     	if(filestream.getActivePlayer(gameName) == 1) {
     		player1active = true;
