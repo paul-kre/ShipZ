@@ -60,9 +60,8 @@ public class Game implements GameEventListener {
      */
     private byte mode = 0;
 
-    boolean isHost;
-    
-    private Random random;
+    boolean isHost = false;
+
 
     //Constructor
     /**
@@ -80,7 +79,6 @@ public class Game implements GameEventListener {
         player1active = true;
         gamePaused = false;
         filestream = new FileStream();
-        random = new Random();
 
     }
 /*
@@ -846,8 +844,8 @@ public class Game implements GameEventListener {
             aY = gui.getY();
         }
         else {
-            aX = network.getX();
-            aY = network.getY();
+            aX = network.getY();
+            aY = network.getX();
         }
         aResult = checkTile(aX, aY);
         System.out.println("Spieler " + activePlayer() + ": " + aY + "/" + aX + " => " + aResult);
@@ -1098,6 +1096,7 @@ public class Game implements GameEventListener {
                 String ip = gui.getIp();
 
                 network = new Network(isHost);
+                gui.setIsNetwork(true);
                 try {
                     if(isHost) network.connect(port);
                     else network.connect(ip, port);
@@ -1183,7 +1182,7 @@ public class Game implements GameEventListener {
             }
     	}
     }
-    
+
     /**
      * Wiederholt zurückgenommene Züge.
      * @param str String, der die zu wiederholenden Züge speichert.
@@ -1270,7 +1269,7 @@ public class Game implements GameEventListener {
             }//Ende ySchleife
         }//Ende xSchleife
         drawShipOnGUI();
-        
+
         gui.setPlayernames(filestream.getPlayerName(gameName), filestream.getOpponentName(gameName));
         gui.setComboLabel(filestream.getComboValue(1), 1);
         gui.setScoreLabel(filestream.getScore(1), 1);
@@ -1310,7 +1309,7 @@ public class Game implements GameEventListener {
             return 1;
         }
     }
-    
+
     /**
      * wechselt den aktiven Spieler
      */
@@ -1322,6 +1321,8 @@ public class Game implements GameEventListener {
             player1active = true;
         }
     }
+
+
 }
 
 

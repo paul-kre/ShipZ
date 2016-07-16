@@ -167,6 +167,7 @@ public class newGUI extends GameEventSource {
     //Network
     private boolean isHost;
     private boolean connected = false;
+    private boolean isNetwork;
 
     Text txtConnected = new Text("Unknown");
     Button btnContinue = new Button("Continue");
@@ -175,8 +176,8 @@ public class newGUI extends GameEventSource {
 
     //IM
 
-    private void go() {
-
+    public void setIsNetwork(boolean b) {
+        isNetwork = b;
     }
 
     public boolean isHost() {
@@ -746,14 +747,14 @@ public class newGUI extends GameEventSource {
             switch (v) {
                 case 0:
                     field1[x][y].setImage(water);
-                    if(isHost) fireGameEvent(FINISHED_ROUND);
+                    if(isHost || !isNetwork) fireGameEvent(FINISHED_ROUND);
                     break;
                 case 1:
                     field1[x][y].setImage(ship);
                     break;
                 case 2:
                     field1[x][y].setImage(explosion);
-                    if(isHost) fireGameEvent(FINISHED_ROUND);
+                    if(isHost || !isNetwork) fireGameEvent(FINISHED_ROUND);
                     break;
                 default:
                     field1[x][y].setImage(white);
@@ -764,14 +765,14 @@ public class newGUI extends GameEventSource {
             switch (v) {
                 case 0:
                     field2[x][y].setImage(water);
-                    if(isHost) fireGameEvent(FINISHED_ROUND);
+                    if(isHost || !isNetwork) fireGameEvent(FINISHED_ROUND);
                     break;
                 case 1:
                     field2[x][y].setImage(ship);
                     break;
                 case 2:
                     field2[x][y].setImage(explosion);
-                    if(isHost) fireGameEvent(FINISHED_ROUND);
+                    if(isHost || !isNetwork) fireGameEvent(FINISHED_ROUND);
                     break;
                 default:
                     field2[x][y].setImage(white);
