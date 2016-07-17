@@ -1211,13 +1211,14 @@ public class newGUI extends GameEventSource {
         ft.play();
 
         if(player == 1) {
+        	body.getChildren().remove(playername);
             playername.setText(playername1+" it's your turn!");
             body.getChildren().add(playername);
         } else {
+        	body.getChildren().remove(playername);
             playername.setText(playername2+" it's your turn!");
             body.getChildren().add(playername);
         }
-
 
     }
 
