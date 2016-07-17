@@ -15,10 +15,10 @@ import shipz.util.GameEventSource;
 public class AlertBox extends GameEventSource {
 
 	Stage window = new Stage();
-	newGUI gui;
+	GUI gui;
 	boolean r = false;
 
-	public AlertBox(newGUI gui) {
+	public AlertBox(GUI gui) {
 		this.gui = gui;
 	}
 
