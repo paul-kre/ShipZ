@@ -41,7 +41,7 @@ public class Score {
 	 * Konstruktor von Score.
 	 * Die IVs werden initialisiert und die Highscore-Datei wird erstellt.
 	 */
-	public Score() {
+	Score() {
 		saveload = new SaveLoad();
 		highscoreFile = new File(saveload.fileDirectory() + File.separator + "highscore.shipz");
 		saveload.makeDirectory(highscoreFile);
@@ -59,7 +59,7 @@ public class Score {
 	 * @param playerName Name des Spielers
 	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
 	 */
-	protected void setScore(int playerIndex, int result) {
+	void setScore(int playerIndex, int result) {
 		switch(result) {
 		case 1:
 			combo(playerIndex, result);
@@ -158,7 +158,7 @@ public class Score {
 	 * in den Einstellungen festgelegt werden.
 	 * @return Die Highscore-Liste als String
 	 */
-	protected String highscore(int max) {
+	String highscore(int max) {
 		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
 		String[] a = str.split(",");
 		String result = "";
@@ -246,7 +246,7 @@ public class Score {
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers
 	 */
-	protected void saveScoreToFile(String playerName, String opponentName, int max) {
+	void saveScoreToFile(String playerName, String opponentName, int max) {
 		addPlayerIntoHighscore(playerName, scorePlayer1);
 		addPlayerIntoHighscore(opponentName, scorePlayer2);
 		cleanHighscoreFile(max);
@@ -257,7 +257,7 @@ public class Score {
 	 * @param 1 = Spieler1, 2 = Spieler2
 	 * @return Punktzahl des Spielers
 	 */
-	protected int getScore(int playerIndex) {
+	int getScore(int playerIndex) {
 		switch(playerIndex) {
 		case 1: return scorePlayer1;
 		case 2: return scorePlayer2;
@@ -272,7 +272,7 @@ public class Score {
 	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
 	 * @return Combo-Wert des Spielers
 	 */
-	protected int getComboValue(int playerIndex) {
+	int getComboValue(int playerIndex) {
 		switch(playerIndex) {
 		case 1: return comboPlayer1;
 		case 2: return comboPlayer2;
@@ -285,7 +285,7 @@ public class Score {
 	 * Diese Methode wird für das Laden von Spielständen benötigt.
 	 * @param gameName Name des Spielstands
 	 */
-	protected void loadScore(String gameName) {
+	void loadScore(String gameName) {
 		String[] draws = saveload.getDraws(gameName).split(";");
 		int playerIndex, result;
 		for(int i = 0; i < draws.length; i++) {
