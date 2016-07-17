@@ -822,7 +822,7 @@ public class newGUI extends GameEventSource {
         }
     }
 
-
+/**
     public void drawShip(int x, int y, int field, int length, char dir) {
 
         if(field == 1) {
@@ -852,51 +852,79 @@ public class newGUI extends GameEventSource {
 
                 case 3:
                     //3er Schiff
-                    field1[x][y].setImage(ship21);
+                    field1[x][y].setImage(ship31);
                     //oben
-                    if (dir == 'u')
-                        field1[x][y - 1].setImage(ship22);
+                    if (dir == 'u') {
+                        field1[x][y - 1].setImage(ship32);
+                        field1[x][y - 2].setImage(ship33);
+                    }
                     //unten
-                    if (dir == 'd')
-                        field1[x][y + 1].setImage(ship22);
-                        //rechts
-                    else if (dir == 'r')
-                        field1[x + 1][y].setImage(ship22);
+                    if (dir == 'd') {
+                        field1[x][y + 1].setImage(ship32);
+                        field1[x][y + 2].setImage(ship33);
+                    }
+                    //rechts
+                    if (dir == 'r') {
+                        field1[x + 1][y].setImage(ship32);
+                        field1[x + 2][y].setImage(ship33);
+                    }
                     //unten
-                    if (dir == 'l')
-                        field1[x - 1][y].setImage(ship22);
+                    if (dir == 'l') {
+                        field1[x - 1][y].setImage(ship32);
+                        field1[x - 2][y].setImage(ship33);
+                    }
                     break;
                 case 4:
-                    //2er Schiff
-                    field1[x][y].setImage(ship21);
+                    //4er Schiff
+                    field1[x][y].setImage(ship41);
                     //oben
-                    if (dir == 'u')
-                        field1[x][y - 1].setImage(ship22);
+                    if (dir == 'u') {
+                        field1[x][y - 1].setImage(ship42);
+                        field1[x][y - 2].setImage(ship43);
+                        field1[x][y - 3].setImage(ship44);
+                    }
                     //unten
-                    if (dir == 'd')
-                        field1[x][y + 1].setImage(ship22);
-                        //rechts
-                    else if (dir == 'r')
-                        field1[x + 1][y].setImage(ship22);
+                    if (dir == 'd') {
+                        field1[x][y + 1].setImage(ship42);
+                        field1[x][y + 2].setImage(ship43);
+                        field1[x][y + 3].setImage(ship44);
+                    }
+                    //rechts
+                    if (dir == 'r') {
+                        field1[x + 1][y].setImage(ship42);
+                        field1[x + 2][y].setImage(ship43);
+                        field1[x + 3][y].setImage(ship44);
+                    }
                     //unten
-                    if (dir == 'l')
-                        field1[x - 1][y].setImage(ship22);
+                    if (dir == 'l') {
+                        field1[x - 1][y].setImage(ship42);
+                        field1[x - 2][y].setImage(ship43);
+                        field1[x - 3][y].setImage(ship44);
+                    }
                     break;
                 case 5:
                     //2er Schiff
-                    field1[x][y].setImage(ship21);
+                    field1[x][y].setImage(ship31);
                     //oben
-                    if (dir == 'u')
-                        field1[x][y - 1].setImage(ship22);
+                    if (dir == 'u') {
+                        field1[x][y - 1].setImage(ship32);
+                        field1[x][y - 2].setImage(ship33);
+                    }
                     //unten
-                    if (dir == 'd')
-                        field1[x][y + 1].setImage(ship22);
-                        //rechts
-                    else if (dir == 'r')
-                        field1[x + 1][y].setImage(ship22);
+                    if (dir == 'd') {
+                        field1[x][y + 1].setImage(ship32);
+                        field1[x][y + 2].setImage(ship33);
+                    }
+                    //rechts
+                    if (dir == 'r') {
+                        field1[x + 1][y].setImage(ship32);
+                        field1[x + 2][y].setImage(ship33);
+                    }
                     //unten
-                    if (dir == 'l')
-                        field1[x - 1][y].setImage(ship22);
+                    if (dir == 'l') {
+                        field1[x - 1][y].setImage(ship32);
+                        field1[x - 2][y].setImage(ship33);
+                    }
                     break;
             }
         }
@@ -938,7 +966,7 @@ public class newGUI extends GameEventSource {
         }
 
     }
-
+**/
 
     /**
      * Methode zum �ndern des Zustandes der GUI (enable/disable)
