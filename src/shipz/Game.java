@@ -440,13 +440,15 @@ public class Game implements GameEventListener {
         for(int i = 0; i < length; i++) {
             if(player == 1) {
                 board1[y - i][x] = 'x';
+                gui.draw(y-i, x, 1, 1);
             }
             else {
                 board2[y - i][x] = 'x';
+                gui.draw(y-i, x, 2, 1);
             }
         }
         blockTiles(player, 0, length, x, y);
-        gui.drawShip(x, y, player, length, 'u');
+        //gui.drawShip(y, x, player, length, 'r');
     }
 
     /**
@@ -506,13 +508,15 @@ public class Game implements GameEventListener {
         for(int i = 0; i < length; i++) {
             if (player == 1) {
                 board1[y][x + i] = 'x';
+                gui.draw(y, x+i, 1, 1);
             }
             else {
                 board2[y][x + i] = 'x';
+                gui.draw(y, x+i, 2, 1);
             }
         }
         blockTiles(player, 1, length, x, y);
-        gui.drawShip(x, y, player, length, 'r');
+        //gui.drawShip(y, x, player, length, 'u');
     }
 
     /**
@@ -572,13 +576,15 @@ public class Game implements GameEventListener {
         for(int i = 0; i < length; i++) {
             if(player == 1) {
                 board1[y + i][x] = 'x';
+                gui.draw(y+i, x, 1, 1);
             }
             else {
                 board2[y + i][x] = 'x';
+                gui.draw(y+i, x, 2, 1);
             }
         }
         blockTiles(player, 2, length, x, y);
-        gui.drawShip(x, y, player, length, 'd');
+        //gui.drawShip(y, x, player, length, 'l');
     }
 
     /**
@@ -632,13 +638,15 @@ public class Game implements GameEventListener {
         for(int i = 0; i < length; i++) {
             if(player == 1) {
                 board1[y][x - i] = 'x';
+                gui.draw(y, x-i, 1, 1);
             }
             else {
                 board2[y][x - i] = 'x';
+                gui.draw(y, x-i, 2, 1);
             }
         }
         blockTiles(player, 3, length, x, y);
-        gui.drawShip(x, y, player, length, 'l');
+        //gui.drawShip(y, x, player, length, 'u');
     }
 
     /**
@@ -1035,7 +1043,7 @@ public class Game implements GameEventListener {
                     else {
                         player1 = new Hard(gui.getFieldSize(), true, shipList);
                     }
-                    System.out.println("Player 1: " + ki1mode); //
+                    System.out.println("Player 1: " + ki1mode);
                 }
                 break;
             case LOCK_EVENT:
@@ -1069,7 +1077,7 @@ public class Game implements GameEventListener {
                     System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
                     //gui.setNewRow(filestream.get)
                     filestream.saveScoreToFile(gui.getPlayername(1), gui.getPlayername(2));
-                    //gui.setEndMessage(1);
+                    gui.setEndMessage(1);
                     gui.setEndScreen();
                 }
                 break;
