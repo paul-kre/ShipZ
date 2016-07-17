@@ -3,7 +3,7 @@ package shipz.io;
 import shipz.util.NoDrawException;
 
 /**
- * Diese Klasse verwaltet die anderen drei Klassen.
+ * Diese Klasse verwaltet die anderen vier Klassen.
  * Es werden alle wichtigen Methoden, die die Verwaltung-Klasse des Spiels {@link shipz.Game}
  * zum Speichern, Laden, Undo/ Redo und für die Punkte- und Highscore-Verwaltung
  * benötigt, redefiniert und bilden somit eine Referenz zu den anderen Klassen.
@@ -188,14 +188,29 @@ public class FileStream {
 		return saveload.getPreferences(gameName);
 	}
 	
+	/**
+	 * Gibt das abgespeicherte erste MirrorField als String zurück.
+	 * @param gameName Name des Spielstands
+	 * @return erstes Mirrorfield
+	 */
 	public String getMirrorFieldOne(String gameName) {
 		return saveload.getMirrorFieldOne(gameName);
 	}
 	
+	/**
+	 * Gibt das abgespeicherte zweite MirrorField als String zurück.
+	 * @param gameName Name des Spielstands
+	 * @return zweites Mirrorfield
+	 */
 	public String getMirrorFieldTwo(String gameName) {
 		return saveload.getMirrorFieldTwo(gameName);
 	}
 	
+	/**
+	 * Gibt den abgespeicherten Spielmodus als String zurück
+	 * @param gameName Name des Spielstands
+	 * @return der Spielmodus
+	 */
 	public String getGamemode(String gameName) {
 		return saveload.getGamemode(gameName);
 	}
