@@ -92,8 +92,8 @@ public class newGUI extends GameEventSource {
     Button btnGo = new Button("Go!");
     Button btnHost = new Button("Host");
     Button btnClient = new Button("Client");
-    TextField txtfIp = new TextField("IP");
-    TextField txtfPort = new TextField("Port");
+    TextField txtfIp = new TextField("127.0.0.1");
+    TextField txtfPort = new TextField("5555");
     Button btnConnect = new Button("Connect");
     Button btnUndo = new Button("Undo");
     Button btnRedo = new Button("Redo");
@@ -109,6 +109,7 @@ public class newGUI extends GameEventSource {
     ImageView ivSrc5 = new ImageView();
     Button btnLock = new Button("Lock");
     Button btnEGame = new Button("End game");
+    Rectangle border;
 
     //Images
     Image white = new Image(newGUI.class.getResource("White.png").toExternalForm());
@@ -119,6 +120,7 @@ public class newGUI extends GameEventSource {
     Image ship21 = new Image(newGUI.class.getResource("shipZ_2erShip_Part1.png").toExternalForm());
     Image ship22 = new Image(newGUI.class.getResource("shipZ_2erShip_Part2.png").toExternalForm());
     Image explosion = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
+    Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
     //Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion3.gif").toExternalForm());
     //Image explosion3 = new Image(newGUI.class.getResource("shipZ_explosion4.gif").toExternalForm());
 
@@ -272,7 +274,7 @@ public class newGUI extends GameEventSource {
                 int y = j;
 
                 //Rectangle zur Feldbegrenzung erstellen
-                Rectangle border = new Rectangle(30, 30);
+                border = new Rectangle(width*0.030, width*0.030);
                 border.setFill(null);
                 border.setStroke(Color.BLACK);
 
@@ -283,18 +285,18 @@ public class newGUI extends GameEventSource {
                 field1[i][j] = oneField;
 
                 //Rectangle platzieren
-                border.setWidth(30);
-                border.setTranslateX(j * 30);
-                border.setTranslateY(i * 30);
-                border.layoutXProperty().setValue(width*0.3);
+                border.setWidth(width*0.030);
+                border.setTranslateX(j * width*0.030);
+                border.setTranslateY(i * width*0.030);
+                border.layoutXProperty().setValue(width*0.25);
                 border.layoutYProperty().setValue(height*0.18);
 
                 //ImageView platzieren
-                oneField.setFitWidth(30);
+                oneField.setFitWidth(width*0.030);
                 oneField.setPreserveRatio(true);
-                oneField.setTranslateX(j * 30);
-                oneField.setTranslateY(i * 30);
-                oneField.layoutXProperty().setValue(width*0.3);
+                oneField.setTranslateX(j * width*0.030);
+                oneField.setTranslateY(i * width*0.030);
+                oneField.layoutXProperty().setValue(width*0.25);
                 oneField.layoutYProperty().setValue(height*0.18);
 
                 body.getChildren().addAll(border, oneField);
@@ -319,7 +321,7 @@ public class newGUI extends GameEventSource {
                     }
                 });
 
-                //DargandDropTargets
+                //DragandDropTargets
                 field1[i][j].setOnDragDetected(new EventHandler <javafx.scene.input.MouseEvent>() {
                     public void handle(javafx.scene.input.MouseEvent event) {
                         /* drag was detected, start drag-and-drop gesture*/
@@ -329,9 +331,18 @@ public class newGUI extends GameEventSource {
                         Dragboard db = oneField.startDragAndDrop(TransferMode.MOVE);
 
                         /* put a string on dragboard */
-                        ClipboardContent content = new ClipboardContent();
-                        content.putImage(ship);
-                        db.setContent(content);
+                        if(oneField.getImage()==ship) {
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString("s1");
+                            content.putImage(ship);
+                            db.setContent(content);
+                        }else if(oneField.getImage()==ship21 || oneField.getImage()==ship22) {
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString("s2");
+                            content.putImage(ship2);
+                            db.setContent(content);
+                        }
+
 
                         event.consume();
                     }
@@ -344,7 +355,15 @@ public class newGUI extends GameEventSource {
                         /* if the data was successfully moved, clear it */
                         if (event.getTransferMode() == TransferMode.MOVE) {
 
-                            oneField.setImage(white);
+                            if(oneField.getImage()==ship) {
+                                oneField.setImage(white);
+                            }else if(oneField.getImage()==ship21) {
+                                oneField.setImage(white);
+                                field1[x][y+1].setImage(white);
+                            }else if(oneField.getImage()==ship22) {
+                                oneField.setImage(white);
+                                field1[x][y-1].setImage(white);
+                            }
 
                         }
 
@@ -360,7 +379,7 @@ public class newGUI extends GameEventSource {
                          * and if it has a string data */
                     if (event.getGestureSource() != oneField) {
                             /* allow for both copying and moving, whatever user chooses */
-                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                        event.acceptTransferModes(TransferMode.MOVE);
                     }
 
                     event.consume();
@@ -396,8 +415,13 @@ public class newGUI extends GameEventSource {
                         /* if there is a string data on dragboard, read it and use it */
                         Dragboard db = event.getDragboard();
                         boolean success = false;
-                        if (db.hasImage()) {
-                            oneField.setImage(db.getImage());
+                        if(db.getString() == "s1") {
+                            oneField.setImage(ship);
+                            success = true;
+                        }
+                        if (db.getString() == "s2") {
+                            field1[x][y+1].setImage(ship22);
+                            oneField.setImage(ship21);
                             success = true;
                         }
                         /* let the source know whether the string was successfully
@@ -599,7 +623,7 @@ public class newGUI extends GameEventSource {
             }
 
 
-        ivSrcGes[number].setOnDragDetected(new EventHandler <javafx.scene.input.MouseEvent>() {
+            ivSrcGes[number].setOnDragDetected(new EventHandler <javafx.scene.input.MouseEvent>() {
                 public void handle(javafx.scene.input.MouseEvent event) {
                         /* drag was detected, start drag-and-drop gesture*/
                     System.out.println("onDragDetected");
@@ -760,6 +784,10 @@ public class newGUI extends GameEventSource {
                     field1[x][y].setImage(explosion);
                     if(isHost || !isNetwork) fireGameEvent(FINISHED_ROUND);
                     break;
+                case 3:
+                    field1[x][y].setImage(explosion2);
+                    if(isHost || !isNetwork) fireGameEvent(FINISHED_ROUND);
+                    break;
                 default:
                     field1[x][y].setImage(white);
                     break;
@@ -776,6 +804,10 @@ public class newGUI extends GameEventSource {
                     break;
                 case 2:
                     field2[x][y].setImage(explosion);
+                    if(isHost || !isNetwork) fireGameEvent(FINISHED_ROUND);
+                    break;
+                case 3:
+                    field2[x][y].setImage(explosion2);
                     if(isHost || !isNetwork) fireGameEvent(FINISHED_ROUND);
                     break;
                 default:
@@ -934,7 +966,6 @@ public class newGUI extends GameEventSource {
 
 
         //Haupt�berschrift
-        Text hlOverall = new Text("Project: shipZ");
         hlOverall.layoutXProperty().setValue(width*0.03);
         hlOverall.layoutYProperty().setValue(height*0.14);
         //hlOverall.setFont(javafx.scene.text.Font.font("Rockwell", height*0.12));
@@ -942,8 +973,6 @@ public class newGUI extends GameEventSource {
 
 
         //Startbildschirm
-        ImageView startbildschirm = new ImageView();
-        Image startbild = new Image(newGUI.class.getResource("Startbildschirm.png").toExternalForm());
         startbildschirm.setImage(startbild);
         startbildschirm.setFitWidth(body.getWidth());
         startbildschirm.setFitHeight(body.getHeight());
@@ -952,14 +981,10 @@ public class newGUI extends GameEventSource {
 
 
         //Explosion
-        ImageView explosionStart = new ImageView();
-        Image explosion = new Image(newGUI.class.getResource("Explosion.png").toExternalForm());
         explosionStart.setImage(explosion);
 
 
         //Men�button
-        ImageView btnMenu = new ImageView();
-        Image menu = new Image(newGUI.class.getResource("btnMenu.png").toExternalForm());
         btnMenu.setImage(menu);
         btnMenu.setFitWidth(100);
         btnMenu.setFitHeight(100);
@@ -968,8 +993,6 @@ public class newGUI extends GameEventSource {
 
 
         //Hauptmen�
-        ImageView mainMenu = new ImageView();
-        Image imgMainMenu = new Image(newGUI.class.getResource("Menu.png").toExternalForm());
         mainMenu.setImage(imgMainMenu);
         mainMenu.setFitWidth(width*0.239);
         mainMenu.setFitHeight(height*0.385);
@@ -978,7 +1001,6 @@ public class newGUI extends GameEventSource {
 
 
         //Play Button
-        Button btnPlay = new Button("Play");
         btnPlay.layoutXProperty().setValue(width*0.378);
         btnPlay.layoutYProperty().setValue(height*0.195);
         btnPlay.setPrefWidth(width*0.181);
@@ -987,7 +1009,6 @@ public class newGUI extends GameEventSource {
 
 
         //Highscore Button
-        Button btnHighscore = new Button("Highscore");
         btnHighscore.layoutXProperty().setValue(width*0.378);
         btnHighscore.layoutYProperty().setValue(height*0.305);
         btnHighscore.setPrefWidth(width*0.181);
@@ -996,7 +1017,6 @@ public class newGUI extends GameEventSource {
 
 
         //Settings Button
-        Button btnSettings = new Button("Settings");
         btnSettings.layoutXProperty().setValue(width*0.378);
         btnSettings.layoutYProperty().setValue(height*0.415);
         btnSettings.setPrefWidth(width*0.181);
@@ -1005,7 +1025,6 @@ public class newGUI extends GameEventSource {
 
 
         //New Game Button
-        Button btnNGame = new Button("New Game");
         btnNGame.layoutXProperty().setValue(width*0.20);
         btnNGame.layoutYProperty().setValue(height*0.25);
         btnNGame.setPrefWidth(width*0.181);
@@ -1014,7 +1033,6 @@ public class newGUI extends GameEventSource {
 
 
         //Load Game Button
-        Button btnLGame = new Button("Load Game");
         btnLGame.layoutXProperty().setValue(width*0.60);
         btnLGame.layoutYProperty().setValue(height*0.25);
         btnLGame.setPrefWidth(width*0.181);
@@ -1022,21 +1040,18 @@ public class newGUI extends GameEventSource {
         //btnLGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
         //Player vs Player Button
-        Button btnPvP = new Button("Player vs Player");
         btnPvP.layoutXProperty().setValue(width*0.10);
         btnPvP.layoutYProperty().setValue(height*0.25);
         btnPvP.setPrefWidth(width*0.181);
         btnPvP.setPrefHeight(height*0.07);
 
         //Player vs Ki Button
-        Button btnPvK = new Button("Player vs Ki");
         btnPvK.layoutXProperty().setValue(width*0.40);
         btnPvK.layoutYProperty().setValue(height*0.25);
         btnPvK.setPrefWidth(width*0.181);
         btnPvK.setPrefHeight(height*0.07);;
 
         //Ki vs Ki Button
-        Button btnKvK = new Button("Ki vs Ki");
         btnKvK.layoutXProperty().setValue(width*0.70);
         btnKvK.layoutYProperty().setValue(height*0.25);
         btnKvK.setPrefWidth(width*0.181);
@@ -1044,29 +1059,21 @@ public class newGUI extends GameEventSource {
 
 
         //Spieler1 Textfeld
-        TextField txtfPlayer1 = new TextField("Player 1");
         txtfPlayer1.layoutXProperty().setValue(width*0.1);
         txtfPlayer1.layoutYProperty().setValue(height*0.1);
 
 
         //Spieler2 Textfeld
-        TextField txtfPlayer2 = new TextField("Player 2");
         txtfPlayer2.layoutXProperty().setValue(width*0.6);
         txtfPlayer2.layoutYProperty().setValue(height*0.1);
 
 
         //Netzwerk Checkbox
-        CheckBox cboxNetGame = new CheckBox("Networkgame");
         cboxNetGame.layoutXProperty().setValue(width*0.1);
         cboxNetGame.layoutYProperty().setValue(height*0.2);
 
 
-        //Togglegruppe
-        final ToggleGroup group1 = new ToggleGroup();
-
-
         //Easy Computer2 Checkbox
-        RadioButton rbEasy1 = new RadioButton("Easy");
         rbEasy1.layoutXProperty().setValue(width*0.1);
         rbEasy1.layoutYProperty().setValue(height*0.4);
         rbEasy1.setToggleGroup(group1);
@@ -1074,7 +1081,6 @@ public class newGUI extends GameEventSource {
 
 
         //Normal Computer2 Checkbox
-        RadioButton rbNormal1 = new RadioButton("Normal");
         rbNormal1.layoutXProperty().setValue(width*0.2);
         rbNormal1.layoutYProperty().setValue(height*0.4);
         rbNormal1.setToggleGroup(group1);
@@ -1082,19 +1088,13 @@ public class newGUI extends GameEventSource {
 
 
         //Hard Computer2 Checkbox
-        RadioButton rbHard1 = new RadioButton("Hard");
         rbHard1.layoutXProperty().setValue(width*0.3);
         rbHard1.layoutYProperty().setValue(height*0.4);
         rbHard1.setToggleGroup(group1);
         rbHard1.setSelected(true);
 
 
-        //Togglegruppe
-        final ToggleGroup group2 = new ToggleGroup();
-
-
         //Easy Computer2 Checkbox
-        RadioButton rbEasy2 = new RadioButton("Easy");
         rbEasy2.layoutXProperty().setValue(width*0.6);
         rbEasy2.layoutYProperty().setValue(height*0.4);
         rbEasy2.setToggleGroup(group2);
@@ -1102,7 +1102,6 @@ public class newGUI extends GameEventSource {
 
 
         //Normal Computer2 Checkbox
-        RadioButton rbNormal2 = new RadioButton("Normal");
         rbNormal2.layoutXProperty().setValue(width*0.7);
         rbNormal2.layoutYProperty().setValue(height*0.4);
         rbNormal2.setToggleGroup(group2);
@@ -1110,7 +1109,6 @@ public class newGUI extends GameEventSource {
 
 
         //Hard Computer2 Checkbox
-        RadioButton rbHard2 = new RadioButton("Hard");
         rbHard2.layoutXProperty().setValue(width*0.8);
         rbHard2.layoutYProperty().setValue(height*0.4);
         rbHard2.setToggleGroup(group2);
@@ -1118,7 +1116,6 @@ public class newGUI extends GameEventSource {
 
 
         //Go Button
-        Button btnGo = new Button("Go!");
         btnGo.layoutXProperty().setValue(width*0.025);
         btnGo.layoutYProperty().setValue(height*0.55);
         btnGo.setPrefWidth(width*0.12);
@@ -1128,7 +1125,6 @@ public class newGUI extends GameEventSource {
 
 
         //Host Button
-        Button btnHost = new Button("Host");
         btnHost.layoutXProperty().setValue(width*0.20);
         btnHost.layoutYProperty().setValue(height*0.25);
         btnHost.setPrefWidth(width*0.181);
@@ -1137,7 +1133,6 @@ public class newGUI extends GameEventSource {
 
 
         //Client Button
-        Button btnClient = new Button("Client");
         btnClient.layoutXProperty().setValue(width*0.60);
         btnClient.layoutYProperty().setValue(height*0.25);
         btnClient.setPrefWidth(width*0.181);
@@ -1146,19 +1141,17 @@ public class newGUI extends GameEventSource {
 
 
         //IP Textfeld
-        TextField txtfIp = new TextField("127.0.0.1");
         txtfIp.layoutXProperty().setValue(width*0.3);
         txtfIp.layoutYProperty().setValue(height*0.25);
 
 
         //Port Textfeld
-        TextField txtfPort = new TextField("5555");
+
         txtfPort.layoutXProperty().setValue(width*0.5);
         txtfPort.layoutYProperty().setValue(height*0.25);
 
 
         //Connect Button
-        Button btnConnect = new Button("Connect");
         btnConnect.layoutXProperty().setValue(width*0.378);
         btnConnect.layoutYProperty().setValue(height*0.415);
         btnConnect.setPrefWidth(width*0.12);
@@ -1180,7 +1173,6 @@ public class newGUI extends GameEventSource {
         btnTryAgain.layoutYProperty().setValue(height*0.305);
 
         //Undo Button
-        Button btnUndo = new Button("Undo");
         btnUndo.layoutXProperty().setValue(width*0.1);
         btnUndo.layoutYProperty().setValue(height*0.025);
         btnUndo.setPrefWidth(width*0.16);
@@ -1189,7 +1181,6 @@ public class newGUI extends GameEventSource {
 
 
         //Redo Button
-        Button btnRedo = new Button("Redo");
         btnRedo.layoutXProperty().setValue(width*0.3);
         btnRedo.layoutYProperty().setValue(height*0.025);
         btnRedo.setPrefWidth(width*0.16);
@@ -1198,7 +1189,6 @@ public class newGUI extends GameEventSource {
 
 
         //Save Button
-        Button btnSave = new Button("Save");
         btnSave.layoutXProperty().setValue(width*0.5);
         btnSave.layoutYProperty().setValue(height*0.025);
         btnSave.setPrefWidth(width*0.16);
@@ -1207,7 +1197,6 @@ public class newGUI extends GameEventSource {
 
 
         //Load Button
-        Button btnLoad = new Button("Load");
         btnLoad.layoutXProperty().setValue(width*0.7);
         btnLoad.layoutYProperty().setValue(height*0.025);
         btnLoad.setPrefWidth(width*0.16);
@@ -1216,7 +1205,6 @@ public class newGUI extends GameEventSource {
 
 
         //Random Button
-        Button btnRndm = new Button("Random");
         btnRndm.layoutXProperty().setValue(width*0.025);
         btnRndm.layoutYProperty().setValue(height*0.55);
         btnRndm.setPrefWidth(width*0.12);
@@ -1225,10 +1213,6 @@ public class newGUI extends GameEventSource {
 
 
         //Drag and Drop
-        Rectangle dragBox = new Rectangle();
-        ImageView ivSrc1 = new ImageView();
-        ImageView ivT = new ImageView();
-
         dragBox.layoutXProperty().setValue(width*0.025);
         dragBox.layoutYProperty().setValue(height*0.18);
         dragBox.setWidth(200);
@@ -1249,7 +1233,6 @@ public class newGUI extends GameEventSource {
 
 
         //Lock Button
-        Button btnLock = new Button("Lock");
         btnLock.layoutXProperty().setValue(width*0.36);
         btnLock.layoutYProperty().setValue(height*0.7);
         btnLock.setPrefWidth(width*0.12);
@@ -1358,7 +1341,6 @@ public class newGUI extends GameEventSource {
 
 
         //Ende Button
-        Button btnEGame = new Button("End game");
         btnEGame.layoutXProperty().setValue(width*0.8);
         btnEGame.layoutYProperty().setValue(height*0.4);
         btnEGame.setPrefWidth(150);
@@ -1672,13 +1654,13 @@ public class newGUI extends GameEventSource {
                 fireGameEvent(CONNECT_EVENT);
 
                 if(connected){
-                	txtConnected.setText("Connection successful!");
-                	body.getChildren().clear();
-                	body.getChildren().addAll(txtConnected, btnContinue);
+                    txtConnected.setText("Connection successful!");
+                    body.getChildren().clear();
+                    body.getChildren().addAll(txtConnected, btnContinue);
                 } else {
-                	txtConnected.setText("Connection failed!");
-                	body.getChildren().clear();
-                	body.getChildren().addAll(txtConnected, btnTryAgain);
+                    txtConnected.setText("Connection failed!");
+                    body.getChildren().clear();
+                    body.getChildren().addAll(txtConnected, btnTryAgain);
                 }
 
             }
@@ -1766,6 +1748,21 @@ public class newGUI extends GameEventSource {
          * Event beim Bet�tigen des Save Buttons
          */
         btnSave.setOnAction(e -> alertbox.displaySave());
+
+
+        /**
+         * Event beim Bet�tigen des Lock Buttons
+         */
+        btnLock.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                body.getChildren().removeAll(btnRndm, btnLock, ivSrc1, ivSrc2, dragBox);
+
+            }
+        });
+
 
         /**
          * Event zum anpassen der Scene size
@@ -2081,6 +2078,34 @@ public class newGUI extends GameEventSource {
                 pointsColumn.setMinWidth(width*0.14);
 
                 dateColumn.setMinWidth(width*0.1);
+
+                for(int i = 0; i < field1.length; i++) {
+
+                    for (int j = 0; j < field1[i].length; j++) {
+                        int x = i;
+                        int y = j;
+/**
+                        //Rectangle zur Feldbegrenzung erstellen
+                        border = new Rectangle(width*0.030, width*0.030);
+                        border.setFill(null);
+                        border.setStroke(Color.BLACK);
+
+                        //Rectangle platzieren
+                        border.setWidth(width*0.030);
+                        border.setTranslateX(j * width*0.030);
+                        border.layoutXProperty().setValue(width*0.25);
+
+                        //ImageView platzieren
+                        field1[x][y].setFitWidth(width*0.030);
+                        field1[x][y].setPreserveRatio(true);
+                        field1[x][y].setTranslateX(j * width*0.030);
+                        field1[x][y].layoutXProperty().setValue(width*0.25);
+ **/
+
+
+                    }
+
+                }
             }
         });
         scene.heightProperty().addListener(new ChangeListener<Number>() {
@@ -2202,6 +2227,32 @@ public class newGUI extends GameEventSource {
 
                 tbHighscore.setPrefHeight(height);
 
+                for(int i = 0; i < field1.length; i++) {
+
+                    for (int j = 0; j < field1[i].length; j++) {
+                        int x = i;
+                        int y = j;
+/**
+                        //Rectangle zur Feldbegrenzung erstellen
+                        border.setFill(null);
+                        border.setStroke(Color.BLACK);
+
+                        //Rectangle platzieren
+                        border.setWidth(width*0.030);
+                        border.setTranslateY(i * height*0.030);
+                        border.layoutYProperty().setValue(height*0.18);
+
+                        //ImageView platzieren
+                        field1[x][y].setFitWidth(width*0.030);
+                        field1[x][y].setPreserveRatio(true);
+                        field1[x][y].setTranslateY(i * height*0.030);
+                        field1[x][y].layoutYProperty().setValue(height*0.18);
+**/
+
+                    }
+
+                }
+
 
             }
         });
@@ -2230,5 +2281,3 @@ public class newGUI extends GameEventSource {
 
 
 }//Ende newGUI
-
-

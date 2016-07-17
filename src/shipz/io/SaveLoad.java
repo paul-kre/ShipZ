@@ -45,7 +45,7 @@ public class SaveLoad {
 	private Element root;
 	/** SAXBuilder-Objekt, der das ausgelesene XML in das Document-Objekt schreibt. */
 	private SAXBuilder builder;
-	
+
 	// Konstruktor
 	/**
 	 * Konstruktor der Klasse, der das File-Objekt initialisiert und diesem einen Dateipfad zuordnet.
@@ -60,7 +60,7 @@ public class SaveLoad {
 		builder = new SAXBuilder();
 		xmlOutput = new XMLOutputter();
 	}
-	
+
 	// IM
 	/**
 	 * Methode, die mit allen benötigten Informationen ein neues Spiel im XML erstellt.
@@ -92,7 +92,7 @@ public class SaveLoad {
 			gameElement.addContent(new Element("mirrorFieldOne").setText(mirrorFieldOne));
 			gameElement.addContent(new Element("mirrorFieldTwo").setText(mirrorFieldTwo));
 			gameElement.addContent(new Element("gamemode").setText(gamemode));
-			
+
 			root.addContent(gameElement);
 			document.setContent(root);
 			writeXML();
@@ -110,7 +110,7 @@ public class SaveLoad {
 			setNode(gameName, "mirrorFieldTwo", mirrorFieldTwo);
 		}
 	}
-	
+
 	/**
 	 * Falls die Ordner und Dateien noch nicht vorhanden sind, werden sie erstellt.
 	 * @param file Datei, die erstellt werden soll.
@@ -122,7 +122,7 @@ public class SaveLoad {
 			} catch (SecurityException x) {
 				x.printStackTrace();
 			}
-			
+
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
@@ -130,7 +130,7 @@ public class SaveLoad {
 			}
 		}
 	}
-	
+
 	/**
 	 * Diese Methode gibt den Inhalt eines Knotens eines Spielstands
 	 * als String zurück.
@@ -141,17 +141,17 @@ public class SaveLoad {
 	private String getNode(String gameName, String node) {
 		updateXML();
 		String str = "";
-		
+
 		List<Element> list = root.getChildren();
 		for(Element e : list) {
 			if(e.getChild("gameName").getText().equals(gameName)) {
 				str = e.getChild(node).getText();
 			}
 		}
-		
+
 		return str;
 	}
-	
+
 	/**
 	 * Mit dieser Methode lässt sich ein einzelner Knoten eines Spielstands bearbeiten.
 	 * @param gameName Name des Spielstands
@@ -169,7 +169,7 @@ public class SaveLoad {
 		document.setContent(root);
 		writeXML();
 	}
-	
+
 	/**
 	 * Das XML-Dokument wird ausgelesen und die Instanz-Variablen,
 	 * die Wurzel-Element und das Dokument speichern,
@@ -193,7 +193,7 @@ public class SaveLoad {
 			throw new RuntimeException("Fehler beim Bearbeiten des XML-Dokuments!");
 		}
 	}
-	
+
 	/**
 	 * Das aktuell in den Instanz-Variablen abgespeicherte XML-Dokument
 	 * wird in die XML-Datei geschrieben.
@@ -210,7 +210,7 @@ public class SaveLoad {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
@@ -232,28 +232,28 @@ public class SaveLoad {
 			throw new RuntimeException("Fehler beim L�schen des Spielstands! Dieser Spielstand existiert nicht!");
 		}
 	}
-	
+
 	/**
 	 * Gibt die Namen aller Spielst�nde als {@link String} zurück.
 	 * Dies wird für die Auflistung aller Spielst�nde wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
-	 * Dies geht ganz einfach mit 
+	 * Dies geht ganz einfach mit
 	 * getAllGameNames().split(",")
 	 * @return Die Namen aller Spielst�nde als {@link String}
 	 */
 	protected String getAllGameNames() {
 		String str = "";
 		updateXML();
-		
+
 		List<Element> list = root.getChildren();
 		for(Element e : list) {
 			str += e.getChild("gameName").getText() + ",";
 		}
-		
+
 		return str;
 	}
-	
+
 	/**
 	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des ersten Spielers heraus.
 	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
@@ -263,7 +263,7 @@ public class SaveLoad {
 	protected String getBoardPlayerOne(String gameName) {
 		return getNode(gameName, "boardPlayerOne");
 	}
-	
+
 	/**
 	 * Diese Methode lädt aus dem gespeicherten Spielstand das gespeicherte Spielfeld des zweiten Spielers heraus.
 	 * Dieses Spielfeld wird dann als {@link String} zurückgegeben.
@@ -273,7 +273,7 @@ public class SaveLoad {
 	protected String getBoardPlayerTwo(String gameName) {
 		return getNode(gameName, "boardPlayerTwo");
 	}
-	
+
 	/**
 	 * Gibt den Spielernamen eines Spielstands zurück.
 	 * @param gameName der gewünschte Spielstand
@@ -282,7 +282,7 @@ public class SaveLoad {
 	protected String getPlayerName(String gameName) {
 		return getNode(gameName, "playerName");
 	}
-	
+
 	/**
 	 * Gibt den Namen des Gegners eines bestimmten Spielstands zurück.
 	 * @param gameName der gewünschte Spielstand
@@ -291,7 +291,7 @@ public class SaveLoad {
 	protected String getOpponentName(String gameName) {
 		return getNode(gameName, "opponentName");
 	}
-	
+
 	/**
 	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
 	 * @param gameName der gewünschte Spielstand
@@ -300,7 +300,7 @@ public class SaveLoad {
 	protected int getBoardsize(String gameName) {
 		return Integer.parseInt(getNode(gameName, "boardsize"));
 	}
-	
+
 	/**
 	 * Gibt den String aus einem Spielstand zurück, der die Spielzüge speichert.
 	 * @param gameName der gewünschte Spielstand
@@ -309,7 +309,7 @@ public class SaveLoad {
 	protected String getDraws(String gameName) {
 		return getNode(gameName, "draws");
 	}
-	
+
 	/**
 	 * Gibt den String aus einem Spielstand zurück, der die rückgängig gemachten Spielzüge speichert.
 	 * @param gameName der gewünschte Spielstand
@@ -327,7 +327,7 @@ public class SaveLoad {
 	protected int getActivePlayer(String gameName) {
 		return Integer.parseInt(getNode(gameName, "activePlayer"));
 	}
-	
+
 	/**
 	 * Gibt die gespeicherte Uhrzeit eines Spielstands zurück.
 	 * @param gameName der gewünschte Spielstand
@@ -336,7 +336,7 @@ public class SaveLoad {
 	protected String getTime(String gameName) {
 		return getNode(gameName, "time");
 	}
-	
+
 	/**
 	 * Gibt die Einstellungen eines Spielstands zurück.
 	 * @param gameName Name des Spielstands
@@ -345,7 +345,7 @@ public class SaveLoad {
 	protected String getPreferences(String gameName) {
 		return getNode(gameName, "preferences");
 	}
-	
+
 	/**
 	 * Gibt das Spielfeld für die KI zurück.
 	 * @param gameName Name des Spielstands
@@ -354,7 +354,7 @@ public class SaveLoad {
 	protected String getMirrorFieldOne(String gameName) {
 		return getNode(gameName, "mirrorFieldOne");
 	}
-	
+
 	/**
 	 * Gibt das Spielfeld für die KI zurück.
 	 * @param gameName Name des Spielstands
@@ -363,11 +363,11 @@ public class SaveLoad {
 	protected String getMirrorFieldTwo(String gameName) {
 		return getNode(gameName, "mirrorFieldTwo");
 	}
-	
+
 	protected String getGamemode(String gameName) {
 		return getNode(gameName, "gamemode");
 	}
-	
+
 	/**
 	 * Speichert den Spielverlauf in einem Spielstand.
 	 * @param gameName der Spielstand
@@ -376,7 +376,7 @@ public class SaveLoad {
 	protected void setDraws(String gameName, String draws) {
 		setNode(gameName, "draws", draws);
 	}
-	
+
 	/**
 	 * Speichert die rückgängig gemachten Züge in einem Spielstand.
 	 * @param gameName Name des Spielstands 
@@ -395,16 +395,16 @@ public class SaveLoad {
 		updateXML();
 		boolean doesGameExist = false;
 		List<Element> list = root.getChildren();
-		
+
 		for(Element e : list) {
 			if(e.getChild("gameName").getText().equals(gameName)) {
 				doesGameExist = true;
 			}
 		}
-		
+
 		return doesGameExist;
 	}
-	
+
 	/**
 	 * Sucht in einer Datei nach einer bestimmten Zeile.
 	 * Es wird mit nach einem Prefix gesucht.
@@ -419,15 +419,15 @@ public class SaveLoad {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 		String line = scanner.nextLine();
 		while(!(line.startsWith(prefix))) {
 			line = scanner.nextLine(); // geht so lange weiter, bis er die Zeile gefunden hat
 		}
-		
+
 		return line;
 	}
-	
+
 	/**
 	 * Liest aus einer Datei den gesamten Inhalt aus
 	 * und gibt ihn als {@link String} zurück.
@@ -446,7 +446,7 @@ public class SaveLoad {
 		}
 		return s;
 	}
-	
+
 	/**
 	 * Überschreibt eine Datei komplett mit einem String.
 	 * @param file die zu überschreibende Datei.
@@ -461,7 +461,7 @@ public class SaveLoad {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Gibt den Dateipfad zurück, in dem Dateien des Spiels gespeichert werden.
 	 * Der Dateipfad ist auf Windows in der Regel:
@@ -472,7 +472,7 @@ public class SaveLoad {
 		JFileChooser jf = new JFileChooser();
 		return jf.getFileSystemView().getDefaultDirectory().toString() + File.separator + "shipZ";
 	}
-	
+
 	/**
 	 * Methode, die die aktuelle Zeit berechnet und als String zurückgibt. <br>
 	 * Format: <b>dd.MM.y_HH:mm:ss</b> <br>
@@ -484,5 +484,5 @@ public class SaveLoad {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.y_HH:mm:ss");
 		return sdf.format(c.getTime());
 	}
-	
+
 }

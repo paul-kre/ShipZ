@@ -51,8 +51,6 @@ public class Game implements GameEventListener {
     private int aY;
     /** letztberechnetes Ergebnis */
     private byte aResult;
-    /** gibt an, ob das Spiel zurzeit pausiert ist */
-    private boolean gamePaused;
     /** Gibt an, in welchem Spielmodus das Spiel abläuft
      *  1   PvP
      *  2   PvK
@@ -66,18 +64,12 @@ public class Game implements GameEventListener {
     //Constructor
     /**
      * erstellt ein neues Spiel mit leeren Feldern
-     * @param width		    Feldbreite
-     * @param height	    Feldhöhe
      * @param primaryStage  wird für das Erstellen der GUI verwendet
      */
-    public Game(int width, int height, Stage primaryStage) {
-        board1 = new char[width][height];
-        board2 = new char[width][height];
-        initiateBoards();
+    public Game(Stage primaryStage) {
         gui = new newGUI(primaryStage);
         gui.setEventListener(this);
         player1active = true;
-        gamePaused = false;
         filestream = new FileStream();
 
     }
@@ -794,8 +786,8 @@ public class Game implements GameEventListener {
         int x, y;
         for(y=0; y<board1.length; y++) {
             for (x = 0; x < board1[y].length; x++) {
-                gui.draw(y, x, 1, 3);
-                gui.draw(y, x, 2, 3);
+                gui.draw(y, x, 1, -1);
+                gui.draw(y, x, 2, -1);
             }
         }
     }
@@ -823,19 +815,43 @@ public class Game implements GameEventListener {
                 if(player1active) {
                     if (aResult == 0) {
                         gui.draw(aY, aX, 2, 0);
-                    } else {
+                    } else if(aResult == 1) {
                         gui.draw(aY, aX, 2, 2);
+                    } else {
+                        gui.draw(aY, aX, 2, 3);
                     }
                 }
                 else {
                     if (aResult == 0) {
                         gui.draw(aY, aX, 1, 0);
-                    } else {
+                    } else if(aResult == 1) {
                         gui.draw(aY, aX, 1, 2);
+                    } else {
+                        gui.draw(aY, aX, 1, 3);
                     }
                 }
             }
     }, 1000);
+    }
+
+    private void nextRoundHumanVsAi() {
+        if (player1active) {
+            gui.setEnableField(2);
+        } else if (!player1active) {
+            aX = player2.getX();
+            aY = player2.getY();
+            aResult = checkTile(aX, aY);
+            player2.shootResult(aY, aX, aResult);
+            System.out.println("Spieler " + activePlayer() + ": " + aY + "/" + aX + " => " + aResult);
+
+            if (aResult == 0) {
+                gui.draw(aY, aX, 1, 0);
+            } else if(aResult == 1){
+                gui.draw(aY, aX, 1, 2);
+            } else {
+                gui.draw(aY, aX, 1, 3);
+            }
+        }
     }
 
     private void nextRoundHuman() {
@@ -856,11 +872,17 @@ public class Game implements GameEventListener {
             }
             gui.draw(aY, aX, reverseActivePlayer(), 0);
         }
-        else {
+        else if(aResult == 1){
             if(isHost) {
                 network.send(NET_SHOOT_EVENT + ":" + aY + "," + aX + "," + reverseActivePlayer() + "," + 2);
             }
             gui.draw(aY, aX, reverseActivePlayer(), 2);
+        }
+        else if(aResult == 2){
+            if(isHost) {
+                network.send(NET_SHOOT_EVENT + ":" + aY + "," + aX + "," + reverseActivePlayer() + "," + 3);
+            }
+            gui.draw(aY, aX, reverseActivePlayer(), 3);
         }
     }
 
@@ -926,18 +948,12 @@ public class Game implements GameEventListener {
             }
         }
         if(mode == 2) {
-            if(player1active) {
-                gui.setEnableField(2);
-            }
-            else {
-                nextRoundAI();
-            }
+           nextRoundHumanVsAi();
         }
         if(mode == 3) {
             nextRoundAI();
         }
     }
-
 
     /**
      * Main-Methode
@@ -975,6 +991,10 @@ public class Game implements GameEventListener {
 
                 break;
             case FILL_EVENT:
+                clear();
+                board1 = new char[10][10];
+                board2 = new char[10][10];
+                initiateBoards();
                 shipList = createShipList("5443332");
                 placeShips(1);
                 placeShips(2);
@@ -1010,6 +1030,7 @@ public class Game implements GameEventListener {
                 cycle();
                 break;
             case FINISHED_ROUND:
+                gui.setEnableField(0);
             	filestream.newDraw(aX, aY, activePlayer(), aResult);
             	gui.setComboLabel(gui.getPlayername(1), filestream.getComboValue(1), 1);
             	gui.setComboLabel(gui.getPlayername(2), filestream.getComboValue(2), 2);
@@ -1037,13 +1058,11 @@ public class Game implements GameEventListener {
                     filestream.saveScoreToFile(gui.getPlayername(1), gui.getPlayername(2));
                 }
                 break;
-            case PAUSE_EVENT:
-                if(gamePaused) {
-                    nextRoundAI();
-                }
-                break;
             case UNDO_EVENT:
             	try {
+                    if(player2 != null) {
+                        player2.undoHits(filestream.undoDraw(activePlayer()));
+                    }
             		undo(filestream.undoDraw(activePlayer()));
             	} catch (NoDrawException x) {
             		x.printStackTrace();
@@ -1186,24 +1205,24 @@ public class Game implements GameEventListener {
                 //Wasser
                 if(result == 0){
                     board2[y][x] = 'w';
-                    gui.draw(y, x, 2, 3);
+                    gui.draw(y, x, 2, -1);
                 }
                 //Treffer/versenkt
                 else {
                     board2[y][x] = 'x';
-                    gui.draw(y, x, 2, 3);
+                    gui.draw(y, x, 2, 2);
                 }
             }
             else {
                 //Wasser
                 if(result == 0){
                     board1[y][x] = 'w';
-                    gui.draw(y, x, 1, 3);
+                    gui.draw(y, x, 1, -1);
                 }
                 //Treffer/versenkt
                 else {
                     board1[y][x] = 'x';
-                    gui.draw(y, x, 1, 3);
+                    gui.draw(y, x, 1, 2);
                 }
             }
     	}
@@ -1225,7 +1244,7 @@ public class Game implements GameEventListener {
                 //Wasser
                 if(result == 0){
                     board2[y][x] = 'w';
-                    gui.draw(y, x, 2, 0);
+                    gui.draw(y, x, 2, -1);
                 }
                 //Treffer/versenkt
                 else {
@@ -1237,7 +1256,7 @@ public class Game implements GameEventListener {
                 //Wasser
                 if (result == 0) {
                     board1[y][x] = 'w';
-                    gui.draw(y, x, 1, 0);
+                    gui.draw(y, x, 1, -1);
                 }
                 //Treffer/versenkt
                 else {
@@ -1348,33 +1367,21 @@ public class Game implements GameEventListener {
         }
     }
 
+    /**
+     *
+     * Wird nach beenden eines Spiels aufgerufen, um Variablen zurückzusetzten
+     */
+    private void clear() {
+        board1 = null;
+        board2 = null;
+        player1 = null;
+        player2 = null;
+        network = null;
+        isHost = false;
+        player1active = true;
+        shipList = null;
+    }
+
 
 }
 
-
-/*    @Override
-    public void start(Stage primaryStage) {
-        gui.start(primaryStage);
-    }*/
-
-    /*public void eventReceived(GameEvent e) {
-        Player source = e.getSource();
-        byte id = e.getId();
-
-        switch(id) {
-            case SHOOT_EVENT:
-                if(isHost) {
-                    source.shootResult();
-                }
-
-                break;
-        }
-    }*/
-
-
-/*
- * w = Wasser
- * x = Schiff
- * z = zerstörtes Schiff
- * b = blockierte Zelle
- */
