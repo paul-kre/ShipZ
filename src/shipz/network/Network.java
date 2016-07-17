@@ -293,16 +293,6 @@ public class Network extends Player {
         send(NET_SHOOT_REQUEST + ":" + x + "," + y);
     }
 
-    public void shootField(int y, int x, byte res) {
-        send( SHOOT_EVENT + "//" + x + ":" + y + ":" + res);
-    }
-
-    public void shootResult(int y, int x, byte res) {
-        if(_isHost) {
-            send( SHOOT_RESULT + "//" + x + ":" + y + ":" + res);
-        }
-    }
-
     /**
      * Reconnects the network, in case it deconnected.
      *
@@ -380,6 +370,11 @@ public class Network extends Player {
 
     public boolean connected() {
         return _connected;
+    }
+
+    @Override
+    public void shootResult(int yCoord, int xCoord, byte result) {
+
     }
 
     /**
