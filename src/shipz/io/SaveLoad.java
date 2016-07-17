@@ -51,7 +51,7 @@ public class SaveLoad {
 	 * Konstruktor der Klasse, der das File-Objekt initialisiert und diesem einen Dateipfad zuordnet.
 	 * Außerdem wird die Grundstruktur des XML-Dokuments erstellt.
 	 */
-	public SaveLoad() {
+	SaveLoad() {
 		file = new File(fileDirectory() + File.separator + "saves.xml");
 		makeDirectory(file);
 		document = new Document();
@@ -74,7 +74,7 @@ public class SaveLoad {
 	 * @param preferences Einstellungen des Spiels, die am Anfang gesetzt wurden
 	 * @param mirrorField Spielfeld der KI
 	 */
-	protected void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode, String mirrorFieldOne, String mirrorFieldTwo) {
+	void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode, String mirrorFieldOne, String mirrorFieldTwo) {
 		updateXML();
 		if(!doesGameExist(gameName)) {
 			Element gameElement = new Element("game");
@@ -115,7 +115,7 @@ public class SaveLoad {
 	 * Falls die Ordner und Dateien noch nicht vorhanden sind, werden sie erstellt.
 	 * @param file Datei, die erstellt werden soll.
 	 */
-	protected void makeDirectory(File file) {
+	void makeDirectory(File file) {
 		if(!(file.exists())) {
 			try{
 				new File(fileDirectory()).mkdir();
@@ -215,7 +215,7 @@ public class SaveLoad {
 	 * Löscht einen bestimmten Spielstand aus der Datei.
 	 * @param gameName Name des Spielstands
 	 */
-	protected void deleteGame(String gameName) {
+	void deleteGame(String gameName) {
 		updateXML();
 		if(doesGameExist(gameName)) {
 			List<Element> list = root.getChildren();
@@ -242,7 +242,7 @@ public class SaveLoad {
 	 * getAllGameNames().split(",")
 	 * @return Die Namen aller Spielst�nde als {@link String}
 	 */
-	protected String getAllGameNames() {
+	String getAllGameNames() {
 		String str = "";
 		updateXML();
 
@@ -260,7 +260,7 @@ public class SaveLoad {
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
-	protected String getBoardPlayerOne(String gameName) {
+	String getBoardPlayerOne(String gameName) {
 		return getNode(gameName, "boardPlayerOne");
 	}
 
@@ -270,7 +270,7 @@ public class SaveLoad {
 	 * @param gameName Dateiname zur Identifizierung des gespeicherten Spielstands.
 	 * @return Das geladene Spielfeld
 	 */
-	protected String getBoardPlayerTwo(String gameName) {
+	String getBoardPlayerTwo(String gameName) {
 		return getNode(gameName, "boardPlayerTwo");
 	}
 
@@ -279,7 +279,7 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Spielername eines Spielstand
 	 */
-	protected String getPlayerName(String gameName) {
+	String getPlayerName(String gameName) {
 		return getNode(gameName, "playerName");
 	}
 
@@ -288,7 +288,7 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Namen des Gegners eines bestimmten Spielstands
 	 */
-	protected String getOpponentName(String gameName) {
+	String getOpponentName(String gameName) {
 		return getNode(gameName, "opponentName");
 	}
 
@@ -297,7 +297,7 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
 	 */
-	protected int getBoardsize(String gameName) {
+	int getBoardsize(String gameName) {
 		return Integer.parseInt(getNode(gameName, "boardsize"));
 	}
 
@@ -306,7 +306,7 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return Die Spielzüge als {@link String}
 	 */
-	protected String getDraws(String gameName) {
+	String getDraws(String gameName) {
 		return getNode(gameName, "draws");
 	}
 
@@ -315,7 +315,7 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return die rückgängig gemachten Züge als String
 	 */
-	protected String getRedoneDraws(String gameName) {
+	String getRedoneDraws(String gameName) {
 		return getNode(gameName, "redoneDraws");
 	}
 	
@@ -324,7 +324,7 @@ public class SaveLoad {
 	 * @param gameName Name des Spielstands
 	 * @return der aktive Spieler
 	 */
-	protected int getActivePlayer(String gameName) {
+	int getActivePlayer(String gameName) {
 		return Integer.parseInt(getNode(gameName, "activePlayer"));
 	}
 
@@ -333,7 +333,7 @@ public class SaveLoad {
 	 * @param gameName der gewünschte Spielstand
 	 * @return die gespeicherte Uhrzeit als {@link String}
 	 */
-	protected String getTime(String gameName) {
+	String getTime(String gameName) {
 		return getNode(gameName, "time");
 	}
 
@@ -342,7 +342,7 @@ public class SaveLoad {
 	 * @param gameName Name des Spielstands
 	 * @return Einstellungen als String
 	 */
-	protected String getPreferences(String gameName) {
+	String getPreferences(String gameName) {
 		return getNode(gameName, "preferences");
 	}
 
@@ -351,7 +351,7 @@ public class SaveLoad {
 	 * @param gameName Name des Spielstands
 	 * @return Spielfeld für die KI als String
 	 */
-	protected String getMirrorFieldOne(String gameName) {
+	String getMirrorFieldOne(String gameName) {
 		return getNode(gameName, "mirrorFieldOne");
 	}
 
@@ -360,11 +360,11 @@ public class SaveLoad {
 	 * @param gameName Name des Spielstands
 	 * @return Spielfeld für die KI als String
 	 */
-	protected String getMirrorFieldTwo(String gameName) {
+	String getMirrorFieldTwo(String gameName) {
 		return getNode(gameName, "mirrorFieldTwo");
 	}
 
-	protected String getGamemode(String gameName) {
+	String getGamemode(String gameName) {
 		return getNode(gameName, "gamemode");
 	}
 
@@ -373,7 +373,7 @@ public class SaveLoad {
 	 * @param gameName der Spielstand
 	 * @param draws der neue Spielverlauf des ersten Spielers
 	 */
-	protected void setDraws(String gameName, String draws) {
+	void setDraws(String gameName, String draws) {
 		setNode(gameName, "draws", draws);
 	}
 
@@ -382,7 +382,7 @@ public class SaveLoad {
 	 * @param gameName Name des Spielstands 
 	 * @param redoneDraws die rückgängig gemachten Züge
 	 */
-	protected void setRedoneDraws(String gameName, String redoneDraws) {
+	void setRedoneDraws(String gameName, String redoneDraws) {
 		setNode(gameName, "redoneDraws", redoneDraws);
 	}
 	
@@ -413,7 +413,7 @@ public class SaveLoad {
 	 * @param prefix Prefix der Zeile, nach der gesucht werden soll.
 	 * @return Die gefundene Zeile
 	 */
-	protected String searchLine(File file, String prefix) {
+	String searchLine(File file, String prefix) {
 		try {
 			scanner = new Scanner(file);
 		} catch (FileNotFoundException e) {
@@ -434,7 +434,7 @@ public class SaveLoad {
 	 * @param file Die gewünschte Datei.
 	 * @return Inhalt der Datei als {@link String}.
 	 */
-	protected String readFile(File file) {
+	String readFile(File file) {
 		String s = "";
 		try {
 			scanner = new Scanner(file);
@@ -452,7 +452,7 @@ public class SaveLoad {
 	 * @param file die zu überschreibende Datei.
 	 * @param str der {@link String}, der in die Datei geschrieben werden soll.
 	 */
-	protected void writeFile(File file, String str) {
+	void writeFile(File file, String str) {
 		try {
 			writer = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
 			writer.write(str);
@@ -468,7 +468,7 @@ public class SaveLoad {
 	 * C:\Users\<i>"Benutzer"</i>\Documents\shipZ
 	 * @return Pfad, in dem die Dateien gespeichert werden
 	 */
-	protected String fileDirectory() {
+	String fileDirectory() {
 		JFileChooser jf = new JFileChooser();
 		return jf.getFileSystemView().getDefaultDirectory().toString() + File.separator + "shipZ";
 	}
@@ -479,7 +479,7 @@ public class SaveLoad {
 	 * Beispiel: <i>05.07.2016_18:12:23</i>
 	 * @return die aktuelle Zeit als String
 	 */
-	protected String timestamp() {
+	String timestamp() {
 		Calendar c = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.y_HH:mm:ss");
 		return sdf.format(c.getTime());
