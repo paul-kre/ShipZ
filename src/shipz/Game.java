@@ -33,6 +33,8 @@ public class Game implements GameEventListener {
     private Player player1;
     /** Verweis auf den 2. Spieler */
     private Player player2;
+    private int player1diff;
+    private int player2diff;
     /** gibt an, ob Spieler 1 aktiv ist */
     private boolean player1active;
     /** Netzwerkverbindung */
@@ -1090,15 +1092,11 @@ public class Game implements GameEventListener {
 				break;
             case SAVE_EVENT:
                 if(mode == 1) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "Player vs. Player");
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,0");
                 } else if(mode == 2) {
-                	if(player1 instanceof Computer) {
-                		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player1.saveCurrentGame());
-                	} else if(player2 instanceof Computer){
-                		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player2.saveCurrentGame());
-                	}
+            		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,"+player2diff, player1.saveCurrentGame());
                 } else if(mode == 3) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, "AI vs. AI", player1.saveCurrentGame(), player2.saveCurrentGame());
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, mode+","+player1diff+","+player2diff, player1.saveCurrentGame(), player2.saveCurrentGame());
                 }
             	break;
             case LOAD_EVENT:
@@ -1314,10 +1312,45 @@ public class Game implements GameEventListener {
     	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen f�r Punkte und Z�ge
     	char[] lb1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] lb2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
-//    	int boardsize = filestream.getBoardsize(gameName);
 
+    	int boardsize = filestream.getBoardsize(gameName);
+        gui.setFieldSize(boardsize);
+        gui.createField();
+        board1 = new char[boardsize][boardsize];
+        board2 = new char[boardsize][boardsize];
+        String g = filestream.getGamemode(gameName);
         clearGUI();
+        
+        if(g.charAt(0) == '2') {
+	        if(g.split(",")[2].equals("1")) {
+	        	player2 = new Easy(10,false,shipList);
+	        } else if(g.split(",")[2].equals("2")) {
+	        	player2 = new Normal(10,false,shipList);
+	        } else if(g.split(",")[2].equals("3")) {
+	        	player2 = new Hard(10,false,shipList);
+	        }
+        } else if(g.charAt(0) == '3') {
+	        if(g.split(",")[1].equals("1")) {
+	        	player1 = new Easy(10,false,shipList);
+	        } else if(g.split(",")[1].equals("2")) {
+	        	player1 = new Normal(10,false,shipList);
+	        } else if(g.split(",")[1].equals("3")) {
+	        	player1 = new Hard(10,false,shipList);
+	        } else if(g.split(",")[2].equals("1")) {
+	        	player2 = new Easy(10,false,shipList);
+	        } else if(g.split(",")[2].equals("2")) {
+	        	player2 = new Normal(10,false,shipList);
+	        } else if(g.split(",")[2].equals("3")) {
+	        	player2 = new Hard(10,false,shipList);
+	        }
+        }
 
+        if(player1 instanceof Computer) {
+        	player1.loadPreviousGame(filestream.getMirrorFieldOne(gameName));
+        } else if(player2 instanceof Computer) {
+        	player2.loadPreviousGame(filestream.getMirrorFieldTwo(gameName));
+        }
+        
         int i = 0;
         for(int y=0; y<board1.length; y++) {
             for(int x=0; x<board1[y].length; x++) {
