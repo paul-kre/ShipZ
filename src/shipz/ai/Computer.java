@@ -1696,49 +1696,6 @@ public abstract class Computer extends Player {
 
 
 
-    /**
-     * DEBUGGING-METHODE
-     *
-     * Zeigt das mirrorField als ein Spielfeld an.
-     * Nichtbeschossene Felder sind leer, besetzte Felder enthalten ein 'O',
-     * getroffene Schiffsteile enthalten ein 'X'
-     */
-    public void displayMirrorField() {
-        //Ausgabe der oberen Feldbeschriftung
-        System.out.println("  0 1 2 3 4 5 6 7 8 9");
-        //1. Zähler
-        int y;
-        //2. Zähler
-        int x;
-        //doppelte Schleife für Durchlauf durch alle Felder
-
-        for(y=0; y  < mirrorField.length; y++) {
-            //Ausgabe der seitlichen Feldbeschriftung
-            System.out.print(y);
-            for(x=0; x < mirrorField[y].length; x++) {
-
-                //Ausgabe der einzelnen Zellen
-
-
-                if (mirrorField[y][x] == 0){
-
-                    System.out.print(" " + " ");
-
-                } else if (mirrorField[y][x] == 1){
-
-                    System.out.print(" " + "o");
-
-                } else if( mirrorField[y][x] == 2){
-
-                    System.out.print(" " + "x");
-                }
-            }
-
-            //Zeilenumbruch
-            System.out.println();
-        }
-    }
-
 
 
 
