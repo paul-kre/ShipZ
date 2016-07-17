@@ -27,7 +27,7 @@ public class UndoRedo {
 	 * Initialisiert ein UndoRedo-Objekt.
 	 * Die Stacks werden initialisiert.
 	 */
-	public UndoRedo() {
+	UndoRedo() {
 		draws = new Stack<String>();
 		redoneDraws = new Stack<String>();
 		saveload = new SaveLoad();
@@ -43,7 +43,7 @@ public class UndoRedo {
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @param result 0=wasser, 1=treffer, 2=versenkt, 3=undo
 	 */
-	protected void newDraw(int x, int y, int playerIndex, int result) {
+	void newDraw(int x, int y, int playerIndex, int result) {
 		draws.push(playerIndex + "/" + x + "," + y + "/" + result); // Zug wird auf den Stack gelegt
 	}
 	
@@ -56,7 +56,7 @@ public class UndoRedo {
 	 * @return Die letzten Züge der Spielverlaufs-Liste, der in die Redoliste geschrieben wird
 	 * @throws NoDrawException tritt auf falls keine weiteren Züge auf dem Stack sind die rückgängig gemacht werden können.
 	 */
-	protected String undoDraw(int playerIndex) throws NoDrawException {
+	String undoDraw(int playerIndex) throws NoDrawException {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
@@ -79,7 +79,7 @@ public class UndoRedo {
 	 * @return Der letzte Zug der Redoliste als {@link String}, der in die Spielverlaufs-Liste geschrieben wird.
 	 * @throws NoDrawException tritt auf, falls keine weiteren Züge auf dem Stack sind, die wiederholt werden können.
 	 */
-	protected String redoDraw(int playerIndex) throws NoDrawException {
+	String redoDraw(int playerIndex) throws NoDrawException {
 		String result = "";
 		String draw = "";
 		while(!(draw.startsWith(playerIndex+""))) {
@@ -98,7 +98,7 @@ public class UndoRedo {
 	 * Gibt den Stack für die Züge des ersten Spielers als String zurück.
 	 * @return die ArrayList für die Züge als String
 	 */
-	protected String getDraws() {
+	String getDraws() {
 		return draws.toString();
 	}
 	
@@ -106,7 +106,7 @@ public class UndoRedo {
 	 * Gibt den Stack für die rückgängig gemachten Züge des ersten Spielers zurück.
 	 * @return der Stack für die rückgängig gemachten Züge
 	 */
-	protected String getRedoneDraws() {
+	String getRedoneDraws() {
 		return redoneDraws.toString();
 	}
 	
@@ -115,7 +115,7 @@ public class UndoRedo {
 	 * speichert hiermit ihren Inhalt in der Datei
 	 * @param gameName Name des Spiels zur Zuordnung
 	 */
-	protected void saveToFile(String gameName) {
+	void saveToFile(String gameName) {
 		saveload.setDraws(gameName, draws.toString().replaceAll(", ", DRAW_SEPARATOR).replaceAll("]", "").substring(1));
 		saveload.setRedoneDraws(gameName, redoneDraws.toString().replaceAll(", ", DRAW_SEPARATOR).replaceAll("]", "").substring(1));
 	}
@@ -125,7 +125,7 @@ public class UndoRedo {
 	 * Wird verwendet, wenn ein Spielstand geladen wird.
 	 * @param gameName Name des Spielstands
 	 */
-	protected void loadDraws(String gameName) {
+	void loadDraws(String gameName) {
 		draws.clear();
 		
 		if(saveload.getDraws(gameName) != "") {
@@ -148,7 +148,7 @@ public class UndoRedo {
 	 * Wird verwendet, wenn ein Spielstand geladen wird.
 	 * @param gameName Name des Spielstands
 	 */
-	protected void loadRedoneDraws(String gameName) {
+	void loadRedoneDraws(String gameName) {
 		redoneDraws.clear();
 		
 		if(saveload.getRedoneDraws(gameName) != "") {

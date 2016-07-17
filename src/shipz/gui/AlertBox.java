@@ -66,7 +66,7 @@ public class AlertBox extends GameEventSource {
 		window.setMinWidth(450);
 		
 		Label label = new Label();
-		label.setText("You need to save the game before you load another one.");
+		label.setText("You should save the game before you load another one.");
 		Label label2 = new Label();
 		label2.setText("Are you sure you want to leave?");
 		

@@ -33,6 +33,7 @@ public interface Event {
 	byte PVK_EVENT = 56;
 	byte KVK_EVENT = 57;
 	byte CONNECT_EVENT = 58;
+	byte LOCK_EVENT = 59;
 	byte LOAD_TABLE_EVENT = 120;
 
 	// IO

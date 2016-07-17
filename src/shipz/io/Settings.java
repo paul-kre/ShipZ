@@ -25,7 +25,7 @@ public class Settings {
 	 * Konstruktor der Settings-Klasse,
 	 * der die Dateien erstellt und initialisiert.
 	 */
-	public Settings() {
+	Settings() {
 		saveload = new SaveLoad();
 		configFile = new File(saveload.fileDirectory() + File.separator + "config.shipz");
 		initFile();
@@ -48,7 +48,7 @@ public class Settings {
 	 * Ändert den Wert, wie viele Spieler maximal im Highscore angezeigt werden.
 	 * @param max Wie viele Spieler maximal im Highscore angezeigt werden sollen
 	 */
-	protected void setHighscoreMaximum(int max) {
+	void setHighscoreMaximum(int max) {
 		saveload.writeFile(configFile, saveload.readFile(configFile).replaceAll("highscoreMax"+CONFIG_SEPARATOR+getHighscoreMaximum(), "highscoreMax"+CONFIG_SEPARATOR+max));
 	}
 
@@ -57,7 +57,7 @@ public class Settings {
 	 * maximal in der Highscore-Liste angezeigt werden sollen.
 	 * @return Spieler-Maximum der Highscore-Liste
 	 */
-	protected int getHighscoreMaximum() {
+	int getHighscoreMaximum() {
 		return Integer.parseInt(saveload.searchLine(configFile, "highscoreMax" + CONFIG_SEPARATOR).split(CONFIG_SEPARATOR)[1].replaceAll("\n", ""));
 	}
 	
@@ -65,7 +65,7 @@ public class Settings {
 	 * Ändert den Wert der Pausen zwischen den KI-Zügen in der Config.
 	 * @param timer neuer Wert für Pausen zwischen KI-Zügen
 	 */
-	protected void setAiTimer(int ms) {
+	void setAiTimer(int ms) {
 		saveload.writeFile(configFile, saveload.readFile(configFile).replaceAll("aiTimer"+CONFIG_SEPARATOR+getAiTimer(), "aiTimer"+CONFIG_SEPARATOR+ms));
 	}
 	
@@ -75,7 +75,7 @@ public class Settings {
 	 * in Millisekunden speichert.
 	 * @return Pause zwischen KI-Zügen in ms
 	 */
-	protected int getAiTimer() {
+	int getAiTimer() {
 		return Integer.parseInt(saveload.searchLine(configFile, "aiTimer" + CONFIG_SEPARATOR).split(CONFIG_SEPARATOR)[1].replaceAll("\n", ""));
 	}
 	

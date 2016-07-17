@@ -11,7 +11,6 @@ import shipz.util.NoDrawException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
@@ -34,6 +33,8 @@ public class Game implements GameEventListener {
     private Player player1;
     /** Verweis auf den 2. Spieler */
     private Player player2;
+    private int player1diff;
+    private int player2diff;
     /** gibt an, ob Spieler 1 aktiv ist */
     private boolean player1active;
     /** Netzwerkverbindung */
@@ -445,6 +446,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 0, length, x, y);
+        gui.drawShip(x, y, player, length, 'u');
     }
 
     /**
@@ -510,6 +512,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 1, length, x, y);
+        gui.drawShip(x, y, player, length, 'r');
     }
 
     /**
@@ -575,6 +578,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 2, length, x, y);
+        gui.drawShip(x, y, player, length, 'd');
     }
 
     /**
@@ -634,6 +638,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 3, length, x, y);
+        gui.drawShip(x, y, player, length, 'l');
     }
 
     /**
@@ -992,50 +997,58 @@ public class Game implements GameEventListener {
                 break;
             case FILL_EVENT:
                 clear();
-                board1 = new char[10][10];
-                board2 = new char[10][10];
+                board1 = new char[gui.getFieldSize()][gui.getFieldSize()];
+                board2 = new char[gui.getFieldSize()][gui.getFieldSize()];
                 initiateBoards();
-                shipList = createShipList("5443332");
+                String s = "5443332";
+                if(gui.getFieldSize() >= 15) {
+                    s += s;
+                    if(gui.getFieldSize() == 20) {
+                        s += s;
+                    }
+                }
+                shipList = createShipList(s);
                 placeShips(1);
                 placeShips(2);
                 displayBoards();
-                //drawShipOnGUI();
                 if(mode == 2 || mode == 3) {
                     int ki2mode = gui.getKi2Mode();
                     if(ki2mode == 1) {
-                        player2 = new Easy(10, false, shipList);
+                        player2 = new Easy(gui.getFieldSize(), true, shipList);
                     }
                     else if(ki2mode == 2) {
-                        player2 = new Normal(10, false, shipList);
+                        player2 = new Normal(gui.getFieldSize(), true, shipList);
                     }
                     else {
-                        player2 = new Hard(10, false, shipList);
+                        player2 = new Hard(gui.getFieldSize(), true, shipList);
                     }
                     System.out.println("Player 2: " + ki2mode);
                 }
                 if(mode == 3) {
                     int ki1mode = gui.getKi1Mode();
                     if(ki1mode == 1) {
-                        player1 = new Easy(10, false, shipList);
+                        player1 = new Easy(gui.getFieldSize(), true, shipList);
                     }
                     else if(ki1mode == 2) {
-                        player1 = new Normal(10, false, shipList);
+                        player1 = new Normal(gui.getFieldSize(), true, shipList);
                     }
                     else {
-                        player1 = new Hard(10, false, shipList);
+                        player1 = new Hard(gui.getFieldSize(), true, shipList);
                     }
-                    System.out.println("Player 1: " + ki1mode);
+                    System.out.println("Player 1: " + ki1mode); //
                 }
-
+                break;
+            case LOCK_EVENT:
+                clearGUI();
                 cycle();
                 break;
             case FINISHED_ROUND:
                 gui.setEnableField(0);
             	filestream.newDraw(aX, aY, activePlayer(), aResult);
-            	gui.setComboLabel(gui.getPlayername(1), filestream.getComboValue(1), 1);
-            	gui.setComboLabel(gui.getPlayername(2), filestream.getComboValue(2), 2);
-            	gui.setScoreLabel(gui.getPlayername(1), filestream.getScore(1), 1);
-            	gui.setScoreLabel(gui.getPlayername(2), filestream.getScore(2), 2);
+            	gui.setComboLabel(filestream.getComboValue(1), 1);
+            	gui.setComboLabel(filestream.getComboValue(2), 2);
+            	gui.setScoreLabel(filestream.getScore(1), 1);
+            	gui.setScoreLabel(filestream.getScore(2), 2);
                 if(network != null && isHost) {
                     network.send(
                         NET_HIGHSCORE + ":"
@@ -1056,6 +1069,8 @@ public class Game implements GameEventListener {
                     System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
                     //gui.setNewRow(filestream.get)
                     filestream.saveScoreToFile(gui.getPlayername(1), gui.getPlayername(2));
+                    //gui.setEndMessage(1);
+                    gui.setEndScreen();
                 }
                 break;
             case UNDO_EVENT:
@@ -1080,15 +1095,11 @@ public class Game implements GameEventListener {
 				break;
             case SAVE_EVENT:
                 if(mode == 1) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "Player vs. Player");
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,0");
                 } else if(mode == 2) {
-                	if(player1 instanceof Computer) {
-                		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player1.saveCurrentGame());
-                	} else if(player2 instanceof Computer){
-                		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, "AI vs. Player", player2.saveCurrentGame());
-                	}
+            		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,"+player2diff, player1.saveCurrentGame());
                 } else if(mode == 3) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, "AI vs. AI", player1.saveCurrentGame(), player2.saveCurrentGame());
+                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, mode+","+player1diff+","+player2diff, player1.saveCurrentGame(), player2.saveCurrentGame());
                 }
             	break;
             case LOAD_EVENT:
@@ -1096,6 +1107,7 @@ public class Game implements GameEventListener {
 //            	String gameName = saves[saves.length-1];
 //            	loadGame(gameName);
 //            	System.out.println("Der Spielstand " + gameName + " wurde geladen!");
+            	gui.clearTables();
             	for(int i = 0; i < saves.length; i++) {
             		gui.setSavedGame(saves[i], filestream.getPlayerName(saves[i]), filestream.getOpponentName(saves[i]), filestream.getGamemode(saves[i]), filestream.getTime(saves[i]).replaceAll("_", " "));
             	}
@@ -1168,10 +1180,10 @@ public class Game implements GameEventListener {
                         int comboValue2 = Integer.parseInt(score[1]);
                         int score1 = Integer.parseInt(score[2]);
                         int score2 = Integer.parseInt(score[3]);
-                        gui.setComboLabel(gui.getPlayername(1), comboValue1, 1);
-                        gui.setComboLabel(gui.getPlayername(2), comboValue2, 2);
-                        gui.setScoreLabel(gui.getPlayername(1), score1, 1);
-                        gui.setScoreLabel(gui.getPlayername(2), score1, 2);
+                        gui.setComboLabel(comboValue1, 1);
+                        gui.setComboLabel(comboValue2, 2);
+                        gui.setScoreLabel(score1, 1);
+                        gui.setScoreLabel(score2, 2);
                         break;
                     case NET_GAMEOVER:
                         gameOver();
@@ -1181,7 +1193,7 @@ public class Game implements GameEventListener {
     }
 
     private void highscore() {
-        gui.clearHighscore();
+        gui.clearTables();
         String s = filestream.highscore();
         String [] eintraege = s.split(",");
         for(int i = 0; i < eintraege.length; i++) {
@@ -1304,10 +1316,45 @@ public class Game implements GameEventListener {
     	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen f�r Punkte und Z�ge
     	char[] lb1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] lb2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
-//    	int boardsize = filestream.getBoardsize(gameName);
 
+    	int boardsize = filestream.getBoardsize(gameName);
+        gui.setFieldSize(boardsize);
+        gui.createField();
+        board1 = new char[boardsize][boardsize];
+        board2 = new char[boardsize][boardsize];
+        String g = filestream.getGamemode(gameName);
         clearGUI();
+        
+        if(g.charAt(0) == '2') {
+	        if(g.split(",")[2].equals("1")) {
+	        	player2 = new Easy(10,false,shipList);
+	        } else if(g.split(",")[2].equals("2")) {
+	        	player2 = new Normal(10,false,shipList);
+	        } else if(g.split(",")[2].equals("3")) {
+	        	player2 = new Hard(10,false,shipList);
+	        }
+        } else if(g.charAt(0) == '3') {
+	        if(g.split(",")[1].equals("1")) {
+	        	player1 = new Easy(10,false,shipList);
+	        } else if(g.split(",")[1].equals("2")) {
+	        	player1 = new Normal(10,false,shipList);
+	        } else if(g.split(",")[1].equals("3")) {
+	        	player1 = new Hard(10,false,shipList);
+	        } else if(g.split(",")[2].equals("1")) {
+	        	player2 = new Easy(10,false,shipList);
+	        } else if(g.split(",")[2].equals("2")) {
+	        	player2 = new Normal(10,false,shipList);
+	        } else if(g.split(",")[2].equals("3")) {
+	        	player2 = new Hard(10,false,shipList);
+	        }
+        }
 
+        if(player1 instanceof Computer) {
+        	player1.loadPreviousGame(filestream.getMirrorFieldOne(gameName));
+        } else if(player2 instanceof Computer) {
+        	player2.loadPreviousGame(filestream.getMirrorFieldTwo(gameName));
+        }
+        
         int i = 0;
         for(int y=0; y<board1.length; y++) {
             for(int x=0; x<board1[y].length; x++) {
@@ -1319,15 +1366,21 @@ public class Game implements GameEventListener {
         drawShipOnGUI();
 
         gui.setPlayernames(filestream.getPlayerName(gameName), filestream.getOpponentName(gameName));
-        gui.setComboLabel(filestream.getPlayerName(gameName), filestream.getComboValue(1), 1);
-        gui.setScoreLabel(filestream.getPlayerName(gameName), filestream.getScore(1), 1);
-        gui.setComboLabel(filestream.getOpponentName(gameName), filestream.getComboValue(2), 2);
-        gui.setScoreLabel(filestream.getOpponentName(gameName), filestream.getScore(2), 2);
+        gui.setComboLabel(filestream.getComboValue(1), 1);
+        gui.setScoreLabel(filestream.getScore(1), 1);
+        gui.setComboLabel(filestream.getComboValue(2), 2);
+        gui.setScoreLabel(filestream.getScore(2), 2);
 
     	if(filestream.getActivePlayer(gameName) == 1) {
     		player1active = true;
+    		if(player1 == null) {
+    			gui.setEnableField(2);
+    		}
     	} else {
     		player1active = false;
+    		if(player2 == null) {
+    			gui.setEnableField(1);
+    		}
     	}
     }
 
@@ -1376,7 +1429,7 @@ public class Game implements GameEventListener {
             network.end();
             network = null;
             isHost = false;
-            gui.isHost(false);
+            gui.setIsHost(false);
             gui.setIsNetwork(false);
             gui.setIsNetwork(false);
             gui.setConnected(false);
@@ -1408,6 +1461,7 @@ public class Game implements GameEventListener {
         isHost = false;
         player1active = true;
         shipList = null;
+        filestream = new FileStream();
     }
 
 
