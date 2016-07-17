@@ -56,7 +56,7 @@ public class Score {
 	 * Setzt die Punktzahl eines bestimmten Spielers.
 	 * Der Parameter result beschreibt dabei die Aktion,
 	 * anhand dessen wird entschieden, wie sich die Punktzahl verändert.
-	 * @param playerName Name des Spielers
+	 * @param playerIndex 1 = erster Spieler, 2 = zweiter Spieler
 	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
 	 */
 	void setScore(int playerIndex, int result) {
@@ -85,7 +85,7 @@ public class Score {
 	/**
 	 * Methode, die die Combos verwaltet und anhand des getätigten Zugs
 	 * den Combo-Wert aktualisiert.
-	 * @param playerName Name des Spielers
+	 * @param playerIndex 1 = erster Spieler, 2 = zweiter Spieler
 	 * @param result <b>0</b> entspricht einem Fehltreffer, <b>1</b> für einen Treffer, <b>2</b> für ein versenktes Schiff, <b>3</b> für Undo
 	 */
 	private void combo(int playerIndex, int result) {
@@ -223,6 +223,7 @@ public class Score {
 	/**
 	 * Löscht alle Daten, die nicht im Highscore stehen
 	 * und somit nicht mehr benötigt werden.
+	 * @param max Maximale Anzahl der Spieler im Highscore
 	 */
 	private void cleanHighscoreFile(int max) {
 		String str = highscoreToSortedMap().toString().replaceAll(" ", "").replaceAll("}", "").substring(1);
@@ -245,6 +246,7 @@ public class Score {
 	 * damit die Punkte in der Datei abgespeichert werden.
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers
+	 * @param max Maximale Anzahl der Spieler im Highscore
 	 */
 	void saveScoreToFile(String playerName, String opponentName, int max) {
 		addPlayerIntoHighscore(playerName, scorePlayer1);
@@ -254,7 +256,7 @@ public class Score {
 	
 	/**
 	 * Gibt die Punktzahl eines Spielers zurück.
-	 * @param 1 = Spieler1, 2 = Spieler2
+	 * @param playerIndex 1 = Spieler1, 2 = Spieler2
 	 * @return Punktzahl des Spielers
 	 */
 	int getScore(int playerIndex) {

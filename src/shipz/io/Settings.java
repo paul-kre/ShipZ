@@ -63,7 +63,7 @@ public class Settings {
 	
 	/**
 	 * Ändert den Wert der Pausen zwischen den KI-Zügen in der Config.
-	 * @param timer neuer Wert für Pausen zwischen KI-Zügen
+	 * @param ms neuer Wert für Pausen zwischen KI-Zügen
 	 */
 	void setAiTimer(int ms) {
 		saveload.writeFile(configFile, saveload.readFile(configFile).replaceAll("aiTimer"+CONFIG_SEPARATOR+getAiTimer(), "aiTimer"+CONFIG_SEPARATOR+ms));

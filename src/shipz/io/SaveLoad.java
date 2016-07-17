@@ -67,12 +67,14 @@ public class SaveLoad {
 	 * @param gameName Dateiname für den Spielstand
 	 * @param playerName Name des ersten Spielers
 	 * @param opponentName Name des zweiten Spielers bzw. des Gegners
-	 * @param boardPlayer1 Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
-	 * @param boardPlayer2 Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
+	 * @param boardPlayerOne Das gesamte Feld des ersten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
+	 * @param boardPlayerTwo Das gesamte Feld des zweiten Spielers als {@link String} gespeichert. Außerdem wird die Feldgröße gespeichert.
 	 * @param boardsize Größe des Feldes.
 	 * @param activePlayer Spieler der gerade am Zug ist
 	 * @param preferences Einstellungen des Spiels, die am Anfang gesetzt wurden
-	 * @param mirrorField Spielfeld der KI
+	 * @param gamemode Spielmodus
+	 * @param mirrorFieldOne Spielfeld der KI
+	 * @param mirrorFieldTwo Spielfeld der KI
 	 */
 	void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode, String mirrorFieldOne, String mirrorFieldTwo) {
 		updateXML();

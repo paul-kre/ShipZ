@@ -49,6 +49,7 @@ public class FileStream {
 	 * @param boardsize Größe des Spielfelds
 	 * @param activePlayer aktiver Spieler
 	 * @param preferences die Einstellungen des Spiels
+	 * @param gamemode Spielmodus
 	 * @param mirrorFieldOne Spielfeld der 1. KI
 	 * @param mirrorFieldTwo Spielfeld der 2. KI
 	 */
@@ -68,6 +69,7 @@ public class FileStream {
 	 * @param boardsize Größe des Spielfelds
 	 * @param activePlayer aktiver Spieler
 	 * @param preferences die Einstellungen des Spiels
+	 * @param gamemode Spielmodus
 	 * @param mirrorFieldOne Spielfeld der 1. KI
 	 */
 	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode, String mirrorFieldOne) {
@@ -85,6 +87,7 @@ public class FileStream {
 	 * @param boardsize Größe des Spielfelds
 	 * @param activePlayer aktiver Spieler
 	 * @param preferences die Einstellungen des Spiels
+	 * @param gamemode Spielmodus
 	 */
 	public void saveGame(String gameName, String playerName, String opponentName, String boardPlayerOne, String boardPlayerTwo, int boardsize, int activePlayer, String preferences, String gamemode) {
 		saveGame(gameName, playerName, opponentName, boardPlayerOne, boardPlayerTwo, boardsize, activePlayer, preferences, gamemode, null, null);
