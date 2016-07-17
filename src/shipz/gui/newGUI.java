@@ -2197,6 +2197,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().removeAll(btnRndm, btnLock, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, dragBox);
+                fireGameEvent(LOCK_EVENT);
 
             }
         });

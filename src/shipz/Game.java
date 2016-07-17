@@ -1011,7 +1011,6 @@ public class Game implements GameEventListener {
                 placeShips(1);
                 placeShips(2);
                 displayBoards();
-                //drawShipOnGUI();
                 if(mode == 2 || mode == 3) {
                     int ki2mode = gui.getKi2Mode();
                     if(ki2mode == 1) {
@@ -1038,7 +1037,9 @@ public class Game implements GameEventListener {
                     }
                     System.out.println("Player 1: " + ki1mode);
                 }
-
+                break;
+            case LOCK_EVENT:
+                clearGUI();
                 cycle();
                 break;
             case FINISHED_ROUND:
@@ -1069,7 +1070,7 @@ public class Game implements GameEventListener {
                     //gui.setNewRow(filestream.get)
                     filestream.saveScoreToFile(gui.getPlayername(1), gui.getPlayername(2));
                     //gui.setEndMessage(1);
-                    //gui.setEndScreen();
+                    gui.setEndScreen();
                 }
                 break;
             case UNDO_EVENT:
