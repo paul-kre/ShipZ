@@ -446,6 +446,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 0, length, x, y);
+        gui.drawShip(x, y, player, length, 'u');
     }
 
     /**
@@ -511,7 +512,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 1, length, x, y);
-        //gui.drawShip(y, x, 1, length, 'r');
+        gui.drawShip(x, y, player, length, 'r');
     }
 
     /**
@@ -577,7 +578,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 2, length, x, y);
-        //gui.drawShip(y, x, 1, length, 'u');
+        gui.drawShip(x, y, player, length, 'd');
     }
 
     /**
@@ -637,6 +638,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 3, length, x, y);
+        gui.drawShip(x, y, player, length, 'l');
     }
 
     /**
