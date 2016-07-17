@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
 public class SaveLoad {
 
 	// IV
-	/** Datei, in der die einzelnen Spielst�nde gespeichert werden. */
+	/** Datei, in der die einzelnen Spielstände gespeichert werden. */
 	private File file;
 	/** BufferedWriter, mit dem in die Dateien geschrieben wird. */
 	private BufferedWriter writer;
@@ -229,18 +229,18 @@ public class SaveLoad {
 			document.setContent(root);
 			writeXML();
 		} else {
-			throw new RuntimeException("Fehler beim L�schen des Spielstands! Dieser Spielstand existiert nicht!");
+			throw new RuntimeException("Fehler beim Löschen des Spielstands! Dieser Spielstand existiert nicht!");
 		}
 	}
 
 	/**
-	 * Gibt die Namen aller Spielst�nde als {@link String} zurück.
-	 * Dies wird für die Auflistung aller Spielst�nde wichtig sein.
+	 * Gibt die Namen aller Spielstände als {@link String} zurück.
+	 * Dies wird für die Auflistung aller Spielstände wichtig sein.
 	 * Da die Weitergabe von Arrays nicht erlaubt ist,
 	 * muss die Game-Klasse selbst aus dem String ein Array machen.
 	 * Dies geht ganz einfach mit
 	 * getAllGameNames().split(",")
-	 * @return Die Namen aller Spielst�nde als {@link String}
+	 * @return Die Namen aller Spielstände als {@link String}
 	 */
 	String getAllGameNames() {
 		String str = "";

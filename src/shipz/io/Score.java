@@ -65,18 +65,18 @@ public class Score {
 			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 100*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 100*comboPlayer2;
-			else throw new RuntimeException("Unzul�ssiger playerIndex, erlaubt ist 1 oder 2.");
+			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		case 2:
 			combo(playerIndex, result);
 			if(playerIndex == 1) scorePlayer1 += 300*comboPlayer1;
 			else if(playerIndex == 2) scorePlayer2 += 300*comboPlayer2;
-			else throw new RuntimeException("Unzul�ssiger playerIndex, erlaubt ist 1 oder 2.");
+			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		case 3:
 			if(playerIndex == 1) scorePlayer1 -= 50;
 			else if(playerIndex == 2)scorePlayer2 -= 50;
-			else throw new RuntimeException("Unzul�ssiger playerIndex, erlaubt ist 1 oder 2.");
+			else throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 			break;
 		default: break;
 		}
@@ -261,7 +261,7 @@ public class Score {
 		switch(playerIndex) {
 		case 1: return scorePlayer1;
 		case 2: return scorePlayer2;
-		default: throw new RuntimeException("Unzul�ssiger playerIndex, erlaubt ist 1 oder 2.");
+		default: throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 		}
 	}
 	
@@ -276,7 +276,7 @@ public class Score {
 		switch(playerIndex) {
 		case 1: return comboPlayer1;
 		case 2: return comboPlayer2;
-		default: throw new RuntimeException("Unzul�ssiger playerIndex, erlaubt ist 1 oder 2.");
+		default: throw new RuntimeException("Unzulässiger playerIndex, erlaubt ist 1 oder 2.");
 		}
 	}
 	

@@ -146,10 +146,10 @@ public class FileStream {
 	}
 	
 	/**
-	 * Gibt die Feldgr��e eines bestimmten Spielstands zurück.
+	 * Gibt die Feldgröße eines bestimmten Spielstands zurück.
 	 * Wird zum Laden eines Spielstands benötigt.
 	 * @param gameName der gewünschte Spielstand
-	 * @return Feldgr��e eines bestimmten Spielstands als {@link String}
+	 * @return Feldgröße eines bestimmten Spielstands als {@link String}
 	 */
 	public int getBoardsize(String gameName) {
 		return saveload.getBoardsize(gameName);
@@ -216,7 +216,7 @@ public class FileStream {
 	 * Alle rückgängig gemachten Züge werden als String zurückgegeben.
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Die Züge die rückgängig gemacht werden als {@link String}
-	 * @throws NoDrawException tritt auf, falls keine weiteren Züge rückgängig gemacht werden k�nnen
+	 * @throws NoDrawException tritt auf, falls keine weiteren Züge rückgängig gemacht werden können
 	 */
 	public String undoDraw(int playerIndex) throws NoDrawException {
 		score.setScore(playerIndex, 3);
@@ -229,7 +229,7 @@ public class FileStream {
 	 * Alle wiederhergestellten Züge werden als String zurückgegeben.
 	 * @param playerIndex 1 für den ersten Spieler, 2 für den zweiten Spieler
 	 * @return Die wiederhergestellten Züge als {@link String}
-	 * @throws NoDrawException tritt auf, falls keine weiteren Züge wiederholt werden k�nnen
+	 * @throws NoDrawException tritt auf, falls keine weiteren Züge wiederholt werden können
 	 */
 	public String redoDraw(int playerIndex) throws NoDrawException {
 		return undoredo.redoDraw(playerIndex);
@@ -341,7 +341,7 @@ public class FileStream {
 	
 	/**
 	 * Gibt alle Buchstaben und Sonderzeichen zurück,
-	 * die in einem Namen nicht verwendet werden d�rfen.
+	 * die in einem Namen nicht verwendet werden dürfen.
 	 * Um diesen String in ein Char-Array umzuwandeln:
 	 * <i>forbiddenCharacters().toCharArray()</i>
 	 * @return die verbotenen Zeichen als String
