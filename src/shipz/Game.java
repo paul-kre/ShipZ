@@ -1106,6 +1106,7 @@ public class Game implements GameEventListener {
 //            	String gameName = saves[saves.length-1];
 //            	loadGame(gameName);
 //            	System.out.println("Der Spielstand " + gameName + " wurde geladen!");
+            	gui.clearTables();
             	for(int i = 0; i < saves.length; i++) {
             		gui.setSavedGame(saves[i], filestream.getPlayerName(saves[i]), filestream.getOpponentName(saves[i]), filestream.getGamemode(saves[i]), filestream.getTime(saves[i]).replaceAll("_", " "));
             	}
@@ -1371,8 +1372,14 @@ public class Game implements GameEventListener {
 
     	if(filestream.getActivePlayer(gameName) == 1) {
     		player1active = true;
+    		if(player1 == null) {
+    			gui.setEnableField(2);
+    		}
     	} else {
     		player1active = false;
+    		if(player2 == null) {
+    			gui.setEnableField(1);
+    		}
     	}
     }
 
