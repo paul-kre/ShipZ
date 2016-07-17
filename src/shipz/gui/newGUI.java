@@ -126,6 +126,21 @@ public class newGUI extends GameEventSource {
     Image ship2 = new Image(newGUI.class.getResource("shipZ_2erShipWhole.png").toExternalForm());
     Image ship21 = new Image(newGUI.class.getResource("shipZ_2erShip_Part1.png").toExternalForm());
     Image ship22 = new Image(newGUI.class.getResource("shipZ_2erShip_Part2.png").toExternalForm());
+    Image ship3 = new Image(newGUI.class.getResource("shipZ_3erShipWhole.png").toExternalForm());
+    Image ship31 = new Image(newGUI.class.getResource("shipZ_3erShip_Part1.png").toExternalForm());
+    Image ship32 = new Image(newGUI.class.getResource("shipZ_3erShip_Part2.png").toExternalForm());
+    Image ship33 = new Image(newGUI.class.getResource("shipZ_3erShip_Part3.png").toExternalForm());
+    Image ship4 = new Image(newGUI.class.getResource("shipZ_4erShipWhole.png").toExternalForm());
+    Image ship41 = new Image(newGUI.class.getResource("shipZ_4erShip_Part1.png").toExternalForm());
+    Image ship42 = new Image(newGUI.class.getResource("shipZ_4erShip_Part2.png").toExternalForm());
+    Image ship43 = new Image(newGUI.class.getResource("shipZ_4erShip_Part3.png").toExternalForm());
+    Image ship44 = new Image(newGUI.class.getResource("shipZ_4erShip_Part4.png").toExternalForm());
+    Image ship5 = new Image(newGUI.class.getResource("shipZ_5erShipWhole.png").toExternalForm());
+    Image ship51 = new Image(newGUI.class.getResource("shipZ_5erShip_Part1.png").toExternalForm());
+    Image ship52 = new Image(newGUI.class.getResource("shipZ_5erShip_Part2.png").toExternalForm());
+    Image ship53 = new Image(newGUI.class.getResource("shipZ_5erShip_Part3.png").toExternalForm());
+    Image ship54 = new Image(newGUI.class.getResource("shipZ_5erShip_Part4.png").toExternalForm());
+    Image ship55 = new Image(newGUI.class.getResource("shipZ_5erShip_Part5.png").toExternalForm());
     Image explosion = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
     Image explosion2 = new Image(newGUI.class.getResource("Explosion.png").toExternalForm());
     //Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion3.gif").toExternalForm());
@@ -822,7 +837,7 @@ public class newGUI extends GameEventSource {
         }
     }
 
-/**
+
     public void drawShip(int x, int y, int field, int length, char dir) {
 
         if(field == 1) {
@@ -903,27 +918,35 @@ public class newGUI extends GameEventSource {
                     }
                     break;
                 case 5:
-                    //2er Schiff
-                    field1[x][y].setImage(ship31);
+                    //5er Schiff
+                    field1[x][y].setImage(ship51);
                     //oben
                     if (dir == 'u') {
-                        field1[x][y - 1].setImage(ship32);
-                        field1[x][y - 2].setImage(ship33);
+                        field1[x][y - 1].setImage(ship52);
+                        field1[x][y - 2].setImage(ship53);
+                        field1[x][y - 3].setImage(ship54);
+                        field1[x][y - 4].setImage(ship55);
                     }
                     //unten
                     if (dir == 'd') {
-                        field1[x][y + 1].setImage(ship32);
-                        field1[x][y + 2].setImage(ship33);
+                        field1[x][y + 1].setImage(ship52);
+                        field1[x][y + 2].setImage(ship53);
+                        field1[x][y + 3].setImage(ship54);
+                        field1[x][y + 4].setImage(ship55);
                     }
                     //rechts
                     if (dir == 'r') {
-                        field1[x + 1][y].setImage(ship32);
-                        field1[x + 2][y].setImage(ship33);
+                        field1[x + 1][y].setImage(ship52);
+                        field1[x + 2][y].setImage(ship53);
+                        field1[x + 3][y].setImage(ship54);
+                        field1[x + 4][y].setImage(ship55);
                     }
                     //unten
                     if (dir == 'l') {
-                        field1[x - 1][y].setImage(ship32);
-                        field1[x - 2][y].setImage(ship33);
+                        field1[x - 1][y].setImage(ship52);
+                        field1[x - 2][y].setImage(ship53);
+                        field1[x - 3][y].setImage(ship54);
+                        field1[x - 4][y].setImage(ship55);
                     }
                     break;
             }
@@ -939,34 +962,109 @@ public class newGUI extends GameEventSource {
                 case 2:
                     //2er Schiff
                     field2[x][y].setImage(ship21);
-                    //unten
+                    //oben
                     if (dir == 'u')
+                        field2[x][y - 1].setImage(ship22);
+                    //unten
+                    if (dir == 'd')
                         field2[x][y + 1].setImage(ship22);
                         //rechts
                     else if (dir == 'r')
                         field2[x + 1][y].setImage(ship22);
+                    //unten
+                    if (dir == 'l')
+                        field2[x - 1][y].setImage(ship22);
                     break;
 
                 case 3:
                     //3er Schiff
+                    field2[x][y].setImage(ship31);
+                    //oben
+                    if (dir == 'u') {
+                        field2[x][y - 1].setImage(ship32);
+                        field2[x][y - 2].setImage(ship33);
+                    }
                     //unten
+                    if (dir == 'd') {
+                        field2[x][y + 1].setImage(ship32);
+                        field2[x][y + 2].setImage(ship33);
+                    }
                     //rechts
+                    if (dir == 'r') {
+                        field2[x + 1][y].setImage(ship32);
+                        field2[x + 2][y].setImage(ship33);
+                    }
+                    //unten
+                    if (dir == 'l') {
+                        field2[x - 1][y].setImage(ship32);
+                        field2[x - 2][y].setImage(ship33);
+                    }
                     break;
                 case 4:
                     //4er Schiff
+                    field2[x][y].setImage(ship41);
+                    //oben
+                    if (dir == 'u') {
+                        field2[x][y - 1].setImage(ship42);
+                        field2[x][y - 2].setImage(ship43);
+                        field2[x][y - 3].setImage(ship44);
+                    }
                     //unten
+                    if (dir == 'd') {
+                        field2[x][y + 1].setImage(ship42);
+                        field2[x][y + 2].setImage(ship43);
+                        field2[x][y + 3].setImage(ship44);
+                    }
                     //rechts
+                    if (dir == 'r') {
+                        field2[x + 1][y].setImage(ship42);
+                        field2[x + 2][y].setImage(ship43);
+                        field2[x + 3][y].setImage(ship44);
+                    }
+                    //unten
+                    if (dir == 'l') {
+                        field2[x - 1][y].setImage(ship42);
+                        field2[x - 2][y].setImage(ship43);
+                        field2[x - 3][y].setImage(ship44);
+                    }
                     break;
                 case 5:
                     //5er Schiff
+                    field2[x][y].setImage(ship51);
+                    //oben
+                    if (dir == 'u') {
+                        field2[x][y - 1].setImage(ship52);
+                        field2[x][y - 2].setImage(ship53);
+                        field2[x][y - 3].setImage(ship54);
+                        field2[x][y - 4].setImage(ship55);
+                    }
                     //unten
+                    if (dir == 'd') {
+                        field2[x][y + 1].setImage(ship52);
+                        field2[x][y + 2].setImage(ship53);
+                        field2[x][y + 3].setImage(ship54);
+                        field2[x][y + 4].setImage(ship55);
+                    }
                     //rechts
+                    if (dir == 'r') {
+                        field2[x + 1][y].setImage(ship52);
+                        field2[x + 2][y].setImage(ship53);
+                        field2[x + 3][y].setImage(ship54);
+                        field2[x + 4][y].setImage(ship55);
+                    }
+                    //unten
+                    if (dir == 'l') {
+                        field2[x - 1][y].setImage(ship52);
+                        field2[x - 2][y].setImage(ship53);
+                        field2[x - 3][y].setImage(ship54);
+                        field2[x - 4][y].setImage(ship55);
+                    }
                     break;
             }
         }
 
     }
-**/
+
 
     /**
      * Methode zum �ndern des Zustandes der GUI (enable/disable)
