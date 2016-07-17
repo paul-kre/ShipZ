@@ -1800,7 +1800,7 @@ public class GUI extends GameEventSource {
         primaryStage.setMinWidth(900);
         primaryStage.setMinHeight(700);
         primaryStage.sizeToScene();
-        scene.getStylesheets().add(GUI.class.getResource("GUICSS.css").toExternalForm());
+        scene.getStylesheets().add(GUI.class.getResource("newGUICSS.css").toExternalForm());
         primaryStage.show();
 
 
@@ -2817,4 +2817,4 @@ public class GUI extends GameEventSource {
     }
 
 
-}//Ende GUI
+}//Ende newGUI
