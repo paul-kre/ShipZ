@@ -1312,11 +1312,14 @@ public class Game implements GameEventListener {
     	filestream.loadDrawsAndScore(gameName); // aktualisiert die IVs in den Klassen f�r Punkte und Z�ge
     	char[] lb1 = filestream.getBoardPlayerOne(gameName).toCharArray();
     	char[] lb2 = filestream.getBoardPlayerTwo(gameName).toCharArray();
-//    	int boardsize = filestream.getBoardsize(gameName);
 
-        clearGUI();
-
+    	int boardsize = filestream.getBoardsize(gameName);
+        gui.setFieldSize(boardsize);
+        gui.createField();
+        board1 = new char[boardsize][boardsize];
+        board2 = new char[boardsize][boardsize];
         String g = filestream.getGamemode(gameName);
+        clearGUI();
         
         if(g.charAt(0) == '2') {
 	        if(g.split(",")[2].equals("1")) {
