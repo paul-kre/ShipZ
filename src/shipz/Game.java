@@ -11,7 +11,6 @@ import shipz.util.NoDrawException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
@@ -510,6 +509,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 1, length, x, y);
+        //gui.drawShip(y, x, 1, length, 'r');
     }
 
     /**
@@ -575,6 +575,7 @@ public class Game implements GameEventListener {
             }
         }
         blockTiles(player, 2, length, x, y);
+        //gui.drawShip(y, x, 1, length, 'u');
     }
 
     /**
@@ -992,10 +993,17 @@ public class Game implements GameEventListener {
                 break;
             case FILL_EVENT:
                 clear();
-                board1 = new char[10][10];
-                board2 = new char[10][10];
+                board1 = new char[gui.getFieldSize()][gui.getFieldSize()];
+                board2 = new char[gui.getFieldSize()][gui.getFieldSize()];
                 initiateBoards();
-                shipList = createShipList("5443332");
+                String s = "5443332";
+                if(gui.getFieldSize() >= 15) {
+                    s += s;
+                    if(gui.getFieldSize() == 20) {
+                        s += s;
+                    }
+                }
+                shipList = createShipList(s);
                 placeShips(1);
                 placeShips(2);
                 displayBoards();
@@ -1003,26 +1011,26 @@ public class Game implements GameEventListener {
                 if(mode == 2 || mode == 3) {
                     int ki2mode = gui.getKi2Mode();
                     if(ki2mode == 1) {
-                        player2 = new Easy(10, false, shipList);
+                        player2 = new Easy(gui.getFieldSize(), true, shipList);
                     }
                     else if(ki2mode == 2) {
-                        player2 = new Normal(10, false, shipList);
+                        player2 = new Normal(gui.getFieldSize(), true, shipList);
                     }
                     else {
-                        player2 = new Hard(10, false, shipList);
+                        player2 = new Hard(gui.getFieldSize(), true, shipList);
                     }
                     System.out.println("Player 2: " + ki2mode);
                 }
                 if(mode == 3) {
                     int ki1mode = gui.getKi1Mode();
                     if(ki1mode == 1) {
-                        player1 = new Easy(10, false, shipList);
+                        player1 = new Easy(gui.getFieldSize(), true, shipList);
                     }
                     else if(ki1mode == 2) {
-                        player1 = new Normal(10, false, shipList);
+                        player1 = new Normal(gui.getFieldSize(), true, shipList);
                     }
                     else {
-                        player1 = new Hard(10, false, shipList);
+                        player1 = new Hard(gui.getFieldSize(), true, shipList);
                     }
                     System.out.println("Player 1: " + ki1mode);
                 }
@@ -1032,10 +1040,10 @@ public class Game implements GameEventListener {
             case FINISHED_ROUND:
                 gui.setEnableField(0);
             	filestream.newDraw(aX, aY, activePlayer(), aResult);
-            	gui.setComboLabel(gui.getPlayername(1), filestream.getComboValue(1), 1);
-            	gui.setComboLabel(gui.getPlayername(2), filestream.getComboValue(2), 2);
-            	gui.setScoreLabel(gui.getPlayername(1), filestream.getScore(1), 1);
-            	gui.setScoreLabel(gui.getPlayername(2), filestream.getScore(2), 2);
+            	gui.setComboLabel(filestream.getComboValue(1), 1);
+            	gui.setComboLabel(filestream.getComboValue(2), 2);
+            	gui.setScoreLabel(filestream.getScore(1), 1);
+            	gui.setScoreLabel(filestream.getScore(2), 2);
                 if(network != null && isHost) {
                     network.send(
                         NET_HIGHSCORE + ":"
@@ -1056,6 +1064,8 @@ public class Game implements GameEventListener {
                     System.out.println("Spieler " + gameFinished() + " hat das Spiel gewonnen");
                     //gui.setNewRow(filestream.get)
                     filestream.saveScoreToFile(gui.getPlayername(1), gui.getPlayername(2));
+                    //gui.setEndMessage(1);
+                    //gui.setEndScreen();
                 }
                 break;
             case UNDO_EVENT:
@@ -1168,10 +1178,10 @@ public class Game implements GameEventListener {
                         int comboValue2 = Integer.parseInt(score[1]);
                         int score1 = Integer.parseInt(score[2]);
                         int score2 = Integer.parseInt(score[3]);
-                        gui.setComboLabel(gui.getPlayername(1), comboValue1, 1);
-                        gui.setComboLabel(gui.getPlayername(2), comboValue2, 2);
-                        gui.setScoreLabel(gui.getPlayername(1), score1, 1);
-                        gui.setScoreLabel(gui.getPlayername(2), score1, 2);
+                        gui.setComboLabel(comboValue1, 1);
+                        gui.setComboLabel(comboValue2, 2);
+                        gui.setScoreLabel(score1, 1);
+                        gui.setScoreLabel(score2, 2);
                         break;
                     case NET_GAMEOVER:
                         gameOver();
@@ -1319,10 +1329,10 @@ public class Game implements GameEventListener {
         drawShipOnGUI();
 
         gui.setPlayernames(filestream.getPlayerName(gameName), filestream.getOpponentName(gameName));
-        gui.setComboLabel(filestream.getPlayerName(gameName), filestream.getComboValue(1), 1);
-        gui.setScoreLabel(filestream.getPlayerName(gameName), filestream.getScore(1), 1);
-        gui.setComboLabel(filestream.getOpponentName(gameName), filestream.getComboValue(2), 2);
-        gui.setScoreLabel(filestream.getOpponentName(gameName), filestream.getScore(2), 2);
+        gui.setComboLabel(filestream.getComboValue(1), 1);
+        gui.setScoreLabel(filestream.getScore(1), 1);
+        gui.setComboLabel(filestream.getComboValue(2), 2);
+        gui.setScoreLabel(filestream.getScore(2), 2);
 
     	if(filestream.getActivePlayer(gameName) == 1) {
     		player1active = true;
@@ -1376,7 +1386,7 @@ public class Game implements GameEventListener {
             network.end();
             network = null;
             isHost = false;
-            gui.isHost(false);
+            gui.setIsHost(false);
             gui.setIsNetwork(false);
             gui.setIsNetwork(false);
             gui.setConnected(false);
@@ -1408,6 +1418,7 @@ public class Game implements GameEventListener {
         isHost = false;
         player1active = true;
         shipList = null;
+        filestream = new FileStream();
     }
 
 

@@ -58,8 +58,8 @@ public class newGUI extends GameEventSource {
 
     //Spielfelder
     int fieldSize = 10;
-    ImageView[][] field1 = new ImageView[fieldSize][fieldSize];
-    ImageView[][] field2 = new ImageView[fieldSize][fieldSize];
+    ImageView[][] field1;
+    ImageView[][] field2;
 
     //Elemente
     Text hlOverall = new Text("Project: shipZ");
@@ -89,6 +89,10 @@ public class newGUI extends GameEventSource {
     RadioButton rbEasy2 = new RadioButton("Easy");
     RadioButton rbNormal2 = new RadioButton("Normal");
     RadioButton rbHard2 = new RadioButton("Hard");
+    final ToggleGroup group3 = new ToggleGroup();
+    RadioButton rb10x10 = new RadioButton("Fieldsize 10x10");
+    RadioButton rb15x15 = new RadioButton("Fieldsize 15x15");
+    RadioButton rb20x20 = new RadioButton("Fieldsize 20x20");
     Button btnGo = new Button("Go!");
     Button btnHost = new Button("Host");
     Button btnClient = new Button("Client");
@@ -109,7 +113,10 @@ public class newGUI extends GameEventSource {
     ImageView ivSrc5 = new ImageView();
     Button btnLock = new Button("Lock");
     Button btnEGame = new Button("End game");
-    Rectangle border;
+    Text txtEndScreen = new Text("Nothing");
+    Button btnPlayAgain = new Button("Play again");
+    Button btnLeave = new Button("Leave");
+    Text playername = new Text();
 
     //Images
     Image white = new Image(newGUI.class.getResource("White.png").toExternalForm());
@@ -120,7 +127,7 @@ public class newGUI extends GameEventSource {
     Image ship21 = new Image(newGUI.class.getResource("shipZ_2erShip_Part1.png").toExternalForm());
     Image ship22 = new Image(newGUI.class.getResource("shipZ_2erShip_Part2.png").toExternalForm());
     Image explosion = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
-    Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion2.gif").toExternalForm());
+    Image explosion2 = new Image(newGUI.class.getResource("Explosion.png").toExternalForm());
     //Image explosion2 = new Image(newGUI.class.getResource("shipZ_explosion3.gif").toExternalForm());
     //Image explosion3 = new Image(newGUI.class.getResource("shipZ_explosion4.gif").toExternalForm());
 
@@ -138,10 +145,10 @@ public class newGUI extends GameEventSource {
     String filename = "";
 
     //Score und Combo Texte
-    Text txtPoints1 = new Text();
-    Text txtPoints2 = new Text();
-    Text txtCombo1 = new Text();
-    Text txtCombo2 = new Text();
+    Text txtPoints1 = new Text("Score P1 : "+0);
+    Text txtPoints2 = new Text("Score P2 : "+0);
+    Text txtCombo1 = new Text("Combo P1 : "+1);
+    Text txtCombo2 = new Text("Combo P2 : "+1);
 
     //Spielernamen
     String playername1 = "Spieler 1";
@@ -177,6 +184,28 @@ public class newGUI extends GameEventSource {
 
 
     //IM
+    public void setEndScreen () {
+        body.getChildren().clear();
+        body.getChildren().addAll(txtEndScreen, btnPlayAgain, btnLeave);
+    }
+
+    public void setEndMessage (int player) {
+        if(player == 1){
+            txtEndScreen.setText(playername1+" has won the game!"+"\b"+"Congratulations.");
+        } else {
+            txtEndScreen.setText(playername2+" has won the game!"+"\b"+"Congratulations.");
+        }
+    }
+
+    public void setFieldSize (int size) {
+        fieldSize = size;
+        field1 = new ImageView[fieldSize][fieldSize];
+        field2 = new ImageView[fieldSize][fieldSize];
+    }
+
+    public int getFieldSize() {
+        return fieldSize;
+    }
 
     public void setConnected(boolean b) {
         connected = b;
@@ -190,7 +219,7 @@ public class newGUI extends GameEventSource {
         return isHost;
     }
 
-    public void isHost(boolean b) {
+    public void setIsHost(boolean b) {
         isHost = b;
     }
 
@@ -201,15 +230,18 @@ public class newGUI extends GameEventSource {
 
     }
 
-    public String getPlayername (int playerIndex) {
-    	if(playerIndex == 1) {
-    		return playername1;
-    	} else if(playerIndex == 2) {
-    		return playername2;
-    	} else {
-    		throw new RuntimeException("Ungültiger PlayerIndex!");
-    	}
+
+    public String getPlayername (int i) {
+
+        if(i == 1) {
+            return playername1;
+        }
+        else {
+            return playername2;
+        }
+
     }
+
 
     public int getKi1Mode () {
 
@@ -262,10 +294,8 @@ public class newGUI extends GameEventSource {
 
     /**
      * Methode zum erstellen der Spielfelder
-     * @param body  Pane zur Anzeige
-     * @param ivSrc1 Drag and Drop ImageView
      */
-    public void createField (AnchorPane body, ImageView ivSrc1) {
+    public void createField () {
         //Spielfeld erstellen
         for(int i = 0; i < field1.length; i++){
 
@@ -273,33 +303,21 @@ public class newGUI extends GameEventSource {
                 int x = i;
                 int y = j;
 
-                //Rectangle zur Feldbegrenzung erstellen
-                border = new Rectangle(width*0.030, width*0.030);
-                border.setFill(null);
-                border.setStroke(Color.BLACK);
-
                 //ImageView erstellen und hinzuf�gen
                 ImageView oneField = new ImageView();
                 Image oneFieldImg = new Image(newGUI.class.getResource("White.png").toExternalForm());
                 oneField.setImage(oneFieldImg);
                 field1[i][j] = oneField;
 
-                //Rectangle platzieren
-                border.setWidth(width*0.030);
-                border.setTranslateX(j * width*0.030);
-                border.setTranslateY(i * width*0.030);
-                border.layoutXProperty().setValue(width*0.25);
-                border.layoutYProperty().setValue(height*0.18);
-
                 //ImageView platzieren
-                oneField.setFitWidth(width*0.030);
+                oneField.setFitWidth(width*0.015);
                 oneField.setPreserveRatio(true);
-                oneField.setTranslateX(j * width*0.030);
-                oneField.setTranslateY(i * width*0.030);
+                oneField.setTranslateX(j * width*0.015);
+                oneField.setTranslateY(i * width*0.015);
                 oneField.layoutXProperty().setValue(width*0.25);
                 oneField.layoutYProperty().setValue(height*0.18);
 
-                body.getChildren().addAll(border, oneField);
+                body.getChildren().addAll(oneField);
 
                 //auf click
                 field1[i][j].setOnMouseClicked(event -> {
@@ -442,33 +460,21 @@ public class newGUI extends GameEventSource {
                 int x = i;
                 int y = j;
 
-                //Rectangle zur Feldbegrenzung erstellen
-                Rectangle border = new Rectangle(30, 30);
-                border.setFill(null);
-                border.setStroke(Color.BLACK);
-
                 //ImageView erstellen und hinzuf�gen
                 ImageView oneField = new ImageView();
                 Image oneFieldImg = new Image(newGUI.class.getResource("White.png").toExternalForm());
                 oneField.setImage(oneFieldImg);
                 field2[i][j] = oneField;
 
-                //Rectangle platzieren
-                border.setWidth(30);
-                border.setTranslateX(j * 30);
-                border.setTranslateY(i * 30);
-                border.layoutXProperty().setValue(width*0.65);
-                border.layoutYProperty().setValue(height*0.18);
-
                 //ImageView platzieren
-                oneField.setFitWidth(30);
+                oneField.setFitWidth(width*0.015);
                 oneField.setPreserveRatio(true);
-                oneField.setTranslateX(j * 30);
-                oneField.setTranslateY(i * 30);
+                oneField.setTranslateX(j * width*0.015);
+                oneField.setTranslateY(i * width*0.015);
                 oneField.layoutXProperty().setValue(width*0.65);
                 oneField.layoutYProperty().setValue(height*0.18);
 
-                body.getChildren().addAll(border, oneField);
+                body.getChildren().addAll(oneField);
 
                 //auf click
                 field2[i][j].setOnMouseClicked(event -> {
@@ -479,7 +485,6 @@ public class newGUI extends GameEventSource {
                             //Auf R�ckmeldung
                             setCoordinates(y, x);
                             fireGameEvent(GUI_SHOOT_EVENT);
-                            System.out.print("test");
                         }
                     }
                     else if(event.getButton() == MouseButton.SECONDARY) {
@@ -818,6 +823,123 @@ public class newGUI extends GameEventSource {
     }
 
 
+    public void drawShip(int x, int y, int field, int length, char dir) {
+
+        if(field == 1) {
+            switch (length) {
+
+                case 1:
+                    //1er Schiff
+                    field1[x][y].setImage(ship);
+                    break;
+
+                case 2:
+                    //2er Schiff
+                    field1[x][y].setImage(ship21);
+                    //oben
+                    if (dir == 'u')
+                        field1[x][y - 1].setImage(ship22);
+                    //unten
+                    if (dir == 'd')
+                        field1[x][y + 1].setImage(ship22);
+                    //rechts
+                    else if (dir == 'r')
+                        field1[x + 1][y].setImage(ship22);
+                    //unten
+                    if (dir == 'l')
+                        field1[x - 1][y].setImage(ship22);
+                    break;
+
+                case 3:
+                    //3er Schiff
+                    field1[x][y].setImage(ship21);
+                    //oben
+                    if (dir == 'u')
+                        field1[x][y - 1].setImage(ship22);
+                    //unten
+                    if (dir == 'd')
+                        field1[x][y + 1].setImage(ship22);
+                        //rechts
+                    else if (dir == 'r')
+                        field1[x + 1][y].setImage(ship22);
+                    //unten
+                    if (dir == 'l')
+                        field1[x - 1][y].setImage(ship22);
+                    break;
+                case 4:
+                    //2er Schiff
+                    field1[x][y].setImage(ship21);
+                    //oben
+                    if (dir == 'u')
+                        field1[x][y - 1].setImage(ship22);
+                    //unten
+                    if (dir == 'd')
+                        field1[x][y + 1].setImage(ship22);
+                        //rechts
+                    else if (dir == 'r')
+                        field1[x + 1][y].setImage(ship22);
+                    //unten
+                    if (dir == 'l')
+                        field1[x - 1][y].setImage(ship22);
+                    break;
+                case 5:
+                    //2er Schiff
+                    field1[x][y].setImage(ship21);
+                    //oben
+                    if (dir == 'u')
+                        field1[x][y - 1].setImage(ship22);
+                    //unten
+                    if (dir == 'd')
+                        field1[x][y + 1].setImage(ship22);
+                        //rechts
+                    else if (dir == 'r')
+                        field1[x + 1][y].setImage(ship22);
+                    //unten
+                    if (dir == 'l')
+                        field1[x - 1][y].setImage(ship22);
+                    break;
+            }
+        }
+        if(field == 2) {
+            switch (length) {
+
+                case 1:
+                    //1er Schiff
+                    field2[x][y].setImage(ship);
+                    break;
+
+                case 2:
+                    //2er Schiff
+                    field2[x][y].setImage(ship21);
+                    //unten
+                    if (dir == 'u')
+                        field2[x][y + 1].setImage(ship22);
+                        //rechts
+                    else if (dir == 'r')
+                        field2[x + 1][y].setImage(ship22);
+                    break;
+
+                case 3:
+                    //3er Schiff
+                    //unten
+                    //rechts
+                    break;
+                case 4:
+                    //4er Schiff
+                    //unten
+                    //rechts
+                    break;
+                case 5:
+                    //5er Schiff
+                    //unten
+                    //rechts
+                    break;
+            }
+        }
+
+    }
+
+
     /**
      * Methode zum �ndern des Zustandes der GUI (enable/disable)
      * @param v Wert 0 = disabled, 1 = enabled
@@ -825,6 +947,11 @@ public class newGUI extends GameEventSource {
     public void setEnableField (int v) {
         if(v >= 0 && v <= 2) {
             enableField = v;
+            if(v == 1) {
+                drawName(2);
+            } else if(v == 2) {
+                drawName(1);
+            }
         }
     }
 
@@ -850,14 +977,13 @@ public class newGUI extends GameEventSource {
     /**
      * Methode zum Anzeigen welcher Player am Zug ist
      * @param player    Spielernummer
-     * @param body      Pane
      */
-    public void drawName (int player, AnchorPane body) {
+    public void drawName (int player) {
 
-        Text playername = new Text("Player "+player+" it's your turn!");
-        playername.layoutXProperty().setValue(width*0.3);
-        playername.layoutYProperty().setValue(height*0.65);
+        playername.layoutYProperty().setValue(height*0.05);
+        playername.layoutXProperty().setValue(width*0.025);
         playername.setStroke(Color.WHITE);
+        playername.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
         FadeTransition ft = new FadeTransition(Duration.millis(3000), playername);
         ft.setFromValue(1.0);
@@ -866,7 +992,13 @@ public class newGUI extends GameEventSource {
         ft.setAutoReverse(true);
         ft.play();
 
-        body.getChildren().add(playername);
+        if(player == 1) {
+            playername.setText(playername1+" it's your turn!");
+            body.getChildren().add(playername);
+        } else {
+            playername.setText(playername2+" it's your turn!");
+            body.getChildren().add(playername);
+        }
 
 
     }
@@ -876,13 +1008,13 @@ public class newGUI extends GameEventSource {
      * Methode zum setzen der Punkte von Spieler 1
      * @param score Punkte
      */
-    public void setScoreLabel (String playerName, int score, int playerIndex) {
+    public void setScoreLabel (int score, int playerIndex) {
         if(playerIndex == 1) {
-            txtPoints1.setText("Score " +playerName + ": "  + score);
+            txtPoints1.setText("Score P1: "  + score);
         } else if(playerIndex == 2) {
-            txtPoints2.setText("Score " + playerName+ ": " + score);
+            txtPoints2.setText("Score P2: " + score);
         } else {
-            throw new RuntimeException("Ungültiger Playerindex!");
+            throw new RuntimeException("Ung�ltiger Playerindex!");
         }
     }
 
@@ -890,13 +1022,13 @@ public class newGUI extends GameEventSource {
      * Methode zum setzen der Combo von Spieler 1
      * @param combo Kombo
      */
-    public void setComboLabel (String playerName, int combo, int playerIndex) {
+    public void setComboLabel (int combo, int playerIndex) {
         if(playerIndex == 1) {
-            txtCombo1.setText("Combo " + playerName + ": " + combo);
+            txtCombo1.setText("Combo P1: " + combo);
         } else if(playerIndex == 2) {
-            txtCombo2.setText("Combo " + playerName + ": " + combo);
+            txtCombo2.setText("Combo P2: " + combo);
         } else {
-            throw new RuntimeException("Ungültiger Playerindex!");
+            throw new RuntimeException("Ung�ltiger Playerindex!");
         }
     }
 
@@ -968,8 +1100,8 @@ public class newGUI extends GameEventSource {
         //Haupt�berschrift
         hlOverall.layoutXProperty().setValue(width*0.03);
         hlOverall.layoutYProperty().setValue(height*0.14);
-        //hlOverall.setFont(javafx.scene.text.Font.font("Rockwell", height*0.12));
-        hlOverall.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.12));
+        //hlOverall.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.12));
+        hlOverall.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.12));
 
 
         //Startbildschirm
@@ -1005,7 +1137,7 @@ public class newGUI extends GameEventSource {
         btnPlay.layoutYProperty().setValue(height*0.195);
         btnPlay.setPrefWidth(width*0.181);
         btnPlay.setPrefHeight(height*0.07);
-        //btnPlay.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnPlay.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
         //Highscore Button
@@ -1013,7 +1145,7 @@ public class newGUI extends GameEventSource {
         btnHighscore.layoutYProperty().setValue(height*0.305);
         btnHighscore.setPrefWidth(width*0.181);
         btnHighscore.setPrefHeight(height*0.07);
-        //btnHighscore.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnHighscore.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
         //Settings Button
@@ -1021,7 +1153,7 @@ public class newGUI extends GameEventSource {
         btnSettings.layoutYProperty().setValue(height*0.415);
         btnSettings.setPrefWidth(width*0.181);
         btnSettings.setPrefHeight(height*0.07);
-        //btnSettings.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnSettings.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
         //New Game Button
@@ -1029,7 +1161,7 @@ public class newGUI extends GameEventSource {
         btnNGame.layoutYProperty().setValue(height*0.25);
         btnNGame.setPrefWidth(width*0.181);
         btnNGame.setPrefHeight(height*0.07);
-        //btnNGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnNGame.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
         //Load Game Button
@@ -1037,90 +1169,126 @@ public class newGUI extends GameEventSource {
         btnLGame.layoutYProperty().setValue(height*0.25);
         btnLGame.setPrefWidth(width*0.181);
         btnLGame.setPrefHeight(height*0.07);
-        //btnLGame.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnLGame.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
         //Player vs Player Button
         btnPvP.layoutXProperty().setValue(width*0.10);
         btnPvP.layoutYProperty().setValue(height*0.25);
         btnPvP.setPrefWidth(width*0.181);
         btnPvP.setPrefHeight(height*0.07);
+        btnPvP.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
         //Player vs Ki Button
         btnPvK.layoutXProperty().setValue(width*0.40);
         btnPvK.layoutYProperty().setValue(height*0.25);
         btnPvK.setPrefWidth(width*0.181);
-        btnPvK.setPrefHeight(height*0.07);;
+        btnPvK.setPrefHeight(height*0.07);
+        btnPvK.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
         //Ki vs Ki Button
         btnKvK.layoutXProperty().setValue(width*0.70);
         btnKvK.layoutYProperty().setValue(height*0.25);
         btnKvK.setPrefWidth(width*0.181);
         btnKvK.setPrefHeight(height*0.07);
+        btnKvK.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
 
         //Spieler1 Textfeld
         txtfPlayer1.layoutXProperty().setValue(width*0.1);
         txtfPlayer1.layoutYProperty().setValue(height*0.1);
+        txtfPlayer1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Spieler2 Textfeld
         txtfPlayer2.layoutXProperty().setValue(width*0.6);
         txtfPlayer2.layoutYProperty().setValue(height*0.1);
+        txtfPlayer2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Netzwerk Checkbox
         cboxNetGame.layoutXProperty().setValue(width*0.1);
         cboxNetGame.layoutYProperty().setValue(height*0.2);
+        cboxNetGame.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
-        //Easy Computer2 Checkbox
+        //Easy Computer1 Checkbox
         rbEasy1.layoutXProperty().setValue(width*0.1);
-        rbEasy1.layoutYProperty().setValue(height*0.4);
+        rbEasy1.layoutYProperty().setValue(height*0.3);
         rbEasy1.setToggleGroup(group1);
         rbEasy1.setSelected(true);
+        rbEasy1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
-        //Normal Computer2 Checkbox
+        //Normal Computer1 Checkbox
         rbNormal1.layoutXProperty().setValue(width*0.2);
-        rbNormal1.layoutYProperty().setValue(height*0.4);
+        rbNormal1.layoutYProperty().setValue(height*0.3);
         rbNormal1.setToggleGroup(group1);
         rbNormal1.setSelected(true);
+        rbNormal1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
-        //Hard Computer2 Checkbox
+        //Hard Computer1 Checkbox
         rbHard1.layoutXProperty().setValue(width*0.3);
-        rbHard1.layoutYProperty().setValue(height*0.4);
+        rbHard1.layoutYProperty().setValue(height*0.3);
         rbHard1.setToggleGroup(group1);
         rbHard1.setSelected(true);
+        rbHard1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Easy Computer2 Checkbox
         rbEasy2.layoutXProperty().setValue(width*0.6);
-        rbEasy2.layoutYProperty().setValue(height*0.4);
+        rbEasy2.layoutYProperty().setValue(height*0.3);
         rbEasy2.setToggleGroup(group2);
         rbEasy2.setSelected(true);
+        rbEasy2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Normal Computer2 Checkbox
         rbNormal2.layoutXProperty().setValue(width*0.7);
-        rbNormal2.layoutYProperty().setValue(height*0.4);
+        rbNormal2.layoutYProperty().setValue(height*0.3);
         rbNormal2.setToggleGroup(group2);
         rbNormal2.setSelected(true);
+        rbNormal2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Hard Computer2 Checkbox
         rbHard2.layoutXProperty().setValue(width*0.8);
-        rbHard2.layoutYProperty().setValue(height*0.4);
+        rbHard2.layoutYProperty().setValue(height*0.3);
         rbHard2.setToggleGroup(group2);
         rbHard2.setSelected(true);
+        rbHard2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+        //10x10 RadioButton
+        rb10x10.layoutXProperty().setValue(width*0.1);
+        rb10x10.layoutYProperty().setValue(height*0.45);
+        rb10x10.setToggleGroup(group3);
+        rb10x10.setSelected(true);
+        rb10x10.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+        //15x15 RadioButton
+        rb15x15.layoutXProperty().setValue(width*0.3);
+        rb15x15.layoutYProperty().setValue(height*0.45);
+        rb15x15.setToggleGroup(group3);
+        rb15x15.setSelected(true);
+        rb15x15.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+        //20x20 RadioButton
+        rb20x20.layoutXProperty().setValue(width*0.5);
+        rb20x20.layoutYProperty().setValue(height*0.45);
+        rb20x20.setToggleGroup(group3);
+        rb20x20.setSelected(true);
+        rb20x20.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Go Button
         btnGo.layoutXProperty().setValue(width*0.025);
-        btnGo.layoutYProperty().setValue(height*0.55);
+        btnGo.layoutYProperty().setValue(height*0.65);
         btnGo.setPrefWidth(width*0.12);
         btnGo.setPrefHeight(height*0.05);
-        //btnGo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnGo.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
 
@@ -1129,7 +1297,7 @@ public class newGUI extends GameEventSource {
         btnHost.layoutYProperty().setValue(height*0.25);
         btnHost.setPrefWidth(width*0.181);
         btnHost.setPrefHeight(height*0.07);
-        //btnHost.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnHost.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
         //Client Button
@@ -1137,18 +1305,19 @@ public class newGUI extends GameEventSource {
         btnClient.layoutYProperty().setValue(height*0.25);
         btnClient.setPrefWidth(width*0.181);
         btnClient.setPrefHeight(height*0.07);
-        //btnClient.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnClient.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
         //IP Textfeld
         txtfIp.layoutXProperty().setValue(width*0.3);
         txtfIp.layoutYProperty().setValue(height*0.25);
+        txtfIp.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Port Textfeld
-
         txtfPort.layoutXProperty().setValue(width*0.5);
         txtfPort.layoutYProperty().setValue(height*0.25);
+        txtfPort.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Connect Button
@@ -1156,52 +1325,56 @@ public class newGUI extends GameEventSource {
         btnConnect.layoutYProperty().setValue(height*0.415);
         btnConnect.setPrefWidth(width*0.12);
         btnConnect.setPrefHeight(height*0.05);
+        btnConnect.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
         //Connected Text
         txtConnected.layoutXProperty().setValue(width*0.378);
         txtConnected.layoutYProperty().setValue(height*0.195);
         txtConnected.setStroke(Color.WHITE);
+        txtConnected.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
         //Continue Button
         btnContinue.layoutXProperty().setValue(width*0.378);
         btnContinue.layoutYProperty().setValue(height*0.305);
+        btnContinue.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
 
         // TryAgain Button
         btnTryAgain.layoutXProperty().setValue(width*0.378);
         btnTryAgain.layoutYProperty().setValue(height*0.305);
+        btnTryAgain.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
         //Undo Button
-        btnUndo.layoutXProperty().setValue(width*0.1);
+        btnUndo.layoutXProperty().setValue(width*0.20);
         btnUndo.layoutYProperty().setValue(height*0.025);
         btnUndo.setPrefWidth(width*0.16);
         btnUndo.setPrefHeight(height*0.07);
-        //btnUndo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnUndo.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
 
         //Redo Button
-        btnRedo.layoutXProperty().setValue(width*0.3);
+        btnRedo.layoutXProperty().setValue(width*0.40);
         btnRedo.layoutYProperty().setValue(height*0.025);
         btnRedo.setPrefWidth(width*0.16);
         btnRedo.setPrefHeight(height*0.07);
-        //btnRedo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnRedo.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
 
         //Save Button
-        btnSave.layoutXProperty().setValue(width*0.5);
+        btnSave.layoutXProperty().setValue(width*0.60);
         btnSave.layoutYProperty().setValue(height*0.025);
         btnSave.setPrefWidth(width*0.16);
         btnSave.setPrefHeight(height*0.07);
-        //btnSave.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnSave.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
 
         //Load Button
-        btnLoad.layoutXProperty().setValue(width*0.7);
+        btnLoad.layoutXProperty().setValue(width*0.80);
         btnLoad.layoutYProperty().setValue(height*0.025);
         btnLoad.setPrefWidth(width*0.16);
         btnLoad.setPrefHeight(height*0.07);
-        //btnLoad.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnLoad.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
 
 
         //Random Button
@@ -1209,25 +1382,25 @@ public class newGUI extends GameEventSource {
         btnRndm.layoutYProperty().setValue(height*0.55);
         btnRndm.setPrefWidth(width*0.12);
         btnRndm.setPrefHeight(height*0.05);
-        //btnRndm.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+        btnRndm.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Drag and Drop
         dragBox.layoutXProperty().setValue(width*0.025);
         dragBox.layoutYProperty().setValue(height*0.18);
-        dragBox.setWidth(200);
-        dragBox.setHeight(350);
+        dragBox.setWidth(width*0.20);
+        dragBox.setHeight(height*0.35);
         dragBox.setStroke(Color.WHITE);
 
         ivSrc1.setImage(ship);
-        ivSrc1.setFitWidth(35);
-        ivSrc1.setFitHeight(35);
+        ivSrc1.setFitWidth(width*0.015);
+        ivSrc1.setFitHeight(width*0.015);
         ivSrc1.setTranslateX(width*0.026);
         ivSrc1.setTranslateY(height*0.18);
 
         ivSrc2.setImage(ship2);
-        ivSrc2.setFitWidth(70);
-        ivSrc2.setFitHeight(35);
+        ivSrc2.setFitWidth(width*0.030);
+        ivSrc2.setFitHeight(width*0.015);
         ivSrc2.setTranslateX(width*0.026);
         ivSrc2.setTranslateY(height*0.28);
 
@@ -1237,31 +1410,60 @@ public class newGUI extends GameEventSource {
         btnLock.layoutYProperty().setValue(height*0.7);
         btnLock.setPrefWidth(width*0.12);
         btnLock.setPrefHeight(height*0.05);
-        //btnLock.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
+        btnLock.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
 
         //Spieler1 Punkte Text
-        txtPoints1.layoutXProperty().setValue(width*0.15);
+        txtPoints1.layoutXProperty().setValue(width*0.2);
         txtPoints1.layoutYProperty().setValue(height*0.12);
         txtPoints1.setStroke(Color.WHITE);
+        txtPoints1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.016));
 
 
         //Spieler2 Punkte Text
-        txtPoints2.layoutXProperty().setValue(width*0.55);
+        txtPoints2.layoutXProperty().setValue(width*0.4);
         txtPoints2.layoutYProperty().setValue(height*0.12);
         txtPoints2.setStroke(Color.WHITE);
+        txtPoints2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.016));
 
 
         //Spieler1 Combo Text
-        txtCombo1.layoutXProperty().setValue(width*0.35);
+        txtCombo1.layoutXProperty().setValue(width*0.6);
         txtCombo1.layoutYProperty().setValue(height*0.12);
         txtCombo1.setStroke(Color.WHITE);
+        txtCombo1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.016));
 
 
         //Spieler2 Combo Text
-        txtCombo2.layoutXProperty().setValue(width*0.75);
+        txtCombo2.layoutXProperty().setValue(width*0.8);
         txtCombo2.layoutYProperty().setValue(height*0.12);
         txtCombo2.setStroke(Color.WHITE);
+        txtCombo2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.016));
+
+
+        //EndScreen Text
+        txtEndScreen.layoutXProperty().setValue(width*0.4);
+        txtEndScreen.layoutYProperty().setValue(height*0.15);
+        txtEndScreen.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.05));
+        txtEndScreen.setStroke(Color.WHITE);
+
+
+        //PlayAgain Button
+        btnPlayAgain.layoutXProperty().setValue(width*0.20);
+        btnPlayAgain.layoutYProperty().setValue(height*0.4);
+        btnPlayAgain.setPrefWidth(width*0.181);
+        btnPlayAgain.setPrefHeight(height*0.07);
+        btnPlayAgain.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
+
+
+        //Leave Button
+        btnLeave.layoutXProperty().setValue(width*0.60);
+        btnLeave.layoutYProperty().setValue(height*0.4);
+        btnLeave.setPrefWidth(width*0.181);
+        btnLeave.setPrefHeight(height*0.07);
+        btnLeave.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.02));
+
+        //setEndScreen();
 
 
         tbHighscore = new TableView();
@@ -1337,7 +1539,6 @@ public class newGUI extends GameEventSource {
         tbSavedGames.getColumns().addAll(gamenameColumn, name1Column, name2Column, modeColumn, dateColumn);
 
         tbSavedGames.getSelectionModel().selectedIndexProperty().addListener(new RowSelectChangeListener());
-
 
 
         //Ende Button
@@ -1475,8 +1676,8 @@ public class newGUI extends GameEventSource {
                     String rowData = row.getItem().getGamename();
                     gamename = rowData;
                     body.getChildren().clear();
-                    drawName(1, body);
-                    createField(body, ivSrc1);
+                    drawName(1);
+                    createField();
                     body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
                     fireGameEvent(LOAD_TABLE_EVENT);
                 }
@@ -1508,7 +1709,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().clear();
-                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame, btnGo);
+                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame,rb10x10, rb15x15, rb20x20, btnGo);
                 body.setOnMouseClicked(eventbody -> {
                 });
                 fireGameEvent(PVP_EVENT);
@@ -1527,7 +1728,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().clear();
-                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame, rbEasy2, rbNormal2, rbHard2, btnGo);
+                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame, rbEasy2, rbNormal2, rbHard2, rb10x10, rb15x15, rb20x20, btnGo);
                 body.setOnMouseClicked(eventbody -> {
                 });
                 fireGameEvent(PVK_EVENT);
@@ -1546,7 +1747,7 @@ public class newGUI extends GameEventSource {
             public void handle(ActionEvent event) {
 
                 body.getChildren().clear();
-                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame, rbEasy1, rbNormal1, rbHard1, rbEasy2, rbNormal2, rbHard2, btnGo);
+                body.getChildren().addAll(txtfPlayer1, txtfPlayer2, cboxNetGame, rbEasy1, rbNormal1, rbHard1, rbEasy2, rbNormal2, rbHard2,rb10x10, rb15x15, rb20x20, btnGo);
                 body.setOnMouseClicked(eventbody -> {
                 });
                 fireGameEvent(KVK_EVENT);
@@ -1609,10 +1810,18 @@ public class newGUI extends GameEventSource {
                     ki2Mode = 4;
 
 
+                if (rb10x10.isSelected())
+                    setFieldSize(10);
+                else if (rb15x15.isSelected())
+                    setFieldSize(15);
+                else if (rb20x20.isSelected())
+                    setFieldSize(20);
+
+
 
                 if(!cboxNetGame.isSelected()) {
-                    drawName(1, body);
-                    createField(body, ivSrc1);
+                    //drawName(1);
+                    createField();
                     body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
                 }
                 else {
@@ -1710,8 +1919,8 @@ public class newGUI extends GameEventSource {
             @Override
             public void handle(ActionEvent event) {
 
-                drawName(1, body);
-                createField(body, ivSrc1);
+                drawName(1);
+                createField();
                 body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
 
             }
@@ -2004,12 +2213,55 @@ public class newGUI extends GameEventSource {
                 btnKvK.layoutXProperty().setValue(width*0.70);
                 btnKvK.setPrefWidth(width*0.181);
 
-                cboxNetGame.layoutXProperty().setValue(100);
-                cboxNetGame.layoutYProperty().setValue(200);
+                //Spieler1 Textfeld
+                txtfPlayer1.layoutXProperty().setValue(width*0.1);
 
+                //Spieler2 Textfeld
+                txtfPlayer2.layoutXProperty().setValue(width*0.6);
+
+                //Netzwerk Checkbox
+                cboxNetGame.layoutXProperty().setValue(width*0.1);
+
+
+                //Easy Computer1 Checkbox
+                rbEasy1.layoutXProperty().setValue(width*0.1);
+
+
+                //Normal Computer1 Checkbox
+                rbNormal1.layoutXProperty().setValue(width*0.2);
+
+
+                //Hard Computer1 Checkbox
+                rbHard1.layoutXProperty().setValue(width*0.3);
+
+
+                //Easy Computer2 Checkbox
+                rbEasy2.layoutXProperty().setValue(width*0.6);
+
+
+                //Normal Computer2 Checkbox
+                rbNormal2.layoutXProperty().setValue(width*0.7);
+
+
+                //Hard Computer2 Checkbox
+                rbHard2.layoutXProperty().setValue(width*0.8);
+
+
+                //10x10 RadioButton
+                rb10x10.layoutXProperty().setValue(width*0.1);
+
+
+                //15x15 RadioButton
+                rb15x15.layoutXProperty().setValue(width*0.3);
+
+
+                //20x20 RadioButton
+                rb20x20.layoutXProperty().setValue(width*0.5);
+
+
+                //Go Button
                 btnGo.layoutXProperty().setValue(width*0.025);
                 btnGo.setPrefWidth(width*0.12);
-                //btnGo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
                 btnHost.layoutXProperty().setValue(width*0.20);
                 btnHost.setPrefWidth(width*0.181);
@@ -2026,19 +2278,19 @@ public class newGUI extends GameEventSource {
                 btnConnect.layoutXProperty().setValue(width*0.378);
                 btnConnect.setPrefWidth(width*0.12);
 
-                btnUndo.layoutXProperty().setValue(width*0.1);
+                btnUndo.layoutXProperty().setValue(width*0.20);
                 btnUndo.setPrefWidth(width*0.16);
                 //btnUndo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
-                btnRedo.layoutXProperty().setValue(width*0.3);
+                btnRedo.layoutXProperty().setValue(width*0.40);
                 btnRedo.setPrefWidth(width*0.16);
                 //btnRedo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
-                btnSave.layoutXProperty().setValue(width*0.5);
+                btnSave.layoutXProperty().setValue(width*0.60);
                 btnSave.setPrefWidth(width*0.16);
                 //btnSave.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
-                btnLoad.layoutXProperty().setValue(width*0.7);
+                btnLoad.layoutXProperty().setValue(width*0.80);
                 btnLoad.setPrefWidth(width*0.16);
                 //btnLoad.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
@@ -2047,11 +2299,15 @@ public class newGUI extends GameEventSource {
                 //btnRndm.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
                 dragBox.layoutXProperty().setValue(width*0.025);
-                dragBox.setWidth(200);
-                dragBox.setHeight(350);
-                dragBox.setStroke(Color.WHITE);
+                dragBox.setWidth(width*0.20);
 
+                ivSrc1.setFitWidth(width*0.015);
+                ivSrc1.setFitHeight(width*0.015);
                 ivSrc1.setTranslateX(width*0.026);
+
+                ivSrc2.setFitWidth(width*0.030);
+                ivSrc2.setFitHeight(width*0.015);
+                ivSrc2.setTranslateX(width*0.026);
 
                 btnEGame.layoutXProperty().setValue(width*0.8);
                 btnEGame.setPrefWidth(150);
@@ -2061,13 +2317,13 @@ public class newGUI extends GameEventSource {
                 btnLock.setPrefWidth(width*0.12);
                 //btnLock.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.01));
 
-                txtPoints1.layoutXProperty().setValue(width*0.15);
+                txtPoints1.layoutXProperty().setValue(width*0.2);
 
-                txtPoints2.layoutXProperty().setValue(width*0.55);
+                txtPoints2.layoutXProperty().setValue(width*0.4);
 
-                txtCombo1.layoutXProperty().setValue(width*0.35);
+                txtCombo1.layoutXProperty().setValue(width*0.6);
 
-                txtCombo2.layoutXProperty().setValue(width*0.75);
+                txtCombo2.layoutXProperty().setValue(width*0.8);
 
                 tbHighscore.setPrefWidth(width);
 
@@ -2084,24 +2340,20 @@ public class newGUI extends GameEventSource {
                     for (int j = 0; j < field1[i].length; j++) {
                         int x = i;
                         int y = j;
-/**
-                        //Rectangle zur Feldbegrenzung erstellen
-                        border = new Rectangle(width*0.030, width*0.030);
-                        border.setFill(null);
-                        border.setStroke(Color.BLACK);
-
-                        //Rectangle platzieren
-                        border.setWidth(width*0.030);
-                        border.setTranslateX(j * width*0.030);
-                        border.layoutXProperty().setValue(width*0.25);
 
                         //ImageView platzieren
-                        field1[x][y].setFitWidth(width*0.030);
-                        field1[x][y].setPreserveRatio(true);
-                        field1[x][y].setTranslateX(j * width*0.030);
-                        field1[x][y].layoutXProperty().setValue(width*0.25);
- **/
+                        field1[i][j].setFitWidth(width*0.015);
+                        field1[i][j].setPreserveRatio(true);
+                        field1[i][j].setTranslateX(j * width*0.015);
+                        field1[i][j].setTranslateY(i * width*0.015);
+                        field1[i][j].layoutXProperty().setValue(width*0.25);
 
+                        //ImageView platzieren
+                        field2[i][j].setFitWidth(width*0.015);
+                        field2[i][j].setPreserveRatio(true);
+                        field2[i][j].setTranslateX(j * width*0.015);
+                        field2[i][j].setTranslateY(i * width*0.015);
+                        field2[i][j].layoutXProperty().setValue(width*0.65);
 
                     }
 
@@ -2160,12 +2412,70 @@ public class newGUI extends GameEventSource {
                 btnKvK.layoutYProperty().setValue(height*0.25);
                 btnKvK.setPrefHeight(height*0.07);
 
-                cboxNetGame.layoutXProperty().setValue(100);
-                cboxNetGame.layoutYProperty().setValue(200);
+                //Spieler1 Textfeld
+                txtfPlayer1.layoutYProperty().setValue(height*0.1);
+                txtfPlayer1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
 
-                btnGo.layoutYProperty().setValue(height*0.55);
+
+                //Spieler2 Textfeld
+                txtfPlayer2.layoutYProperty().setValue(height*0.1);
+                txtfPlayer2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //Netzwerk Checkbox
+                cboxNetGame.layoutYProperty().setValue(height*0.2);
+                cboxNetGame.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //Easy Computer1 Checkbox
+                rbEasy1.layoutYProperty().setValue(height*0.3);
+                rbEasy1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //Normal Computer1 Checkbox
+                rbNormal1.layoutYProperty().setValue(height*0.3);
+                rbNormal1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //Hard Computer1 Checkbox
+                rbHard1.layoutYProperty().setValue(height*0.3);
+                rbHard1.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //Easy Computer2 Checkbox
+                rbEasy2.layoutYProperty().setValue(height*0.3);
+                rbEasy2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //Normal Computer2 Checkbox
+                rbNormal2.layoutYProperty().setValue(height*0.3);
+                rbNormal2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //Hard Computer2 Checkbox
+                rbHard2.layoutYProperty().setValue(height*0.3);
+                rbHard2.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //10x10 RadioButton
+                rb10x10.layoutYProperty().setValue(height*0.45);
+                rb10x10.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //15x15 RadioButton
+                rb15x15.layoutYProperty().setValue(height*0.45);
+                rb15x15.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //20x20 RadioButton
+                rb20x20.layoutYProperty().setValue(height*0.45);
+                rb20x20.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.015));
+
+
+                //Go Button
+                btnGo.layoutYProperty().setValue(height*0.65);
                 btnGo.setPrefHeight(height*0.05);
-                //btnGo.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
+                btnGo.setFont(javafx.scene.text.Font.loadFont(newGUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
                 btnHost.layoutYProperty().setValue(height*0.25);
                 btnHost.setPrefHeight(height*0.07);
@@ -2203,11 +2513,11 @@ public class newGUI extends GameEventSource {
                 //btnRndm.setFont(javafx.scene.text.Font.loadFont("file:/C:/Users/nnamf/Downloads/videophreak/VIDEOPHREAK.ttf", height*0.03));
 
                 dragBox.layoutYProperty().setValue(height*0.18);
-                dragBox.setWidth(200);
-                dragBox.setHeight(350);
-                dragBox.setStroke(Color.WHITE);
+                dragBox.setHeight(height*0.35);
 
                 ivSrc1.setTranslateY(height*0.18);
+
+                ivSrc2.setTranslateY(height*0.28);
 
                 btnEGame.layoutYProperty().setValue(height*0.4);
                 btnEGame.setPrefWidth(150);
@@ -2232,22 +2542,14 @@ public class newGUI extends GameEventSource {
                     for (int j = 0; j < field1[i].length; j++) {
                         int x = i;
                         int y = j;
-/**
-                        //Rectangle zur Feldbegrenzung erstellen
-                        border.setFill(null);
-                        border.setStroke(Color.BLACK);
-
-                        //Rectangle platzieren
-                        border.setWidth(width*0.030);
-                        border.setTranslateY(i * height*0.030);
-                        border.layoutYProperty().setValue(height*0.18);
 
                         //ImageView platzieren
-                        field1[x][y].setFitWidth(width*0.030);
-                        field1[x][y].setPreserveRatio(true);
-                        field1[x][y].setTranslateY(i * height*0.030);
-                        field1[x][y].layoutYProperty().setValue(height*0.18);
-**/
+                        field1[i][j].setPreserveRatio(true);
+                        field1[i][j].layoutYProperty().setValue(height*0.18);
+
+                        //ImageView platzieren
+                        field2[i][j].setPreserveRatio(true);
+                        field2[i][j].layoutYProperty().setValue(height*0.18);
 
                     }
 
