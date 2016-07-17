@@ -1035,7 +1035,7 @@ public class Game implements GameEventListener {
                     else {
                         player1 = new Hard(gui.getFieldSize(), true, shipList);
                     }
-                    System.out.println("Player 1: " + ki1mode);
+                    System.out.println("Player 1: " + ki1mode); //
                 }
                 break;
             case LOCK_EVENT:
