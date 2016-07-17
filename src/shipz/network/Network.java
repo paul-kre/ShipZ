@@ -16,17 +16,33 @@ import java.util.regex.Pattern;
 
 
 /**
- * The {@code Network} class establishes a connection to another execution of the game.
- * It represents either a server, that waits for the response of a client, or a client, that connects to a server.
+ * The {@code Network} class establishes a connection to another instance of the game.
+ * It represents either a host, that waits for the response of a client, or a client, that connects to a host.
  * The methods of this class allow you to send and recieve information from a connected computer.
  * <p>
- * The following example shows how to start a server and accept a connecting client.
+ * The following example shows you how to start a host and accept a connecting client.
  * <blockquote><pre>
- * 	Network server = new Network(true);
+ *  Network host = new Network(true); // create a host
+ *  int port = 60000; // chose a port
+ *  try {
+ *      // try to connect to the client
+ *      host.connect( port );
+ *  } catch(Exception e) {
+ *      // output an error message, in case the connection went wrong.
+ *      // (send it to the GUI, so it can be shown to the user)
+ *      System.err.println(e.getMessage());
+ *  }
  * </pre></blockquote><p>
- * This is how to connect to a server as a client:
+ * This is how to connect to a host as a client:
  * <blockquote><pre>
- * 	Network client = new Network(false);
+ *  Network client = new Network(false); // create a client
+ *  int port = 60000; // chose the same port as the host
+ *  String ip = "127.0.0.1"; // chose the host's IP-adress
+ *  try {
+ *      client.connect( port, ip );
+ *  } catch(Exception e) {
+ *      System.err.println(e.getMessage());
+ *  }
  * </pre></blockquote>
  *
  * @author Paul Kretschel
@@ -78,20 +94,40 @@ public class Network extends Player {
         _ip = null;
     }
 
+    /**
+     * Checks if an IP-adress has a correct format.
+     *
+     * @param   ip
+     *          The IP-adress.
+     * @return  {@code True}: The IP-adress is valid.
+     *          {@code False}: the IP-adress is invalid
+     */
+
     private boolean isValidIP(String ip) {
         return Pattern.matches("((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\\.){3}((25[0-5])|(2[0-4][0-9])|(1?[0-9][0-9]?))", ip);
     }
+
+    /**
+     * Checks if a port is acceptable for establishing a connection.
+     *
+     * @param   port
+     *          The port.
+     * @return  {@code True}: The port is valid.
+     *          {@code False}: the port is invalid
+     */
 
     private boolean isValidPort(int port) {
         return Pattern.matches("[0-9]{1,8}", port + "");
     }
 
     /**
-     * Connects to the given ip and port.
+     * Connects a client to the given ip and port.
      *
-     * @param 	port
-     * 			The port that the new server is going to use. (Better choose a high number)
-     * @return	{@code True} if the connection was successful, {@code false} if it failed.
+     * @param   ip
+     *          The host's IP-adress.
+     * @param   port
+     *          The port that the host uses.
+     * @throws  Exception
      */
 
     public void connect(String ip, int port) throws Exception {
@@ -104,6 +140,14 @@ public class Network extends Player {
         if(!_isHost) connectClient();
     }
 
+    /**
+     * Connects a host with the specified port to a client.
+     *
+     * @param   port
+     *          The port (better chose a high number)
+     * @throws  Exception
+     */
+
     public void connect(int port) throws Exception {
         _port = port;
 
@@ -113,8 +157,9 @@ public class Network extends Player {
     /**
      * Starts a new server and waits for a client to connect.
      * Also checks if the connection was successful.
+     * Throws an exception if something went wrong.
      *
-     * @return	{@code True} if the connection was successful, {@code false} if it failed.
+     * @throws Exception
      */
 
     private void connectHost() throws Exception {
@@ -144,8 +189,11 @@ public class Network extends Player {
     }
 
     /**
-     * Connects to a server with the specified ip and port.
+     * Connects to a client to a host with the specified ip and port.
      * Also checks if the connection was successful.
+     * Throws an exception if something went wrong.
+     *
+     * @throws Exception
      */
 
     private void connectClient() throws Exception {
@@ -172,6 +220,11 @@ public class Network extends Player {
             throw new Exception("Connection timeout.");
     }
 
+    /**
+     * Checks continuously, if there is a new message from the other network of the other side.
+     * If there is new data, it fires an event, so the Main knows about it.
+     */
+
     @Override
     public void run() {
         //Timer timer = new Timer(500);
@@ -192,24 +245,26 @@ public class Network extends Player {
             } catch (Exception e) { }
         }
 
-        /*
-        if(!timer.hasTime() && !isEnd()) {
-            System.out.println("Connection error.");
-            connectionError();
-        }
-        */
-
         close();
     }
+
+    /**
+     * Returns the latest message, which the network received from the other side.
+     *
+     * @return  The message
+     */
 
     public String getMessage() {
         return _msg;
     }
 
-    private void connectionError() {
-        _connected = false;
-        fireGameEvent(DISCONNECT_EVENT);
-    }
+    /**
+     * Evaluates the message from the other side of the network.
+     * Fires an ebent if needed.
+     *
+     * @param   s
+     *          The message.
+     */
 
     private void evaluateString(String s) {
         byte action = Byte.parseByte(s.split(":")[0]);
@@ -221,52 +276,21 @@ public class Network extends Player {
                 setX(Integer.parseInt(values[1]));
                 fireGameEvent(NET_SHOOT_REQUEST);
                 break;
-            case SHOOT_EVENT:
-                convertShot(s);
-
-                fireGameEvent(SHOOT_EVENT);
-                break;
-            case SHOOT_RESULT:
-                convertShot(s);
-
-                fireGameEvent(SHOOT_RESULT);
-                break;
-            case CLOSE_EVENT:
-                close();
-                end();
-                fireGameEvent(CLOSE_EVENT);
-                break;
             default:
                 break;
         }
     }
 
-    public void shootRequest(int y, int x) {
-        send(NET_SHOOT_REQUEST + ":" + y + "," + x);
-    }
+    /**
+     * Tells the host, that the client wants to shoot on a field with the specified coordinates.
+     * @param   x
+     *          X-value
+     * @param   y
+     *          Y-value
+     */
 
-    private boolean validMessage(String s) {
-        return Pattern.matches("[0-9]{1,3}(//[0-9]{1,2}(:[0-9]{1,2}){2})?", s);
-    }
-
-    private void convertShot(String s) {
-        if(validMessage(s)) {
-            String values = s.split("//")[1];
-            int x = Integer.parseInt( values.split(":")[0] );
-            int y = Integer.parseInt( values.split(":")[1] );
-            byte res = Byte.parseByte( values.split(":")[2] );
-
-            setX(x);
-            setY(y);
-            setResult(res);
-        }
-    }
-
-    private byte getAction(String s) {
-        if(validMessage(s)) {
-            String action = s.split("//")[0];
-            return (byte) Integer.parseInt(action);
-        } else return pingAction;
+    public void shootRequest(int x, int y) {
+        send(NET_SHOOT_REQUEST + ":" + x + "," + y);
     }
 
     public void shootField(int y, int x, byte res) {
@@ -279,16 +303,21 @@ public class Network extends Player {
         }
     }
 
+    /**
+     * Reconnects the network, in case it deconnected.
+     *
+     * @throws Exception
+     */
+
     public void reconnect() throws Exception {
         if(_connected) return;
 
         connect(_ip, _port);
     }
 
-
-
     /**
-     * Opens the connection.
+     * Creates the input and output streams.
+     * @throws Exception
      */
 
     private void open() throws Exception {
@@ -309,11 +338,11 @@ public class Network extends Player {
 
 
     /**
-     * Closes the connection.
+     * Closes the streams and the socket.
      * This should always be done at the end when the {@code Network} is not being used anymore.
      */
 
-    public void close() {
+    private void close() {
         _connected = false;
 
         try{
@@ -331,10 +360,10 @@ public class Network extends Player {
     }
 
     /**
-     * Sends a message to the connected computer.
+     * Sends a message to the other side of the network.
      *
      * @param 	msg
-     * 			The message that is supposed to be sent.
+     * 			The message.
      */
 
     public void send(String msg) {
@@ -342,9 +371,21 @@ public class Network extends Player {
         _out.flush();
     }
 
+    /**
+     * Checks if the network is connected.
+     *
+     * @return  {@code True}: The network is connected.
+     *          {@code False}: The network is deconnected.
+     */
+
     public boolean connected() {
         return _connected;
     }
+
+    /**
+     * Closes the connection with all its streams and resets the network.
+     * Also quits the runnable network threat.
+     */
 
     @Override
     public void end() {
