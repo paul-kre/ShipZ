@@ -1372,8 +1372,14 @@ public class Game implements GameEventListener {
 
     	if(filestream.getActivePlayer(gameName) == 1) {
     		player1active = true;
+    		if(player1 == null) {
+    			gui.setEnableField(2);
+    		}
     	} else {
     		player1active = false;
+    		if(player2 == null) {
+    			gui.setEnableField(1);
+    		}
     	}
     }
 
