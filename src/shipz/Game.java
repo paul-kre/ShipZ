@@ -1081,8 +1081,7 @@ public class Game implements GameEventListener {
             		undo(filestream.undoDraw(activePlayer()));
             	} catch (NoDrawException x) {
             		x.printStackTrace();
-            		// Dialog wird auf der GUI ausgegeben
-            		// dass keine Z�ge mehr r�ckg�ngig gemacht werden k�nnen
+            		gui.drawWarning();
             	}
             	break;
             case REDO_EVENT:
@@ -1090,7 +1089,7 @@ public class Game implements GameEventListener {
 					redo(filestream.redoDraw(activePlayer()));
 				} catch (NoDrawException x) {
 					System.out.println("Es sind keine Züge mehr vorhanden, die wiederholt werden können!"); // muss noch als Dialog umgesetzt werden
-//					x.printStackTrace();
+					gui.drawWarning();
 				}
 				break;
             case SAVE_EVENT:

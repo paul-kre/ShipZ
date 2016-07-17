@@ -1295,6 +1295,10 @@ public class newGUI extends GameEventSource {
         list.clear();
         list2.clear();
     }
+    
+    public void drawWarning() {
+    	alertbox.displayWarning();
+    }
 
     //Constructor
     public newGUI (Stage primaryStage) {

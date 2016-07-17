@@ -103,5 +103,33 @@ public class AlertBox extends GameEventSource {
 		
 		return r;
 	}
+	
+	public void displayWarning() {
+		
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setTitle("No draws left");
+		window.setMinWidth(450);
+		
+		Label label = new Label();
+		label.setText("You can't undo/ redo any draws.");
+		
+		Button btnOk = new Button("Ok");
+		
+		btnOk.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				window.close();
+			}
+		});
+		
+		VBox layout = new VBox(10);
+		layout.getChildren().addAll(label, btnOk);
+		layout.setAlignment(Pos.CENTER);
+		
+		Scene scene = new Scene(layout);
+		window.setScene(scene);
+		window.showAndWait();
+		
+	}
 
 }
