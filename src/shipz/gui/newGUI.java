@@ -1198,11 +1198,10 @@ public class newGUI extends GameEventSource {
 
     }
 
-    public void clearHighscore() {
+    public void clearTables() {
         list.clear();
+        list2.clear();
     }
-
-
 
     //Constructor
     public newGUI (Stage primaryStage) {
@@ -1803,7 +1802,6 @@ public class newGUI extends GameEventSource {
                     gamename = rowData;
                     body.getChildren().clear();
                     drawName(1);
-                    createField();
                     body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
                     fireGameEvent(LOAD_TABLE_EVENT);
                 }
