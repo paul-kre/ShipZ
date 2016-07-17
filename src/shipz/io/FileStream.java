@@ -347,7 +347,7 @@ public class FileStream {
 	 * @return die verbotenen Zeichen als String
 	 */
 	public String forbiddenCharacters() {
-		return "=,{}<>;#~";
+		return "=/,/{/}/</>/;/#/~";
 	}
 	
 }

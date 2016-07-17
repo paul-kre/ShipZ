@@ -964,7 +964,8 @@ public class Game implements GameEventListener {
      * Main-Methode
      * @param args
      */
-   public static void main(String[] args) {}
+   public static void main(String[] args) {
+   }
 
     @Override
     /**
@@ -1094,11 +1095,11 @@ public class Game implements GameEventListener {
 				break;
             case SAVE_EVENT:
                 if(mode == 1) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,0");
+                    filestream.saveGame(gui.getFilename(), checkPlayername(gui.getPlayername(1)), checkPlayername(gui.getPlayername(2)), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,0");
                 } else if(mode == 2) {
-            		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,"+player2diff, player1.saveCurrentGame());
+            		filestream.saveGame(gui.getFilename(), checkPlayername(gui.getPlayername(1)), checkPlayername(gui.getPlayername(2)), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,"+player2diff, player1.saveCurrentGame());
                 } else if(mode == 3) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, mode+","+player1diff+","+player2diff, player1.saveCurrentGame(), player2.saveCurrentGame());
+                    filestream.saveGame(gui.getFilename(), checkPlayername(gui.getPlayername(1)), checkPlayername(gui.getPlayername(2)), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, mode+","+player1diff+","+player2diff, player1.saveCurrentGame(), player2.saveCurrentGame());
                 }
             	break;
             case LOAD_EVENT:
@@ -1462,7 +1463,22 @@ public class Game implements GameEventListener {
         shipList = null;
         filestream = new FileStream();
     }
-
+    
+    /**
+     * Entfernt unzulässige Zeichen aus einem Spielernamen
+     * @param pName Spielername
+     * @return Spielername ohne verbotene Zeichen
+     */
+    private String checkPlayername(String pName) {
+    	String[] illegal = filestream.forbiddenCharacters().split("/");
+    	String r = pName;
+    	for(String s : illegal) {
+    		if(r.contains(s)) {
+    			r = r.replaceAll(s, "");
+    		}
+    	}
+    	return r;
+    }
 
 }
 
