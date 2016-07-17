@@ -1,8 +1,7 @@
 package shipz;
 
 import javafx.stage.Stage;
-import shipz.gui.GUI2;
-import shipz.gui.newGUI;
+import shipz.gui.GUI;
 import shipz.io.FileStream;
 import shipz.network.Network;
 import shipz.util.GameEvent;
@@ -40,7 +39,7 @@ public class Game implements GameEventListener {
     /** Netzwerkverbindung */
     private Network network;
     /** grafische Nutzeroberfläche */
-    private newGUI gui;
+    private GUI gui;
     /** Spielstandverwaltung */
     private FileStream filestream;
 
@@ -68,7 +67,7 @@ public class Game implements GameEventListener {
      * @param primaryStage  wird für das Erstellen der GUI verwendet
      */
     public Game(Stage primaryStage) {
-        gui = new newGUI(primaryStage);
+        gui = new GUI(primaryStage);
         gui.setEventListener(this);
         player1active = true;
         filestream = new FileStream();
