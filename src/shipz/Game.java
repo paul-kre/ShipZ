@@ -1,8 +1,7 @@
 package shipz;
 
 import javafx.stage.Stage;
-import shipz.gui.GUI2;
-import shipz.gui.newGUI;
+import shipz.gui.GUI;
 import shipz.io.FileStream;
 import shipz.network.Network;
 import shipz.util.GameEvent;
@@ -40,7 +39,7 @@ public class Game implements GameEventListener {
     /** Netzwerkverbindung */
     private Network network;
     /** grafische Nutzeroberfläche */
-    private newGUI gui;
+    private GUI gui;
     /** Spielstandverwaltung */
     private FileStream filestream;
 
@@ -68,7 +67,7 @@ public class Game implements GameEventListener {
      * @param primaryStage  wird für das Erstellen der GUI verwendet
      */
     public Game(Stage primaryStage) {
-        gui = new newGUI(primaryStage);
+        gui = new GUI(primaryStage);
         gui.setEventListener(this);
         player1active = true;
         filestream = new FileStream();
@@ -972,7 +971,8 @@ public class Game implements GameEventListener {
      * Main-Methode
      * @param args
      */
-   public static void main(String[] args) {}
+   public static void main(String[] args) {
+   }
 
     @Override
     /**
@@ -1089,8 +1089,7 @@ public class Game implements GameEventListener {
             		undo(filestream.undoDraw(activePlayer()));
             	} catch (NoDrawException x) {
             		x.printStackTrace();
-            		// Dialog wird auf der GUI ausgegeben
-            		// dass keine Z�ge mehr r�ckg�ngig gemacht werden k�nnen
+            		gui.drawWarning();
             	}
             	break;
             case REDO_EVENT:
@@ -1098,16 +1097,16 @@ public class Game implements GameEventListener {
 					redo(filestream.redoDraw(activePlayer()));
 				} catch (NoDrawException x) {
 					System.out.println("Es sind keine Züge mehr vorhanden, die wiederholt werden können!"); // muss noch als Dialog umgesetzt werden
-//					x.printStackTrace();
+					gui.drawWarning();
 				}
 				break;
             case SAVE_EVENT:
                 if(mode == 1) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,0");
+                    filestream.saveGame(gui.getFilename(), checkPlayername(gui.getPlayername(1)), checkPlayername(gui.getPlayername(2)), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,0");
                 } else if(mode == 2) {
-            		filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,"+player2diff, player1.saveCurrentGame());
+            		filestream.saveGame(gui.getFilename(), checkPlayername(gui.getPlayername(1)), checkPlayername(gui.getPlayername(2)), boardToString(1), boardToString(2), (int)boardSize(), activePlayer(), null, mode+",0,"+player2diff, player1.saveCurrentGame());
                 } else if(mode == 3) {
-                    filestream.saveGame(gui.getFilename(), gui.getPlayername(1), gui.getPlayername(2), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, mode+","+player1diff+","+player2diff, player1.saveCurrentGame(), player2.saveCurrentGame());
+                    filestream.saveGame(gui.getFilename(), checkPlayername(gui.getPlayername(1)), checkPlayername(gui.getPlayername(2)), boardToString(1), boardToString(2), (int) boardSize(), activePlayer(), null, mode+","+player1diff+","+player2diff, player1.saveCurrentGame(), player2.saveCurrentGame());
                 }
             	break;
             case LOAD_EVENT:
@@ -1471,7 +1470,22 @@ public class Game implements GameEventListener {
         shipList = null;
         filestream = new FileStream();
     }
-
+    
+    /**
+     * Entfernt unzulässige Zeichen aus einem Spielernamen
+     * @param pName Spielername
+     * @return Spielername ohne verbotene Zeichen
+     */
+    private String checkPlayername(String pName) {
+    	String[] illegal = filestream.forbiddenCharacters().split("/");
+    	String r = pName;
+    	for(String s : illegal) {
+    		if(r.contains(s)) {
+    			r = r.replaceAll(s, "");
+    		}
+    	}
+    	return r;
+    }
 
 }
 
