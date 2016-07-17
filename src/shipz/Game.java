@@ -1106,6 +1106,7 @@ public class Game implements GameEventListener {
 //            	String gameName = saves[saves.length-1];
 //            	loadGame(gameName);
 //            	System.out.println("Der Spielstand " + gameName + " wurde geladen!");
+            	gui.clearTables();
             	for(int i = 0; i < saves.length; i++) {
             		gui.setSavedGame(saves[i], filestream.getPlayerName(saves[i]), filestream.getOpponentName(saves[i]), filestream.getGamemode(saves[i]), filestream.getTime(saves[i]).replaceAll("_", " "));
             	}
@@ -1191,7 +1192,7 @@ public class Game implements GameEventListener {
     }
 
     private void highscore() {
-        gui.clearHighscore();
+        gui.clearTables();
         String s = filestream.highscore();
         String [] eintraege = s.split(",");
         for(int i = 0; i < eintraege.length; i++) {
