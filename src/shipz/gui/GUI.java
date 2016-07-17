@@ -2153,6 +2153,7 @@ public class GUI extends GameEventSource {
             @Override
             public void handle(ActionEvent event) {
 
+            	body.getChildren().clear();
                 drawName(1);
                 createField();
                 body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
