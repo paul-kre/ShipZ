@@ -1191,7 +1191,7 @@ public class Game implements GameEventListener {
     }
 
     private void highscore() {
-        gui.clearHighscore();
+        gui.clearTables();
         String s = filestream.highscore();
         String [] eintraege = s.split(",");
         for(int i = 0; i < eintraege.length; i++) {

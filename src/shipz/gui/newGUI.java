@@ -374,6 +374,21 @@ public class newGUI extends GameEventSource {
                             content.putString("s2");
                             content.putImage(ship2);
                             db.setContent(content);
+                        }else if(oneField.getImage()==ship31 || oneField.getImage()==ship32 || oneField.getImage()==ship33) {
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString("s3");
+                            content.putImage(ship3);
+                            db.setContent(content);
+                        }else if(oneField.getImage()==ship41 || oneField.getImage()==ship42 || oneField.getImage()==ship43 || oneField.getImage()==ship44) {
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString("s4");
+                            content.putImage(ship4);
+                            db.setContent(content);
+                        }else if(oneField.getImage()==ship51 || oneField.getImage()==ship52 || oneField.getImage()==ship53 || oneField.getImage()==ship54 || oneField.getImage()==ship55) {
+                            ClipboardContent content = new ClipboardContent();
+                            content.putString("s5");
+                            content.putImage(ship5);
+                            db.setContent(content);
                         }
 
 
@@ -396,6 +411,42 @@ public class newGUI extends GameEventSource {
                             }else if(oneField.getImage()==ship22) {
                                 oneField.setImage(white);
                                 field1[x][y-1].setImage(white);
+                            }else if(oneField.getImage()==ship31) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship32) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship33) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship41) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship42) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship43) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship44) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship51) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship52) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship53) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship54) {
+                                oneField.setImage(white);
+
+                            }else if(oneField.getImage()==ship55) {
+                                oneField.setImage(white);
+
                             }
 
                         }
@@ -455,6 +506,27 @@ public class newGUI extends GameEventSource {
                         if (db.getString() == "s2") {
                             field1[x][y+1].setImage(ship22);
                             oneField.setImage(ship21);
+                            success = true;
+                        }
+                        if (db.getString() == "s3") {
+                            field1[x][y+2].setImage(ship33);
+                            field1[x][y+1].setImage(ship32);
+                            oneField.setImage(ship31);
+                            success = true;
+                        }
+                        if (db.getString() == "s4") {
+                            field1[x][y+3].setImage(ship44);
+                            field1[x][y+2].setImage(ship43);
+                            field1[x][y+1].setImage(ship42);
+                            oneField.setImage(ship41);
+                            success = true;
+                        }
+                        if (db.getString() == "s5") {
+                            field1[x][y+4].setImage(ship54);
+                            field1[x][y+3].setImage(ship54);
+                            field1[x][y+2].setImage(ship53);
+                            field1[x][y+1].setImage(ship52);
+                            oneField.setImage(ship51);
                             success = true;
                         }
                         /* let the source know whether the string was successfully
@@ -665,15 +737,15 @@ public class newGUI extends GameEventSource {
                                 break;
                             case 2:
                                 content.putString("s3");
-                                content.putImage(ship);
+                                content.putImage(ship3);
                                 break;
                             case 3:
                                 content.putString("s4");
-                                content.putImage(ship);
+                                content.putImage(ship4);
                                 break;
                             case 4:
                                 content.putString("s5");
-                                content.putImage(ship);
+                                content.putImage(ship5);
                                 break;
                         }
                     }
@@ -762,7 +834,7 @@ public class newGUI extends GameEventSource {
                                 break;
                             case 4:
                                 ivSrc5.setImage(db.getImage());
-                                success = true;;
+                                success = true;
                                 break;
                         }
 
@@ -850,78 +922,95 @@ public class newGUI extends GameEventSource {
 
                 case 2:
                     //2er Schiff
-                    field1[x][y].setImage(ship21);
+
                     //oben
-                    if (dir == 'u')
+                    if (dir == 'u') {
+                        field1[x][y].setImage(ship21);
                         field1[x][y - 1].setImage(ship22);
+                    }
                     //unten
-                    if (dir == 'd')
+                    if (dir == 'd') {
+                        field1[x][y].setImage(ship21);
                         field1[x][y + 1].setImage(ship22);
+                    }
                     //rechts
-                    else if (dir == 'r')
+                    else if (dir == 'r') {
+                        field1[x][y].setImage(ship21);
                         field1[x + 1][y].setImage(ship22);
+                    }
                     //unten
-                    if (dir == 'l')
-                        field1[x - 1][y].setImage(ship22);
+                    if (dir == 'l') {
+                        field1[x][y].setImage(ship22);
+                        field1[x - 1][y].setImage(ship21);
+                    }
                     break;
 
                 case 3:
                     //3er Schiff
-                    field1[x][y].setImage(ship31);
+
                     //oben
                     if (dir == 'u') {
+                        field1[x][y].setImage(ship31);
                         field1[x][y - 1].setImage(ship32);
                         field1[x][y - 2].setImage(ship33);
                     }
                     //unten
                     if (dir == 'd') {
+                        field1[x][y].setImage(ship31);
                         field1[x][y + 1].setImage(ship32);
                         field1[x][y + 2].setImage(ship33);
                     }
                     //rechts
                     if (dir == 'r') {
+                        field1[x][y].setImage(ship31);
                         field1[x + 1][y].setImage(ship32);
                         field1[x + 2][y].setImage(ship33);
                     }
                     //unten
                     if (dir == 'l') {
+                        field1[x][y].setImage(ship33);
                         field1[x - 1][y].setImage(ship32);
-                        field1[x - 2][y].setImage(ship33);
+                        field1[x - 2][y].setImage(ship31);
                     }
                     break;
                 case 4:
                     //4er Schiff
-                    field1[x][y].setImage(ship41);
+
                     //oben
                     if (dir == 'u') {
+                        field1[x][y].setImage(ship41);
                         field1[x][y - 1].setImage(ship42);
                         field1[x][y - 2].setImage(ship43);
                         field1[x][y - 3].setImage(ship44);
                     }
                     //unten
                     if (dir == 'd') {
+                        field1[x][y].setImage(ship41);
                         field1[x][y + 1].setImage(ship42);
                         field1[x][y + 2].setImage(ship43);
                         field1[x][y + 3].setImage(ship44);
                     }
                     //rechts
                     if (dir == 'r') {
+                        field1[x][y].setImage(ship41);
                         field1[x + 1][y].setImage(ship42);
                         field1[x + 2][y].setImage(ship43);
                         field1[x + 3][y].setImage(ship44);
                     }
                     //unten
                     if (dir == 'l') {
-                        field1[x - 1][y].setImage(ship42);
-                        field1[x - 2][y].setImage(ship43);
-                        field1[x - 3][y].setImage(ship44);
+                        field1[x][y].setImage(ship44);
+                        field1[x - 1][y].setImage(ship43);
+                        field1[x - 2][y].setImage(ship42);
+                        field1[x - 3][y].setImage(ship41);
                     }
                     break;
                 case 5:
                     //5er Schiff
-                    field1[x][y].setImage(ship51);
+
                     //oben
                     if (dir == 'u') {
+                        field1[x][y].setImage(ship51);
                         field1[x][y - 1].setImage(ship52);
                         field1[x][y - 2].setImage(ship53);
                         field1[x][y - 3].setImage(ship54);
@@ -929,6 +1018,7 @@ public class newGUI extends GameEventSource {
                     }
                     //unten
                     if (dir == 'd') {
+                        field1[x][y].setImage(ship51);
                         field1[x][y + 1].setImage(ship52);
                         field1[x][y + 2].setImage(ship53);
                         field1[x][y + 3].setImage(ship54);
@@ -936,6 +1026,7 @@ public class newGUI extends GameEventSource {
                     }
                     //rechts
                     if (dir == 'r') {
+                        field1[x][y].setImage(ship51);
                         field1[x + 1][y].setImage(ship52);
                         field1[x + 2][y].setImage(ship53);
                         field1[x + 3][y].setImage(ship54);
@@ -943,10 +1034,11 @@ public class newGUI extends GameEventSource {
                     }
                     //unten
                     if (dir == 'l') {
-                        field1[x - 1][y].setImage(ship52);
+                        field1[x][y].setImage(ship55);
+                        field1[x - 1][y].setImage(ship54);
                         field1[x - 2][y].setImage(ship53);
-                        field1[x - 3][y].setImage(ship54);
-                        field1[x - 4][y].setImage(ship55);
+                        field1[x - 3][y].setImage(ship52);
+                        field1[x - 4][y].setImage(ship51);
                     }
                     break;
             }
@@ -1517,17 +1609,30 @@ public class newGUI extends GameEventSource {
         dragBox.setHeight(height*0.35);
         dragBox.setStroke(Color.WHITE);
 
-        ivSrc1.setImage(ship);
-        ivSrc1.setFitWidth(width*0.015);
-        ivSrc1.setFitHeight(width*0.015);
-        ivSrc1.setTranslateX(width*0.026);
-        ivSrc1.setTranslateY(height*0.18);
 
         ivSrc2.setImage(ship2);
         ivSrc2.setFitWidth(width*0.030);
         ivSrc2.setFitHeight(width*0.015);
         ivSrc2.setTranslateX(width*0.026);
         ivSrc2.setTranslateY(height*0.28);
+
+        ivSrc3.setImage(ship3);
+        ivSrc3.setFitWidth(width*0.045);
+        ivSrc3.setFitHeight(width*0.015);
+        ivSrc3.setTranslateX(width*0.026);
+        ivSrc3.setTranslateY(height*0.38);
+
+        ivSrc4.setImage(ship4);
+        ivSrc4.setFitWidth(width*0.060);
+        ivSrc4.setFitHeight(width*0.015);
+        ivSrc4.setTranslateX(width*0.026);
+        ivSrc4.setTranslateY(height*0.48);
+
+        ivSrc5.setImage(ship5);
+        ivSrc5.setFitWidth(width*0.075);
+        ivSrc5.setFitHeight(width*0.015);
+        ivSrc5.setTranslateX(width*0.026);
+        ivSrc5.setTranslateY(height*0.18);
 
 
         //Lock Button
@@ -1946,7 +2051,7 @@ public class newGUI extends GameEventSource {
                 if(!cboxNetGame.isSelected()) {
                     //drawName(1);
                     createField();
-                    body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+                    body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
                 }
                 else {
                     body.getChildren().addAll(btnHost, btnClient);
@@ -2045,7 +2150,7 @@ public class newGUI extends GameEventSource {
 
                 drawName(1);
                 createField();
-                body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+                body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
 
             }
         });
@@ -2091,7 +2196,7 @@ public class newGUI extends GameEventSource {
             @Override
             public void handle(ActionEvent event) {
 
-                body.getChildren().removeAll(btnRndm, btnLock, ivSrc1, ivSrc2, dragBox);
+                body.getChildren().removeAll(btnRndm, btnLock, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, dragBox);
 
             }
         });
