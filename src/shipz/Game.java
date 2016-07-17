@@ -19,7 +19,7 @@ import shipz.ai.*;
 /**
  * Spielverwaltung
  * @author Max
- * @version	0.1
+ * @version	1.0
  */
 public class Game implements GameEventListener {
 
@@ -32,8 +32,6 @@ public class Game implements GameEventListener {
     private Player player1;
     /** Verweis auf den 2. Spieler */
     private Player player2;
-    private int player1diff;
-    private int player2diff;
     /** gibt an, ob Spieler 1 aktiv ist */
     private boolean player1active;
     /** Netzwerkverbindung */
@@ -42,7 +40,10 @@ public class Game implements GameEventListener {
     private GUI gui;
     /** Spielstandverwaltung */
     private FileStream filestream;
-
+    /** Schwierigkeitsgrad der ersten KI */
+    private int player1diff;
+    /** Schwierigkeitsgrad der zweiten KI */
+    private int player2diff;
     /** Liste mit den zu verwendenden Schiffen */
     public List<Integer> shipList;
     /** aktive x-Koordinate */
@@ -58,6 +59,7 @@ public class Game implements GameEventListener {
      */
     private byte mode = 0;
 
+    /** Gibt an, ob die Instanz zurzeit als Host fungiert */
     boolean isHost = false;
 
 
@@ -73,12 +75,9 @@ public class Game implements GameEventListener {
         filestream = new FileStream();
 
     }
-/*
     //Methoden
 
-    /**
-     * setzt alle Zellen eines Felds auf Wasser
-     */
+    /** Setz alle Zellen der Spielfelder auf Wasser */
     private void initiateBoards() {
         //1. Zähler
         int y;
@@ -846,6 +845,9 @@ public class Game implements GameEventListener {
     }, 1000);
     }
 
+    /**
+     * Führt einen Zug für den Spielmodus PvK aus
+     */
     private void nextRoundHumanVsAi() {
         if (player1active) {
             gui.setEnableField(2);
@@ -866,6 +868,9 @@ public class Game implements GameEventListener {
         }
     }
 
+    /**
+     * Führt einen Zug aus, wenn beide Spieler menschlich sind
+     */
     private void nextRoundHuman() {
         if(isHost || network == null) {
             aX = gui.getX();
@@ -941,7 +946,9 @@ public class Game implements GameEventListener {
     }
 
 
-
+    /**
+     * wird ausgeführt, wenn ein Zug ausgeführt werden soll
+     */
     private void cycle() {
         if(mode == 1) {
             if(player1active) {
@@ -966,13 +973,6 @@ public class Game implements GameEventListener {
             nextRoundAI();
         }
     }
-
-    /**
-     * Main-Methode
-     * @param args
-     */
-   public static void main(String[] args) {
-   }
 
     @Override
     /**
@@ -1051,6 +1051,7 @@ public class Game implements GameEventListener {
                 cycle();
                 break;
             case FINISHED_ROUND:
+                displaySingleBoard(board1);
                 gui.setEnableField(0);
             	filestream.newDraw(aX, aY, activePlayer(), aResult);
             	gui.setComboLabel(filestream.getComboValue(1), 1);
@@ -1199,6 +1200,9 @@ public class Game implements GameEventListener {
         }
     }
 
+    /**
+     * Gibt die abgespeicherten Highscores zur Ausgabe an die GUI
+     */
     private void highscore() {
         gui.clearTables();
         String s = filestream.highscore();
@@ -1410,6 +1414,9 @@ public class Game implements GameEventListener {
     	}
     }
 
+    /**
+     * @return  gibt das Spielfeld an, dass der aktive Spieler beschießt
+     */
     private int reverseActivePlayer() {
         if(player1active) {
             return 2;
@@ -1428,6 +1435,9 @@ public class Game implements GameEventListener {
 
     }
 
+    /**
+     * Setzt alle mit dem Netzwerk verbundenen Variablen zurück auf den Startzustand
+     */
     private void disableNetwork() {
         if(network != null) { // Wenn eine Verbindung über das Netzwerk existiert...
             // Sage dem Client Bescheid, dass das Spiel zuende ist.
