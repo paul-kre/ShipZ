@@ -21,6 +21,7 @@ public interface Event {
 	byte NET_GAMEOVER = 37;
 	byte NET_STARTGAME = 38;
 	byte SETTINGS_EVENT = 121;
+	byte SETTINGS2_EVENT = 122;
 
 	// AI
 	byte AI_SHOOT_EVENT = 40;

@@ -336,6 +336,14 @@ public class FileStream {
 	}
 	
 	/**
+	 * Gibt den Wert zurück, wie viele Spieler maximal in der Highscore-Liste angezeigt werden sollen.
+	 * @return Spieler-Maximum der Highscore-Liste
+	 */
+	public int getHighscoreMaximum() {
+		return settings.getHighscoreMaximum();
+	}
+	
+	/**
 	 * Liest aus der Datei und gibt den Wert zurück,
 	 * der die Länge der Pausen zwischen den KI-Zügen
 	 * in Millisekunden speichert.

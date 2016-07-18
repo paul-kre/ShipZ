@@ -214,6 +214,11 @@ public class GUI extends GameEventSource {
         body.getChildren().clear();
         body.getChildren().addAll(txtEndScreen, txtPoints1, txtPoints2, btnPlayAgain, btnLeave);
     }
+    
+    public void setSettingsTextFields(int ai, int hMax) {
+    	aiTimer.setText(ai+"");
+    	highscoreMax.setText(hMax+"");
+    }
 
     public void setEndMessage (int player) {
         if(player == 1){
@@ -2246,6 +2251,7 @@ public class GUI extends GameEventSource {
         	@Override
         	public void handle(ActionEvent event) {
         		body.getChildren().clear();
+        		fireGameEvent(SETTINGS2_EVENT);
         		body.getChildren().addAll(aiTimer, aiTimerL, highscoreMax, highscoreMaxL, btnSaveSettings);
         	}
         });
@@ -2259,6 +2265,8 @@ public class GUI extends GameEventSource {
                 aiTimerr = aiTimer.getText();
                 highscoreMaximum = highscoreMax.getText();
                 fireGameEvent(SETTINGS_EVENT);
+                body.getChildren().clear();
+                body.getChildren().addAll(mainMenu, btnPlay, btnHighscore, btnSettings);
                 
             }
         });
