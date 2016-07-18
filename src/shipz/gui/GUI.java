@@ -160,10 +160,10 @@ public class GUI extends GameEventSource {
     String filename = "";
 
     //Score und Combo Texte
-    Text txtPoints1 = new Text("Score P1 : "+0);
-    Text txtPoints2 = new Text("Score P2 : "+0);
-    Text txtCombo1 = new Text("Combo P1 : "+1);
-    Text txtCombo2 = new Text("Combo P2 : "+1);
+    Text txtPoints1 = new Text();
+    Text txtPoints2 = new Text();
+    Text txtCombo1 = new Text();
+    Text txtCombo2 = new Text();
 
     //Spielernamen
     String playername1 = "Spieler 1";
@@ -1229,9 +1229,9 @@ public class GUI extends GameEventSource {
      */
     public void setScoreLabel (int score, int playerIndex) {
         if(playerIndex == 1) {
-            txtPoints1.setText("Score P1: "  + score);
+            txtPoints1.setText("Score " + playername1 + ": "  + score);
         } else if(playerIndex == 2) {
-            txtPoints2.setText("Score P2: " + score);
+            txtPoints2.setText("Score " + playername2 + ": " + score);
         } else {
             throw new RuntimeException("Ung�ltiger Playerindex!");
         }
@@ -1243,9 +1243,9 @@ public class GUI extends GameEventSource {
      */
     public void setComboLabel (int combo, int playerIndex) {
         if(playerIndex == 1) {
-            txtCombo1.setText("Combo P1: " + combo);
+            txtCombo1.setText("Combo " + playername1 + ": " + combo);
         } else if(playerIndex == 2) {
-            txtCombo2.setText("Combo P2: " + combo);
+            txtCombo2.setText("Combo " + playername2 + ": " + combo);
         } else {
             throw new RuntimeException("Ung�ltiger Playerindex!");
         }
