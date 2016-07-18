@@ -2250,8 +2250,8 @@ public class GUI extends GameEventSource {
         btnSettings.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent event) {
-        		body.getChildren().clear();
         		fireGameEvent(SETTINGS2_EVENT);
+        		body.getChildren().clear();
         		body.getChildren().addAll(aiTimer, aiTimerL, highscoreMax, highscoreMaxL, btnSaveSettings);
         	}
         });
