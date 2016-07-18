@@ -201,7 +201,7 @@ public class GUI extends GameEventSource {
     TextField aiTimer  = new TextField();
     TextField highscoreMax = new TextField();
     
-    Text aiTimerL = new Text("AI-Timer");
+    Text aiTimerL = new Text("AI-Timer (in ms)");
     Text highscoreMaxL = new Text("Highscore Player Maximum");
     
     Button btnSaveSettings = new Button("Save");
