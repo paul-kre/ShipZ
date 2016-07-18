@@ -842,7 +842,7 @@ public class Game implements GameEventListener {
                     }
                 }
             }
-    }, 1000);
+    }, filestream.getAiTimer());
     }
 
     /**
