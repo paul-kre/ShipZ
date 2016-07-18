@@ -198,6 +198,17 @@ public class GUI extends GameEventSource {
     Button btnTryAgain = new Button("Try again");
 
 
+    TextField aiTimer  = new TextField();
+    TextField highscoreMax = new TextField();
+    
+    Text aiTimerL = new Text("AI-Timer");
+    Text highscoreMaxL = new Text("Highscore Player Maximum");
+    
+    Button btnSaveSettings = new Button("Save");
+    
+    String aiTimerr = "";
+    String highscoreMaximum = "";
+    
     //IM
     public void setEndScreen () {
         body.getChildren().clear();
@@ -1299,6 +1310,14 @@ public class GUI extends GameEventSource {
     public void drawWarning() {
     	alertbox.displayWarning();
     }
+    
+    public String aiTimerString() {
+    	return aiTimerr;
+    }
+    
+    public String highscoreMaxString() {
+    	return highscoreMaximum;
+    }
 
     //Constructor
     public GUI (Stage primaryStage) {
@@ -1638,6 +1657,33 @@ public class GUI extends GameEventSource {
         ivSrc5.setFitHeight(width*0.015);
         ivSrc5.setTranslateX(width*0.026);
         ivSrc5.setTranslateY(height*0.18);
+
+        // Settings
+        aiTimer.layoutXProperty().setValue(width*0.36);
+        aiTimer.layoutYProperty().setValue(height*0.3);
+        aiTimer.setPrefWidth(width*0.12);
+        aiTimer.setPrefHeight(height*0.05);
+        
+        aiTimerL.layoutXProperty().setValue(width*0.36);
+        aiTimerL.layoutYProperty().setValue(height*0.28);
+        aiTimerL.setStroke(Color.WHITE);
+        aiTimerL.setFont(javafx.scene.text.Font.loadFont(GUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
+        
+        highscoreMax.layoutXProperty().setValue(width*0.36);
+        highscoreMax.layoutYProperty().setValue(height*0.4);
+        highscoreMax.setPrefWidth(width*0.12);
+        highscoreMax.setPrefHeight(height*0.05);
+        
+        highscoreMaxL.layoutXProperty().setValue(width*0.36);
+        highscoreMaxL.layoutYProperty().setValue(height*0.38);
+        highscoreMaxL.setStroke(Color.WHITE);
+        highscoreMaxL.setFont(javafx.scene.text.Font.loadFont(GUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
+        
+        btnSaveSettings.layoutXProperty().setValue(width*0.025);
+        btnSaveSettings.layoutYProperty().setValue(height*0.65);
+        btnSaveSettings.setPrefWidth(width*0.12);
+        btnSaveSettings.setPrefHeight(height*0.05);
+        btnSaveSettings.setFont(javafx.scene.text.Font.loadFont(GUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.03));
 
 
         //Lock Button
@@ -2195,7 +2241,28 @@ public class GUI extends GameEventSource {
                 }
             }
         });
+        
+        btnSettings.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent event) {
+        		body.getChildren().clear();
+        		body.getChildren().addAll(aiTimer, aiTimerL, highscoreMax, highscoreMaxL, btnSaveSettings);
+        	}
+        });
 
+
+        btnSaveSettings.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                aiTimerr = aiTimer.getText();
+                highscoreMaximum = highscoreMax.getText();
+                fireGameEvent(SETTINGS_EVENT);
+                
+            }
+        });
+        
         /**
          * Event beim Bet�tigen des Save Buttons
          */

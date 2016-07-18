@@ -1139,6 +1139,11 @@ public class Game implements GameEventListener {
             case HIGHSCORE_EVENT:
                 highscore();
                 break;
+            case SETTINGS_EVENT:
+            	System.out.println(gui.aiTimerString());
+            	System.out.println(gui.highscoreMaxString());
+            	filestream.setAiTimer(Integer.parseInt(gui.aiTimerString()));
+            	filestream.setHighscoreMaximum(Integer.parseInt(gui.highscoreMaxString()));
             case CONNECT_EVENT:
                 isHost = gui.isHost();
 
