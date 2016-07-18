@@ -201,14 +201,14 @@ public class GUI extends GameEventSource {
     //IM
     public void setEndScreen () {
         body.getChildren().clear();
-        body.getChildren().addAll(txtEndScreen, btnPlayAgain, btnLeave);
+        body.getChildren().addAll(txtEndScreen, txtPoints1, txtPoints2, btnPlayAgain, btnLeave);
     }
 
     public void setEndMessage (int player) {
         if(player == 1){
-            txtEndScreen.setText(playername1+" has won the game!"+"\b"+"Congratulations.");
+            txtEndScreen.setText(playername1+" has won the game!"+"\n"+"Congratulations.");
         } else {
-            txtEndScreen.setText(playername2+" has won the game!"+"\b"+"Congratulations.");
+            txtEndScreen.setText(playername2+" has won the game!"+"\n"+"Congratulations.");
         }
     }
 
@@ -1677,11 +1677,10 @@ public class GUI extends GameEventSource {
 
 
         //EndScreen Text
-        txtEndScreen.layoutXProperty().setValue(width*0.4);
+        txtEndScreen.layoutXProperty().setValue(width*0.3);
         txtEndScreen.layoutYProperty().setValue(height*0.15);
         txtEndScreen.setFont(javafx.scene.text.Font.loadFont(GUI.class.getResource("Tempesta.ttf").toExternalForm(), height*0.05));
         txtEndScreen.setStroke(Color.WHITE);
-
 
         //PlayAgain Button
         btnPlayAgain.layoutXProperty().setValue(width*0.20);
