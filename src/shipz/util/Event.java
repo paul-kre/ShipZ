@@ -19,6 +19,7 @@ public interface Event {
 	byte NET_SHOOT_REQUEST = 35;
 	byte NET_HIGHSCORE = 36;
 	byte NET_GAMEOVER = 37;
+	byte NET_STARTGAME = 38;
 
 	// AI
 	byte AI_SHOOT_EVENT = 40;

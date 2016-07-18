@@ -1912,7 +1912,10 @@ public class GUI extends GameEventSource {
                     gamename = rowData;
                     body.getChildren().clear();
                     drawName(1);
-                    body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+                    if(isHost || !isNetwork) {
+                        body.getChildren().addAll(btnLock, btnRndm);
+                    }
+                    body.getChildren().addAll(dragBox, ivSrc1, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2);
                     fireGameEvent(LOAD_TABLE_EVENT);
                 }
             });
@@ -2056,7 +2059,10 @@ public class GUI extends GameEventSource {
                 if(!cboxNetGame.isSelected()) {
                     //drawName(1);
                     createField();
-                    body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+                    if(isHost || !isNetwork) {
+                        body.getChildren().addAll(btnLock, btnRndm);
+                    }
+                    body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2);
                 }
                 else {
                     body.getChildren().addAll(btnHost, btnClient);
@@ -2156,7 +2162,10 @@ public class GUI extends GameEventSource {
             	body.getChildren().clear();
                 drawName(1);
                 createField();
-                body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2, btnRndm, btnLock);
+                if(isHost || !isNetwork) {
+                    body.getChildren().addAll(btnLock, btnRndm);
+                }
+                body.getChildren().addAll(dragBox, ivSrc1, ivSrc2, ivSrc3, ivSrc4, ivSrc5, btnUndo, btnRedo, btnSave, btnLoad, txtPoints1, txtCombo1, txtPoints2, txtCombo2);
 
             }
         });

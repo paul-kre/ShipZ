@@ -1048,7 +1048,7 @@ public class Game implements GameEventListener {
                 break;
             case LOCK_EVENT:
                 clearGUI();
-                cycle();
+                if(isHost || network == null) cycle();
                 break;
             case FINISHED_ROUND:
                 displaySingleBoard(board1);
@@ -1158,7 +1158,6 @@ public class Game implements GameEventListener {
                     (new Thread(network)).start();
 
                     gui.setConnected(true);
-                    //if(isHost) st
                 } catch(Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -1474,8 +1473,8 @@ public class Game implements GameEventListener {
         board2 = null;
         player1 = null;
         player2 = null;
-        network = null;
-        isHost = false;
+        //network = null;
+        //isHost = false;
         player1active = true;
         shipList = null;
         filestream = new FileStream();
